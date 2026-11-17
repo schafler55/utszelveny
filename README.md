@@ -3,9 +3,9 @@
 Offline útszám és kilométerszelvény kijelző a magyar országos közúthálózathoz.
 A telefon GPS-pozíciójából megmutatja, melyik úton és melyik szelvényben vagy,
 valamint a sebességkorlátot, a lakott területi (átkelési) szakaszt, a közeli hidak súly- és
-magasságkorlátozásait, a kezelőt és a megyét.
+magasságkorlátozásait, a tehergépjárművekre vonatkozó korlátozásokat, a kezelőt és a megyét.
 
-**Verzió:** V1.4.1 Beta · © schafler55 · Licenc: GPL-3.0
+**Verzió:** V1.5 Beta · © schafler55 · Licenc: GPL-3.0
 
 ## Képernyőképek
 
@@ -37,7 +37,8 @@ Az APK mindig a repó gyökerében lévő `index.html`-ből épül, ezért új v
 
 - Útadatok: Magyar Közút Nonprofit Zrt. – Nemzeti Adathozzáférési Pont (NAP), statikus adatcsomagok
   (adatállapot: 2026. november): Országos közúthálózat, Közút neve/kategóriája/kezelője, Szelvényjelek,
-  Sebességkorlátozás, Lakott területi szakaszok, Hídhasználati feltételek. Az adatokra a NAP felhasználási
+  Sebességkorlátozás, Lakott területi szakaszok, Hídhasználati feltételek, Tehergépjárművekre vonatkozó
+  korlátozások. Az adatokra a NAP felhasználási
   feltételei vonatkoznak, nem a GPL-3.0 licenc.
 - Háttértérkép: © OpenStreetMap közreműködők.
 - Az adatok tájékoztató jellegűek, nem hitelesek – a helyszíni jelzések és a KRESZ az irányadók.
