@@ -9,7 +9,7 @@ magasságkorlátozásait, a tehergépjárművekre vonatkozó korlátozásokat, a
 
 ## Képernyőképek
 
-![Pozíció, sebességkorlát, hidak](screenshots/preview1.png)
+![Pozíció, sebességkorlát, hidak, tehergépjármű-korlátozások](screenshots/preview1.png)
 
 ![Úthálózaton kívül, térkép, beállítások](screenshots/preview2.png)
 
