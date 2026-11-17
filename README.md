@@ -7,6 +7,12 @@ magasságkorlátozásait, a kezelőt és a megyét.
 
 **Verzió:** V1.4 Beta · © 2026 Szászi Dániel · Licenc: GPL-3.0
 
+## Képernyőképek
+
+![Pozíció, sebességkorlát, hidak](screenshots/preview1.png)
+
+![Úthálózaton kívül, térkép, beállítások](screenshots/preview2.png)
+
 ## Használat
 
 - **Webalkalmazás (telepíthető):** https://schafler55.github.io/kozutszelveny/
