@@ -43,4 +43,4 @@ Az APK mindig a repó gyökerében lévő `index.html`-ből épül, ezért új v
 - Az adatok tájékoztató jellegűek, nem hitelesek – a helyszíni jelzések és a KRESZ az irányadók.
   Vezetés közben ne kezeld az alkalmazást.
 
-Az alkalmazást AI segítségével készült (Gemini 4 Argon, Claude Opus 5.5).
+Az alkalmazás AI segítségével készült (Gemini 4 Argon, Claude Opus 5.5).
