@@ -7,7 +7,7 @@
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <link rel="manifest" href="manifest.webmanifest">
-<title>KözútSzelvény V1.5.3 Beta</title>
+<title>KözútSzelvény V1.5.4 Beta</title>
 <style>
 :root{
   --bg:#16181c; --card:#25282d; --card2:#2d3036; --line:#3a3e45;
@@ -35,7 +35,7 @@ main{flex:1;overflow:auto;padding:4px 14px 14px;display:flex;flex-direction:colu
 .q.good{color:var(--ok)}.q.mid{color:var(--warn)}.q.bad{color:var(--bad)}
 .dir{position:absolute;top:14px;left:16px;font-family:var(--cond);font-size:.95rem;color:var(--muted);text-align:left;line-height:1.15}
 .dir b{display:block;font-size:1.6rem;color:var(--text);line-height:1}
-.shield{width:96px;height:96px;margin-bottom:2px}
+.shield{width:104px;height:77px;margin-bottom:4px}
 .ch{font-family:var(--cond);font-weight:700;font-size:min(23vw,118px);line-height:.95;letter-spacing:-.01em;font-variant-numeric:tabular-nums;color:#fff}
 .ch.long{font-size:min(18vw,96px)}
 .ch.xlong{font-size:min(14vw,78px)}
@@ -244,7 +244,7 @@ input[type=text]{width:100%;background:#1b1d21;border:1px solid var(--line);colo
     <p class="note">Felhasznált NAP adatcsomagok: Országos közúthálózat, Közút neve/kategóriája/kezelője, Szelvényjelek, Sebességkorlátozás, Lakott területi szakaszok, Hídhasználati feltételek, Tehergépjárművekre vonatkozó korlátozások. A sebességkorlát ott, ahol nincs egyedi korlátozás, a KRESZ szerinti alapérték. A térkép alapréteg csak internetkapcsolattal és weboldalról megnyitva érhető el. Koordináta-átszámítás: WGS84 → HD72/EOV (EPSG:23700), kb. 1 m pontossággal.</p>
 
     <div class="about">
-      <div class="about-t">KözútSzelvény V1.5.3 Beta</div>
+      <div class="about-t">KözútSzelvény V1.5.4 Beta</div>
       <p>© 2026 Szászi Dániel</p>
       <p>Az alkalmazást Szászi Dániel készítette AI segítségével (Gemini 4 Argon, Claude Opus 5.5)</p>
       <p>Forráskód: GPL-3.0 licence - <a href="https://github.com/schafler55/kozutszelveny" target="_blank" rel="noopener">GitHub</a></p>
@@ -649,11 +649,14 @@ function showProtoAlert(){
 const $=(id)=>document.getElementById(id);
 const esc=(s)=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 function shieldSVG(num,kut){
+  // Hungarian road number sign shape: square-ish top, straight sides, shallow V bottom
   const isM=/^M/.test(num)||kut===1||kut===2;
-  const len=num.length,fs=len<=2?46:len===3?36:len===4?29:24;
-  if(isM)return `<svg class="shield" viewBox="0 0 100 100"><path d="M14 6h72q8 0 8 8v34q0 30-44 46Q6 78 6 48V14q0-8 8-8z" fill="#1d4fbf" stroke="#fff" stroke-width="5"/><text x="50" y="44" dy=".36em" text-anchor="middle" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="${fs}" fill="#fff">${esc(num)}</text></svg>`;
-  if(kut===3||kut===4)return `<svg class="shield" viewBox="0 0 100 100"><path d="M14 6h72q8 0 8 8v34q0 30-44 46Q6 78 6 48V14q0-8 8-8z" fill="#1f7a3a" stroke="#fff" stroke-width="5"/><text x="50" y="44" dy=".36em" text-anchor="middle" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="${fs}" fill="#fff">${esc(num)}</text></svg>`;
-  return `<svg class="shield" viewBox="0 0 100 100"><rect x="4" y="24" width="92" height="52" rx="8" fill="#f8fafc" stroke="#111" stroke-width="4"/><text x="50" y="50" dy=".36em" text-anchor="middle" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="${fs}" fill="#111">${esc(num)}</text></svg>`;
+  const len=num.length,fs=len<=2?46:len===3?44:len===4?36:30;
+  const txt=(fill)=>`<text transform="translate(50 34) scale(.8 1)" dy=".36em" text-anchor="middle" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="${fs}" fill="${fill}">${esc(num)}</text>`;
+  const SH="M8 4H92Q95 4 95 7V48Q95 54 89.5 56L52.5 68.9Q50 69.8 47.5 68.9L10.5 56Q5 54 5 48V7Q5 4 8 4Z";
+  if(isM)return `<svg class="shield" viewBox="0 0 100 74"><path d="${SH}" fill="#1d4fbf" stroke="#fff" stroke-width="5"/>${txt("#fff")}</svg>`;
+  if(kut===3||kut===4)return `<svg class="shield" viewBox="0 0 100 74"><path d="${SH}" fill="#1f7a3a" stroke="#fff" stroke-width="5"/>${txt("#fff")}</svg>`;
+  return `<svg class="shield" viewBox="0 0 100 74"><rect x="4" y="11" width="92" height="50" rx="7" fill="#f8fafc" stroke="#111" stroke-width="4"/>${txt("#111").replace('translate(50 34)','translate(50 36)')}</svg>`;
 }
 function quality(acc){
   if(acc==null)return {t:"–",c:"",bars:0};
