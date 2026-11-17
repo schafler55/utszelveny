@@ -7,7 +7,7 @@
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <link rel="manifest" href="manifest.webmanifest">
-<title>KözútSzelvény V1.5.4 Beta</title>
+<title>KözútSzelvény V1.5.5 Beta</title>
 <style>
 :root{
   --bg:#16181c; --card:#25282d; --card2:#2d3036; --line:#3a3e45;
@@ -40,7 +40,8 @@ main{flex:1;overflow:auto;padding:4px 14px 14px;display:flex;flex-direction:colu
 .ch.long{font-size:min(18vw,96px)}
 .ch.xlong{font-size:min(14vw,78px)}
 .unit{font-family:var(--cond);font-size:1.6rem;color:var(--text);margin-top:-2px}
-.rname{font-family:var(--cond);font-size:1.45rem;line-height:1.15;margin-top:4px;max-width:100%}
+.rname{font-family:var(--cond);font-size:1.45rem;line-height:1.15;margin-top:8px;max-width:100%}
+.rname2{font-family:var(--cond);font-size:1.08rem;line-height:1.2;color:var(--muted);margin-top:2px;max-width:100%}
 .rsub{font-size:.85rem;color:var(--muted);margin-top:6px}
 .chips{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin-top:10px}
 .chip{font-size:.8rem;padding:4px 10px;border-radius:999px;background:var(--card2);color:var(--muted);border:1px solid var(--line)}
@@ -244,7 +245,7 @@ input[type=text]{width:100%;background:#1b1d21;border:1px solid var(--line);colo
     <p class="note">Felhasznált NAP adatcsomagok: Országos közúthálózat, Közút neve/kategóriája/kezelője, Szelvényjelek, Sebességkorlátozás, Lakott területi szakaszok, Hídhasználati feltételek, Tehergépjárművekre vonatkozó korlátozások. A sebességkorlát ott, ahol nincs egyedi korlátozás, a KRESZ szerinti alapérték. A térkép alapréteg csak internetkapcsolattal és weboldalról megnyitva érhető el. Koordináta-átszámítás: WGS84 → HD72/EOV (EPSG:23700), kb. 1 m pontossággal.</p>
 
     <div class="about">
-      <div class="about-t">KözútSzelvény V1.5.4 Beta</div>
+      <div class="about-t">KözútSzelvény V1.5.5 Beta</div>
       <p>© 2026 Szászi Dániel</p>
       <p>Az alkalmazást Szászi Dániel készítette AI segítségével (Gemini 4 Argon, Claude Opus 5.5)</p>
       <p>Forráskód: GPL-3.0 licence - <a href="https://github.com/schafler55/kozutszelveny" target="_blank" rel="noopener">GitHub</a></p>
@@ -648,6 +649,13 @@ function showProtoAlert(){
 /* ---------- rendering ---------- */
 const $=(id)=>document.getElementById(id);
 const esc=(s)=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+function splitName(name){
+  // "M30 autópálya /M3 - Tornyosnémeti/" → main "M30 autópálya", sub "M3 - Tornyosnémeti"
+  const m=/^(M\d+.*?(?:autópálya|autóút|gyorsforg\.? út|körgyűrű))\s*\/(.+)\/\s*$/.exec(name);
+  if(m)return {main:m[1].trim(),sub:m[2].trim().replace(/\s*\/\s*/g," / ")};
+  // other names: inline "/x/" pairs → "(x)"; single slashes (4/33, Iklad/Domony) stay
+  return {main:name.replace(/\s\/([^/]+)\/(?=\s|$)/g," ($1)"),sub:""};
+}
 function shieldSVG(num,kut){
   // Hungarian road number sign shape: square-ish top, straight sides, shallow V bottom
   const isM=/^M/.test(num)||kut===1||kut===2;
@@ -700,8 +708,8 @@ function render(){
     for(const o of r.others)chips.push(`<span class="chip tap" data-road="${segRoad[o.s]}">⇄ ${esc(ROADS[segRoad[o.s]].num)} · ${fmtCh(chainage(o.s,o.along))} · ${Math.round(o.d)} m</span>`);
     hero.innerHTML=`${dir}<div class="q ${cur.pos.src==="gps"?q.c:""}">${SAT}<span>${cur.pos.src==="gps"?q.t:"Kézi"}</span></div>
       ${shieldSVG(road.num,kut)}
-      <div class="${cls}">${chs}</div><div class="unit">km</div>
-      ${S.name?`<div class="rname">${esc(road.name)}</div>`:""}
+      <div class="${cls}">${chs}</div>
+      ${S.name?(()=>{const nm=splitName(road.name);return `<div class="rname">${esc(nm.main)}</div>${nm.sub?`<div class="rname2">(${esc(nm.sub)})</div>`:""}`})():""}
       <div class="rsub">${esc(road.num)}. sz. ${KUT[kut]} · tengelytől ${Math.round(r.best.d)} m</div>
       ${chips.length?`<div class="chips">${chips.join("")}</div>`:""}`;
     title=COUNTIES[segCty[s]]||"KözútSzelvény";
@@ -977,7 +985,7 @@ function identify(m){
   const r=match(E,N,{acc:Math.max(8,12/gS)});
   if(r.off)$("mapInfo").innerHTML=`<div class="mi-t">Nincs országos közút a közelben.<br>EOV Y ${Math.round(E)} X ${Math.round(N)} · ${ll.lat.toFixed(5)}, ${ll.lon.toFixed(5)}</div>`;
   else{const s=r.best.s,rd=ROADS[segRoad[s]];
-    $("mapInfo").innerHTML=`<div class="mi-ch">${esc(rd.num)} · ${fmtCh(r.ch)}</div><div class="mi-t">${esc(rd.name)}${segPk[s]?" · "+PKOD[segPk[s]]:""}<br>EOV Y ${Math.round(E)} X ${Math.round(N)} · ${ll.lat.toFixed(5)}, ${ll.lon.toFixed(5)}</div>`}
+    $("mapInfo").innerHTML=`<div class="mi-ch">${esc(rd.num)} · ${fmtCh(r.ch)}</div><div class="mi-t">${esc((n=>n.sub?n.main+" ("+n.sub+")":n.main)(splitName(rd.name)))}${segPk[s]?" · "+PKOD[segPk[s]]:""}<br>EOV Y ${Math.round(E)} X ${Math.round(N)} · ${ll.lat.toFixed(5)}, ${ll.lon.toFixed(5)}</div>`}
   drawMap();
 }
 $("zIn").onclick=()=>{mS=clampS(mS*1.6);drawMap()};
