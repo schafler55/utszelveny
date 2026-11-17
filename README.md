@@ -5,7 +5,7 @@ A telefon GPS-pozíciójából megmutatja, melyik úton és melyik szelvényben 
 valamint a sebességkorlátot, a lakott területi (átkelési) szakaszt, a közeli hidak súly- és
 magasságkorlátozásait, a kezelőt és a megyét.
 
-**Verzió:** V1.4.1 Beta · © 2026 Szászi Dániel · Licenc: GPL-3.0
+**Verzió:** V1.4.1 Beta · © schafler55 · Licenc: GPL-3.0
 
 ## Képernyőképek
 
@@ -43,4 +43,4 @@ Az APK mindig a repó gyökerében lévő `index.html`-ből épül, ezért új v
 - Az adatok tájékoztató jellegűek, nem hitelesek – a helyszíni jelzések és a KRESZ az irányadók.
   Vezetés közben ne kezeld az alkalmazást.
 
-Az alkalmazást Szászi Dániel készítette AI segítségével (Gemini 4 Argon, Claude Opus 5.5).
+Az alkalmazást AI segítségével készült (Gemini 4 Argon, Claude Opus 5.5).
