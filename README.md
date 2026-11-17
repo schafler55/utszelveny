@@ -1,2 +1,2 @@
 # kozutszelveny
-Offline útszám és kilométerszelvény kijelző
+Offline útszám és kilométerszelvény kijelző alkalmazás
