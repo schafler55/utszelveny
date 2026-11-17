@@ -23,17 +23,30 @@ jobs:
         with:
           gradle-version: '8.9'
 
+      - name: Find the Android project
+        id: proj
+        run: |
+          f=$(find . -name settings.gradle -not -path "./.git/*" | head -1)
+          if [ -z "$f" ]; then
+            echo "::error::settings.gradle not found - the android folder is not in the repository. Files in the repository:"
+            find . -not -path "./.git*" -type f | sort | head -100
+            exit 1
+          fi
+          d=$(dirname "$f")
+          echo "dir=$d" >> "$GITHUB_OUTPUT"
+          echo "Android project found in: $d"
+
       - name: Copy the web app (index.html) into the APK
         run: |
-          mkdir -p android/app/src/main/assets
-          cp index.html android/app/src/main/assets/index.html
+          mkdir -p "${{ steps.proj.outputs.dir }}/app/src/main/assets"
+          cp index.html "${{ steps.proj.outputs.dir }}/app/src/main/assets/index.html"
 
       - name: Build APK
-        working-directory: android
+        working-directory: ${{ steps.proj.outputs.dir }}
         run: gradle assembleDebug --no-daemon --stacktrace
 
       - name: Rename APK
-        run: cp android/app/build/outputs/apk/debug/app-debug.apk KozutSzelveny.apk
+        run: cp "${{ steps.proj.outputs.dir }}/app/build/outputs/apk/debug/app-debug.apk" KozutSzelveny.apk
 
       - name: Keep the APK as a build artifact
         uses: actions/upload-artifact@v4
