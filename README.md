@@ -1,6 +1,6 @@
 # KözútSzelvény
 
-Offline útszám- és kilométerszelvény kijelző a magyar országos közúthálózathoz.
+Offline útszám és kilométerszelvény kijelző a magyar országos közúthálózathoz.
 A telefon GPS-pozíciójából megmutatja, melyik úton és melyik szelvényben vagy,
 valamint a sebességkorlátot, a lakott területi (átkelési) szakaszt, a közeli hidak súly- és
 magasságkorlátozásait, a kezelőt és a megyét.
