@@ -42,7 +42,7 @@ a pozíció a kép adatai közé (EXIF) is bekerül. Az Android alkalmazás a K�
 
 ![Fotó funkció – valódi fotók](screenshots/foto.jpg)
 
-<sub>A fotók egy korábbi verzióval készültek (a bélyegzőn még „GPS” és a régi koordináta-formátum szerepel); a rendszámokat kitakartuk.</sub>
+<sub>Látványterv: valódi, az alkalmazással készült fotók, a bélyegző a jelenlegi verzió elrendezésével újrarajzolva; a rendszámok kitakarva.</sub>
 
 ### Beállítások
 Fülekre bontva (Általános, Pozíció, Térkép, Mérés, Fotó, Névjegy); mindig az aktuális oldal fülén nyílik meg.
