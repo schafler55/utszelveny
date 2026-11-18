@@ -3,21 +3,48 @@
 <h1 align="center">ÚtSzelvény</h1>
 
 Offline útszám és kilométerszelvény kijelző a magyar országos közúthálózathoz.
-A telefon GPS-pozíciójából megmutatja, melyik úton és melyik szelvényben vagy,
+A telefon GNSS-pozíciójából megmutatja, melyik úton és melyik szelvényben vagy,
 valamint a sebességkorlátot, a lakott területi (átkelési) szakaszt, a közeli hidak súly- és
 magasságkorlátozásait, a tehergépjárművekre vonatkozó korlátozásokat, a kezelőt és a megyét.
 
-A **Mérés** oldalon távolságot mérhetsz: kezdő és záró út + szelvény, GPS és szelvény szerinti hossz,
+A **Mérés** oldalon távolságot mérhetsz: kezdő és záró út + szelvény, GNSS és szelvény szerinti hossz,
 közbenső pontok, elnevezhető, menthető mérések, CSV-export és megjelenítés a térképen.
 A térképi méréssel pontokat is lerakhatsz: légvonal, úton mért (útvonal) és szelvény szerinti távolság, több úton át is mérhető.
 
 **Verzió:** V0.7 Beta · © schafler55 · Licenc: GPL-3.0
 
-## Képernyőképek
+## Funkciók
 
-![Pozíció, sebességkorlát, hidak, tehergépjármű-korlátozások](screenshots/preview1.png)
+### Pozíció
+Útszám az útjelző tábla formájában, kilométerszelvény (km+m), szelvényirány, az út neve és kategóriája.
+Alatta az érvényes sebességkorlát (belterület / külterület), a következő 3 km hídjai és út feletti akadályai,
+a tehergépjármű- és súlykorlátozások, a GNSS-adatok és a kezelő. Párhuzamos utaknál a közeli út egy koppintással választható.
+Az Android alkalmazás a használt és látható műholdakat is mutatja rendszerenként (GPS, Galileo, GLONASS, BeiDou…).
 
-![Úthálózaton kívül, térkép, beállítások](screenshots/preview2.png)
+![Pozíció oldal](screenshots/pozicio.png)
+
+### Térkép
+Országos közúthálózat útszám-táblákkal (autópálya, autóút kék, főút zöld), háttérként OpenStreetMap (szürke vagy sötét)
+vagy műholdkép. Északkal felfelé vagy menetirány szerint forgatva. Koppintásra megmutatja a pont útját és szelvényét.
+
+![Térkép oldal](screenshots/terkep.png)
+
+### Mérés
+- **GNSS-mérés:** indítás és leállítás között méri a megtett utat és a szelvény szerinti hosszt; több úton át szakaszokra bont, közbenső pontokat rögzít.
+- **Mérés a térképen:** lerakott pontok között légvonal, úton mért (legrövidebb útvonal az országos hálózaton) és szelvény szerinti távolság.
+- **Mentett mérések:** elnevezhetők, térképen megjeleníthetők, CSV-be exportálhatók.
+
+![Mérés oldal](screenshots/meres.png)
+
+### Fotó
+Fénykép a helyszínről útszámmal, szelvénnyel, dátummal és idővel a kép tetején (koordináta és égtáj is kérhető),
+a pozíció a kép adatai közé (EXIF) is bekerül. Az Android alkalmazás a Képek / ÚtSzelvény mappába ment.
+
+### Beállítások
+Fülekre bontva (Általános, Pozíció, Térkép, Mérés, Fotó, Névjegy); mindig az aktuális oldal fülén nyílik meg.
+Koordináták: WGS84 (alapértelmezett) vagy EOV.
+
+![Beállítások](screenshots/beallitasok.png)
 
 ## Használat
 
