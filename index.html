@@ -279,7 +279,10 @@ input[type=text]:focus{outline:2px solid var(--pri);outline-offset:-1px;border-c
 .mmn{display:inline-grid;place-items:center;width:17px;height:17px;border-radius:50%;background:#0891b2;color:#fff;font-size:.7rem;font-weight:700;margin-right:4px;vertical-align:1px}
 .mmp-b{display:flex;gap:8px}.mmp-b .btn{flex:1;padding:9px 6px;font-size:.875rem}
 .warnt{color:var(--warn)}
-.mmapbtn{align-self:center;margin-top:10px}
+.mmapbtn{align-self:center;margin-top:10px;display:inline-flex;align-items:center;gap:8px;padding-left:16px}
+.ico{width:18px;height:18px;flex-shrink:0}
+.mkind{display:inline-flex;align-items:center;gap:3px;vertical-align:-2px}
+.ico.sm{width:14px;height:14px}
 .mkind{color:var(--ter)}
 .mco{font-size:.78rem}
 .sats{margin-top:12px;padding-top:12px;border-top:1px solid var(--outv)}
@@ -1671,7 +1674,7 @@ function renderMeas(){
       <div class="note" style="margin-top:2px">Indításkor rögzíti az aktuális utat és szelvényt, menet közben méri a GNSS szerint megtett utat, leállításkor elmenti a záró szelvényt is. Közben pontokat is rögzíthetsz.</div>
       ${watchId===null?`<div class="note">A mérés GNSS-t használ – indításkor bekapcsol.</div>`:""}
       <button class="startbtn mstart" id="mStart">▶ Mérés indítása</button>
-      <button class="btn mmapbtn" id="mMap">📍 Mérés a térképen (pontok lerakása)</button>`;
+      <button class="btn mmapbtn" id="mMap"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg>Mérés a térképen</button>`;
     $("mStart").onclick=measStart;$("mMap").onclick=()=>{showView("map");if(!mmOn)setMM(true)};
   }
   // saved list
@@ -1684,7 +1687,7 @@ function renderMeas(){
     const head=ren?`<div class="mren"><input type="text" id="mrn_${r.id}" value="${esc(r.name)}" maxlength="80" placeholder="Mérés neve"><button class="btn pri" data-a="save" data-id="${r.id}">Mentés</button></div>`
       :`<div class="mname">${esc(r.name)}</div>`;
     const sum=`<div class="msum">${r.start&&!r.start.off?esc(r.start.road)+" · "+esc(r.start.ch):"úton kívül"} → ${r.end&&!r.end.off?(r.end.road!==r.start.road?esc(r.end.road)+" · ":"")+esc(r.end.ch):"úton kívül"}</div>
-      <div class="mmeta">${r.kind==="map"?`<span class="mkind">📍 térkép</span> ${fmtTime(r.t0)} · légvonal <b>${fmtDist(r.air)}</b> · úton <b>${r.pairs.some(q=>q.len!=null)?fmtDist(r.dist):"–"}</b> · szelvény szerint <b>${r.pairs.some(q=>q.ch!=null)?fmtDist(r.ch):"–"}</b> · ${r.pairs.length+1} pont</div>`:`${fmtTime(r.t0)} · ${fmtDur(r.t1-r.t0)} · <b>${fmtDist(r.dist)}</b> GNSS${(()=>{const c=measChSum(r);return c==null?"":` · <b>${fmtDist(c.len)}</b> szelvény szerint`})()}${r.legs&&r.legs.length>1?` · ${r.legs.length} szakasz`:""}</div>`}`;
+      <div class="mmeta">${r.kind==="map"?`<span class="mkind"><svg class="ico sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg>térkép</span> ${fmtTime(r.t0)} · légvonal <b>${fmtDist(r.air)}</b> · úton <b>${r.pairs.some(q=>q.len!=null)?fmtDist(r.dist):"–"}</b> · szelvény szerint <b>${r.pairs.some(q=>q.ch!=null)?fmtDist(r.ch):"–"}</b> · ${r.pairs.length+1} pont</div>`:`${fmtTime(r.t0)} · ${fmtDur(r.t1-r.t0)} · <b>${fmtDist(r.dist)}</b> GNSS${(()=>{const c=measChSum(r);return c==null?"":` · <b>${fmtDist(c.len)}</b> szelvény szerint`})()}${r.legs&&r.legs.length>1?` · ${r.legs.length} szakasz`:""}</div>`}`;
     let body="";
     if(open&&r.kind==="map"){
       const all=[r.start,...r.pts,r.end];
