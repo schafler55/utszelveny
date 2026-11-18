@@ -17,9 +17,9 @@ magasságkorlátozásait, a tehergépjárművekre vonatkozó korlátozásokat, a
 
 ## Használat
 
-- **Webalkalmazás (telepíthető):** https://schafler55.github.io/kozutszelveny/
+- **Webalkalmazás (telepítés nélkül):** https://schafler55.github.io/kozutszelveny/
   Chrome-ban megnyitva ⋮ menü → *Hozzáadás a kezdőképernyőhöz*. Első betöltés után internet nélkül is működik.
-- **Android APK:** https://github.com/schafler55/kozutszelveny/releases/download/apk-latest/UtSzelveny.apk
+- **Android APK (telepítve):** https://github.com/schafler55/kozutszelveny/releases/download/apk-latest/UtSzelveny.apk
   Letöltés után engedélyezd az ismeretlen forrásból történő telepítést.
 
 A háttértérkép (OpenStreetMap) internetkapcsolatot igényel; minden más adat az alkalmazásba van építve.
