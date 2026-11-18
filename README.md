@@ -11,7 +11,7 @@ A **Mérés** oldalon távolságot mérhetsz: kezdő és záró út + szelvény,
 közbenső pontok, elnevezhető, menthető mérések, CSV-export és megjelenítés a térképen.
 A térképi méréssel pontokat is lerakhatsz: légvonal, úton mért (útvonal) és szelvény szerinti távolság, több úton át is mérhető.
 
-**Verzió:** V0.7.1 Beta · © schafler55 · Licenc: GPL-3.0
+**Verzió:** V0.7.2 Beta · © schafler55 · Licenc: GPL-3.0
 
 ## Funkciók
 
@@ -24,7 +24,7 @@ Az Android alkalmazás a használt és látható műholdakat is mutatja rendszer
 ![Pozíció oldal](screenshots/pozicio.png)
 
 ### Térkép
-Országos közúthálózat útszám-táblákkal (autópálya, autóút kék, főút zöld), háttérként OpenStreetMap (szürke vagy sötét)
+Országos közúthálózat útszám-táblákkal (autópálya, autóút kék, főút zöld), alaprétegként OpenStreetMap (szürke vagy sötét)
 vagy műholdkép. Északkal felfelé vagy menetirány szerint forgatva. Koppintásra megmutatja a pont útját és szelvényét.
 
 ![Térkép oldal](screenshots/terkep.png)
@@ -57,7 +57,7 @@ Koordináták: WGS84 (alapértelmezett) vagy EOV.
 - **Android APK (telepítve):** https://github.com/schafler55/kozutszelveny/releases/download/apk-latest/UtSzelveny.apk
   Letöltés után engedélyezni kell az ismeretlen forrásból történő telepítést.
 
-A háttértérkép (OpenStreetMap vagy Esri műholdkép) internetkapcsolatot igényel; minden más adat az alkalmazásba van építve.
+A térkép alapréteg (OpenStreetMap vagy Esri műholdkép) internetkapcsolatot igényel; minden más adat az alkalmazásba van építve.
 A térkép északkal felfelé vagy menetirány szerint elforgatva is használható.
 
 ## Felépítés
@@ -78,7 +78,7 @@ Az APK mindig a repó gyökerében lévő `index.html`-ből épül, ezért új v
   Sebességkorlátozás, Lakott területi szakaszok, Hídhasználati feltételek, Tehergépjárművekre vonatkozó
   korlátozások. Az adatokra a NAP felhasználási
   feltételei vonatkoznak, nem a GPL-3.0 licenc.
-- Háttértérkép: © OpenStreetMap közreműködők. Műholdkép: © Esri, Maxar, Earthstar Geographics (Esri World Imagery).
+- Térkép alapréteg: © OpenStreetMap közreműködők. Műholdkép: © Esri, Maxar, Earthstar Geographics (Esri World Imagery).
 - Az adatok tájékoztató jellegűek, nem hitelesek – a helyszíni jelzések és a KRESZ az irányadók.
   Vezetés közben ne kezeld az alkalmazást.
 
