@@ -22,9 +22,9 @@ A térképi méréssel pontokat is lerakhatsz: légvonal, úton mért (útvonal)
 ## Használat
 
 - **Webalkalmazás (telepítés nélkül):** https://schafler55.github.io/kozutszelveny/
-  Chrome-ban megnyitva ⋮ menü → *Hozzáadás a kezdőképernyőhöz*. Első betöltés után internet nélkül is működik.
+  Bölgészőben megnyitva az első betöltés után internet nélkül is működik, könyvjelzőként menthető az asztalra.
 - **Android APK (telepítve):** https://github.com/schafler55/kozutszelveny/releases/download/apk-latest/UtSzelveny.apk
-  Letöltés után engedélyezd az ismeretlen forrásból történő telepítést.
+  Letöltés után engedélyezni kell az ismeretlen forrásból történő telepítést.
 
 A háttértérkép (OpenStreetMap vagy Esri műholdkép) internetkapcsolatot igényel; minden más adat az alkalmazásba van építve.
 A térkép északkal felfelé vagy menetirány szerint elforgatva is használható.
