@@ -209,7 +209,6 @@ input[type=text]{width:100%;background:#1b1d21;border:1px solid var(--line);colo
 .sats{margin-top:12px;padding-top:10px;border-top:1px solid var(--line)}
 .sat-n{font-size:.95rem;margin-top:2px}
 .sat-c{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
-.srcok{color:#86efac}
 .chip.sat{opacity:.6}.chip.sat.on{opacity:1;border-color:var(--green2)}
 .mpair{font-size:.82rem;color:var(--muted);margin:2px 0 6px 21px}.mpair b{color:var(--text)}
 .mren{display:flex;gap:8px}
@@ -808,28 +807,20 @@ let cur=null;       // latest result for display
 let lastGood=null;  // last on-network result
 let track=[];       // recent EOV positions for heading
 /* ---------- satellites: Android app only (GnssStatus through the bridge); browsers don't expose them ---------- */
-let gnss=null,gnssT=0,gnssSt=null;
+let gnss=null,gnssT=0;
 const GNSS_SYS={1:"GPS",2:"SBAS",3:"GLONASS",4:"QZSS",5:"BeiDou",6:"Galileo",7:"NavIC",0:"egyéb"};
 const GNSS_ORDER=[1,6,3,5,4,7,2,0];
 const hasNativeGnss=()=>!!(window.AndroidBridge&&window.AndroidBridge.gnssStart);
 window.__gnss=(o)=>{gnss=o;gnssT=Date.now();renderSats()};
-window.__gnssState=(st)=>{gnssSt=st;renderSats()};   // on / provoff / nofine / nolm / error
 function renderSats(){
   const row=$("satRow");if(!row)return;
   if(watchId===null){row.style.display="none";return}
   row.style.display="";
   if(!hasNativeGnss()){$("satN").innerHTML=`<span class="na">Műholdadatok csak az Android alkalmazásban érhetők el.</span>`;$("satC").innerHTML="";return}
-  const N=$("satN"),C=$("satC");
-  if(gnssSt==="nofine"){N.innerHTML=`<span class="warnt">Csak hozzávetőleges hely engedélyezett.</span><br><span class="na">A műholdakhoz kapcsold be: Android beállítások → Alkalmazások → ÚtSzelvény → Engedélyek → Hely → „Pontos hely használata”.</span>`;C.innerHTML="";return}
-  if(gnssSt==="nolm"||gnssSt==="error"){N.innerHTML=`<span class="na">A műholdvevő állapota nem kérdezhető le ezen a telefonon.</span>`;C.innerHTML="";return}
-  if(gnss&&gnss.prov===false||(!gnss&&gnssSt==="provoff")){N.innerHTML=`<span class="warnt">A telefon műholdas helymeghatározása ki van kapcsolva.</span><br><span class="na">A pozíció most csak Wi-Fi / mobilhálózat alapján jön.</span>`;C.innerHTML="";return}
-  if(!gnss||Date.now()-gnssT>6000){N.innerHTML=`<span class="na">Várakozás a műholdvevőre…</span>`;C.innerHTML="";return}
-  const fixOk=gnss.fix>=0&&gnss.fix<=3;
-  const src=fixOk?`<span class="srcok">● műholdas fix</span>`:`<span class="warnt">● nincs műholdas fix</span> <span class="na">– a pozíció Wi-Fi / mobilhálózat alapján</span>`;
-  if(!gnss.v){N.innerHTML=`<b>0</b> műhold látható · ${src}<br><span class="na">A vevő nem lát műholdat. Szabad ég alatt (nem épületben) az első fix 1–2 percig is tarthat.</span>`;C.innerHTML="";return}
+  if(!gnss||Date.now()-gnssT>6000){$("satN").innerHTML=`<span class="na">Várakozás a műholdvevőre…</span>`;$("satC").innerHTML="";return}
   const cn=gnss.u?Math.round(gnss.c.reduce((t,c)=>t+c.cn*c.u,0)/gnss.u):0;
-  N.innerHTML=`<b>${gnss.u}</b> használatban · ${gnss.v} látható${gnss.u?` · <span class="na">átl. jel ${cn} dB-Hz</span>`:""}<br>${src}`;
-  C.innerHTML=gnss.c.slice().sort((a,b)=>GNSS_ORDER.indexOf(a.k)-GNSS_ORDER.indexOf(b.k))
+  $("satN").innerHTML=`<b>${gnss.u}</b> használatban · ${gnss.v} látható${gnss.u?` · <span class="na">átl. jel ${cn} dB-Hz</span>`:""}`;
+  $("satC").innerHTML=gnss.c.slice().sort((a,b)=>GNSS_ORDER.indexOf(a.k)-GNSS_ORDER.indexOf(b.k))
     .map(c=>`<span class="chip sat${c.u?" on":""}">${GNSS_SYS[c.k]||"egyéb"} <b>${c.u}</b>/${c.v}</span>`).join("");
 }
 setInterval(()=>{if(watchId!==null&&$("posView").classList.contains("on"))renderSats()},2000);
@@ -846,7 +837,7 @@ function startGPS(){
 function stopGPS(){
   if(watchId!==null)navigator.geolocation.clearWatch(watchId);
   if(hasNativeGnss())try{window.AndroidBridge.gnssStop()}catch(e){}
-  gnss=null;gnssSt=null;
+  gnss=null;
   watchId=null;releaseWake();
   try{localStorage.setItem("ksz_gps","0")}catch(e){}
   render();
