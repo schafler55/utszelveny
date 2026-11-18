@@ -32,11 +32,11 @@
   color-scheme:dark;
 }
 html[data-theme=light]{
-  --bg:#F6FBF4; --sc-low:#F0F5EE; --sc:#EAEFE9; --sc-high:#E4EAE3; --sc-highest:#DEE4DD;
+  --bg:#F6FBF4; --sc-low:#F0F5EE; --sc:#EAEFE9; --sc-high:#DFE6DE; --sc-highest:#D6DED6;
   --on:#171D19; --onv:#414942; --dim:#5F665F; --outline:#717971; --outv:#C0C9C0;
   --pri:#2B6A46; --on-pri:#FFFFFF;
   --pri-c:#B0F1C3; --on-pri-c:#002111; --pri-c2:#95DDAB; --hero-sub:#24452F; --hero-ch:#002111; --hero-line:rgba(0,33,17,.16); --hero-outline:#4E7A5E;
-  --sec-c:#D0E8D5; --on-sec-c:#0C1F14;
+  --sec-c:#9DD7AF; --on-sec-c:#00210F;
   --ter:#1F5466; --ter-c:#BFE9F9; --on-ter-c:#001F28;
   --err:#BA1A1A; --on-err:#FFFFFF; --err-c:#FFDAD6; --on-err-c:#410002; --err-line:#E8B4AE; --rec:#D93025; --ng-c:#FFDAD6; --ng-sub:#73302B; --ng-ico:#FFB4AB; --ng-icofg:#93000A; --ng-line:rgba(65,0,2,.14); --sr-c:#FFDCC2; --on-sr-c:#2E1500; --sr-sub:#6E3D10; --sr-ico:#FFB77C; --sr-icofg:#8A4500; --sr-line:rgba(46,21,0,.14);
   --warn:#7A5300; --warn-c:#FFDEA6; --on-warn-c:#271900;
@@ -149,7 +149,19 @@ nav svg{width:24px;height:24px}
 .attrib{position:absolute;right:12px;top:12px;font-size:.7rem;background:var(--sc-high);color:var(--onv);padding:3px 8px;border-radius:8px;opacity:.94}
 .attrib a{color:var(--pri)}
 .basenote{position:absolute;left:12px;right:12px;top:48px;background:var(--warn-c);color:var(--on-warn-c);border-radius:16px;padding:10px 14px;font-size:.82rem;line-height:1.4;display:none;box-shadow:var(--shadow)}
-.rng{width:140px;accent-color:var(--pri);flex-shrink:0;height:28px}
+/* Material 3 slider: 4 px track (filled part in primary), 20 px handle with a halo, value bubble while dragging */
+.rngw{position:relative;flex:1;min-width:0;--p:.5}
+.rng{-webkit-appearance:none;appearance:none;width:100%;height:44px;background:none;margin:0;cursor:pointer;display:block}
+.rng:focus{outline:none}
+.rng::-webkit-slider-runnable-track{height:4px;border-radius:2px;background:linear-gradient(to right,var(--pri) calc(var(--p)*100%),var(--sc-highest) calc(var(--p)*100%))}
+.rng::-moz-range-track{height:4px;border-radius:2px;background:var(--sc-highest)}
+.rng::-moz-range-progress{height:4px;border-radius:2px;background:var(--pri)}
+.rng::-webkit-slider-thumb{-webkit-appearance:none;width:20px;height:20px;margin-top:-8px;border-radius:50%;background:var(--pri);border:0;box-shadow:0 0 0 0 transparent;transition:box-shadow .15s}
+.rng::-moz-range-thumb{width:20px;height:20px;border-radius:50%;background:var(--pri);border:0}
+.rng:active::-webkit-slider-thumb,.rng:focus-visible::-webkit-slider-thumb{box-shadow:0 0 0 10px color-mix(in srgb,var(--pri) 18%,transparent)}
+.rngb{position:absolute;bottom:34px;left:calc(10px + (100% - 20px) * var(--p));transform:translateX(-50%) scale(.6);transform-origin:50% 100%;opacity:0;pointer-events:none;min-width:38px;height:28px;padding:0 8px;border-radius:14px;background:var(--pri);color:var(--on-pri);font-size:.8125rem;font-weight:600;display:grid;place-items:center;font-variant-numeric:tabular-nums;transition:opacity .15s,transform .15s cubic-bezier(.2,0,0,1)}
+.rngb::after{content:"";position:absolute;left:50%;bottom:-5px;width:10px;height:10px;background:var(--pri);transform:translateX(-50%) rotate(45deg);border-radius:0 0 2px 0;z-index:-1}
+.rngw.drag .rngb{opacity:1;transform:translateX(-50%) scale(1)}
 .rngv{font-variant-numeric:tabular-nums;color:var(--on);font-size:.8125rem;font-weight:600;min-width:44px;text-align:center;background:var(--sc-highest);border-radius:14px;padding:4px 8px}
 .opt.col{flex-direction:column;align-items:stretch;gap:12px}
 .opt.col .seg{display:flex}
@@ -592,7 +604,7 @@ nav button{transition:color .2s}
       <div class="seg wide" id="hlSeg"><button data-v="bold">Vastagabb</button><button data-v="halo">Fényudvar</button><button data-v="off">Nincs</button></div>
       <p class="note" style="margin-top:6px">Az út, amelyiken éppen vagy, mindig a saját színében látszik: kiemelve, vagy a többivel egyformán.</p>
       <div class="mset-l">Vonalvastagság</div>
-      <div style="display:flex;align-items:center;gap:10px"><input type="range" class="rng" id="lineW" min="0.6" max="3" step="0.1" style="flex:1;width:auto"><span class="rngv" id="lineWv"></span></div>
+      <div style="display:flex;align-items:center;gap:12px"><div class="rngw" id="lineWw"><input type="range" class="rng" id="lineW" min="0.6" max="3" step="0.1" aria-label="Vonalvastagság"><span class="rngb" id="lineWb"></span></div><span class="rngv" id="lineWv"></span></div>
     </div>
     </div></div>
     <div class="spane" data-p="meas">
@@ -1583,7 +1595,10 @@ setRot(S.rot||"north");
 function setHl(v){S.hl=["bold","halo","off"].includes(v)?v:"bold";saveS();document.querySelectorAll("#hlSeg button").forEach(b=>b.classList.toggle("on",b.dataset.v===S.hl));drawMap()}
 document.querySelectorAll("#hlSeg button").forEach(b=>b.onclick=()=>setHl(b.dataset.v));
 setHl(S.hl);
-(function(){const r=$("lineW"),v=$("lineWv");const show=()=>v.textContent="×"+(+S.lineW).toFixed(1).replace(".",",");
+(function(){const r=$("lineW"),v=$("lineWv"),w=$("lineWw"),bb=$("lineWb");
+  const show=()=>{const t="×"+(+S.lineW).toFixed(1).replace(".",",");v.textContent=t;bb.textContent=t;w.style.setProperty("--p",((+S.lineW)-r.min)/(r.max-r.min))};
+  const up=()=>w.classList.remove("drag");r.addEventListener("pointerdown",()=>w.classList.add("drag"));
+  ["pointerup","pointercancel","blur"].forEach(e=>r.addEventListener(e,up));window.addEventListener("pointerup",up);
   r.value=S.lineW;show();r.oninput=()=>{S.lineW=+r.value;show();saveS();drawMap()}})();
 window.addEventListener("resize",()=>{if(mapOn){resizeMap();drawMap()}});
 window.addEventListener("online",()=>{if(baseState==="unknown")baseState=null;if(mapOn){clearTiles();drawMap()}});
@@ -1735,7 +1750,6 @@ function renderMeas(){
     el.className="card mctl";
     el.innerHTML=`<div class="mtitle">Távolságmérés</div>
       <div class="note" style="margin-top:2px">Indításkor rögzíti az aktuális utat és szelvényt, menet közben méri a GNSS szerint megtett utat, leállításkor elmenti a záró szelvényt is. Közben pontokat is rögzíthetsz.</div>
-      ${watchId===null?`<div class="note">A mérés GNSS-t használ – indításkor bekapcsol.</div>`:""}
       <button class="startbtn mstart" id="mStart">▶ Mérés indítása</button>
       <button class="btn mmapbtn" id="mMap"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg>Mérés a térképen</button>`;
     $("mStart").onclick=measStart;$("mMap").onclick=()=>{showView("map");if(!mmOn)setMM(true)};
