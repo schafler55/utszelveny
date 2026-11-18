@@ -4,7 +4,7 @@
 
 <p align="center"><b>Pontosan tudod, hol jársz az úton!</b></p>
 
-Az <b>ÚtSzelvény</b> megmutatja, melyik országos közúton és melyik kilométer és szelvényben állsz, internet nélkül is.
+Az <b>ÚtSzelvény</b> megmutatja, melyik országos közúton és melyik kilométerszelvényben állsz, internet nélkül is.
 A telefon GNSS-pozícióját a közúthálózat adataihoz illeszti. Egy pillantással látod az útszámot
 és a szelvényt, valamint mindazt, ami az adott szakaszra vonatkozik.
 
