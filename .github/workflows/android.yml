@@ -84,3 +84,46 @@ jobs:
           body: |
             Automatikusan épített APK a main ág legutóbbi állapotából.
             Telepítés: töltsd le a UtSzelveny.apk fájlt a telefonon, és engedélyezd az ismeretlen forrásból történő telepítést.
+
+  # Test web page for non-main branches, served by GitHub Pages from main under teszt/<branch>/:
+  #   https://schafler55.github.io/kozutszelveny/teszt/<branch>/
+  # Own settings (kszt_* keys), no service worker (it would clear the real app's offline cache),
+  # and a small TESZT label. The real app at the site root is not touched.
+  test-page:
+    if: github.ref != 'refs/heads/main'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          path: branch
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          path: site
+      - name: Build the test page
+        env:
+          B: ${{ github.ref_name }}
+        run: |
+          D="site/teszt/$B"
+          mkdir -p "$D"
+          sed -e 's/"ksz_/"kszt_/g' \
+              -e 's|navigator.serviceWorker.register("sw.js")|Promise.reject()|' \
+              -e "s#<title>\(.*\)</title>#<title>\1 – TESZT ($B)</title>#" \
+              -e "s|</body>|<div style=\"position:fixed;top:4px;left:50%;transform:translateX(-50%);z-index:50;background:#dc2626;color:#fff;font:700 11px/1 Arial,sans-serif;padding:3px 8px;border-radius:6px;pointer-events:none\">TESZT · $B</div></body>|" \
+              branch/index.html > "$D/index.html"
+          cp branch/icon-192.png branch/icon-512.png "$D/"
+          grep -q 'TESZT' "$D/index.html"
+      - name: Publish it (commit to main, teszt/ folder only)
+        env:
+          B: ${{ github.ref_name }}
+        working-directory: site
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898499+github-actions[bot]@users.noreply.github.com"
+          git add teszt
+          if git diff --cached --quiet; then echo "no change"; exit 0; fi
+          git commit -m "Teszt oldal: $B (${GITHUB_SHA::7})"
+          for i in 1 2 3; do git push origin HEAD:main && exit 0; git pull --rebase origin main; done
+          exit 1
