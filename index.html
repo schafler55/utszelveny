@@ -19,7 +19,7 @@
   --pri-c:#12452B; --on-pri-c:#CDEFD7; --pri-c2:#1E5A3A; --hero-sub:#A7CFB3; --hero-ch:#F1FFF4; --hero-line:rgba(255,255,255,.14); --hero-outline:#4E7A5E;
   --sec-c:#374B3D; --on-sec-c:#D2E8D6;
   --ter:#A3CDDC; --ter-c:#214D5A; --on-ter-c:#BFE9F9;
-  --err:#FFB4AB; --on-err:#690005; --err-c:#5C1F1C; --on-err-c:#FFDAD6; --err-line:#6B2D28; --rec:#FF6B5E; --ng-c:#4D1D1A; --ng-sub:#F2B8B2; --ng-ico:#6E2A25; --ng-icofg:#FFB4AB; --ng-line:rgba(255,218,214,.18);
+  --err:#FFB4AB; --on-err:#690005; --err-c:#5C1F1C; --on-err-c:#FFDAD6; --err-line:#6B2D28; --rec:#FF6B5E; --ng-c:#4D1D1A; --ng-sub:#F2B8B2; --ng-ico:#6E2A25; --ng-icofg:#FFB4AB; --ng-line:rgba(255,218,214,.18); --sr-c:#4F2D0C; --on-sr-c:#FFDCC2; --sr-sub:#F5BF95; --sr-ico:#6E4119; --sr-icofg:#FFB77C; --sr-line:rgba(255,220,194,.18);
   --warn:#F2C46D; --warn-c:#4A3A10; --on-warn-c:#FFE6B0;
   --ok:#6BE28F; --fab:#005230; --on-fab:#A9F2BE;
   --inv-s:#DEE4DD; --inv-on:#2B322D; --inv-pri:#2B6A46;
@@ -37,7 +37,7 @@ html[data-theme=light]{
   --pri-c:#B0F1C3; --on-pri-c:#002111; --pri-c2:#95DDAB; --hero-sub:#24452F; --hero-ch:#002111; --hero-line:rgba(0,33,17,.16); --hero-outline:#4E7A5E;
   --sec-c:#D0E8D5; --on-sec-c:#0C1F14;
   --ter:#1F5466; --ter-c:#BFE9F9; --on-ter-c:#001F28;
-  --err:#BA1A1A; --on-err:#FFFFFF; --err-c:#FFDAD6; --on-err-c:#410002; --err-line:#E8B4AE; --rec:#D93025; --ng-c:#FFDAD6; --ng-sub:#73302B; --ng-ico:#FFB4AB; --ng-icofg:#93000A; --ng-line:rgba(65,0,2,.14);
+  --err:#BA1A1A; --on-err:#FFFFFF; --err-c:#FFDAD6; --on-err-c:#410002; --err-line:#E8B4AE; --rec:#D93025; --ng-c:#FFDAD6; --ng-sub:#73302B; --ng-ico:#FFB4AB; --ng-icofg:#93000A; --ng-line:rgba(65,0,2,.14); --sr-c:#FFDCC2; --on-sr-c:#2E1500; --sr-sub:#6E3D10; --sr-ico:#FFB77C; --sr-icofg:#8A4500; --sr-line:rgba(46,21,0,.14);
   --warn:#7A5300; --warn-c:#FFDEA6; --on-warn-c:#271900;
   --ok:#0B7A3A; --fab:#B0F1C3; --on-fab:#002111;
   --inv-s:#2B322D; --inv-on:#ECF2EB; --inv-pri:#8ED5A3;
@@ -77,6 +77,9 @@ main{flex:1;overflow:auto;padding:4px 12px 12px;display:flex;flex-direction:colu
 /* no GNSS data (off / searching / signal lost): red tile, same title and icon size */
 .hero.nogps{background:var(--ng-c);color:var(--on-err-c);--hero-line:var(--ng-line)}
 .hero.nogps .rsub{color:var(--ng-sub)}
+/* searching for satellites: orange instead of red */
+.hero.nogps.search{background:var(--sr-c);color:var(--on-sr-c);--hero-line:var(--sr-line);--ng-ico:var(--sr-ico);--ng-icofg:var(--sr-icofg)}
+.hero.nogps.search .rsub{color:var(--sr-sub)}
 .hero.nogps .startbtn{background:var(--err);color:var(--on-err)}
 .hico{position:relative;width:64px;height:64px;border-radius:50%;background:var(--ng-ico);color:var(--ng-icofg);display:grid;place-items:center;margin-bottom:12px;flex-shrink:0}
 .hico svg{width:32px;height:32px}
@@ -1037,7 +1040,7 @@ function render(){
     hero.className="card hero nogps";
     hero.innerHTML=`${HICO_OFF}<div class="big3">GNSS kikapcsolva</div><div class="rsub">${gpsErr?esc(gpsErr):"Indítsd el a helymeghatározást a szelvény kijelzéséhez."}</div><button class="startbtn" onclick="startGPS()">GNSS indítása</button>`+lastKnownHTML();
   }else if(waiting&&!cur){
-    hero.className="card hero nogps";
+    hero.className="card hero nogps search";
     hero.innerHTML=`${HICO_SEARCH}<div class="big3">Műholdak keresése…</div><div class="rsub">${gpsErr?esc(gpsErr):"Az első pozíció 5–30 másodperc is lehet."}</div>`+lastKnownHTML();
   }else if(lost){
     hero.className="card hero nogps lost";
