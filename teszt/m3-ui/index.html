@@ -86,7 +86,6 @@ main{flex:1;overflow:auto;padding:4px 12px 12px;display:flex;flex-direction:colu
 .hico .spin{position:absolute;inset:0;width:64px;height:64px;animation:hspin 1.4s linear infinite}
 @keyframes hspin{to{transform:rotate(360deg)}}
 .hero.nogps .big3{font-size:1.6rem;font-weight:500;line-height:1.25}
-.hero.off{background:var(--sc-high);color:var(--on)}
 .q{position:absolute;top:14px;right:14px;display:flex;align-items:center;gap:6px;height:32px;padding:0 12px 0 10px;border-radius:16px;background:var(--pri-c2);font-size:.8125rem;font-weight:600;color:var(--on-pri-c)}
 .q i{width:8px;height:8px;border-radius:50%;background:var(--dim)}
 .q.good i{background:var(--ok)}.q.mid i{background:var(--warn)}.q.bad i{background:var(--err)}
@@ -100,7 +99,6 @@ main{flex:1;overflow:auto;padding:4px 12px 12px;display:flex;flex-direction:colu
 .rname{font-size:1.35rem;font-weight:500;line-height:1.25;margin-top:8px;max-width:100%}
 .rname2{font-size:.95rem;line-height:1.3;color:var(--hero-sub);margin-top:2px;max-width:100%}
 .rsub{font-size:.8125rem;color:var(--hero-sub);margin-top:6px}
-.hero.off .rsub,.hero.off .rname2{color:var(--onv)}
 .chips{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-top:12px}
 .chip{display:inline-flex;align-items:center;min-height:32px;font-size:.8125rem;font-weight:500;padding:4px 12px;border-radius:8px;background:none;color:var(--onv);border:1px solid var(--outv)}
 .hero .chip{color:var(--on-pri-c);border-color:var(--hero-outline)}
@@ -1032,6 +1030,7 @@ const WARN=`<svg class="warnicon" viewBox="0 0 100 88"><path d="M50 4 96 84H4z" 
 const HICO_OFF=`<div class="hico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-7-6.2-7-11.5a7 7 0 0 1 11.6-5.3M18.7 7.6c.2.6.3 1.2.3 1.9 0 2.7-1.8 5.6-3.7 7.8"/><path d="M3 3l18 18"/></svg></div>`;
 const HICO_SEARCH=`<div class="hico"><svg class="spin" viewBox="0 0 64 64"><circle cx="32" cy="32" r="29" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-dasharray="60 122"/></svg><svg viewBox="0 0 24 24" fill="currentColor"><path d="M14.6 3.1 11 6.7l2.1 2.1 3.6-3.6zM6.7 11 3.1 14.6l2.1 2.1L8.8 13.1zM9.5 7.6l7 7-2.1 2.1-7-7z"/><path d="M5 19a3 3 0 0 0 3-3h1.5A4.5 4.5 0 0 1 5 20.5z" opacity=".8"/></svg></div>`;
 const HICO_LOST=`<div class="hico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.3 3.9 2.4 17.5A2 2 0 0 0 4.1 20.5h15.8a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/><path d="M12 9v4.5M12 17h.01"/></svg></div>`;
+const HICO_OFFNET=`<div class="hico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8.5 3 5 21M15.5 3 19 21"/><path d="M12 4v2.5M12 10.5v3M12 17.5V20"/></svg></div>`;
 function render(){
   const hero=$("hero"),lost=watchId!==null&&cur&&cur.pos.src==="gps"&&Date.now()-lastFixT>10000;
   const waiting=watchId!==null&&(!cur||cur.pos.src!=="gps");
@@ -1047,9 +1046,9 @@ function render(){
     hero.className="card hero nogps lost";
     hero.innerHTML=`${HICO_LOST}<div class="big3">Jelvesztés</div><div class="rsub">${gpsErr?esc(gpsErr):"Nincs friss GNSS-pozíció "+Math.round((Date.now()-lastFixT)/1000)+" mp óta."}</div>`+lastKnownHTML(true);
   }else if(cur.res.off){
-    hero.className="card hero off";
+    hero.className="card hero nogps search off";
     const nr=cur.res.nearest;
-    hero.innerHTML=`${WARN}<div class="big2">Úthálózaton kívül</div><div class="rsub">Nincs országos közút ${Math.round(cur.res.thr)} m-en belül${nr?` · legközelebbi: ${esc(ROADS[segRoad[nr.s]].num)} (${Math.round(nr.d)} m)`:""}</div>`+lastKnownHTML(true);
+    hero.innerHTML=`${HICO_OFFNET}<div class="big3">Úthálózaton kívül</div><div class="rsub">Nincs országos közút ${Math.round(cur.res.thr)} m-en belül${nr?` · legközelebbi: ${esc(ROADS[segRoad[nr.s]].num)} (${Math.round(nr.d)} m)`:""}</div>`+lastKnownHTML(true);
     title=cur.pos.src==="gps"?"Státusz":"Kézi pozíció";
   }else{
     const r=cur.res,s=r.best.s,road=ROADS[segRoad[s]],kut=segKut[s],pk=segPk[s];
