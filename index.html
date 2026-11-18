@@ -9,7 +9,7 @@
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" type="image/png" href="icon-192.png">
 <link rel="apple-touch-icon" href="icon-192.png">
-<title>ÚtSzelvény V0.6 Beta</title>
+<title>ÚtSzelvény V0.6.1 Beta</title>
 <style>
 :root{
   --bg:#16181c; --card:#25282d; --card2:#2d3036; --line:#3a3e45;
@@ -450,7 +450,7 @@ nav button.rec .pill::after{content:"";position:absolute;top:3px;right:12px;widt
       <p>Az alkalmazás Claude Opus 5.5 segítségével készült.</p>
       <p>Forráskód: GPL-3.0 licence - <a href="https://github.com/schafler55/kozutszelveny" target="_blank" rel="noopener">GitHub</a></p>
       <p>Adatforrás: Magyar Közút Nonprofit Zrt. - Nemzeti Adathozzáférési Pont (NAP) statikus adatcsomagok (adatállapot: 2026. november)</p>
-/*      <p class="note">Felhasznált NAP adatcsomagok: Országos közúthálózat, Közút neve/kategóriája/kezelője, Szelvényjelek, Sebességkorlátozás, Lakott területi szakaszok, Hídhasználati feltételek, Tehergépjárművekre vonatkozó korlátozások.</p> */
+<!--      <p class="note">Felhasznált NAP adatcsomagok: Országos közúthálózat, Közút neve/kategóriája/kezelője, Szelvényjelek, Sebességkorlátozás, Lakott területi szakaszok, Hídhasználati feltételek, Tehergépjárművekre vonatkozó korlátozások.</p> -->
       <p>Háttértérkép: © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a> közreműködők · Műholdkép: © Esri, Maxar, Earthstar Geographics</p>
       <p class="warn">Az adatok tájékoztató jellegűek, nem hitelesek – a helyszíni jelzések és a KRESZ az irányadók</p>
       <p class="warn">Vezetés közben ne kezeld az alkalmazást</p>
@@ -913,7 +913,7 @@ function render(){
     const chips=[];
     if(pk)chips.push(`<span class="chip">${PKOD[pk]}</span>`);
     if(segLab[s])chips.push(`<span class="chip y">Közös szakasz: ${esc(LAB[segLab[s]].replace("/"," / "))}</span>`);
-    if(forcedRoad!==null)chips.push(`<span class="chip man" data-auto="1">Kézi útválasztás · ✕ automatikus</span>`);
+    if(forcedRoad!==null)chips.push(`<span class="chip man" data-auto="1">Kézi útválasztás kikapcsolása</span>`);
     for(const o of r.others)chips.push(`<span class="chip tap" data-road="${segRoad[o.s]}">⇄ ${esc(ROADS[segRoad[o.s]].num)} · ${fmtCh(chainage(o.s,o.along))} · ${Math.round(o.d)} m</span>`);
     hero.innerHTML=`${dir}<div class="q ${cur.pos.src==="gps"?q.c:""}">${SAT}<span>${cur.pos.src==="gps"?q.t:"Kézi"}</span></div>
       ${shieldSVG(road.num,kut)}
