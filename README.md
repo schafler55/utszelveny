@@ -2,14 +2,18 @@
 
 <h1 align="center">ÚtSzelvény</h1>
 
-Offline útszám és kilométerszelvény kijelző a magyar országos közúthálózathoz.
-A telefon GNSS-pozíciójából megmutatja, melyik úton és melyik szelvényben vagy,
-valamint a sebességkorlátot, a lakott területi (átkelési) szakaszt, a közeli hidak súly- és
-magasságkorlátozásait, a tehergépjárművekre vonatkozó korlátozásokat, a kezelőt és a megyét.
+<p align="center"><b>Pontosan tudod, hol jársz az úton.</b></p>
 
-A **Mérés** oldalon távolságot mérhetsz: kezdő és záró út + szelvény, GNSS és szelvény szerinti hossz,
-közbenső pontok, elnevezhető, menthető mérések, CSV-export és megjelenítés a térképen.
-A térképi méréssel pontokat is lerakhatsz: légvonal, úton mért (útvonal) és szelvény szerinti távolság, több úton át is mérhető.
+Az ÚtSzelvény megmutatja, melyik országos közúton és melyik kilométer + méter szelvényben állsz, térerő nélkül is.
+A telefon GNSS-pozícióját a teljes magyar országos közúthálózat adataihoz illeszti. Egy pillantással látod az útszámot
+és a szelvényt, valamint mindazt, ami az adott szakaszra vonatkozik: a sebességkorlátot, a lakott területi (átkelési)
+szakaszt, a közeli hidak súly- és magasságkorlátozásait, a tehergépjármű-korlátozásokat, a kezelőt és a megyét.
+
+Terepi munkára készült. Mérhetsz vele szelvénytől szelvényig, akár több úton át, vagy pontokat lerakva a térképen.
+Fotóidra ráírja a helyet és az időt, a méréseidet pedig elnevezheted, elmentheted és CSV-be exportálhatod.
+
+Böngészőben és Android-alkalmazásként is fut. Az úthálózati adatok a készüléken vannak, így a szelvényezés internet
+nélkül is működik. Csak a térkép alapréteghez kell kapcsolat.
 
 **Verzió:** V0.7.2 Beta · © schafler55 · Licenc: GPL-3.0
 
