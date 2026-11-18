@@ -9,7 +9,7 @@
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" type="image/png" href="icon-192.png">
 <link rel="apple-touch-icon" href="icon-192.png">
-<title>ÚtSzelvény V0.2 Beta</title>
+<title>ÚtSzelvény V0.3 Beta</title>
 <style>
 :root{
   --bg:#16181c; --card:#25282d; --card2:#2d3036; --line:#3a3e45;
@@ -79,7 +79,7 @@ nav svg{width:24px;height:24px}
 #mapView{flex:1;position:relative;margin:-4px -14px -14px;min-height:300px}
 #mapView{background:#1b1e23;overflow:hidden}
 #map{position:absolute;inset:0;width:100%;height:100%;touch-action:none;background:transparent}
-#tiles{position:absolute;inset:0;overflow:hidden;pointer-events:none;background:#f2efe9}
+#tiles{position:absolute;inset:0;overflow:hidden;pointer-events:none;background:#f2efe9;will-change:transform}
 #tiles img{position:absolute;max-width:none;user-select:none}
 .attrib{position:absolute;right:8px;top:8px;font-size:.72rem;background:#000a;color:#ddd;padding:2px 7px;border-radius:6px}
 .attrib a{color:#93c5fd}
@@ -89,14 +89,18 @@ nav svg{width:24px;height:24px}
 .seg{display:flex;border:1px solid var(--line);border-radius:10px;overflow:hidden;flex-shrink:0}
 .seg button{padding:8px 11px;font-size:.88rem;color:var(--muted);background:var(--card2)}
 .seg button.on{background:var(--green2);color:#fff;font-weight:700}
+.opt.col{flex-direction:column;align-items:stretch;gap:8px}
+.opt.col .seg{display:flex}
+.opt.col .seg button{flex:1;padding:9px 4px}
 .mapbtns{position:absolute;right:12px;bottom:84px;display:flex;flex-direction:column;gap:10px}
 .mapbtns button{width:48px;height:48px;border-radius:14px;background:#2b2f36ee;border:1px solid #3d434c;font-size:1.5rem;display:grid;place-items:center}
 .mapbtns button.on{background:#1d4fbfee;border-color:#3b82f6}
 .mapinfo{position:absolute;left:10px;right:10px;bottom:12px;background:#25282dee;border:1px solid #3d434c;border-radius:16px;padding:10px 14px;font-size:.95rem;min-height:56px;display:flex;align-items:center;gap:12px}
 .mapinfo .mi-ch{font-family:var(--cond);font-weight:700;font-size:1.7rem;white-space:nowrap}
 .mapinfo .mi-t{font-size:.85rem;color:var(--muted);line-height:1.3}
-.scalebar{position:absolute;left:12px;top:10px;font-size:.75rem;color:var(--muted)}
-.scalebar i{display:block;height:4px;border:2px solid var(--muted);border-top:0;margin-top:2px}
+.scalebar{position:absolute;left:10px;top:8px;font-size:.75rem;color:#e5e7eb;background:#000a;padding:2px 7px 4px;border-radius:6px}
+.scalebar i{display:block;height:4px;border:2px solid #e5e7eb;border-top:0;margin-top:2px}
+#rotNeedle{transition:transform .15s linear;transform-origin:12px 12px}
 .sheet{position:fixed;inset:0;background:#000a;display:none;align-items:flex-end;z-index:20}
 .sheet.on{display:flex}
 .sheet .in{background:var(--card);width:100%;max-height:88vh;overflow:auto;border-radius:22px 22px 0 0;padding:18px 18px calc(20px + env(safe-area-inset-bottom))}
@@ -197,9 +201,10 @@ input[type=text]{width:100%;background:#1b1d21;border:1px solid var(--line);colo
     <div id="tiles"></div>
     <canvas id="map"></canvas>
     <div class="basenote" id="baseNote"></div>
-    <div class="attrib" id="attrib">© <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a> közreműködők</div>
+    <div class="attrib" id="attrib"></div>
     <div class="scalebar" id="scalebar"></div>
     <div class="mapbtns">
+      <button id="rotBtn" aria-label="Térkép iránya: észak felül / menetirány felül"><svg width="26" height="26" viewBox="0 0 24 24"><g id="rotNeedle"><path d="M12 2.5 15.2 12H8.8z" fill="#ef4444"/><path d="M12 21.5 8.8 12h6.4z" fill="#e5e7eb"/><circle cx="12" cy="12" r="1.6" fill="#1b1e23"/></g></svg></button>
       <button id="baseBtn" aria-label="Háttértérkép"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3 2 8l10 5 10-5-10-5zM2 13l10 5 10-5M2 17.5l10 5 10-5" stroke-linejoin="round"/></svg></button>
       <button id="zIn" aria-label="Nagyítás">+</button>
       <button id="zOut" aria-label="Kicsinyítés">−</button>
@@ -226,7 +231,8 @@ input[type=text]{width:100%;background:#1b1d21;border:1px solid var(--line);colo
     <div class="opt"><div><span>GPS követés</span><small id="gpsState">kikapcsolva</small></div><button class="btn pri" id="gpsToggle">Indítás</button></div>
     <div class="opt"><div><span>Képernyő ébren tartása</span><small>Menet közben nem kapcsol ki a kijelző</small></div><button class="sw on" id="swWake"></button></div>
     <div class="opt"><div><span>Kerékpárutak kihagyása</span><small>Út melletti kerékpárút ne „vegye át” a pozíciót</small></div><button class="sw on" id="swBike"></button></div>
-    <div class="opt"><div><span>Háttértérkép</span><small>OpenStreetMap, internet kell hozzá – offline csak a közúthálózat látszik</small></div><div class="seg" id="baseSeg"><button data-v="grey">Szürke</button><button data-v="dark">Sötét</button><button data-v="off">Ki</button></div></div>
+    <div class="opt col"><div><span>Háttértérkép</span><small>OpenStreetMap vagy Esri műholdkép, internet kell hozzá – offline csak a közúthálózat látszik</small></div><div class="seg" id="baseSeg"><button data-v="grey">Szürke</button><button data-v="dark">Sötét</button><button data-v="sat">Műhold</button><button data-v="off">Ki</button></div></div>
+    <div class="opt col"><div><span>Térkép iránya</span><small>Menetirány: a térkép a haladási irányba fordul (a térképen az iránytű gombbal is váltható)</small></div><div class="seg" id="rotSeg"><button data-v="north">É felül</button><button data-v="heading">Menetirány</button></div></div>
     <div class="opt"><div><span>Vonalvastagság a térképen</span><small>Az utak vonalának vastagsága</small></div><div style="display:flex;align-items:center;gap:8px"><input type="range" class="rng" id="lineW" min="0.6" max="3" step="0.1"><span class="rngv" id="lineWv"></span></div></div>
     <div class="opt"><div><span>Útnév mutatása</span><small>Kikapcsolva nagyobb a szelvény-kijelzés</small></div><button class="sw on" id="swName"></button></div>
 
@@ -247,12 +253,12 @@ input[type=text]{width:100%;background:#1b1d21;border:1px solid var(--line);colo
     <p class="note">Felhasznált NAP adatcsomagok: Országos közúthálózat, Közút neve/kategóriája/kezelője, Szelvényjelek, Sebességkorlátozás, Lakott területi szakaszok, Hídhasználati feltételek, Tehergépjárművekre vonatkozó korlátozások. A sebességkorlát ott, ahol nincs egyedi korlátozás, a KRESZ szerinti alapérték. A térkép alapréteg csak internetkapcsolattal és weboldalról megnyitva érhető el. Koordináta-átszámítás: WGS84 → HD72/EOV (EPSG:23700), kb. 1 m pontossággal.</p>
 
     <div class="about">
-      <div class="about-t">ÚtSzelvény V0.2 Beta</div>
+      <div class="about-t">ÚtSzelvény V0.3 Beta</div>
       <p>© 2026 Szászi Dániel</p>
       <p>Az alkalmazást Szászi Dániel készítette AI segítségével (Gemini 4 Argon, Claude Opus 5.5)</p>
       <p>Forráskód: GPL-3.0 licence - <a href="https://github.com/schafler55/kozutszelveny" target="_blank" rel="noopener">GitHub</a></p>
       <p>Adatforrás: Magyar Közút Nonprofit Zrt. – Nemzeti Adathozzáférési Pont (NAP), statikus adatcsomagok (adatállapot: 2026. november)</p>
-      <p>Háttértérkép: © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a> közreműködők</p>
+      <p>Háttértérkép: © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a> közreműködők · Műholdkép: © Esri, Maxar, Earthstar Geographics</p>
       <p class="warn">Az adatok tájékoztató jellegűek, nem hitelesek – a helyszíni jelzések és a KRESZ az irányadók</p>
       <p class="warn">Vezetés közben ne kezeld az alkalmazást</p>
     </div>  </div>
@@ -269,7 +275,7 @@ const KUT=["","autópálya","autóút","elsőrendű főút","másodrendű főút
 const PKOD=["osztatlan pálya","jobb pálya","bal pálya"];
 
 /* ---------- settings ---------- */
-const S={wake:true,bike:true,name:true,coord:"wgs",base:"grey",lineW:1.6,secSpd:true,secBr:true,secTr:true,secGps:true,secKez:true};
+const S={wake:true,bike:true,name:true,coord:"wgs",base:"grey",rot:"north",lineW:1.6,secSpd:true,secBr:true,secTr:true,secGps:true,secKez:true};
 try{Object.assign(S,JSON.parse(localStorage.getItem("ksz_settings")||"{}"))}catch(e){}
 function saveS(){try{localStorage.setItem("ksz_settings",JSON.stringify(S))}catch(e){}}
 
@@ -828,7 +834,7 @@ function lastKnownHTML(inLost){
     <div class="rsub">EOV Y ${Math.round(L.E)}  X ${Math.round(L.N)}</div></div>`;
 }
 
-/* ---------- map (Web Mercator + OpenStreetMap háttér) ---------- */
+/* ---------- map (Web Mercator; háttér: OpenStreetMap / Esri műholdkép; É-felül vagy menetirány-felül) ---------- */
 const cv=$("map"),ctx=cv.getContext("2d"),tileDiv=$("tiles");
 const RM=6378137,WORLD=2*Math.PI*RM;
 const toM=(lat,lon)=>({x:RM*lon*Math.PI/180,y:RM*Math.log(Math.tan(Math.PI/4+lat*Math.PI/360))});
@@ -847,9 +853,43 @@ const eovToM=(E,N)=>{const ll=EOV.inv(E,N);return toM(ll.lat,ll.lon)};
 const posToM=(p)=>p.lat!=null?toM(p.lat,p.lon):eovToM(p.E,p.N);
 function centerOn(E,N){const m=eovToM(E,N);mX=m.x;mY=m.y}
 function resizeMap(){const r=cv.getBoundingClientRect(),d=window.devicePixelRatio||1;cv.width=Math.round(r.width*d);cv.height=Math.round(r.height*d);ctx.setTransform(d,0,0,d,0,0)}
-const BASE_FILTER={grey:"grayscale(1) contrast(.92) brightness(1.03)",dark:"grayscale(1) invert(1) brightness(1.45) contrast(.78)"};
-const tileImgs=new Map();
-let baseState=location.protocol==="file:"?"file":null; // null=untested, "pending", "ok", "unknown", "blocked:<status>", "file"
+
+/* --- rotation: rot = map bearing in degrees (0 = north up); in "heading" mode it follows the direction of travel --- */
+let rot=0,rotTarget=0;
+const headingUp=()=>S.rot==="heading";
+// screen anchor of (mX,mY): centre, or lower third while following in heading-up mode (more road ahead)
+function anchor(W,H){return {cx:W/2,cy:headingUp()&&follow?H*0.64:H/2}}
+let VW={W:0,H:0,cx:0,cy:0,c:1,s:0};               // current view, set at the start of drawMap
+function setView(W,H){const a=anchor(W,H),r=rot*Math.PI/180;VW={W,H,cx:a.cx,cy:a.cy,c:Math.cos(r),s:Math.sin(r)}}
+// mercator → screen
+const m2sx=(x,y)=>{const e=(x-mX)*mS,n=(y-mY)*mS;return VW.cx+e*VW.c-n*VW.s};
+const m2sy=(x,y)=>{const e=(x-mX)*mS,n=(y-mY)*mS;return VW.cy-(e*VW.s+n*VW.c)};
+// screen → mercator
+function s2m(px,py){const dx=px-VW.cx,dy=VW.cy-py;return {x:mX+(dx*VW.c+dy*VW.s)/mS,y:mY+(-dx*VW.s+dy*VW.c)/mS}}
+const angN=(a)=>((a%360)+540)%360-180;            // -180..180
+function updateRotTarget(){
+  if(!headingUp()){rotTarget=0;return}
+  if(!follow)return;                               // panned away: keep the current rotation
+  const h=cur&&cur.pos&&cur.pos.heading;
+  if(h!=null&&!isNaN(h))rotTarget=h;               // no heading (standing still): keep the last one
+}
+function compassUI(){
+  $("rotBtn").classList.toggle("on",headingUp());
+  $("rotNeedle").style.transform=`rotate(${-rot}deg)`;
+}
+
+/* --- base layers --- */
+const BASES={
+  grey:{url:(z,x,y)=>`https://tile.openstreetmap.org/${z}/${x}/${y}.png`,filter:"grayscale(1) contrast(.92) brightness(1.03)",bg:"#f2efe9",osm:true,max:19},
+  dark:{url:(z,x,y)=>`https://tile.openstreetmap.org/${z}/${x}/${y}.png`,filter:"grayscale(1) invert(1) brightness(1.45) contrast(.78)",bg:"#f2efe9",osm:true,max:19},
+  sat:{url:(z,x,y)=>`https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/${z}/${y}/${x}`,filter:"brightness(.82) saturate(.9)",bg:"#1b1e23",osm:false,max:19}
+};
+const ATTRIB={
+  osm:`© <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a> közreműködők`,
+  sat:`Műholdkép: © <a href="https://www.esri.com/" target="_blank" rel="noopener">Esri</a>, Maxar, Earthstar Geographics`
+};
+const tileImgs=new Map();let tileBase=null;
+let baseState=location.protocol==="file:"?"file":null; // OSM only: null=untested, "pending", "ok", "unknown", "blocked:<status>", "file"
 function clearTiles(){for(const[k,img]of tileImgs){img.remove();tileImgs.delete(k)}}
 function probeBase(z,x,y){
   // one CORS request to read the HTTP status: a blocked OSM tile is still a valid PNG, so <img> alone can't tell
@@ -860,55 +900,116 @@ function probeBase(z,x,y){
 }
 function baseNote(){
   const el=$("baseNote");let t="";
-  if(S.base!=="off"){
-    if(baseState==="file")t="A háttértérkép fájlból megnyitva nem tölthető be – az OpenStreetMap csak weboldalról (https:// vagy http://localhost) kiszolgált alkalmazásnak ad térképet. Az utak, szelvények ettől függetlenül működnek.";
+  const B=BASES[S.base];
+  if(B&&B.osm){
+    if(baseState==="file")t="A háttértérkép fájlból megnyitva nem tölthető be – az OpenStreetMap csak weboldalról (https:// vagy http://localhost) kiszolgált alkalmazásnak ad térképet. A műholdkép így is működik, az utak, szelvények ettől függetlenül.";
     else if(baseState&&baseState.startsWith("blocked"))t=`Az OpenStreetMap elutasította a háttértérkép-kérést (HTTP ${baseState.split(":")[1]}). Az utak, szelvények ettől függetlenül működnek.`;
   }
   el.textContent=t;el.style.display=t?"block":"none";return !!t;
 }
-function drawTiles(W,H){
-  const st=S.base,blocked=baseNote();
-  $("attrib").style.display=st==="off"||blocked?"none":"";
-  if(st==="off"||blocked){tileDiv.style.display="none";clearTiles();return}
-  tileDiv.style.display="";tileDiv.style.filter=BASE_FILTER[st]||BASE_FILTER.grey;
-  let z=Math.round(Math.log2(mS*WORLD/256));z=Math.max(6,Math.min(19,z));
+function drawTiles(){
+  const B=BASES[S.base],blocked=baseNote();
+  const at=$("attrib");
+  if(!B||blocked){at.style.display="none";tileDiv.style.display="none";clearTiles();return}
+  at.style.display="";
+  at.innerHTML=(B.osm?ATTRIB.osm:ATTRIB.sat)+(navigator.onLine===false?" · offline":"");
+  if(tileBase!==S.base){clearTiles();tileBase=S.base}
+  tileDiv.style.display="";tileDiv.style.filter=B.filter;tileDiv.style.background=B.bg;
+  // the tile layer is a square around the anchor that still covers the screen when rotated
+  const {W,H,cx,cy}=VW;
+  let left=0,top=0,w=W,h=H,ox=cx,oy=cy;
+  if(headingUp()){
+    const R=Math.ceil(Math.max(Math.hypot(cx,cy),Math.hypot(W-cx,cy),Math.hypot(cx,H-cy),Math.hypot(W-cx,H-cy)))+2;
+    left=cx-R;top=cy-R;w=h=2*R;ox=oy=R;
+  }
+  const st=tileDiv.style;
+  st.left=left+"px";st.top=top+"px";st.width=w+"px";st.height=h+"px";st.right=st.bottom="auto";
+  st.transformOrigin=`${ox}px ${oy}px`;st.transform=rot?`rotate(${-rot}deg)`:"";
+  let z=Math.round(Math.log2(mS*WORLD/256));z=Math.max(6,Math.min(B.max,z));
   const n=Math.pow(2,z),T=WORLD/n,px=T*mS;
-  const tx0=Math.floor((mX-W/2/mS+WORLD/2)/T),tx1=Math.floor((mX+W/2/mS+WORLD/2)/T);
-  const ty0=Math.floor((WORLD/2-(mY+H/2/mS))/T),ty1=Math.floor((WORLD/2-(mY-H/2/mS))/T);
+  const tx0=Math.floor((mX-ox/mS+WORLD/2)/T),tx1=Math.floor((mX+(w-ox)/mS+WORLD/2)/T);
+  const ty0=Math.floor((WORLD/2-(mY+oy/mS))/T),ty1=Math.floor((WORLD/2-(mY-(h-oy)/mS))/T);
   const used=new Set();
-  probeBase(z,((Math.floor((mX+WORLD/2)/T)%n)+n)%n,Math.floor((WORLD/2-mY)/T));
+  if(B.osm)probeBase(z,((Math.floor((mX+WORLD/2)/T)%n)+n)%n,Math.floor((WORLD/2-mY)/T));
   for(let ty=Math.max(0,ty0);ty<=Math.min(n-1,ty1);ty++)for(let tx=tx0;tx<=tx1;tx++){
-    const key=z+"/"+(((tx%n)+n)%n)+"/"+ty;used.add(key);
+    const xx=((tx%n)+n)%n,key=z+"/"+xx+"/"+ty;used.add(key);
     let img=tileImgs.get(key);
     if(!img){
       img=new Image();img.alt="";img.draggable=false;img.referrerPolicy="strict-origin-when-cross-origin";
       img.onerror=()=>{img.style.visibility="hidden"};
-      img.src="https://tile.openstreetmap.org/"+key+".png";
+      img.src=B.url(z,xx,ty);
       tileImgs.set(key,img);tileDiv.appendChild(img);
     }
-    img.style.left=(W/2+(tx*T-WORLD/2-mX)*mS)+"px";
-    img.style.top=(H/2-(WORLD/2-ty*T-mY)*mS)+"px";
+    img.style.left=(ox+(tx*T-WORLD/2-mX)*mS)+"px";
+    img.style.top=(oy-(WORLD/2-ty*T-mY)*mS)+"px";
     img.style.width=img.style.height=(px+0.6)+"px";
   }
   for(const [k,img] of tileImgs)if(!used.has(k)){img.remove();tileImgs.delete(k)}
-  $("attrib").lastChild.textContent=navigator.onLine===false?" közreműködők · offline":" közreműködők";
 }
+
+/* --- road styles --- */
 const STYLE_DARK=(k)=>k===1||k===2?["#3b82f6",5]:k===3?["#22c55e",4.5]:k===4?["#4ade80",3.5]:k===5?["#e5e7eb",2.6]:k===6||k===7?["#cbd5e1",2]:k===10?["#a16207",1.5]:["#9ca3af",1.6];
 const STYLE_LIGHT=(k)=>k===1||k===2?["#1d4fbf",5]:k===3?["#15803d",4.5]:k===4?["#16a34a",3.5]:k===5?["#475569",2.6]:k===6||k===7?["#64748b",2]:k===10?["#a16207",1.5]:["#6b7280",1.6];
+const STYLE_SAT=(k)=>k===1||k===2?["#60a5fa",5]:k===3?["#4ade80",4.5]:k===4?["#86efac",3.5]:k===5?["#f8fafc",2.6]:k===6||k===7?["#e2e8f0",2]:k===10?["#fbbf24",1.5]:["#e5e7eb",1.6];
+
+/* --- Hungarian road number sign on the canvas (same outline as the main display) --- */
+function shieldPath(x,y,w,h){
+  // outline of SH (viewBox 5..95 × 4..69), stretched to w×h, centred on (x,y)
+  const l=x-w/2,t=y-h/2,X=(u)=>l+(u-5)/90*w,Y=(v)=>t+(v-4)/65*h;
+  const p=new Path2D();
+  p.moveTo(X(8),Y(4));p.lineTo(X(92),Y(4));p.quadraticCurveTo(X(95),Y(4),X(95),Y(7));
+  p.lineTo(X(95),Y(48));p.quadraticCurveTo(X(95),Y(54),X(89.5),Y(56));
+  p.lineTo(X(52.5),Y(68.9));p.quadraticCurveTo(X(50),Y(69.8),X(47.5),Y(68.9));
+  p.lineTo(X(10.5),Y(56));p.quadraticCurveTo(X(5),Y(54),X(5),Y(48));
+  p.lineTo(X(5),Y(7));p.quadraticCurveTo(X(5),Y(4),X(8),Y(4));p.closePath();
+  return p;
+}
+function roundRect(x,y,w,h,r){const p=new Path2D();p.moveTo(x+r,y);p.arcTo(x+w,y,x+w,y+h,r);p.arcTo(x+w,y+h,x,y+h,r);p.arcTo(x,y+h,x,y,r);p.arcTo(x,y,x+w,y,r);p.closePath();return p}
+// size of a sign (for collision tests), then drawing
+function signBox(num,kut,big){
+  const isM=/^M/.test(num)||kut===1||kut===2,main=isM||kut===3||kut===4,f=big?1.18:1;
+  ctx.font=`bold ${Math.round(13*f)}px Arial,Helvetica,sans-serif`;
+  const tw=ctx.measureText(num).width*0.88;
+  return main?{isM,main,f,h:26*f,w:Math.max(30*f,tw+13*f)}:{isM,main,f,h:18*f,w:Math.max(24*f,tw+10*f)};
+}
+function drawRoadSign(num,kut,x,y,big){
+  const {isM,main,f,w,h}=signBox(num,kut,big);
+  if(main){
+    ctx.save();ctx.shadowColor="#0008";ctx.shadowBlur=3;ctx.shadowOffsetY=1;
+    const p=shieldPath(x,y,w,h);
+    ctx.fillStyle=isM?"#1d4fbf":"#1f7a3a";ctx.fill(p);ctx.restore();
+    ctx.lineWidth=2*f;ctx.strokeStyle="#fff";ctx.stroke(p);
+    ctx.fillStyle="#fff";ctx.save();ctx.translate(x,y-h*0.04);ctx.scale(0.88,1);ctx.fillText(num,0,1);ctx.restore();
+    return {x,y,w,h};
+  }
+  const p=roundRect(x-w/2,y-h/2,w,h,3*f);
+  ctx.save();ctx.shadowColor="#0006";ctx.shadowBlur=2;ctx.fillStyle="#f8fafc";ctx.fill(p);ctx.restore();
+  ctx.lineWidth=1.3;ctx.strokeStyle="#111";ctx.stroke(p);
+  ctx.fillStyle="#111";ctx.save();ctx.translate(x,y);ctx.scale(0.88,1);ctx.fillText(num,0,1);ctx.restore();
+  return {x,y,w,h};
+}
+
 let mapStamp=new Int32Array(1),mapN=0;
 function drawMap(){
   if(!mapOn)return;
   const W=cv.clientWidth,H=cv.clientHeight;
-  drawTiles(W,H);
-  const light=S.base==="grey";
+  // ease the rotation toward its target
+  updateRotTarget();
+  const dr=angN(rotTarget-rot);
+  if(Math.abs(dr)<0.4)rot=rotTarget;else{rot=angN(rot+dr*0.22);queueDraw()}
+  if(!headingUp()&&Math.abs(rot)<0.4)rot=0;
+  setView(W,H);compassUI();
+  drawTiles();
+  const base=BASES[S.base]&&$("tiles").style.display!=="none"?S.base:"off";
+  const light=base==="grey",sat=base==="sat";
   ctx.clearRect(0,0,W,H);
-  if(S.base==="off"){ctx.fillStyle="#1b1e23";ctx.fillRect(0,0,W,H)}
+  if(base==="off"){ctx.fillStyle="#1b1e23";ctx.fillRect(0,0,W,H)}
   const latC=fromM(mX,mY).lat,gS=mS/Math.cos(latC*Math.PI/180); // px per ground metre
-  // view box in EOV (from the 4 screen corners)
+  // view box in EOV (from the 4 screen corners, rotation included)
   let e1=1e9,e2=-1e9,n1=1e9,n2=-1e9;
-  for(const [qx,qy] of [[0,0],[W,0],[0,H],[W,H]]){const ll=fromM(mX+(qx-W/2)/mS,mY-(qy-H/2)/mS),p=EOV.fwd(ll.lat,ll.lon);e1=Math.min(e1,p.E);e2=Math.max(e2,p.E);n1=Math.min(n1,p.N);n2=Math.max(n2,p.N)}
-  const sx=(v)=>(MX[v]-mX)*mS+W/2,sy=(v)=>H/2-(MY[v]-mY)*mS;
-  const mx=(m)=>(m.x-mX)*mS+W/2,my=(m)=>H/2-(m.y-mY)*mS;
+  for(const [qx,qy] of [[0,0],[W,0],[0,H],[W,H]]){const m=s2m(qx,qy),ll=fromM(m.x,m.y),p=EOV.fwd(ll.lat,ll.lon);e1=Math.min(e1,p.E);e2=Math.max(e2,p.E);n1=Math.min(n1,p.N);n2=Math.max(n2,p.N)}
+  const sx=(v)=>m2sx(MX[v],MY[v]),sy=(v)=>m2sy(MX[v],MY[v]);
+  const mx=(m)=>m2sx(m.x,m.y),my=(m)=>m2sy(m.x,m.y);
   if(mapStamp.length!==NSEG)mapStamp=new Int32Array(NSEG);
   mapN++;const segs=[];
   const minKut=gS<0.02?4:gS<0.06?7:99;
@@ -916,43 +1017,59 @@ function drawMap(){
   for(const s of segs)ensureMerc(s);
   segs.sort((a,b)=>{const ka=segKut[a]===10?0:12-segKut[a],kb=segKut[b]===10?0:12-segKut[b];return ka-kb});
   const curRoad=cur&&!cur.res.off?segRoad[cur.res.best.s]:-1;
-  const ST=light?STYLE_LIGHT:STYLE_DARK;
+  const ST=sat?STYLE_SAT:light?STYLE_LIGHT:STYLE_DARK;
   const path=(s)=>{ctx.beginPath();for(let v=segV0[s];v<segV1[s];v++){v===segV0[s]?ctx.moveTo(sx(v),sy(v)):ctx.lineTo(sx(v),sy(v))}};
   ctx.lineCap="round";ctx.lineJoin="round";
   const LW=S.lineW||1.6;
+  // dark casing under the roads on the satellite image, so they stand out
+  if(sat){ctx.strokeStyle="#000a";for(const s of segs){let w=ST(segKut[s])[1];if(gS<0.06)w*=0.7;ctx.lineWidth=w*LW+2.5;path(s);ctx.stroke()}}
   for(const s of segs){let [col,w]=ST(segKut[s]);if(gS<0.06)w*=0.7;ctx.strokeStyle=col;ctx.lineWidth=w*LW;path(s);ctx.stroke()}
   if(curRoad>=0){ctx.strokeStyle=light?"#f59e0b":"#facc15";ctx.lineWidth=3.2*LW;for(const s of segs)if(segRoad[s]===curRoad){path(s);ctx.stroke()}}
-  // labels
-  ctx.font="bold 12px Arial,Helvetica,sans-serif";ctx.textAlign="center";ctx.textBaseline="middle";
-  const placed=[];
-  for(const s of segs){
-    if(gS<0.06&&segKut[s]>4)continue;
-    const mid=segV0[s]+Math.floor((segV1[s]-segV0[s])/2),x=sx(mid),y=sy(mid);
-    if(x<20||y<20||x>W-20||y>H-20)continue;
-    if(placed.some(p=>Math.abs(p[0]-x)<60&&Math.abs(p[1]-y)<22))continue;
-    placed.push([x,y]);
-    const t=ROADS[segRoad[s]].num,w=ctx.measureText(t).width+10,k=segKut[s];
-    ctx.fillStyle=k<=2?"#1d4fbf":k<=4?"#1f7a3a":"#f8fafc";ctx.fillRect(x-w/2,y-9,w,18);
-    if(k>4){ctx.strokeStyle="#334155";ctx.lineWidth=1;ctx.strokeRect(x-w/2,y-9,w,18)}
-    ctx.fillStyle=k<=4?"#fff":"#111";ctx.fillText(t,x,y+1);
-  }
-  // km posts
+  // km posts (under the signs)
   if(gS>=0.15){
-    ctx.fillStyle=light?"#b45309":"#fde68a";ctx.font="bold 11px Arial,sans-serif";
-    for(const s of segs){const A=segAnc[s];for(let i=0;i<A.length;i+=3){if(A[i+2]!==0)continue;const p=pointAt(s,A[i]),m=eovToM(p.E,p.N),x=mx(m),y=my(m);if(x<0||y<0||x>W||y>H)continue;ctx.beginPath();ctx.arc(x,y,2.8,0,7);ctx.fill();if(gS>=0.35)ctx.fillText(A[i+1],x+9,y-8)}}
+    ctx.font="bold 11px Arial,sans-serif";ctx.textAlign="center";ctx.textBaseline="middle";
+    const dot=light?"#b45309":"#fde68a";
+    for(const s of segs){const A=segAnc[s];for(let i=0;i<A.length;i+=3){if(A[i+2]!==0)continue;const p=pointAt(s,A[i]),m=eovToM(p.E,p.N),x=mx(m),y=my(m);if(x<0||y<0||x>W||y>H)continue;
+      ctx.fillStyle=dot;ctx.beginPath();ctx.arc(x,y,2.8,0,7);ctx.fill();
+      if(gS>=0.35){if(!light){ctx.lineWidth=3;ctx.strokeStyle="#000c";ctx.strokeText(A[i+1],x+9,y-8)}ctx.fillText(A[i+1],x+9,y-8)}}}
+  }
+  // road number signs: motorways/expressways blue, main roads green (Hungarian sign shape), other roads white
+  ctx.textAlign="center";ctx.textBaseline="middle";
+  // keep signs off the buttons, the info box and the top labels
+  const placed=[],cr=cv.getBoundingClientRect();
+  for(const el of [$("mapInfo"),document.querySelector(".mapbtns"),$("attrib"),$("scalebar"),$("baseNote")]){
+    const r=el.getBoundingClientRect();if(!r.width||!r.height)continue;
+    placed.push({x:(r.left+r.right)/2-cr.left,y:(r.top+r.bottom)/2-cr.top,w:r.width+4,h:r.height+4})}
+  const free=(x,y,w,h)=>!placed.some(b=>Math.abs(b.x-x)<(b.w+w)/2+6&&Math.abs(b.y-y)<(b.h+h)/2+4);
+  const lastAt=new Map(); // same road number: at least 150 px apart
+  const order=segs.slice().sort((a,b)=>(segRoad[a]===curRoad?-1:0)-(segRoad[b]===curRoad?-1:0)||segKut[a]-segKut[b]);
+  for(const s of order){
+    const k=segKut[s];
+    if(k===10)continue;
+    if(gS<0.06&&k>4)continue;
+    const t=ROADS[segRoad[s]].num;
+    // try the middle of the segment, then the quarter points
+    const n=segV1[s]-segV0[s];
+    for(const f of [0.5,0.25,0.75]){
+      const v=segV0[s]+Math.min(n-1,Math.floor(n*f)),x=sx(v),y=sy(v);
+      const big=segRoad[s]===curRoad,{w,h}=signBox(t,k,big);
+      if(x<w/2+4||y<h/2+4||x>W-w/2-4||y>H-h/2-4)continue;
+      if(!free(x,y,w,h))continue;
+      const prev=lastAt.get(t);if(prev&&prev.some(q=>Math.hypot(q[0]-x,q[1]-y)<150))continue;
+      placed.push(drawRoadSign(t,k,x,y,big));(prev||lastAt.set(t,[]).get(t)).push([x,y]);break;
+    }
   }
   // position
   if(cur){
     const p=cur.pos,m=posToM(p),x=mx(m),y=my(m);
     if(p.acc){ctx.fillStyle="#3b82f633";ctx.beginPath();ctx.arc(x,y,Math.max(6,p.acc*gS),0,7);ctx.fill()}
-    if(p.heading!=null){ctx.save();ctx.translate(x,y);ctx.rotate(p.heading*Math.PI/180);ctx.fillStyle=light?"#1d4ed8":"#fff";ctx.strokeStyle=light?"#fff":"#1d4ed8";ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(0,-16);ctx.lineTo(9,10);ctx.lineTo(0,5);ctx.lineTo(-9,10);ctx.closePath();ctx.fill();ctx.stroke();ctx.restore()}
+    if(p.heading!=null){ctx.save();ctx.translate(x,y);ctx.rotate((p.heading-rot)*Math.PI/180);ctx.fillStyle=light?"#1d4ed8":"#fff";ctx.strokeStyle=light?"#fff":"#1d4ed8";ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(0,-16);ctx.lineTo(9,10);ctx.lineTo(0,5);ctx.lineTo(-9,10);ctx.closePath();ctx.fill();ctx.stroke();ctx.restore()}
     else{ctx.fillStyle="#3b82f6";ctx.strokeStyle="#fff";ctx.lineWidth=3;ctx.beginPath();ctx.arc(x,y,8,0,7);ctx.fill();ctx.stroke()}
   }
   if(tapPt){const x=mx(tapPt.m),y=my(tapPt.m);ctx.strokeStyle="#dc2626";ctx.lineWidth=3;ctx.beginPath();ctx.moveTo(x-8,y-8);ctx.lineTo(x+8,y+8);ctx.moveTo(x+8,y-8);ctx.lineTo(x-8,y+8);ctx.stroke()}
   // scale bar (ground metres)
   const target=W*0.25/gS,pow=Math.pow(10,Math.floor(Math.log10(target)));let len=pow;for(const k of[1,2,5])if(k*pow<=target)len=k*pow;
   $("scalebar").innerHTML=`${len>=1000?len/1000+" km":len+" m"}<i style="width:${len*gS}px"></i>`;
-  $("scalebar").style.color=light?"#111":"";
 }
 function pointAt(s,along){
   let v=segV0[s];while(v<segV1[s]-2&&VC[v+1]<along)v++;
@@ -967,12 +1084,16 @@ function queueDraw(){if(drawQueued)return;drawQueued=true;requestAnimationFrame(
     if(pts.size===2){const[a,b]=[...pts.values()];startD=Math.hypot(a.x-b.x,a.y-b.y);startS=mS}});
   cv.addEventListener("pointermove",(e)=>{
     if(!pts.has(e.pointerId))return;const p=pts.get(e.pointerId);
-    if(pts.size===1){const dx=e.clientX-p.x,dy=e.clientY-p.y;moved+=Math.abs(dx)+Math.abs(dy);if(moved>6){setFollow(false);mX-=dx/mS;mY+=dy/mS;queueDraw()}}
+    if(pts.size===1){const dx=e.clientX-p.x,dy=e.clientY-p.y;moved+=Math.abs(dx)+Math.abs(dy);
+      if(moved>6){
+        if(follow){const r=cv.getBoundingClientRect(),c=s2m(VW.cx,VW.cy),m2=s2m(r.width/2,r.height/2);setFollow(false);mX+=m2.x-c.x;mY+=m2.y-c.y;setView(r.width,r.height)} // keep the picture still when the anchor moves to the centre
+        // screen delta → mercator delta (rotation included)
+        const up=-dy;mX-=(dx*VW.c+up*VW.s)/mS;mY-=(-dx*VW.s+up*VW.c)/mS;queueDraw()}}
     p.x=e.clientX;p.y=e.clientY;
     if(pts.size===2){moved=99;const[a,b]=[...pts.values()];const d=Math.hypot(a.x-b.x,a.y-b.y);if(startD>0){mS=clampS(startS*d/startD);queueDraw()}}
   });
   const up=(e)=>{
-    if(pts.size===1&&moved<=6){const r=cv.getBoundingClientRect();const m={x:mX+(e.clientX-r.left-r.width/2)/mS,y:mY-(e.clientY-r.top-r.height/2)/mS};identify(m)}
+    if(pts.size===1&&moved<=6){const r=cv.getBoundingClientRect();identify(s2m(e.clientX-r.left,e.clientY-r.top))}
     pts.delete(e.pointerId);
   };
   cv.addEventListener("pointerup",up);cv.addEventListener("pointercancel",(e)=>pts.delete(e.pointerId));
@@ -993,11 +1114,17 @@ function identify(m){
 $("zIn").onclick=()=>{mS=clampS(mS*1.6);drawMap()};
 $("zOut").onclick=()=>{mS=clampS(mS/1.6);drawMap()};
 $("follow").onclick=()=>{setFollow(true);if(cur){const m=posToM(cur.pos);mX=m.x;mY=m.y}drawMap()};
-const BASE_ORDER=["grey","dark","off"];
-function setBase(v){S.base=v;saveS();document.querySelectorAll("#baseSeg button").forEach(b=>b.classList.toggle("on",b.dataset.v===v));drawMap()}
-$("baseBtn").onclick=()=>setBase(BASE_ORDER[(BASE_ORDER.indexOf(S.base)+1)%3]);
+const BASE_ORDER=["grey","dark","sat","off"];
+function setBase(v){if(!BASE_ORDER.includes(v))v="grey";S.base=v;saveS();document.querySelectorAll("#baseSeg button").forEach(b=>b.classList.toggle("on",b.dataset.v===v));drawMap()}
+$("baseBtn").onclick=()=>setBase(BASE_ORDER[(BASE_ORDER.indexOf(S.base)+1)%BASE_ORDER.length]);
 document.querySelectorAll("#baseSeg button").forEach(b=>b.onclick=()=>setBase(b.dataset.v));
 setBase(S.base||"grey");
+function setRot(v){S.rot=v==="heading"?"heading":"north";saveS();document.querySelectorAll("#rotSeg button").forEach(b=>b.classList.toggle("on",b.dataset.v===S.rot));
+  if(S.rot==="heading"&&cur){setFollow(true);const m=posToM(cur.pos);mX=m.x;mY=m.y}
+  drawMap();compassUI()}
+$("rotBtn").onclick=()=>setRot(headingUp()?"north":"heading");
+document.querySelectorAll("#rotSeg button").forEach(b=>b.onclick=()=>setRot(b.dataset.v));
+setRot(S.rot||"north");
 (function(){const r=$("lineW"),v=$("lineWv");const show=()=>v.textContent="×"+(+S.lineW).toFixed(1).replace(".",",");
   r.value=S.lineW;show();r.oninput=()=>{S.lineW=+r.value;show();saveS();drawMap()}})();
 window.addEventListener("resize",()=>{if(mapOn){resizeMap();drawMap()}});

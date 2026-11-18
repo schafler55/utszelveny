@@ -2,7 +2,7 @@ name: Android APK
 
 on:
   push:
-    branches: [main]
+    branches: ['**']
   workflow_dispatch:
 
 permissions:
@@ -51,10 +51,30 @@ jobs:
       - name: Keep the APK as a build artifact
         uses: actions/upload-artifact@v4
         with:
-          name: UtSzelveny-apk
+          name: UtSzelveny-apk-${{ github.ref_name }}
           path: UtSzelveny.apk
 
+      # Test builds from other branches: own pre-release "apk-teszt-<branch>",
+      # the public "apk-latest" stays untouched until the branch is merged into main.
+      - name: Publish test APK (non-main branches)
+        if: github.ref != 'refs/heads/main'
+        run: cp UtSzelveny.apk UtSzelveny-teszt.apk
+
+      - name: Publish to the "apk-teszt-<branch>" release
+        if: github.ref != 'refs/heads/main'
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: apk-teszt-${{ github.ref_name }}
+          target_commitish: ${{ github.sha }}
+          name: ÚtSzelvény – TESZT APK (${{ github.ref_name }} ág)
+          prerelease: true
+          files: UtSzelveny-teszt.apk
+          body: |
+            TESZT változat a(z) ${{ github.ref_name }} ágból – nem a hivatalos kiadás.
+            A telepített alkalmazást felülírja (ugyanaz az app), a beállítások megmaradnak.
+
       - name: Publish to the "apk-latest" release (stable download link)
+        if: github.ref == 'refs/heads/main'
         uses: softprops/action-gh-release@v2
         with:
           tag_name: apk-latest
