@@ -8,13 +8,13 @@ Az <b>ÚtSzelvény</b> megmutatja, melyik országos közúton és melyik kilomé
 A telefon GNSS-pozícióját a közúthálózat adataihoz illeszti. Egy pillantással látod az útszámot
 és a szelvényt, valamint mindazt, ami az adott szakaszra vonatkozik.
 
-Terepi munkára is alkalmas. Mérhetsz vele szelvénytől szelvényig, akár több úton át, vagy pontokat lerakva a térképen.
+Terepi munkára is alkalmas. Útszám és szelvény alapján megkeres egy pontot vagy egy útszakaszt a térképen. Mérhetsz vele szelvénytől szelvényig, akár több úton át, vagy pontokat lerakva a térképen.
 Fotóidra ráírja a helyet és az időt, a méréseidet pedig elnevezheted és akár CSV-be mentheted.
 
 Böngészőben és Android-alkalmazásként is fut. Az úthálózati adatok a készüléken vannak, így a szelvényezés internet
 nélkül is működik. Csak a térkép alapréteghez kell internetkapcsolat.
 
-**Verzió:** V0.8.5 Beta · © schafler55 · Licenc: GPL-3.0
+**Verzió:** V0.9 Beta · © schafler55 · Licenc: GPL-3.0
 
 ## Funkciók
 
@@ -31,6 +31,11 @@ Országos közúthálózat útszám-táblákkal (autópálya, autóút kék, fő
 vagy műholdkép. Északkal felfelé vagy menetirány szerint forgatva. Koppintásra megmutatja a pont útját és szelvényét.
 
 ![Térkép oldal](screenshots/terkep.png)
+
+### Keresés
+Útszám és kilométerszelvény (km+m) megadásával megkeresi a pontot a térképen, kezdő és záró szelvénnyel pedig
+a teljes útszakaszt (úton mért és szelvény szerinti hosszal, megyével, kezelővel). Nem létező szelvénynél a legközelebbit mutatja.
+A keresések elmenthetők és elnevezhetők, egyenként kapcsolóval jeleníthetők meg a térképen.
 
 ### Mérés
 - **GNSS-mérés:** indítás és leállítás között méri a megtett utat és a szelvény szerinti hosszt; több úton át szakaszokra bont, közbenső pontokat rögzít.
