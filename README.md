@@ -10,7 +10,7 @@ A **Mérés** oldalon távolságot mérhetsz: kezdő és záró út + szelvény,
 közbenső pontok, elnevezhető, menthető mérések, CSV-export és megjelenítés a térképen.
 A térképen pontokat is lerakhatsz: légvonal, úton mért (útvonal) és szelvény szerinti távolság, több úton át is.
 
-**Verzió:** V0.5.1 Beta · © schafler55 · Licenc: GPL-3.0
+**Verzió:** V0.6 Beta · © schafler55 · Licenc: GPL-3.0
 
 ## Képernyőképek
 
