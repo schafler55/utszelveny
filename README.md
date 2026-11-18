@@ -5,7 +5,7 @@ A telefon GPS-pozíciójából megmutatja, melyik úton és melyik szelvényben 
 valamint a sebességkorlátot, a lakott területi (átkelési) szakaszt, a közeli hidak súly- és
 magasságkorlátozásait, a tehergépjárművekre vonatkozó korlátozásokat, a kezelőt és a megyét.
 
-**Verzió:** V1.5.8 Beta · © schafler55 · Licenc: GPL-3.0
+**Verzió:** V1.5.9 Beta · © schafler55 · Licenc: GPL-3.0
 
 ## Képernyőképek
 
