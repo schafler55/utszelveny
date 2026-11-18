@@ -1,4 +1,6 @@
-# ÚtSzelvény
+<p align="center"><img src="icon-512.png" alt="ÚtSzelvény ikon" width="140"></p>
+
+<h1 align="center">ÚtSzelvény</h1>
 
 Offline útszám és kilométerszelvény kijelző a magyar országos közúthálózathoz.
 A telefon GPS-pozíciójából megmutatja, melyik úton és melyik szelvényben vagy,
