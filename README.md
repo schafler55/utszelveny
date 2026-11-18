@@ -8,6 +8,7 @@ valamint a sebességkorlátot, a lakott területi (átkelési) szakaszt, a köze
 magasságkorlátozásait, a tehergépjárművekre vonatkozó korlátozásokat, a kezelőt és a megyét.
 A **Mérés** oldalon távolságot mérhetsz: kezdő és záró út + szelvény, GPS és szelvény szerinti hossz,
 közbenső pontok, elnevezhető, menthető mérések, CSV-export és megjelenítés a térképen.
+A térképen pontokat is lerakhatsz: légvonal, úton mért (útvonal) és szelvény szerinti távolság, több úton át is.
 
 **Verzió:** V0.4 Beta · © schafler55 · Licenc: GPL-3.0
 
