@@ -169,7 +169,7 @@ public class MainActivity extends Activity {
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
         web = new WebView(this);
-        web.setBackgroundColor(0xFF16181C);
+        web.setBackgroundColor(0xFF0F1511);
         setContentView(web);
 
         final WebViewAssetLoader loader = new WebViewAssetLoader.Builder()
@@ -184,7 +184,7 @@ public class MainActivity extends Activity {
         s.setMediaPlaybackRequiresUserGesture(false);
         s.setAllowFileAccess(false);
         s.setAllowContentAccess(false);
-        s.setUserAgentString(s.getUserAgentString() + " UtSzelveny/0.7.3");
+        s.setUserAgentString(s.getUserAgentString() + " UtSzelveny/0.8");
 
         web.addJavascriptInterface(new Bridge(), "AndroidBridge");
 
@@ -296,7 +296,26 @@ public class MainActivity extends Activity {
         });
     }
 
+    /** Status and navigation bar colours for the page theme (Material 3 surface colours). */
+    @SuppressWarnings("deprecation")
+    private void applyBars(boolean light) {
+        android.view.Window w = getWindow();
+        w.setStatusBarColor(light ? 0xFFF6FBF4 : 0xFF0F1511);
+        w.setNavigationBarColor(light ? 0xFFEAEFE9 : 0xFF1B211D);
+        if (web != null) web.setBackgroundColor(light ? 0xFFF6FBF4 : 0xFF0F1511);
+        android.view.View d = w.getDecorView();
+        int bits = android.view.View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR | android.view.View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR;
+        int f = d.getSystemUiVisibility();
+        d.setSystemUiVisibility(light ? (f | bits) : (f & ~bits));
+    }
+
     private class Bridge {
+        /** The page switched between the dark and light theme ("dark" / "light"). */
+        @JavascriptInterface
+        public void setTheme(final String theme) {
+            runOnUiThread(() -> applyBars("light".equals(theme)));
+        }
+
         /** Saves a base64 file: image/* → Pictures/ÚtSzelvény (gallery), anything else → Download/ÚtSzelvény. */
         @JavascriptInterface
         public void saveFile(String b64, final String name, final String mime, final String id) {
