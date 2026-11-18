@@ -2424,7 +2424,7 @@ const timeout=(p,ms)=>Promise.race([p,new Promise((_,rej)=>setTimeout(()=>rej(ne
 // full-resolution still (ImageCapture), turned to the preview's orientation if needed
 /* flash: off | flash (fires at the shot) | torch (light stays on) – what the camera supports */
 let camCaps={torch:false,flash:false};
-const FL_ICO={off:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13.2 3 9.8 7.5M7.6 10.4l-2.3 3c-.3.4 0 1 .5 1H11l-1 6.6 3.6-4.9M15.9 13.2l1.8-2.6c.3-.4 0-1-.5-1H12.4"/><path d="M3.5 3.5l17 17"/></svg>`,
+const FL_ICO={off:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13.2 3 5.3 13.4c-.3.4 0 1 .5 1H11l-1 6.6 7.7-10.4c.3-.4 0-1-.5-1H12z"/><path d="M3.5 3.5l17 17"/></svg>`,
   flash:`<svg viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"><path d="M13.2 3 5.3 13.4c-.3.4 0 1 .5 1H11l-1 6.6 7.7-10.4c.3-.4 0-1-.5-1H12z"/></svg>`,
   torch:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7.6 3h8.8c.3 0 .6.3.6.6V7l-2 3v10c0 .6-.4 1-1 1h-4c-.6 0-1-.4-1-1V10L7 7V3.6c0-.3.3-.6.6-.6z"/><path d="M7 7h10M12 13.5v2"/></svg>`};
 const FL_TXT={off:"Vaku ki",flash:"Vaku",torch:"Lámpa"};
