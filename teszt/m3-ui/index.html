@@ -514,6 +514,9 @@ nav button.rec .pill::after{content:"";position:absolute;top:4px;right:16px;widt
       <div class="mset-l">Térkép iránya</div>
       <div class="seg wide" id="rotSeg"><button data-v="north">É felül</button><button data-v="heading">Menetirány</button></div>
       <p class="note" style="margin-top:6px">Menetirány: a térkép a haladási irányba fordul. A térképen az iránytű gombbal is váltható.</p>
+      <div class="mset-l">Aktuális út kiemelése</div>
+      <div class="seg wide" id="hlSeg"><button data-v="bold">Vastagabb</button><button data-v="halo">Fényudvar</button><button data-v="off">Nincs</button></div>
+      <p class="note" style="margin-top:6px">Az út, amelyiken éppen vagy, mindig a saját színében látszik: kiemelve, vagy a többivel egyformán.</p>
       <div class="mset-l">Vonalvastagság</div>
       <div style="display:flex;align-items:center;gap:10px"><input type="range" class="rng" id="lineW" min="0.6" max="3" step="0.1" style="flex:1;width:auto"><span class="rngv" id="lineWv"></span></div>
     </div>
@@ -569,7 +572,7 @@ const KUT=["","autópálya","autóút","elsőrendű főút","másodrendű főút
 const PKOD=["osztatlan pálya","jobb pálya","bal pálya"];
 
 /* ---------- settings ---------- */
-const S={wake:true,bike:true,name:true,coord:"wgs",base:"grey",rot:"north",measCoord:"both",lineW:1.6,secSpd:true,secBr:true,secTr:true,secGps:true,secKez:true,phName:true,phAcc:true,phCoord:"off",phRes:"best",phAuto:true,phExif:true,phDir:true};
+const S={wake:true,bike:true,name:true,coord:"wgs",base:"grey",rot:"north",measCoord:"both",lineW:1.6,hl:"bold",secSpd:true,secBr:true,secTr:true,secGps:true,secKez:true,phName:true,phAcc:true,phCoord:"off",phRes:"best",phAuto:true,phExif:true,phDir:true};
 try{Object.assign(S,JSON.parse(localStorage.getItem("kszt_settings")||"{}"))}catch(e){}
 function saveS(){try{localStorage.setItem("kszt_settings",JSON.stringify(S))}catch(e){}}
 /* ---------- theme: Sötét / Világos / Rendszer ---------- */
@@ -1360,9 +1363,17 @@ function drawMap(){
   ctx.lineCap="round";ctx.lineJoin="round";
   const LW=S.lineW||1.6;
   // dark casing under the roads on the satellite image, so they stand out
-  if(sat){ctx.strokeStyle="#000a";for(const s of segs){let w=ST(segKut[s])[1];if(gS<0.06)w*=0.7;ctx.lineWidth=w*LW+2.5;path(s);ctx.stroke()}}
-  for(const s of segs){let [col,w]=ST(segKut[s]);if(gS<0.06)w*=0.7;ctx.strokeStyle=col;ctx.lineWidth=w*LW;path(s);ctx.stroke()}
-  if(curRoad>=0){ctx.strokeStyle=light?"#f59e0b":"#facc15";ctx.lineWidth=3.2*LW;for(const s of segs)if(segRoad[s]===curRoad){path(s);ctx.stroke()}}
+  // roads; the one we are on keeps its own colour and is emphasised (S.hl: bold | halo | off)
+  {const hl=curRoad>=0?(S.hl||"bold"):"off",wOf=s=>{let w=ST(segKut[s])[1];if(gS<0.06)w*=0.7;return w};
+  const others=hl==="off"?segs:segs.filter(s=>segRoad[s]!==curRoad),mine=hl==="off"?[]:segs.filter(s=>segRoad[s]===curRoad);
+  const casing=(list,extra)=>{ctx.strokeStyle="#000a";for(const s of list){ctx.lineWidth=wOf(s)*LW+extra;path(s);ctx.stroke()}};
+  const plain=(list,mul)=>{for(const s of list){ctx.strokeStyle=ST(segKut[s])[0];ctx.lineWidth=wOf(s)*LW*mul;path(s);ctx.stroke()}};
+  if(sat)casing(others,2.5);plain(others,1);
+  if(hl==="bold"){const bw=s=>Math.max(wOf(s),3.2)*LW*1.7;
+    ctx.strokeStyle=light?"#0f172a":"#fff";for(const s of mine){ctx.lineWidth=bw(s)+4;path(s);ctx.stroke()}
+    for(const s of mine){ctx.strokeStyle=ST(segKut[s])[0];ctx.lineWidth=bw(s);path(s);ctx.stroke()}}
+  else if(hl==="halo"){ctx.strokeStyle=light?"rgba(37,99,235,.30)":"rgba(255,255,255,.38)";for(const s of mine){ctx.lineWidth=wOf(s)*LW+16;path(s);ctx.stroke()}
+    if(sat)casing(mine,2.5);plain(mine,1.3)}}
   drawMeasTrack(mapMeas,"#e879f9");drawMeasTrack(measActive,"#f97316");
   // km posts (under the signs)
   if(gS>=0.15){
@@ -1481,6 +1492,9 @@ function setRot(v){S.rot=v==="heading"?"heading":"north";saveS();document.queryS
 $("rotBtn").onclick=()=>setRot(headingUp()?"north":"heading");
 document.querySelectorAll("#rotSeg button").forEach(b=>b.onclick=()=>setRot(b.dataset.v));
 setRot(S.rot||"north");
+function setHl(v){S.hl=["bold","halo","off"].includes(v)?v:"bold";saveS();document.querySelectorAll("#hlSeg button").forEach(b=>b.classList.toggle("on",b.dataset.v===S.hl));drawMap()}
+document.querySelectorAll("#hlSeg button").forEach(b=>b.onclick=()=>setHl(b.dataset.v));
+setHl(S.hl);
 (function(){const r=$("lineW"),v=$("lineWv");const show=()=>v.textContent="×"+(+S.lineW).toFixed(1).replace(".",",");
   r.value=S.lineW;show();r.oninput=()=>{S.lineW=+r.value;show();saveS();drawMap()}})();
 window.addEventListener("resize",()=>{if(mapOn){resizeMap();drawMap()}});
