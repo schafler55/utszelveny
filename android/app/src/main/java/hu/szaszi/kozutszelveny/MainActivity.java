@@ -7,11 +7,17 @@ import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.location.GnssStatus;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.media.MediaScannerConnection;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Handler;
+import android.os.Looper;
 import android.provider.MediaStore;
 import android.util.Base64;
 import android.view.WindowManager;
@@ -39,7 +45,7 @@ import java.util.concurrent.TimeUnit;
 /**
  * ÚtSzelvény – Android keret.
  * A teljes alkalmazás az assets/index.html; ez az osztály csak megjeleníti,
- * GPS- és kamera-engedélyt kér, ébren tartja a képernyőt, és a "AndroidBridge"
+ * GNSS- és kamera-engedélyt kér, a műholdak állapotát továbbítja az oldalnak, ébren tartja a képernyőt, és a "AndroidBridge"
  * JS-hídon keresztül fájlt ment (fotó → Képek/ÚtSzelvény, CSV → Letöltések/ÚtSzelvény) és megoszt.
  * Az oldal a https://appassets.androidplatform.net címről töltődik (biztonságos környezet),
  * így a helymeghatározás és a kamera működik, és az OpenStreetMap is kap Referer fejlécet.
@@ -59,6 +65,103 @@ public class MainActivity extends Activity {
     private PermissionRequest pendingCamera;
     private Runnable pendingStorageJob;
     private Runnable pendingStorageFail;
+
+    /* ---------- satellites (GnssStatus) → window.__gnss({v,u,c:[{k,v,u,cn}]}) ---------- */
+    private LocationManager lm;
+    private boolean gnssWanted = false;   // the page has location tracking on
+    private boolean gnssOn = false;       // callback registered
+    private long gnssLast = 0;
+
+    private final GnssStatus.Callback gnssCb = new GnssStatus.Callback() {
+        @Override
+        public void onSatelliteStatusChanged(GnssStatus st) {
+            long now = System.currentTimeMillis();
+            if (now - gnssLast < 900) return;     // at most ~1 update per second
+            gnssLast = now;
+            int n = st.getSatelliteCount();
+            int[] vis = new int[8];
+            int[] used = new int[8];
+            float[] cn = new float[8];
+            int tv = 0, tu = 0;
+            for (int i = 0; i < n; i++) {
+                int k = st.getConstellationType(i);   // 1 GPS, 2 SBAS, 3 GLONASS, 4 QZSS, 5 BeiDou, 6 Galileo, 7 NavIC
+                if (k < 0 || k > 7) k = 0;
+                vis[k]++;
+                tv++;
+                if (st.usedInFix(i)) {
+                    used[k]++;
+                    tu++;
+                    cn[k] += st.getCn0DbHz(i);
+                }
+            }
+            StringBuilder sb = new StringBuilder();
+            sb.append("{\"v\":").append(tv).append(",\"u\":").append(tu).append(",\"c\":[");
+            boolean first = true;
+            for (int k = 0; k < 8; k++) {
+                if (vis[k] == 0) continue;
+                if (!first) sb.append(',');
+                first = false;
+                sb.append("{\"k\":").append(k).append(",\"v\":").append(vis[k]).append(",\"u\":").append(used[k])
+                        .append(",\"cn\":").append(used[k] > 0 ? Math.round(cn[k] / used[k]) : 0).append('}');
+            }
+            sb.append("]}");
+            final String js = "window.__gnss&&window.__gnss(" + sb + ")";
+            runOnUiThread(() -> {
+                if (web != null) web.evaluateJavascript(js, null);
+            });
+        }
+
+        @Override
+        public void onStopped() {
+            runOnUiThread(() -> {
+                if (web != null) web.evaluateJavascript("window.__gnss&&window.__gnss(null)", null);
+            });
+        }
+    };
+
+    // keeps the satellite receiver running while the page tracks the position (status callbacks need it)
+    private final LocationListener keepAlive = new LocationListener() {
+        @Override
+        public void onLocationChanged(Location location) {
+        }
+
+        @Override
+        public void onStatusChanged(String provider, int status, Bundle extras) {
+        }
+
+        @Override
+        public void onProviderEnabled(String provider) {
+        }
+
+        @Override
+        public void onProviderDisabled(String provider) {
+        }
+    };
+
+    private void startGnss() {
+        if (!gnssWanted || gnssOn) return;
+        if (checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) return;
+        try {
+            if (lm == null) lm = (LocationManager) getSystemService(LOCATION_SERVICE);
+            if (lm == null) return;
+            lm.registerGnssStatusCallback(gnssCb, new Handler(Looper.getMainLooper()));
+            if (lm.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+                lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000L, 0f, keepAlive, Looper.getMainLooper());
+            }
+            gnssOn = true;
+        } catch (SecurityException | IllegalArgumentException ignored) {
+        }
+    }
+
+    private void stopGnss() {
+        if (!gnssOn || lm == null) return;
+        try {
+            lm.unregisterGnssStatusCallback(gnssCb);
+            lm.removeUpdates(keepAlive);
+        } catch (Exception ignored) {
+        }
+        gnssOn = false;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,7 +184,7 @@ public class MainActivity extends Activity {
         s.setMediaPlaybackRequiresUserGesture(false);
         s.setAllowFileAccess(false);
         s.setAllowContentAccess(false);
-        s.setUserAgentString(s.getUserAgentString() + " UtSzelveny/0.6.3");
+        s.setUserAgentString(s.getUserAgentString() + " UtSzelveny/0.7");
 
         web.addJavascriptInterface(new Bridge(), "AndroidBridge");
 
@@ -169,6 +272,7 @@ public class MainActivity extends Activity {
             pendingCallback.invoke(pendingOrigin, hasLocationPermission(), false);
             pendingCallback = null;
             pendingOrigin = null;
+            startGnss();
         } else if (requestCode == REQ_CAMERA && pendingCamera != null) {
             if (granted) pendingCamera.grant(new String[]{PermissionRequest.RESOURCE_VIDEO_CAPTURE});
             else pendingCamera.deny();
@@ -225,6 +329,23 @@ public class MainActivity extends Activity {
                 pendingStorageJob = job;
                 pendingStorageFail = () -> done(id, false, "nincs tárhely-engedély", "");
                 requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQ_STORAGE);
+            });
+        }
+
+        /** The page started / stopped location tracking: satellite status on / off. */
+        @JavascriptInterface
+        public void gnssStart() {
+            runOnUiThread(() -> {
+                gnssWanted = true;
+                startGnss();
+            });
+        }
+
+        @JavascriptInterface
+        public void gnssStop() {
+            runOnUiThread(() -> {
+                gnssWanted = false;
+                stopGnss();
             });
         }
 
@@ -329,10 +450,12 @@ public class MainActivity extends Activity {
             web.onResume();
             web.evaluateJavascript("window.__appResume&&window.__appResume()", null);
         }
+        startGnss();
     }
 
     @Override
     protected void onPause() {
+        stopGnss();
         if (web != null) {
             // release the camera while the app is in the background
             web.evaluateJavascript("window.__appPause&&window.__appPause()", null);
