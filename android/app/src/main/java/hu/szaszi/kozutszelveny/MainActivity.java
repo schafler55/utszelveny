@@ -71,6 +71,7 @@ public class MainActivity extends Activity {
     private boolean gnssWanted = false;   // the page has location tracking on
     private boolean gnssOn = false;       // callback registered
     private long gnssLast = 0;
+    private long lastGnssFix = 0;         // time of the last position from the satellite receiver itself
 
     private final GnssStatus.Callback gnssCb = new GnssStatus.Callback() {
         @Override
@@ -95,7 +96,14 @@ public class MainActivity extends Activity {
                 }
             }
             StringBuilder sb = new StringBuilder();
-            sb.append("{\"v\":").append(tv).append(",\"u\":").append(tu).append(",\"c\":[");
+            long fixAge = lastGnssFix > 0 ? (now - lastGnssFix) / 1000 : -1;
+            boolean prov = false;
+            try {
+                prov = lm != null && lm.isProviderEnabled(LocationManager.GPS_PROVIDER);
+            } catch (Exception ignored) {
+            }
+            sb.append("{\"v\":").append(tv).append(",\"u\":").append(tu)
+                    .append(",\"fix\":").append(fixAge).append(",\"prov\":").append(prov).append(",\"c\":[");
             boolean first = true;
             for (int k = 0; k < 8; k++) {
                 if (vis[k] == 0) continue;
@@ -123,6 +131,7 @@ public class MainActivity extends Activity {
     private final LocationListener keepAlive = new LocationListener() {
         @Override
         public void onLocationChanged(Location location) {
+            lastGnssFix = System.currentTimeMillis();
         }
 
         @Override
@@ -138,18 +147,33 @@ public class MainActivity extends Activity {
         }
     };
 
+    private void gnssState(String st) {
+        final String js = "window.__gnssState&&window.__gnssState(" + JSONObject.quote(st) + ")";
+        runOnUiThread(() -> {
+            if (web != null) web.evaluateJavascript(js, null);
+        });
+    }
+
     private void startGnss() {
         if (!gnssWanted || gnssOn) return;
-        if (checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) return;
+        if (checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            // only "approximate location" granted (or none yet): no satellite data
+            if (hasLocationPermission()) gnssState("nofine");
+            return;
+        }
         try {
             if (lm == null) lm = (LocationManager) getSystemService(LOCATION_SERVICE);
-            if (lm == null) return;
-            lm.registerGnssStatusCallback(gnssCb, new Handler(Looper.getMainLooper()));
-            if (lm.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
-                lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000L, 0f, keepAlive, Looper.getMainLooper());
+            if (lm == null) {
+                gnssState("nolm");
+                return;
             }
+            lm.registerGnssStatusCallback(gnssCb, new Handler(Looper.getMainLooper()));
+            // keeps the receiver running; allowed also while the provider is off (updates start when it is switched on)
+            lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000L, 0f, keepAlive, Looper.getMainLooper());
             gnssOn = true;
-        } catch (SecurityException | IllegalArgumentException ignored) {
+            gnssState(lm.isProviderEnabled(LocationManager.GPS_PROVIDER) ? "on" : "provoff");
+        } catch (SecurityException | IllegalArgumentException e) {
+            gnssState("error");
         }
     }
 
