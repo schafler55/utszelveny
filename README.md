@@ -40,6 +40,10 @@ vagy műholdkép. Északkal felfelé vagy menetirány szerint forgatva. Koppint�
 Fénykép a helyszínről útszámmal, szelvénnyel, dátummal és idővel a kép tetején (koordináta és égtáj is kérhető),
 a pozíció a kép adatai közé (EXIF) is bekerül. Az Android alkalmazás a Képek / ÚtSzelvény mappába ment.
 
+![Fotó funkció – valódi fotók](screenshots/foto.jpg)
+
+<sub>A fotók egy korábbi verzióval készültek (a bélyegzőn még „GPS” és a régi koordináta-formátum szerepel); a rendszámokat kitakartuk.</sub>
+
 ### Beállítások
 Fülekre bontva (Általános, Pozíció, Térkép, Mérés, Fotó, Névjegy); mindig az aktuális oldal fülén nyílik meg.
 Koordináták: WGS84 (alapértelmezett) vagy EOV.
