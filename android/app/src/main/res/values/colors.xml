@@ -2,4 +2,5 @@
 <resources>
     <color name="bg">#16181C</color>
     <color name="nav">#1C1E22</color>
+    <color name="ic_launcher_bg">#16181C</color>
 </resources>
