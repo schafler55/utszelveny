@@ -19,7 +19,7 @@
   --pri-c:#12452B; --on-pri-c:#CDEFD7; --pri-c2:#1E5A3A; --hero-sub:#A7CFB3; --hero-ch:#F1FFF4; --hero-line:rgba(255,255,255,.14); --hero-outline:#4E7A5E;
   --sec-c:#374B3D; --on-sec-c:#D2E8D6;
   --ter:#A3CDDC; --ter-c:#214D5A; --on-ter-c:#BFE9F9;
-  --err:#FFB4AB; --on-err:#690005; --err-c:#5C1F1C; --on-err-c:#FFDAD6; --err-line:#6B2D28; --rec:#FF6B5E;
+  --err:#FFB4AB; --on-err:#690005; --err-c:#5C1F1C; --on-err-c:#FFDAD6; --err-line:#6B2D28; --rec:#FF6B5E; --ng-c:#4D1D1A; --ng-sub:#F2B8B2; --ng-ico:#6E2A25; --ng-icofg:#FFB4AB; --ng-line:rgba(255,218,214,.18);
   --warn:#F2C46D; --warn-c:#4A3A10; --on-warn-c:#FFE6B0;
   --ok:#6BE28F; --fab:#005230; --on-fab:#A9F2BE;
   --inv-s:#DEE4DD; --inv-on:#2B322D; --inv-pri:#2B6A46;
@@ -37,7 +37,7 @@ html[data-theme=light]{
   --pri-c:#B0F1C3; --on-pri-c:#002111; --pri-c2:#95DDAB; --hero-sub:#24452F; --hero-ch:#002111; --hero-line:rgba(0,33,17,.16); --hero-outline:#4E7A5E;
   --sec-c:#D0E8D5; --on-sec-c:#0C1F14;
   --ter:#1F5466; --ter-c:#BFE9F9; --on-ter-c:#001F28;
-  --err:#BA1A1A; --on-err:#FFFFFF; --err-c:#FFDAD6; --on-err-c:#410002; --err-line:#E8B4AE; --rec:#D93025;
+  --err:#BA1A1A; --on-err:#FFFFFF; --err-c:#FFDAD6; --on-err-c:#410002; --err-line:#E8B4AE; --rec:#D93025; --ng-c:#FFDAD6; --ng-sub:#73302B; --ng-ico:#FFB4AB; --ng-icofg:#93000A; --ng-line:rgba(65,0,2,.14);
   --warn:#7A5300; --warn-c:#FFDEA6; --on-warn-c:#271900;
   --ok:#0B7A3A; --fab:#B0F1C3; --on-fab:#002111;
   --inv-s:#2B322D; --inv-on:#ECF2EB; --inv-pri:#8ED5A3;
@@ -74,7 +74,15 @@ main{flex:1;overflow:auto;padding:4px 12px 12px;display:flex;flex-direction:colu
 
 /* hero: road + chainage */
 .hero{position:relative;background:var(--pri-c);color:var(--on-pri-c);border-radius:28px;padding:16px 16px 20px;text-align:center;min-height:300px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px}
-.hero.lost{background:var(--warn-c);color:var(--on-warn-c)}
+/* no GNSS data (off / searching / signal lost): red tile, same title and icon size */
+.hero.nogps{background:var(--ng-c);color:var(--on-err-c);--hero-line:var(--ng-line)}
+.hero.nogps .rsub{color:var(--ng-sub)}
+.hero.nogps .startbtn{background:var(--err);color:var(--on-err)}
+.hico{position:relative;width:64px;height:64px;border-radius:50%;background:var(--ng-ico);color:var(--ng-icofg);display:grid;place-items:center;margin-bottom:12px;flex-shrink:0}
+.hico svg{width:32px;height:32px}
+.hico .spin{position:absolute;inset:0;width:64px;height:64px;animation:hspin 1.4s linear infinite}
+@keyframes hspin{to{transform:rotate(360deg)}}
+.hero.nogps .big3{font-size:1.6rem;font-weight:500;line-height:1.25}
 .hero.off{background:var(--sc-high);color:var(--on)}
 .q{position:absolute;top:14px;right:14px;display:flex;align-items:center;gap:6px;height:32px;padding:0 12px 0 10px;border-radius:16px;background:var(--pri-c2);font-size:.8125rem;font-weight:600;color:var(--on-pri-c)}
 .q i{width:8px;height:8px;border-radius:50%;background:var(--dim)}
@@ -90,7 +98,6 @@ main{flex:1;overflow:auto;padding:4px 12px 12px;display:flex;flex-direction:colu
 .rname2{font-size:.95rem;line-height:1.3;color:var(--hero-sub);margin-top:2px;max-width:100%}
 .rsub{font-size:.8125rem;color:var(--hero-sub);margin-top:6px}
 .hero.off .rsub,.hero.off .rname2{color:var(--onv)}
-.hero.lost .rsub{color:var(--on-warn-c);opacity:.85}
 .chips{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-top:12px}
 .chip{display:inline-flex;align-items:center;min-height:32px;font-size:.8125rem;font-weight:500;padding:4px 12px;border-radius:8px;background:none;color:var(--onv);border:1px solid var(--outv)}
 .hero .chip{color:var(--on-pri-c);border-color:var(--hero-outline)}
@@ -1018,18 +1025,23 @@ function quality(acc){
 const SAT=`<svg viewBox="0 0 24 24" fill="currentColor"><path d="M14.6 3.1 11 6.7l2.1 2.1 3.6-3.6zM6.7 11 3.1 14.6l2.1 2.1L8.8 13.1zM9.5 7.6l7 7-2.1 2.1-7-7z"/><path d="M5 19a3 3 0 0 0 3-3h1.5A4.5 4.5 0 0 1 5 20.5z" opacity=".8"/></svg>`;
 const WARN=`<svg class="warnicon" viewBox="0 0 100 88"><path d="M50 4 96 84H4z" fill="#fbbf24" stroke="#fbbf24" stroke-width="6" stroke-linejoin="round"/><rect x="45" y="28" width="10" height="32" rx="4" fill="#1f2937"/><circle cx="50" cy="70" r="6" fill="#1f2937"/></svg>`;
 
+const HICO_OFF=`<div class="hico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-7-6.2-7-11.5a7 7 0 0 1 11.6-5.3M18.7 7.6c.2.6.3 1.2.3 1.9 0 2.7-1.8 5.6-3.7 7.8"/><path d="M3 3l18 18"/></svg></div>`;
+const HICO_SEARCH=`<div class="hico"><svg class="spin" viewBox="0 0 64 64"><circle cx="32" cy="32" r="29" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-dasharray="60 122"/></svg><svg viewBox="0 0 24 24" fill="currentColor"><path d="M14.6 3.1 11 6.7l2.1 2.1 3.6-3.6zM6.7 11 3.1 14.6l2.1 2.1L8.8 13.1zM9.5 7.6l7 7-2.1 2.1-7-7z"/><path d="M5 19a3 3 0 0 0 3-3h1.5A4.5 4.5 0 0 1 5 20.5z" opacity=".8"/></svg></div>`;
+const HICO_LOST=`<div class="hico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.3 3.9 2.4 17.5A2 2 0 0 0 4.1 20.5h15.8a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/><path d="M12 9v4.5M12 17h.01"/></svg></div>`;
 function render(){
   const hero=$("hero"),lost=watchId!==null&&cur&&cur.pos.src==="gps"&&Date.now()-lastFixT>10000;
   const waiting=watchId!==null&&(!cur||cur.pos.src!=="gps");
   let title="ÚtSzelvény";
   hero.className="card hero";
   if(!cur&&watchId===null){
-    hero.innerHTML=`<div class="big3">GNSS kikapcsolva</div><div class="rsub">${gpsErr?esc(gpsErr):"Indítsd el a helymeghatározást a szelvény kijelzéséhez."}</div><button class="startbtn" onclick="startGPS()">GNSS indítása</button>`+lastKnownHTML();
+    hero.className="card hero nogps";
+    hero.innerHTML=`${HICO_OFF}<div class="big3">GNSS kikapcsolva</div><div class="rsub">${gpsErr?esc(gpsErr):"Indítsd el a helymeghatározást a szelvény kijelzéséhez."}</div><button class="startbtn" onclick="startGPS()">GNSS indítása</button>`+lastKnownHTML();
   }else if(waiting&&!cur){
-    hero.innerHTML=`<div class="big3">Műholdak keresése…</div><div class="rsub">${gpsErr?esc(gpsErr):"Az első pozíció 5–30 másodperc is lehet."}</div>`+lastKnownHTML();
+    hero.className="card hero nogps";
+    hero.innerHTML=`${HICO_SEARCH}<div class="big3">Műholdak keresése…</div><div class="rsub">${gpsErr?esc(gpsErr):"Az első pozíció 5–30 másodperc is lehet."}</div>`+lastKnownHTML();
   }else if(lost){
-    hero.className="card hero lost";
-    hero.innerHTML=`${WARN}<div class="big2">JELVESZTÉS</div><div class="rsub">${gpsErr?esc(gpsErr):"Nincs friss GNSS-pozíció "+Math.round((Date.now()-lastFixT)/1000)+" mp óta."}</div>`+lastKnownHTML(true);
+    hero.className="card hero nogps lost";
+    hero.innerHTML=`${HICO_LOST}<div class="big3">Jelvesztés</div><div class="rsub">${gpsErr?esc(gpsErr):"Nincs friss GNSS-pozíció "+Math.round((Date.now()-lastFixT)/1000)+" mp óta."}</div>`+lastKnownHTML(true);
   }else if(cur.res.off){
     hero.className="card hero off";
     const nr=cur.res.nearest;
