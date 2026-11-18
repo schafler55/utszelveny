@@ -330,7 +330,9 @@ nav button.rec .pill::after{content:"";position:absolute;top:4px;right:16px;widt
 
 /* ---------- Fotó ---------- */
 #fotoView{flex:1;flex-direction:column;margin:-4px -12px -12px;background:var(--bg);min-height:300px;overflow:hidden}
-.camstage{position:relative;flex:1;min-height:0;overflow:hidden;margin:0 12px;border-radius:28px;background:#000}
+/* the rounded frame takes the camera picture's own shape (no black bars); camFit() sizes it */
+.camwrap{position:relative;flex:1;min-height:0;display:flex;align-items:center;justify-content:center;margin:0 12px}
+.camstage{position:relative;width:100%;height:100%;overflow:hidden;border-radius:28px;background:#000;flex-shrink:0}
 #camV{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;background:#000}
 #camO{position:absolute;pointer-events:none;display:none}
 .camflash{position:absolute;inset:0;background:#fff;opacity:0;pointer-events:none;transition:opacity .3s}
@@ -460,12 +462,12 @@ nav button.rec .pill::after{content:"";position:absolute;top:4px;right:16px;widt
     <div class="mapinfo" id="mapInfo"><div class="mi-t">Koppints a térképre egy pont szelvényének lekérdezéséhez.</div></div>
   </section>
   <section class="view" id="fotoView">
-    <div class="camstage" id="camStage">
+    <div class="camwrap" id="camWrap"><div class="camstage" id="camStage">
       <video id="camV" playsinline muted autoplay></video>
       <canvas id="camO"></canvas>
       <div class="camflash" id="camFlash"></div>
       <div class="cammsg" id="camMsg"></div>
-    </div>
+    </div></div>
     <div class="camopts"><div class="seg" id="camResSeg"><button data-v="best">Legjobb</button><button data-v="fast">Gyors</button></div><button class="camfl" id="camFl" aria-label="Vaku" style="display:none"></button></div>
     <div class="cambar">
       <button class="camthumb" id="camThumb" aria-label="Elkészült fotók"></button>
@@ -2224,7 +2226,7 @@ async function camStart(){
 function camStop(){
   if(camStream)camStream.getTracks().forEach(x=>x.stop());
   camStream=camTrack=camIC=null;camCaps={torch:false,flash:false};camFlUI();const v=$("camV");if(v)v.srcObject=null;
-  $("camO").style.display="none";
+  $("camO").style.display="none";camFit();
 }
 function camSet(on){
   if(on===camOn)return;camOn=on;
@@ -2238,7 +2240,15 @@ function camSet(on){
   }
 }
 // live preview of the stamp, over the visible video picture (object-fit: contain)
+function camFit(){
+  const w=$("camWrap"),st=$("camStage"),v=$("camV");if(!w||!st)return;
+  if(!camOn||!camStream||!v.videoWidth||!v.videoHeight){st.style.width=st.style.height="";return}
+  const W=w.clientWidth,H=w.clientHeight;if(!W||!H)return;
+  const k=Math.min(W/v.videoWidth,H/v.videoHeight),nw=Math.floor(v.videoWidth*k)+"px",nh=Math.floor(v.videoHeight*k)+"px";
+  if(st.style.width!==nw)st.style.width=nw;if(st.style.height!==nh)st.style.height=nh;
+}
 function camOverlay(){
+  camFit();
   const v=$("camV"),o=$("camO");
   if(!camOn||!camStream||!v.videoWidth){o.style.display="none";return}
   const bw=v.clientWidth,bh=v.clientHeight,vw=v.videoWidth,vh=v.videoHeight,k=Math.min(bw/vw,bh/vh),w=vw*k,h=vh*k;
