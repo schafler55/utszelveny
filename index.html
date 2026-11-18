@@ -9,7 +9,7 @@
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" type="image/png" href="icon-192.png">
 <link rel="apple-touch-icon" href="icon-192.png">
-<title>ÚtSzelvény V0.5.1 Beta</title>
+<title>ÚtSzelvény V0.6 Beta</title>
 <style>
 :root{
   --bg:#16181c; --card:#25282d; --card2:#2d3036; --line:#3a3e45;
@@ -221,6 +221,7 @@ nav button.rec .pill::after{content:"";position:absolute;top:3px;right:12px;widt
 .stabs button.on{background:var(--green2);border-color:var(--green2);color:#fff;font-weight:700}
 .spanes{flex:1;overflow:auto;padding:6px 18px calc(20px + env(safe-area-inset-bottom))}
 .spane{display:none}.spane.on{display:block}
+.stabs button{flex:1 0 auto;padding:8px 11px;overflow:visible}
 .seg.wide{display:flex}.seg.wide button{flex:1;padding:10px 6px}
 .mset-l{font-size:.95rem;margin:14px 0 8px}
 #mapSet>.mset-l:first-child{margin-top:6px}
@@ -234,6 +235,39 @@ nav button.rec .pill::after{content:"";position:absolute;top:3px;right:12px;widt
 .mp-head .iconbtn{width:36px;height:36px}
 .mpback{position:absolute;inset:0;z-index:5;display:none}.mpback.on{display:block}
 .mdelc{display:flex;gap:8px;margin-top:10px}.mdelc .btn{flex:1}
+#fotoView{flex:1;flex-direction:column;margin:-4px -14px -14px;background:#000;min-height:300px;overflow:hidden}
+.camstage{position:relative;flex:1;min-height:0;overflow:hidden}
+#camV{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;background:#000}
+#camO{position:absolute;pointer-events:none;display:none}
+.camflash{position:absolute;inset:0;background:#fff;opacity:0;pointer-events:none;transition:opacity .3s}
+.camflash.on{opacity:.8;transition:none}
+.cammsg{position:absolute;inset:0;display:none;flex-direction:column;align-items:center;justify-content:center;gap:14px;text-align:center;padding:24px;color:var(--muted);font-size:.95rem;line-height:1.45}
+.cammsg.on{display:flex}
+.cammsg b{color:var(--text);font-family:var(--cond);font-size:1.4rem}
+.cambar{flex-shrink:0;display:flex;align-items:center;justify-content:space-between;padding:12px 28px;background:#0b0c0e}
+.camshut{width:76px;height:76px;border-radius:50%;border:4px solid #fff;display:grid;place-items:center}
+.camshut i{width:60px;height:60px;border-radius:50%;background:#fff;transition:transform .1s}
+.camshut:active i{transform:scale(.86)}
+.camshut[disabled]{opacity:.35}
+.camshut.busy i{background:#9ca3af;transform:scale(.86)}
+.camthumb{width:56px;height:56px;border-radius:12px;border:2px solid #4b5563;background:#1b1d21 center/cover no-repeat;position:relative}
+.camthumb b{position:absolute;top:-8px;right:-8px;min-width:22px;height:22px;border-radius:11px;background:var(--green2);color:#fff;font-size:.75rem;display:grid;place-items:center;padding:0 5px}
+.camthumb b.uns{background:#b45309}
+.camflip{width:56px;height:56px;border-radius:50%;background:#1f2227;display:grid;place-items:center;color:#e5e7eb}
+.camviewer{position:fixed;inset:0;z-index:30;background:#000;display:none;flex-direction:column}
+.camviewer.on{display:flex}
+.cv-top{display:flex;align-items:center;justify-content:space-between;padding:calc(6px + env(safe-area-inset-top)) 10px 4px 18px;font-family:var(--cond);font-size:1.15rem;color:var(--muted)}
+.cv-img{position:relative;flex:1;min-height:0}
+.cv-img img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain}
+.cv-nav{position:absolute;top:50%;transform:translateY(-50%);width:44px;height:64px;border-radius:12px;background:#0008;font-size:2rem;color:#fff}
+.cv-nav.l{left:6px}.cv-nav.r{right:6px}
+.cv-nav[disabled]{display:none}
+.cv-name{font-size:.78rem;color:var(--muted);text-align:center;padding:8px 12px 0;word-break:break-all}
+.cv-btns{display:flex;gap:10px;padding:10px 14px calc(14px + env(safe-area-inset-bottom))}
+.cv-btns .btn{flex:1;padding:13px 6px}
+.camtoast{position:fixed;left:50%;bottom:calc(196px + env(safe-area-inset-bottom));transform:translateX(-50%);z-index:40;max-width:88%;background:#25282df2;border:1px solid #3d434c;color:var(--text);border-radius:14px;padding:10px 16px;font-size:.9rem;line-height:1.35;text-align:center;opacity:0;pointer-events:none;transition:opacity .25s}
+.camtoast.on{opacity:1}
+.camtoast.bad{border-color:#b91c1c;color:#fecaca}
 @media (min-width:760px){ main{max-width:560px;margin:0 auto;width:100%} #mapView{max-width:none} }
 </style>
 </head>
@@ -319,6 +353,19 @@ nav button.rec .pill::after{content:"";position:absolute;top:3px;right:12px;widt
     </div>
     <div class="mapinfo" id="mapInfo"><div class="mi-t">Koppints a térképre egy pont szelvényének lekérdezéséhez.</div></div>
   </section>
+  <section class="view" id="fotoView">
+    <div class="camstage" id="camStage">
+      <video id="camV" playsinline muted autoplay></video>
+      <canvas id="camO"></canvas>
+      <div class="camflash" id="camFlash"></div>
+      <div class="cammsg" id="camMsg"></div>
+    </div>
+    <div class="cambar">
+      <button class="camthumb" id="camThumb" aria-label="Elkészült fotók"></button>
+      <button class="camshut" id="camShut" aria-label="Fotó készítése" disabled><i></i></button>
+      <button class="camflip" id="camFlip" aria-label="Kamera váltása" style="visibility:hidden"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8h3l2-3h6l2 3h3v11H4z"/><path d="M9.5 13.5a2.8 2.8 0 0 0 5 1.5M14.5 12.5a2.8 2.8 0 0 0-5-1.5"/><path d="M14.8 15.6v-1.2h-1.2M9.2 10.4v1.2h1.2"/></svg></button>
+    </div>
+  </section>
 </main>
 
 <nav>
@@ -331,13 +378,23 @@ nav button.rec .pill::after{content:"";position:absolute;top:3px;right:12px;widt
   <button id="nMeas"><span class="pill">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M2.5 16 16 2.5 21.5 8 8 21.5z"/><path d="M7 11.5l2 2M9.8 8.7l1.4 1.4M12.5 6l2 2"/></svg>
   </span>Mérés</button>
+  <button id="nFoto"><span class="pill">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M3 8h4l2-3h6l2 3h4v12H3z"/><circle cx="12" cy="13.5" r="3.6"/></svg>
+  </span>Fotó</button>
 </nav>
 
+<div class="camviewer" id="camViewer">
+  <div class="cv-top"><span id="cvCnt"></span><button class="iconbtn" id="cvClose" aria-label="Bezárás"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6 6 18"/></svg></button></div>
+  <div class="cv-img"><img id="cvImg" alt=""><button class="cv-nav l" id="cvPrev" aria-label="Előző">‹</button><button class="cv-nav r" id="cvNext" aria-label="Következő">›</button></div>
+  <div class="cv-name" id="cvName"></div>
+  <div class="cv-btns"><button class="btn pri" id="cvSave">Mentés</button><button class="btn" id="cvShare">Megosztás</button><button class="btn" id="cvDel">Eltávolítás</button></div>
+</div>
+<div class="camtoast" id="camToast"></div>
 <div class="sheet" id="sheet">
   <div class="in">
     <div class="sh-top">
       <div class="sh-head"><h2>Beállítások</h2><button class="iconbtn" id="closeSheet" aria-label="Bezárás"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6 6 18"/></svg></button></div>
-      <div class="stabs" id="stabs"><button data-t="gen">Általános</button><button data-t="pos">Pozíció</button><button data-t="map">Térkép</button><button data-t="meas">Mérés</button><button data-t="info">Névjegy</button></div>
+      <div class="stabs" id="stabs"><button data-t="gen">Általános</button><button data-t="pos">Pozíció</button><button data-t="map">Térkép</button><button data-t="meas">Mérés</button><button data-t="foto">Fotó</button><button data-t="info">Névjegy</button></div>
     </div>
     <div class="spanes">
     <div class="spane" data-p="gen">
@@ -372,12 +429,24 @@ nav button.rec .pill::after{content:"";position:absolute;top:3px;right:12px;widt
       <h3>Mentett mérések</h3>
       <div id="measDelBox"></div>
     </div>
+    <div class="spane" data-p="foto">
+      <h3 style="margin-top:4px">A képre kerül</h3>
+      <div class="opt"><div><span>Útnév</span></div><button class="sw on" id="swPhName"></button></div>
+      <div class="opt"><div><span>GPS pontosság</span></div><button class="sw on" id="swPhAcc"></button></div>
+      <div class="opt"><div><span>Irány (égtáj)</span><small>Merre néz a kamera, pl. ÉK, DDNY – a telefon iránytűje szerint; ha nincs, menet közben a haladási irány</small></div><button class="sw on" id="swPhDir"></button></div>
+      <div class="opt col"><div><span>Koordináták</span><small>Úthálózaton kívül mindig rákerülnek (ha itt „Ki” van, WGS84-ben)</small></div><div class="seg wide" id="phCoordSeg"><button data-v="off">Ki</button><button data-v="eov">EOV</button><button data-v="wgs">WGS84</button><button data-v="both">Mindkettő</button></div></div>
+      <h3>Felvétel és mentés</h3>
+      <div class="opt col"><div><span>Képminőség</span><small>Legjobb: a kamera teljes felbontása (max. 12 MP, lassabb). Gyors: az élőkép egy kockája.</small></div><div class="seg wide" id="phResSeg"><button data-v="best">Legjobb</button><button data-v="fast">Gyors</button></div></div>
+      <div class="opt"><div><span>Automatikus mentés</span><small id="phAutoNote"></small></div><button class="sw on" id="swPhAuto"></button></div>
+      <div class="opt"><div><span>Hely és idő a fájl adataiban (EXIF)</span><small>A galéria így térképen is meg tudja mutatni a fotót</small></div><button class="sw on" id="swPhExif"></button></div>
+      <p class="note">A felirat (útszám, szelvény, dátum és idő) az exponálás pillanatában rögzül. Az alkalmazás a fotókat nem tárolja: a Fotó oldal bélyegképe csak az ebben a munkamenetben készült képeket mutatja – a mentett példány a telefonon marad.</p>
+    </div>
     <div class="spane" data-p="info">
       <h3 style="margin-top:4px">Adatok</h3>
       <p class="note" id="dataInfo"></p>
       <p class="note">Felhasznált NAP adatcsomagok: Országos közúthálózat, Közút neve/kategóriája/kezelője, Szelvényjelek, Sebességkorlátozás, Lakott területi szakaszok, Hídhasználati feltételek, Tehergépjárművekre vonatkozó korlátozások. A sebességkorlát ott, ahol nincs egyedi korlátozás, a KRESZ szerinti alapérték. A térkép alapréteg csak internetkapcsolattal és weboldalról megnyitva érhető el. Koordináta-átszámítás: WGS84 → HD72/EOV (EPSG:23700), kb. 1 m pontossággal.</p>
       <div class="about">
-      <div class="about-t">ÚtSzelvény V0.5.1 Beta</div>
+      <div class="about-t">ÚtSzelvény V0.6 Beta</div>
       <p>© 2026 Szászi Dániel</p>
       <p>Az alkalmazást Szászi Dániel készítette AI segítségével (Gemini 4 Argon, Claude Opus 5.5)</p>
       <p>Forráskód: GPL-3.0 licence - <a href="https://github.com/schafler55/kozutszelveny" target="_blank" rel="noopener">GitHub</a></p>
@@ -406,7 +475,7 @@ const KUT=["","autópálya","autóút","elsőrendű főút","másodrendű főút
 const PKOD=["osztatlan pálya","jobb pálya","bal pálya"];
 
 /* ---------- settings ---------- */
-const S={wake:true,bike:true,name:true,coord:"wgs",base:"grey",rot:"north",measCoord:"both",lineW:1.6,secSpd:true,secBr:true,secTr:true,secGps:true,secKez:true};
+const S={wake:true,bike:true,name:true,coord:"wgs",base:"grey",rot:"north",measCoord:"both",lineW:1.6,secSpd:true,secBr:true,secTr:true,secGps:true,secKez:true,phName:true,phAcc:true,phCoord:"off",phRes:"best",phAuto:true,phExif:true,phDir:true};
 try{Object.assign(S,JSON.parse(localStorage.getItem("ksz_settings")||"{}"))}catch(e){}
 function saveS(){try{localStorage.setItem("ksz_settings",JSON.stringify(S))}catch(e){}}
 
@@ -889,6 +958,7 @@ function render(){
   $("gpsToggle").textContent=watchId===null?"Indítás":"Leállítás";
   $("gpsToggle").className="btn "+(watchId===null?"pri":"red");
   renderMeas();
+  if(camOn)camOverlay();
 }
 function renderSpeed(show){
   const card=$("spdCard");if(!show){card.style.display="none";return}
@@ -1503,11 +1573,18 @@ $("measCopy").onclick=async()=>{
     try{const a=document.createElement("textarea");a.value=t;document.body.appendChild(a);a.select();ok=document.execCommand("copy");a.remove()}catch(e2){}}
   $("measMsg").textContent=ok?"Vágólapra másolva – beillesztheted táblázatba vagy üzenetbe.":"A másolás nem sikerült.";
 };
-$("measDl").onclick=()=>{
+$("measDl").onclick=async()=>{
+  const fn="utszelveny_meresek_"+new Date().toISOString().slice(0,10)+".csv";
+  if(NB&&NB.saveFile){   // Android app: blob downloads don't work in the WebView → save through the app
+    $("measMsg").textContent="Mentés…";
+    const r=await nativeCall("saveFile",await blobB64(new Blob([measCSV()],{type:"text/csv"})),fn,"text/csv");
+    $("measMsg").textContent=r.ok?"Mentve: Letöltések / ÚtSzelvény mappa ("+fn+")":"A mentés nem sikerült"+(r.msg?": "+r.msg:"")+" – használd a Másolás gombot.";
+    return;
+  }
   const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([measCSV()],{type:"text/csv;charset=utf-8"}));
-  a.download="utszelveny_meresek_"+new Date().toISOString().slice(0,10)+".csv";document.body.appendChild(a);a.click();
+  a.download=fn;document.body.appendChild(a);a.click();
   setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},1000);
-  $("measMsg").textContent="Letöltés elindítva (ha a telefonos alkalmazásban nem működik, használd a Másolás gombot).";
+  $("measMsg").textContent="Letöltés elindítva.";
 };
 // map overlay: running measurement (orange) and the selected saved one (magenta)
 const trkCache=new WeakMap();
@@ -1743,14 +1820,383 @@ function drawMM(){
     ctx.fillStyle="#fff";ctx.font="bold 12px Arial,sans-serif";ctx.textAlign="center";ctx.textBaseline="middle";ctx.fillText(String(i+1),x,y+0.5)});
 }
 
+/* ---------- Fotó: in-app camera; road, km+m, date and time burned into the JPEG ----------
+   Same code in the browser and in the Android app. Only saving/sharing differs:
+   Android app → window.AndroidBridge (gallery: Pictures/ÚtSzelvény), browser → download / share sheet. */
+const NB=window.AndroidBridge||null;
+const APP_VER="UtSzelveny V0.6 Beta";
+const nativeCB={};let nativeN=0;
+window.__nativeDone=(id,ok,msg,uri)=>{const f=nativeCB[id];if(f){delete nativeCB[id];f({ok:!!ok,msg:msg||"",uri:uri||""})}};
+function nativeCall(fn,...args){
+  return new Promise(res=>{const id="n"+(++nativeN);nativeCB[id]=res;
+    try{NB[fn](...args,id)}catch(e){delete nativeCB[id];res({ok:false,msg:String(e&&e.message||e)})}});
+}
+const blobB64=(b)=>new Promise((res,rej)=>{const r=new FileReader();r.onload=()=>res(String(r.result).split(",")[1]||"");r.onerror=()=>rej(r.error);r.readAsDataURL(b)});
+
+var camOn=false;                 // Fotó page open (var: render() may run before this block)
+let camStream=null,camTrack=null,camIC=null,camBusy=false,camShooting=false,camErr=null,camFacing="environment",camDevs=0,camTick=null,camPend=0;
+const camShots=[];               // photos of this session, newest last: {id,blob,url,name,saved,uri}
+let camIdx=-1;                   // photo shown in the viewer
+const CAM_MAX=40,CAM_MAXPX=4032;
+const p2=(n)=>String(n).padStart(2,"0");
+const fmtAge=(s)=>s<60?s+" mp":s<3600?Math.round(s/60)+" perc":Math.round(s/3600)+" óra";
+
+/* ---- compass: the direction the rear camera looks at, 16 Hungarian compass points ---- */
+const DIR16=["É","ÉÉK","ÉK","KÉK","K","KDK","DK","DDK","D","DDNY","DNY","NYDNY","NY","NYÉNY","ÉNY","ÉÉNY"];
+const dir16=(h)=>DIR16[Math.round((((h%360)+360)%360)/22.5)%16];
+let cmpX=0,cmpY=0,cmpT=0,cmpOn=false,cmpAbs=false;
+function cmpEvt(e){
+  let h=null;
+  if(e.webkitCompassHeading!=null&&!isNaN(e.webkitCompassHeading))h=e.webkitCompassHeading;     // iOS
+  else{
+    if(e.type==="deviceorientation"&&(cmpAbs||!e.absolute))return;     // north-based values only
+    if(e.alpha==null||e.beta==null||e.gamma==null)return;
+    if(e.type==="deviceorientationabsolute")cmpAbs=true;
+    const r=Math.PI/180,cA=Math.cos(e.alpha*r),sA=Math.sin(e.alpha*r),cB=Math.cos(e.beta*r),sB=Math.sin(e.beta*r),cG=Math.cos(e.gamma*r),sG=Math.sin(e.gamma*r);
+    let x=-cA*sG-sA*sB*cG,y=-sA*sG+cA*sB*cG;          // rear camera axis (device −z): east, north components
+    if(Math.hypot(x,y)<.35){x=-sA*cB;y=cA*cB}         // phone (nearly) flat: direction of its top edge
+    h=Math.atan2(x,y)/r;
+  }
+  const k=Date.now()-cmpT>2000?1:.3,a=h*Math.PI/180;   // smoothing on the circle
+  cmpX+=k*(Math.sin(a)-cmpX);cmpY+=k*(Math.cos(a)-cmpY);cmpT=Date.now();
+}
+function cmpStart(){
+  if(cmpOn)return;cmpOn=true;
+  try{if(typeof DeviceOrientationEvent!=="undefined"&&typeof DeviceOrientationEvent.requestPermission==="function")DeviceOrientationEvent.requestPermission().catch(()=>{})}catch(e){}
+  window.addEventListener("deviceorientationabsolute",cmpEvt);window.addEventListener("deviceorientation",cmpEvt);
+}
+function cmpStop(){if(!cmpOn)return;cmpOn=false;window.removeEventListener("deviceorientationabsolute",cmpEvt);window.removeEventListener("deviceorientation",cmpEvt)}
+// compass if it works, else the GPS course while moving
+function camHeading(){
+  if(cmpOn&&Date.now()-cmpT<3000&&Math.hypot(cmpX,cmpY)>.3)return {h:(Math.atan2(cmpX,cmpY)*180/Math.PI+360)%360,ref:"M"};
+  const p=cur&&cur.pos;
+  if(p&&p.src==="gps"&&p.heading!=null&&p.spd!=null&&p.spd>1.5&&Date.now()-lastFixT<5000)return {h:(p.heading+360)%360,ref:"T"};
+  return null;
+}
+
+// everything the stamp needs, taken at the moment of the tap
+function stampData(){
+  const t=Date.now(),d={t,state:"nogps"};
+  const hd=S.phDir?camHeading():null;if(hd){d.hd=Math.round(hd.h)%360;d.hdRef=hd.ref}
+  if(!cur)return d;
+  const p=cur.pos,gps=p.src==="gps";
+  d.src=p.src;d.acc=gps&&p.acc!=null?p.acc:null;
+  if(gps){d.age=Math.round((t-lastFixT)/1000);d.stale=watchId===null||d.age>10}
+  const ll=p.lat!=null?{lat:p.lat,lon:p.lon}:EOV.inv(p.E,p.N);
+  d.E=Math.round(p.E);d.N=Math.round(p.N);d.lat=ll.lat;d.lon=ll.lon;
+  if(cur.res.off){d.state="off";const nr=cur.res.nearest;if(nr){d.near=ROADS[segRoad[nr.s]].num;d.nearD=Math.round(nr.d)}return d}
+  const r=cur.res,s=r.best.s,road=ROADS[segRoad[s]];
+  return Object.assign(d,{state:"on",road:road.num,name:road.name,kut:segKut[s],pk:segPk[s],ch:fmtCh(r.ch),dirInc:r.best.dirInc});
+}
+
+/* ---- stamp drawing (same function for the live preview and the saved photo) ---- */
+const STF='"Roboto Condensed","sans-serif-condensed","Arial Narrow",Arial,sans-serif';
+const SHP=typeof Path2D!=="undefined"?new Path2D("M8 4H92Q95 4 95 7V48Q95 54 89.5 56L52.5 68.9Q50 69.8 47.5 68.9L10.5 56Q5 54 5 48V7Q5 4 8 4Z"):null;
+function rrect(c,x,y,w,h,r){c.beginPath();c.moveTo(x+r,y);c.lineTo(x+w-r,y);c.quadraticCurveTo(x+w,y,x+w,y+r);c.lineTo(x+w,y+h-r);c.quadraticCurveTo(x+w,y+h,x+w-r,y+h);c.lineTo(x+r,y+h);c.quadraticCurveTo(x,y+h,x,y+h-r);c.lineTo(x,y+r);c.quadraticCurveTo(x,y,x+r,y);c.closePath()}
+function drawShield(c,x,y,h,num,kut){   // the road-number sign of shieldSVG(), height h, returns its width
+  const k=h/74,isM=/^M/.test(num)||kut===1||kut===2,col=isM?"#1d4fbf":(kut===3||kut===4)?"#1f7a3a":null;
+  c.save();c.translate(x,y);c.scale(k,k);
+  if(col&&SHP){c.fillStyle=col;c.fill(SHP);c.lineWidth=5;c.strokeStyle="#fff";c.stroke(SHP)}
+  else{rrect(c,4,11,92,50,7);c.fillStyle=col||"#f8fafc";c.fill();c.lineWidth=4;c.strokeStyle=col?"#fff":"#111";c.stroke()}
+  const len=num.length,fs=len<=2?46:len===3?44:len===4?36:30;
+  c.translate(50,col?34:36);c.scale(.8,1);c.font=`700 ${fs}px Arial,Helvetica,sans-serif`;c.textAlign="center";c.textBaseline="middle";
+  c.fillStyle=col?"#fff":"#111";c.fillText(num,0,2);
+  c.restore();return 100*k;
+}
+function fitTxt(c,s,w){if(c.measureText(s).width<=w)return s;while(s.length>1&&c.measureText(s+"…").width>w)s=s.slice(0,-1);return s.trimEnd()+"…"}
+function stampCoord(d){
+  if(d.lat==null)return null;
+  let m=S.phCoord||"off";if(m==="off"&&d.state!=="on")m="wgs";
+  if(m==="off")return null;
+  const e=`EOV ${d.E}, ${d.N}`,w=`${d.lat.toFixed(6)}, ${d.lon.toFixed(6)}`;
+  return m==="eov"?e:m==="wgs"?w:w+" · "+e;
+}
+/* band at the TOP of the photo, 2 rows (variant B):
+   road sign + km+m | road name / details | time, date
+   coordinates · ±accuracy · direction                 ÚtSzelvény */
+function drawStamp(c,W,H,d){
+  const u=Math.min(W,H)/34,pad=u*.75,F=(px,b)=>`${b?"700 ":""}${px}px ${STF}`,headH=2.4*u,hh=headH*1.05,lh=1.32*u;
+  const t=new Date(d.t),date=`${t.getFullYear()}.${p2(t.getMonth()+1)}.${p2(t.getDate())}.`,time=`${p2(t.getHours())}:${p2(t.getMinutes())}:${p2(t.getSeconds())}`;
+  let name=null;
+  if(d.state==="on"&&S.phName&&d.name){const n=splitName(d.name);name=n.sub?`${n.main} (${n.sub})`:n.main}
+  const det=[];
+  if(d.state==="on"){det.push(KUT[d.kut]||"út");if(d.pk)det.push(PKOD[d.pk]);
+    if(d.dirInc===1)det.push("↑ növekvő");else if(d.dirInc===-1)det.push("↓ csökkenő")}
+  else if(d.state==="off"&&d.near)det.push(`legközelebbi út: ${d.near} (${d.nearD} m)`);
+  const bot=[],coord=stampCoord(d);
+  if(coord)bot.push(coord);
+  if(d.src==="manual")bot.push("kézi pozíció");else if(d.acc!=null&&S.phAcc)bot.push(`±${Math.round(d.acc)} m`);
+  if(d.hd!=null)bot.push(dir16(d.hd));
+  if(d.stale)bot.push(`GPS-jel ${fmtAge(d.age)} óta nincs`);
+  const bandH=pad*.7+hh+lh+pad*.55,yc=pad*.7+hh/2,yB=pad*.7+hh+lh/2,gl=Math.max(2,u*.14);
+  c.save();
+  c.fillStyle="rgba(0,0,0,.6)";c.fillRect(0,0,W,bandH);
+  c.fillStyle="#2e9d50";c.fillRect(0,bandH-gl,W,gl);
+  c.textBaseline="middle";
+  // time and date on the right
+  c.textAlign="right";c.font=F(1.3*u,true);c.fillStyle="#fff";const tw=c.measureText(time).width;c.fillText(time,W-pad,yc-.5*u);
+  c.font=F(.95*u);c.fillStyle="#d1d5db";const dw=c.measureText(date).width;c.fillText(date,W-pad,yc+.78*u);
+  const rightW=Math.max(tw,dw)+u;
+  // road sign + chainage (or the state) on the left
+  c.textAlign="left";let hw;
+  if(d.state==="on"){
+    const sw=drawShield(c,pad,yc-headH*.48,headH*.96,d.road,d.kut);
+    c.font=F(headH*.98,true);c.fillStyle="#fff";
+    const ch=fitTxt(c,d.ch,Math.max(u,W-2*pad-rightW-sw-headH*.19));c.fillText(ch,pad+sw+headH*.19,yc+headH*.05);
+    hw=sw+headH*.19+c.measureText(ch).width;
+  }else{
+    c.font=F(1.55*u,true);c.fillStyle="#fde68a";
+    const s=fitTxt(c,d.state==="off"?"Úthálózaton kívül":"Nincs GPS-pozíció",W-2*pad-rightW);c.fillText(s,pad,yc);hw=c.measureText(s).width;
+  }
+  // road name and details between them
+  const x=pad+hw+u*.8,mw=W-pad-rightW-x;
+  if(mw>2.5*u){
+    if(name){c.font=F(1.05*u,true);c.fillStyle="#fff";c.fillText(fitTxt(c,name,mw),x,det.length?yc-.55*u:yc)}
+    if(det.length){c.font=F(.9*u);c.fillStyle="#e5e7eb";c.fillText(fitTxt(c,det.join(" · "),mw),x,name?yc+.75*u:yc)}
+  }
+  // second row: coordinates, accuracy, direction; app name on the right
+  c.font=F(.78*u);const ww=c.measureText("ÚtSzelvény").width;
+  c.textAlign="right";c.fillStyle="rgba(255,255,255,.5)";c.fillText("ÚtSzelvény",W-pad,yB);
+  if(bot.length){c.textAlign="left";c.font=F(.95*u);c.fillStyle="#e5e7eb";c.fillText(fitTxt(c,bot.join(" · "),W-2*pad-ww-u),pad,yB)}
+  c.restore();
+}
+
+/* ---- EXIF: date/time, GPS position and accuracy, description (the canvas JPEG has none) ---- */
+const ascii=(s)=>String(s).normalize("NFD").replace(/[̀-ͯ]/g,"").replace(/[^\x20-\x7e]/g,"?");
+const eAsc=(s)=>{const a=ascii(s),b=new Uint8Array(a.length+1);for(let i=0;i<a.length;i++)b[i]=a.charCodeAt(i);return b};
+const eShort=(v)=>Uint8Array.of(v&255,v>>8&255);
+const eRat=(L)=>{const b=new Uint8Array(L.length*8),dv=new DataView(b.buffer);L.forEach(([n,d],i)=>{dv.setUint32(i*8,n,true);dv.setUint32(i*8+4,d,true)});return b};
+// ifds: arrays of [tag,type,count,bytes|"@k" (offset of IFD k)], tags ascending
+function tiffBlock(ifds){
+  const pos=[];let off=8;
+  for(const I of ifds){pos.push(off);let d=0;for(const e of I)if(typeof e[3]!=="string"&&e[3].length>4)d+=e[3].length+(e[3].length&1);off+=2+12*I.length+4+d}
+  const buf=new Uint8Array(off),dv=new DataView(buf.buffer);
+  buf[0]=buf[1]=0x49;dv.setUint16(2,42,true);dv.setUint32(4,8,true);
+  ifds.forEach((I,k)=>{const p=pos[k];let dp=p+2+12*I.length+4;dv.setUint16(p,I.length,true);
+    I.forEach((e,j)=>{const q=p+2+12*j;dv.setUint16(q,e[0],true);dv.setUint16(q+2,e[1],true);dv.setUint32(q+4,e[2],true);
+      const b=e[3];if(typeof b==="string"){dv.setUint32(q+8,pos[+b.slice(1)],true);return}
+      if(b.length<=4)buf.set(b,q+8);else{dv.setUint32(q+8,dp,true);buf.set(b,dp);dp+=b.length+(b.length&1)}});
+    dv.setUint32(p+2+12*I.length,0,true)});
+  return buf;
+}
+function exifTiff(d,W,H){
+  const t=new Date(d.t),dt=`${t.getFullYear()}:${p2(t.getMonth()+1)}:${p2(t.getDate())} ${p2(t.getHours())}:${p2(t.getMinutes())}:${p2(t.getSeconds())}`;
+  const o=-t.getTimezoneOffset(),tz=`${o<0?"-":"+"}${p2(Math.floor(Math.abs(o)/60))}:${p2(Math.abs(o)%60)}`;
+  const desc=d.state==="on"?`${d.road}. sz. ut ${d.ch}`:d.state==="off"?"Uthalozaton kivul":"Nincs GPS-pozicio";
+  const gps=S.phExif&&d.lat!=null;
+  const i0=[[0x010E,2,0,eAsc(desc)],[0x0112,3,1,eShort(1)],[0x0131,2,0,eAsc(APP_VER)],[0x0132,2,0,eAsc(dt)],[0x8769,4,1,"@1"]];
+  if(gps)i0.push([0x8825,4,1,"@2"]);
+  const ex=[[0x9000,7,4,eAsc("0232").subarray(0,4)],[0x9003,2,0,eAsc(dt)],[0x9011,2,0,eAsc(tz)],[0xA002,4,1,Uint8Array.of(W&255,W>>8&255,W>>16&255,0)],[0xA003,4,1,Uint8Array.of(H&255,H>>8&255,H>>16&255,0)]];
+  const ifds=[i0,ex];
+  if(gps){
+    const dms=(v)=>{const t=Math.round(Math.abs(v)*36000000),g=Math.floor(t/36000000),m=Math.floor(t%36000000/600000);return [[g,1],[m,1],[t%600000,10000]]};
+    const g=[[0,1,4,Uint8Array.of(2,3,0,0)],[1,2,0,eAsc(d.lat>=0?"N":"S")],[2,5,3,eRat(dms(d.lat))],[3,2,0,eAsc(d.lon>=0?"E":"W")],[4,5,3,eRat(dms(d.lon))]];
+    if(d.hd!=null)g.push([0x10,2,0,eAsc(d.hdRef)],[0x11,5,1,eRat([[d.hd*100,100]])]);
+    if(d.acc!=null)g.push([0x1F,5,1,eRat([[Math.round(d.acc*10),10]])]);
+    ifds.push(g);
+  }
+  for(const I of ifds)for(const e of I)if(e[1]===2)e[2]=e[3].length;   // ASCII count incl. NUL
+  return tiffBlock(ifds);
+}
+async function addExif(blob,d,W,H){
+  try{
+    const b=new Uint8Array(await blob.arrayBuffer());if(b[0]!==0xFF||b[1]!==0xD8)return blob;
+    let i=2;if(b[2]===0xFF&&b[3]===0xE0)i=4+(b[4]<<8|b[5]);            // drop the JFIF APP0 segment
+    const tiff=exifTiff(d,W,H),len=2+6+tiff.length;if(len>65535)return blob;
+    const h=Uint8Array.of(0xFF,0xE1,len>>8,len&255,0x45,0x78,0x69,0x66,0,0);
+    return new Blob([b.subarray(0,2),h,tiff,b.subarray(i)],{type:"image/jpeg"});
+  }catch(e){return blob}
+}
+
+/* ---- camera ---- */
+function camMsg(html){const m=$("camMsg");m.innerHTML=html||"";m.classList.toggle("on",!!html)}
+function camUI(){
+  if(!camOn)return;
+  $("camShut").disabled=!camStream||camShooting;
+  $("camShut").classList.toggle("busy",camShooting);
+  $("camFlip").style.visibility=camStream&&camDevs>1?"visible":"hidden";
+  if(camErr)camMsg(`<b>Kamera</b><div>${esc(camErr)}</div><button class="btn pri" id="camRetry">Újra</button>`);
+  else if(!camStream)camMsg(camBusy?"Kamera indítása…":`<b>Kamera</b><button class="btn pri" id="camRetry">Kamera indítása</button>`);
+  else camMsg("");
+  const r=$("camRetry");if(r)r.onclick=()=>{camErr=null;camStart()};
+  camThumbUI();camOverlay();
+}
+function camThumbUI(){
+  const b=$("camThumb"),L=camShots[camShots.length-1],uns=camShots.filter(x=>!x.saved).length;
+  b.style.backgroundImage=L?`url("${L.url}")`:"";
+  b.innerHTML=camShots.length?`<b class="${uns?"uns":""}">${camShots.length}</b>`:"";
+  b.style.visibility=camShots.length?"visible":"hidden";
+}
+async function camStart(){
+  if(!camOn||camStream||camBusy)return;
+  camErr=null;
+  if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia){
+    camErr=window.isSecureContext===false?"A kamera csak https:// címről megnyitva érhető el.":"Ez a böngésző nem támogatja a kamerát.";camUI();return}
+  camBusy=true;camUI();
+  try{
+    const s=await navigator.mediaDevices.getUserMedia({audio:false,video:{facingMode:{ideal:camFacing},width:{ideal:1920},height:{ideal:1440}}});
+    if(!camOn){s.getTracks().forEach(x=>x.stop());return}
+    camStream=s;camTrack=s.getVideoTracks()[0];
+    try{camIC=("ImageCapture" in window)?new ImageCapture(camTrack):null}catch(e){camIC=null}
+    camTrack.addEventListener("ended",()=>{if(camTrack&&camTrack.readyState==="ended"){camStop();if(camOn){camErr="A kamera leállt.";camUI()}}});
+    const v=$("camV");v.srcObject=s;v.play().catch(()=>{});
+    navigator.mediaDevices.enumerateDevices().then(L=>{camDevs=L.filter(x=>x.kind==="videoinput").length;camUI()}).catch(()=>{});
+  }catch(e){
+    const n=e&&e.name;
+    camErr=n==="NotAllowedError"||n==="SecurityError"?(NB?"Nincs kamera-engedély. Engedélyezd: Android Beállítások → Alkalmazások → ÚtSzelvény → Engedélyek → Kamera.":"Nincs kamera-engedély. Engedélyezd a böngészőben (lakat ikon → Kamera), majd koppints az Újra gombra.")
+      :n==="NotFoundError"||n==="OverconstrainedError"?"Nem található kamera."
+      :n==="NotReadableError"?"A kamerát most egy másik alkalmazás használja.":"A kamera nem indítható ("+(n||e)+").";
+  }finally{camBusy=false;camUI()}
+}
+function camStop(){
+  if(camStream)camStream.getTracks().forEach(x=>x.stop());
+  camStream=camTrack=camIC=null;const v=$("camV");if(v)v.srcObject=null;
+  $("camO").style.display="none";
+}
+function camSet(on){
+  if(on===camOn)return;camOn=on;
+  if(on){
+    if(watchId===null)startGPS();
+    if(S.phDir)cmpStart();
+    camStart();camUI();
+    if(!camTick)camTick=setInterval(camOverlay,500);
+  }else{
+    camStop();cmpStop();if(camTick){clearInterval(camTick);camTick=null}
+  }
+}
+// live preview of the stamp, over the visible video picture (object-fit: contain)
+function camOverlay(){
+  const v=$("camV"),o=$("camO");
+  if(!camOn||!camStream||!v.videoWidth){o.style.display="none";return}
+  const bw=v.clientWidth,bh=v.clientHeight,vw=v.videoWidth,vh=v.videoHeight,k=Math.min(bw/vw,bh/vh),w=vw*k,h=vh*k;
+  if(!w||!h)return;
+  Object.assign(o.style,{display:"block",left:(bw-w)/2+"px",top:(bh-h)/2+"px",width:w+"px",height:h+"px"});
+  const r=window.devicePixelRatio||1,W=Math.round(w*r),H=Math.round(h*r);
+  if(o.width!==W||o.height!==H){o.width=W;o.height=H}
+  const c=o.getContext("2d");c.clearRect(0,0,W,H);drawStamp(c,W,H,stampData());
+}
+function camFlash(){const f=$("camFlash");f.classList.add("on");setTimeout(()=>f.classList.remove("on"),60)}
+let toastT=null;
+function camToast(t,bad){const e=$("camToast");e.textContent=t;e.className="camtoast on"+(bad?" bad":"");clearTimeout(toastT);toastT=setTimeout(()=>e.className="camtoast",bad?4500:2600)}
+const timeout=(p,ms)=>Promise.race([p,new Promise((_,rej)=>setTimeout(()=>rej(new Error("timeout")),ms))]);
+// full-resolution still (ImageCapture), turned to the preview's orientation if needed
+async function camStill(){
+  let opt={};
+  try{const pc=await timeout(camIC.getPhotoCapabilities(),2500),mw=pc.imageWidth&&pc.imageWidth.max,mh=pc.imageHeight&&pc.imageHeight.max;
+    if(mw&&mh){const k=Math.min(1,CAM_MAXPX/Math.max(mw,mh));opt={imageWidth:Math.round(mw*k),imageHeight:Math.round(mh*k)}}}catch(e){}
+  const blob=await timeout(camIC.takePhoto(opt),7000);
+  const bmp=await createImageBitmap(blob);
+  const v=$("camV");
+  if(v.videoWidth&&(v.videoHeight>v.videoWidth)!==(bmp.height>bmp.width)&&Math.abs(bmp.width-bmp.height)>8){
+    const c=document.createElement("canvas");c.width=bmp.height;c.height=bmp.width;const x=c.getContext("2d");
+    const back=camFacing!=="user";x.translate(back?c.width:0,back?0:c.height);x.rotate((back?90:-90)*Math.PI/180);x.drawImage(bmp,0,0);
+    bmp.close&&bmp.close();return c;
+  }
+  return bmp;
+}
+function camFrame(){const v=$("camV"),c=document.createElement("canvas");c.width=v.videoWidth;c.height=v.videoHeight;c.getContext("2d").drawImage(v,0,0);return c}
+async function camShoot(){
+  if(!camStream||camShooting)return;
+  const st=stampData();          // position and time of the tap, not of the finished image
+  camShooting=true;camUI();camFlash();
+  try{
+    let src=null;
+    if(S.phRes!=="fast"&&camIC){try{src=await camStill()}catch(e){src=null}}
+    if(!src){if(!camStream)throw new Error("a kamera leállt");src=camFrame()}
+    const sw=src.width,sh=src.height,k=Math.min(1,CAM_MAXPX/Math.max(sw,sh)),W=Math.round(sw*k),H=Math.round(sh*k);
+    const cv=document.createElement("canvas");cv.width=W;cv.height=H;const c=cv.getContext("2d");
+    c.drawImage(src,0,0,W,H);src.close&&src.close();
+    drawStamp(c,W,H,st);
+    let blob=await new Promise(r=>cv.toBlob(r,"image/jpeg",.9));
+    cv.width=cv.height=0;
+    if(!blob)throw new Error("a kép nem készült el");
+    blob=await addExif(blob,st,W,H);
+    const t=new Date(st.t),tag=st.state==="on"?`_${st.road}_${st.ch}`:st.state==="off"?"_halozaton_kivul":"";
+    const name=`UtSzelveny_${t.getFullYear()}${p2(t.getMonth()+1)}${p2(t.getDate())}_${p2(t.getHours())}${p2(t.getMinutes())}${p2(t.getSeconds())}${tag}`.replace(/[^\w+-]/g,"")+".jpg";
+    const shot={id:st.t,blob,url:URL.createObjectURL(blob),name,saved:false,uri:""};
+    camShots.push(shot);
+    while(camShots.length>CAM_MAX){const x=camShots.shift();URL.revokeObjectURL(x.url)}
+    camThumbUI();
+    if(S.phAuto)shotSave(shot,true);else camToast("Fotó elkészült – mentés a bélyegképre koppintva");
+  }catch(e){camToast("A fotó nem sikerült: "+(e&&e.message||e),true)}
+  finally{camShooting=false;camUI()}
+}
+async function shotSave(sh,auto){
+  if(sh.saved){camToast(NB?"Már mentve a Galériába.":"Már letöltve.");return true}
+  if(NB&&NB.saveFile){
+    camPend++;
+    const r=await nativeCall("saveFile",await blobB64(sh.blob),sh.name,"image/jpeg");
+    camPend--;
+    if(r.ok){sh.saved=true;sh.uri=r.uri;camToast("Mentve a Galériába (Képek / ÚtSzelvény)")}
+    else camToast("A mentés nem sikerült"+(r.msg?": "+r.msg:""),true);
+    camThumbUI();cvUI();return r.ok;
+  }
+  const a=document.createElement("a");a.href=sh.url;a.download=sh.name;document.body.appendChild(a);a.click();a.remove();
+  sh.saved=true;camToast(auto?"Letöltve: "+sh.name:"Letöltés elindítva");camThumbUI();cvUI();return true;
+}
+async function shotShare(sh){
+  if(NB&&NB.shareFile){
+    if(!sh.saved&&!await shotSave(sh))return;
+    const r=await nativeCall("shareFile",sh.uri,"image/jpeg");if(!r.ok)camToast("A megosztás nem sikerült"+(r.msg?": "+r.msg:""),true);return;
+  }
+  const f=new File([sh.blob],sh.name,{type:"image/jpeg"});
+  if(navigator.canShare&&navigator.canShare({files:[f]})){
+    try{await navigator.share({files:[f]})}catch(e){if(e&&e.name!=="AbortError")camToast("A megosztás nem sikerült.",true)}
+  }else camToast("Ez a böngésző nem tud fájlt megosztani – használd a Mentés gombot.",true);
+}
+/* ---- viewer of this session's photos ---- */
+function cvOpen(i){if(!camShots.length)return;camIdx=i==null?camShots.length-1:i;$("camViewer").classList.add("on");cvUI()}
+function cvClose(){$("camViewer").classList.remove("on");camIdx=-1}
+function cvUI(){
+  if(camIdx<0||!$("camViewer").classList.contains("on"))return;
+  if(!camShots.length){cvClose();return}
+  camIdx=Math.max(0,Math.min(camIdx,camShots.length-1));const sh=camShots[camIdx];
+  $("cvImg").src=sh.url;$("cvCnt").textContent=`${camIdx+1} / ${camShots.length}${sh.saved?" · mentve ✓":" · nincs mentve"}`;
+  $("cvName").textContent=sh.name;
+  $("cvPrev").disabled=camIdx===0;$("cvNext").disabled=camIdx===camShots.length-1;
+  const s=$("cvSave");s.textContent=sh.saved?"Mentve ✓":"Mentés";s.disabled=sh.saved;
+  const d=$("cvDel");d.textContent=sh.saved?"Eltávolítás":"Elvetés";
+}
+$("camShut").onclick=camShoot;
+$("camThumb").onclick=()=>cvOpen();
+$("camFlip").onclick=()=>{camFacing=camFacing==="user"?"environment":"user";camStop();camStart()};
+$("cvClose").onclick=cvClose;
+$("cvPrev").onclick=()=>{camIdx--;cvUI()};$("cvNext").onclick=()=>{camIdx++;cvUI()};
+$("cvSave").onclick=()=>{const sh=camShots[camIdx];if(sh)shotSave(sh)};
+$("cvShare").onclick=()=>{const sh=camShots[camIdx];if(sh)shotShare(sh)};
+// remove from this session's list (a saved copy stays on the phone); unsaved: tap twice
+let cvDelArm=null;
+$("cvDel").onclick=()=>{
+  const sh=camShots[camIdx];if(!sh)return;
+  if(!sh.saved&&cvDelArm!==sh.id){cvDelArm=sh.id;$("cvDel").textContent="Biztos? Elvész";setTimeout(()=>{if(cvDelArm===sh.id){cvDelArm=null;cvUI()}},3000);return}
+  cvDelArm=null;camShots.splice(camIdx,1);URL.revokeObjectURL(sh.url);camThumbUI();
+  if(sh.saved)camToast("Eltávolítva a listáról – a mentett kép megmaradt.");
+  cvUI();
+};
+$("camV").addEventListener("resize",camOverlay);$("camV").addEventListener("loadedmetadata",camOverlay);
+window.addEventListener("resize",()=>{if(camOn)camOverlay()});
+document.addEventListener("visibilitychange",()=>{if(!camOn)return;if(document.visibilityState==="hidden")camStop();else{camStart();camUI()}});
+window.__appPause=()=>{if(camOn)camStop()};          // called by the Android app (onPause / onResume)
+window.__appResume=()=>{if(camOn){camStart();camUI()}};
+if(!NB)window.addEventListener("beforeunload",(e)=>{if(camShots.some(x=>!x.saved)||camPend){e.preventDefault();e.returnValue=""}});
+/* Fotó settings */
+function renderPhSet(){
+  document.querySelectorAll("#phCoordSeg button").forEach(b=>b.classList.toggle("on",b.dataset.v===(S.phCoord||"off")));
+  document.querySelectorAll("#phResSeg button").forEach(b=>b.classList.toggle("on",b.dataset.v===(S.phRes||"best")));
+  $("phAutoNote").textContent=NB?"Exponálás után a Galériába (Képek / ÚtSzelvény mappa)":"Exponálás után letöltés (Letöltések mappa). Kikapcsolva a bélyegképről menthetsz vagy oszthatsz meg.";
+}
+document.querySelectorAll("#phCoordSeg button").forEach(b=>b.onclick=()=>{S.phCoord=b.dataset.v;saveS();renderPhSet();camOverlay()});
+document.querySelectorAll("#phResSeg button").forEach(b=>b.onclick=()=>{S.phRes=b.dataset.v;saveS();renderPhSet()});
+
 /* ---------- UI wiring ---------- */
 function showView(v){
   mapOn=v==="map";
-  for(const [id,nid,k] of [["posView","nPos","pos"],["mapView","nMap","map"],["measView","nMeas","meas"]]){$(id).classList.toggle("on",v===k);$(nid).classList.toggle("on",v===k)}
+  for(const [id,nid,k] of [["posView","nPos","pos"],["mapView","nMap","map"],["measView","nMeas","meas"],["fotoView","nFoto","foto"]]){$(id).classList.toggle("on",v===k);$(nid).classList.toggle("on",v===k)}
   if(mapOn){resizeMap();measChipUI();if(follow&&cur){const m=posToM(cur.pos);mX=m.x;mY=m.y}drawMap()}
   if(v==="meas")renderMeas();
+  camSet(v==="foto");
 }
-$("nPos").onclick=()=>showView("pos");$("nMap").onclick=()=>showView("map");$("nMeas").onclick=()=>showView("meas");
+$("nPos").onclick=()=>showView("pos");$("nMap").onclick=()=>showView("map");$("nMeas").onclick=()=>showView("meas");$("nFoto").onclick=()=>showView("foto");
 $("tEov").onclick=()=>{S.coord="eov";saveS();syncTabs();render()};
 $("tWgs").onclick=()=>{S.coord="wgs";saveS();syncTabs();render()};
 function syncTabs(){$("tEov").classList.toggle("on",S.coord==="eov");$("tWgs").classList.toggle("on",S.coord!=="eov");
@@ -1762,11 +2208,13 @@ function showSetTab(t){
   document.querySelectorAll(".spane").forEach(p=>p.classList.toggle("on",p.dataset.p===t));
   if(t==="map")placeMapSet("sheet");
   if(t==="meas")renderMeasSet();
+  if(t==="foto")renderPhSet();
   document.querySelector(".spanes").scrollTop=0;
+  const tb=document.querySelector("#stabs button.on");if(tb)tb.scrollIntoView({block:"nearest",inline:"nearest"});
 }
 function openSettings(){
   closeMapPanel();
-  const t=mapOn?"map":$("measView").classList.contains("on")?"meas":"pos";
+  const t=mapOn?"map":$("measView").classList.contains("on")?"meas":$("fotoView").classList.contains("on")?"foto":"pos";
   showSetTab(t);$("sheet").classList.add("on");
 }
 document.querySelectorAll("#stabs button").forEach(b=>b.onclick=()=>showSetTab(b.dataset.t));
@@ -1795,6 +2243,7 @@ bindSw("swWake","wake",()=>{S.wake&&watchId!==null?requestWake():releaseWake()})
 bindSw("swBike","bike");
 bindSw("swName","name");
 bindSw("swSpd","secSpd");bindSw("swBr","secBr");bindSw("swTr","secTr");bindSw("swGps","secGps");bindSw("swKez","secKez");
+bindSw("swPhName","phName");bindSw("swPhAcc","phAcc");bindSw("swPhAuto","phAuto");bindSw("swPhExif","phExif");bindSw("swPhDir","phDir",()=>{S.phDir&&camOn?cmpStart():cmpStop()});
 $("manualGo").onclick=()=>{
   const nums=($("manualIn").value.match(/-?\d+(?:[.,]\d+)?/g)||[]).map(s=>parseFloat(s.replace(",",".")));
   if(nums.length<2)return alert("Adj meg két koordinátát!");
