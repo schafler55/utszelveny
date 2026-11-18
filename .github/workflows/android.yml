@@ -46,21 +46,21 @@ jobs:
         run: gradle assembleDebug --no-daemon --stacktrace
 
       - name: Rename APK
-        run: cp "${{ steps.proj.outputs.dir }}/app/build/outputs/apk/debug/app-debug.apk" KozutSzelveny.apk
+        run: cp "${{ steps.proj.outputs.dir }}/app/build/outputs/apk/debug/app-debug.apk" UtSzelveny.apk
 
       - name: Keep the APK as a build artifact
         uses: actions/upload-artifact@v4
         with:
-          name: KozutSzelveny-apk
-          path: KozutSzelveny.apk
+          name: UtSzelveny-apk
+          path: UtSzelveny.apk
 
       - name: Publish to the "apk-latest" release (stable download link)
         uses: softprops/action-gh-release@v2
         with:
           tag_name: apk-latest
-          name: KözútSzelvény – legfrissebb APK
+          name: ÚtSzelvény – legfrissebb APK
           prerelease: true
-          files: KozutSzelveny.apk
+          files: UtSzelveny.apk
           body: |
             Automatikusan épített APK a main ág legutóbbi állapotából.
-            Telepítés: töltsd le a KozutSzelveny.apk fájlt a telefonon, és engedélyezd az ismeretlen forrásból történő telepítést.
+            Telepítés: töltsd le a UtSzelveny.apk fájlt a telefonon, és engedélyezd az ismeretlen forrásból történő telepítést.

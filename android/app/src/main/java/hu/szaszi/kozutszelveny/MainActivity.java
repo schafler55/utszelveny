@@ -19,7 +19,7 @@ import android.webkit.WebViewClient;
 import androidx.webkit.WebViewAssetLoader;
 
 /**
- * KözútSzelvény – Android keret.
+ * ÚtSzelvény – Android keret.
  * A teljes alkalmazás az assets/index.html; ez az osztály csak megjeleníti,
  * GPS-engedélyt kér, és ébren tartja a képernyőt.
  * Az oldal a https://appassets.androidplatform.net címről töltődik (biztonságos környezet),
@@ -55,7 +55,7 @@ public class MainActivity extends Activity {
         s.setGeolocationEnabled(true);
         s.setAllowFileAccess(false);
         s.setAllowContentAccess(false);
-        s.setUserAgentString(s.getUserAgentString() + " KozutSzelveny/1.5.7");
+        s.setUserAgentString(s.getUserAgentString() + " UtSzelveny/1.5.8");
 
         web.setWebViewClient(new WebViewClient() {
             @Override

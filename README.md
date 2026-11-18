@@ -1,11 +1,11 @@
-# KözútSzelvény
+# ÚtSzelvény
 
 Offline útszám és kilométerszelvény kijelző a magyar országos közúthálózathoz.
 A telefon GPS-pozíciójából megmutatja, melyik úton és melyik szelvényben vagy,
 valamint a sebességkorlátot, a lakott területi (átkelési) szakaszt, a közeli hidak súly- és
 magasságkorlátozásait, a tehergépjárművekre vonatkozó korlátozásokat, a kezelőt és a megyét.
 
-**Verzió:** V1.5.7 Beta · © schafler55 · Licenc: GPL-3.0
+**Verzió:** V1.5.8 Beta · © schafler55 · Licenc: GPL-3.0
 
 ## Képernyőképek
 
@@ -17,7 +17,7 @@ magasságkorlátozásait, a tehergépjárművekre vonatkozó korlátozásokat, a
 
 - **Webalkalmazás (telepíthető):** https://schafler55.github.io/kozutszelveny/
   Chrome-ban megnyitva ⋮ menü → *Hozzáadás a kezdőképernyőhöz*. Első betöltés után internet nélkül is működik.
-- **Android APK:** https://github.com/schafler55/kozutszelveny/releases/download/apk-latest/KozutSzelveny.apk
+- **Android APK:** https://github.com/schafler55/kozutszelveny/releases/download/apk-latest/UtSzelveny.apk
   Letöltés után engedélyezd az ismeretlen forrásból történő telepítést.
 
 A háttértérkép (OpenStreetMap) internetkapcsolatot igényel; minden más adat az alkalmazásba van építve.

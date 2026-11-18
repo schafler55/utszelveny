@@ -9,7 +9,7 @@
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" type="image/png" href="icon-192.png">
 <link rel="apple-touch-icon" href="icon-192.png">
-<title>KözútSzelvény V1.5.7 Beta</title>
+<title>ÚtSzelvény V1.5.8 Beta</title>
 <style>
 :root{
   --bg:#16181c; --card:#25282d; --card2:#2d3036; --line:#3a3e45;
@@ -145,7 +145,7 @@ input[type=text]{width:100%;background:#1b1d21;border:1px solid var(--line);colo
 <div id="boot">Úthálózat betöltése…</div>
 
 <header class="top">
-  <h1 id="title">KözútSzelvény</h1>
+  <h1 id="title">ÚtSzelvény</h1>
   <button class="iconbtn" id="gearBtn" aria-label="Beállítások">
     <svg width="26" height="26" viewBox="0 0 24 24" fill="currentColor"><path d="M19.4 13a7.6 7.6 0 0 0 0-2l2.1-1.6-2-3.5-2.5 1a7.4 7.4 0 0 0-1.7-1L15 3.3h-4l-.4 2.6a7.4 7.4 0 0 0-1.7 1l-2.5-1-2 3.5L6.6 11a7.6 7.6 0 0 0 0 2l-2.1 1.6 2 3.5 2.5-1c.5.4 1.1.7 1.7 1l.4 2.6h4l.4-2.6c.6-.3 1.2-.6 1.7-1l2.5 1 2-3.5zM13 15.5A3.5 3.5 0 1 1 13 8.5a3.5 3.5 0 0 1 0 7z" transform="translate(-1 0)"/></svg>
   </button>
@@ -247,7 +247,7 @@ input[type=text]{width:100%;background:#1b1d21;border:1px solid var(--line);colo
     <p class="note">Felhasznált NAP adatcsomagok: Országos közúthálózat, Közút neve/kategóriája/kezelője, Szelvényjelek, Sebességkorlátozás, Lakott területi szakaszok, Hídhasználati feltételek, Tehergépjárművekre vonatkozó korlátozások. A sebességkorlát ott, ahol nincs egyedi korlátozás, a KRESZ szerinti alapérték. A térkép alapréteg csak internetkapcsolattal és weboldalról megnyitva érhető el. Koordináta-átszámítás: WGS84 → HD72/EOV (EPSG:23700), kb. 1 m pontossággal.</p>
 
     <div class="about">
-      <div class="about-t">KözútSzelvény V1.5.7 Beta</div>
+      <div class="about-t">ÚtSzelvény V1.5.8 Beta</div>
       <p>© 2026 Szászi Dániel</p>
       <p>Az alkalmazást Szászi Dániel készítette AI segítségével (Gemini 4 Argon, Claude Opus 5.5)</p>
       <p>Forráskód: GPL-3.0 licence - <a href="https://github.com/schafler55/kozutszelveny" target="_blank" rel="noopener">GitHub</a></p>
@@ -262,7 +262,7 @@ input[type=text]{width:100%;background:#1b1d21;border:1px solid var(--line);colo
 <script>
 "use strict";
 /* ============================================================
-   KözútSzelvény – offline útszám + kilométerszelvény kijelző
+   ÚtSzelvény – offline útszám + kilométerszelvény kijelző
    ============================================================ */
 const COUNTIES=["","Budapest","Baranya megye","Bács-Kiskun megye","Békés megye","Borsod-Abaúj-Zemplén megye","Csongrád-Csanád megye","Fejér megye","Győr-Moson-Sopron megye","Hajdú-Bihar megye","Heves megye","Komárom-Esztergom megye","Nógrád megye","Pest megye","Somogy megye","Szabolcs-Szatmár-Bereg megye","Jász-Nagykun-Szolnok megye","Tolna megye","Vas megye","Veszprém megye","Zala megye"];
 const KUT=["","autópálya","autóút","elsőrendű főút","másodrendű főút","összekötő út","bekötőút","állomáshoz vezető bekötőút","gyorsforgalmi csomóponti ág","csomóponti ág","kerékpárút","pihenőhelyi út"];
@@ -682,7 +682,7 @@ const WARN=`<svg class="warnicon" viewBox="0 0 100 88"><path d="M50 4 96 84H4z" 
 function render(){
   const hero=$("hero"),lost=watchId!==null&&cur&&cur.pos.src==="gps"&&Date.now()-lastFixT>10000;
   const waiting=watchId!==null&&(!cur||cur.pos.src!=="gps");
-  let title="KözútSzelvény";
+  let title="ÚtSzelvény";
   hero.className="card hero";
   if(!cur&&watchId===null){
     hero.innerHTML=`<div class="big3">GPS kikapcsolva</div><div class="rsub">${gpsErr?esc(gpsErr):"Indítsd el a helymeghatározást a szelvény kijelzéséhez."}</div><button class="startbtn" onclick="startGPS()">GPS indítása</button>`+lastKnownHTML();
@@ -714,7 +714,7 @@ function render(){
       ${S.name?(()=>{const nm=splitName(road.name);return `<div class="rname">${esc(nm.main)}</div>${nm.sub?`<div class="rname2">(${esc(nm.sub)})</div>`:""}`})():""}
       <div class="rsub">${esc(road.num)}. sz. ${KUT[kut]} · tengelytől ${Math.round(r.best.d)} m</div>
       ${chips.length?`<div class="chips">${chips.join("")}</div>`:""}`;
-    title=COUNTIES[segCty[s]]||"KözútSzelvény";
+    title=COUNTIES[segCty[s]]||"ÚtSzelvény";
   }
   $("title").textContent=title;
   // GPS card
