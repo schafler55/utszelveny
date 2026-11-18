@@ -80,7 +80,8 @@ nav svg{width:24px;height:24px}
 #mapView{background:#1b1e23;overflow:hidden}
 #map{position:absolute;inset:0;width:100%;height:100%;touch-action:none;background:transparent}
 #tiles{position:absolute;inset:0;overflow:hidden;pointer-events:none;background:#f2efe9;will-change:transform}
-#tiles img{position:absolute;max-width:none;user-select:none}
+#tiles .tw{position:absolute;overflow:hidden}
+#tiles .tw img{position:absolute;left:0;top:0;max-width:none;user-select:none}
 .attrib{position:absolute;right:8px;top:8px;font-size:.72rem;background:#000a;color:#ddd;padding:2px 7px;border-radius:6px}
 .attrib a{color:#93c5fd}
 .basenote{position:absolute;left:12px;right:12px;top:46px;background:#25282dee;border:1px solid #a16207;color:#fde68a;border-radius:12px;padding:8px 12px;font-size:.82rem;line-height:1.4;display:none}
@@ -882,7 +883,7 @@ function compassUI(){
 const BASES={
   grey:{url:(z,x,y)=>`https://tile.openstreetmap.org/${z}/${x}/${y}.png`,filter:"grayscale(1) contrast(.92) brightness(1.03)",bg:"#f2efe9",osm:true,max:19},
   dark:{url:(z,x,y)=>`https://tile.openstreetmap.org/${z}/${x}/${y}.png`,filter:"grayscale(1) invert(1) brightness(1.45) contrast(.78)",bg:"#f2efe9",osm:true,max:19},
-  sat:{url:(z,x,y)=>`https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/${z}/${y}/${x}`,filter:"brightness(.82) saturate(.9)",bg:"#1b1e23",osm:false,max:19}
+  sat:{url:(z,x,y)=>`https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/${z}/${y}/${x}?blankTile=false`,filter:"brightness(.82) saturate(.9)",bg:"#1b1e23",osm:false,max:19,fallback:6}
 };
 const ATTRIB={
   osm:`© <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a> közreműködők`,
@@ -890,7 +891,13 @@ const ATTRIB={
 };
 const tileImgs=new Map();let tileBase=null;
 let baseState=location.protocol==="file:"?"file":null; // OSM only: null=untested, "pending", "ok", "unknown", "blocked:<status>", "file"
-function clearTiles(){for(const[k,img]of tileImgs){img.remove();tileImgs.delete(k)}}
+function clearTiles(){for(const[k,t]of tileImgs){t.wrap.remove();tileImgs.delete(k)}}
+// a tile = clipping box (wrap) + image; d>0: the image is the parent tile d levels up, enlarged 2^d× and shifted
+function placeTile(t){
+  const w=t.wrap.style,k=1<<t.d,m=k-1,i=t.img.style;
+  w.left=t.left+"px";w.top=t.top+"px";w.width=w.height=(t.px+0.6)+"px";
+  i.width=i.height=(t.px*k+0.6)+"px";i.left=(-(t.x&m)*t.px)+"px";i.top=(-(t.y&m)*t.px)+"px";
+}
 function probeBase(z,x,y){
   // one CORS request to read the HTTP status: a blocked OSM tile is still a valid PNG, so <img> alone can't tell
   if(baseState!==null)return;baseState="pending";
@@ -933,18 +940,19 @@ function drawTiles(){
   if(B.osm)probeBase(z,((Math.floor((mX+WORLD/2)/T)%n)+n)%n,Math.floor((WORLD/2-mY)/T));
   for(let ty=Math.max(0,ty0);ty<=Math.min(n-1,ty1);ty++)for(let tx=tx0;tx<=tx1;tx++){
     const xx=((tx%n)+n)%n,key=z+"/"+xx+"/"+ty;used.add(key);
-    let img=tileImgs.get(key);
-    if(!img){
-      img=new Image();img.alt="";img.draggable=false;img.referrerPolicy="strict-origin-when-cross-origin";
-      img.onerror=()=>{img.style.visibility="hidden"};
+    let t=tileImgs.get(key);
+    if(!t){
+      const wrap=document.createElement("div"),img=new Image();wrap.className="tw";
+      img.alt="";img.draggable=false;img.referrerPolicy="strict-origin-when-cross-origin";
+      t={wrap,img,x:xx,y:ty,z,d:0,left:0,top:0,px};
+      // missing tile (e.g. no detailed satellite image here): use the coarser parent tile instead
+      img.onerror=()=>{if(B.fallback&&t.d<B.fallback&&t.z-t.d>3){t.d++;img.src=B.url(t.z-t.d,t.x>>t.d,t.y>>t.d);placeTile(t)}else img.style.visibility="hidden"};
       img.src=B.url(z,xx,ty);
-      tileImgs.set(key,img);tileDiv.appendChild(img);
+      wrap.appendChild(img);tileImgs.set(key,t);tileDiv.appendChild(wrap);
     }
-    img.style.left=(ox+(tx*T-WORLD/2-mX)*mS)+"px";
-    img.style.top=(oy-(WORLD/2-ty*T-mY)*mS)+"px";
-    img.style.width=img.style.height=(px+0.6)+"px";
+    t.left=ox+(tx*T-WORLD/2-mX)*mS;t.top=oy-(WORLD/2-ty*T-mY)*mS;t.px=px;placeTile(t);
   }
-  for(const [k,img] of tileImgs)if(!used.has(k)){img.remove();tileImgs.delete(k)}
+  for(const [k,t] of tileImgs)if(!used.has(k)){t.wrap.remove();tileImgs.delete(k)}
 }
 
 /* --- road styles --- */
