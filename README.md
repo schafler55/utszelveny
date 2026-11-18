@@ -6,9 +6,10 @@ Offline útszám és kilométerszelvény kijelző a magyar országos közúthál
 A telefon GPS-pozíciójából megmutatja, melyik úton és melyik szelvényben vagy,
 valamint a sebességkorlátot, a lakott területi (átkelési) szakaszt, a közeli hidak súly- és
 magasságkorlátozásait, a tehergépjárművekre vonatkozó korlátozásokat, a kezelőt és a megyét.
+
 A **Mérés** oldalon távolságot mérhetsz: kezdő és záró út + szelvény, GPS és szelvény szerinti hossz,
 közbenső pontok, elnevezhető, menthető mérések, CSV-export és megjelenítés a térképen.
-A térképen pontokat is lerakhatsz: légvonal, úton mért (útvonal) és szelvény szerinti távolság, több úton át is.
+A térképi méréssel pontokat is lerakhatsz: légvonal, úton mért (útvonal) és szelvény szerinti távolság, több úton át is mérhető.
 
 **Verzió:** V0.5.1 Beta · © schafler55 · Licenc: GPL-3.0
 
@@ -50,4 +51,4 @@ Az APK mindig a repó gyökerében lévő `index.html`-ből épül, ezért új v
 - Az adatok tájékoztató jellegűek, nem hitelesek – a helyszíni jelzések és a KRESZ az irányadók.
   Vezetés közben ne kezeld az alkalmazást.
 
-Az alkalmazás AI segítségével készült (Gemini 4 Argon, Claude Opus 5.5).
+Az alkalmazás Claude Opus 5.5 segítségével készült.
