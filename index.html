@@ -159,7 +159,9 @@ input[type=text]{width:100%;background:#1b1d21;border:1px solid var(--line);colo
 .na{color:var(--muted);font-weight:400}
 .mplaces{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:6px}
 .mpl{background:var(--card2);border-radius:14px;padding:10px 12px;min-width:0}
-.mitem .mpl{background:var(--card)}
+.mitem .mpl{background:var(--card);padding:9px 10px}
+.mitem .mpl-v{font-size:1.28rem;gap:6px}
+.mitem .shield.mini{width:36px;height:27px}
 .mpl-l{font-size:.72rem;letter-spacing:.08em;color:var(--dim);font-weight:700}
 .mpl-v{display:flex;align-items:center;gap:8px;margin-top:4px;font-family:var(--cond);font-weight:700;font-size:1.55rem;font-variant-numeric:tabular-nums;white-space:nowrap}
 .mpl-v.na{font-size:1rem;font-weight:400;white-space:normal}
@@ -183,6 +185,13 @@ input[type=text]{width:100%;background:#1b1d21;border:1px solid var(--line);colo
 .mdet .kv{margin-top:10px;font-size:.88rem}
 .mpth{font-size:.75rem;letter-spacing:.06em;color:var(--dim);font-weight:700;margin:10px 0 4px;text-transform:uppercase}
 .mptr{font-size:.9rem;line-height:1.5}
+.mlegs{display:flex;flex-direction:column;gap:6px}
+.mleg{display:flex;align-items:center;gap:10px;background:var(--card2);border-radius:12px;padding:7px 10px}
+.mitem .mleg{background:var(--card)}
+.mleg-r{flex:1;min-width:0;display:flex;flex-direction:column;font-family:var(--cond);font-size:1.12rem;line-height:1.2}
+.mleg-r .na{font-family:system-ui,sans-serif;font-size:.76rem}
+.mleg-d{text-align:right;display:flex;flex-direction:column;font-family:var(--cond);font-size:1.1rem;white-space:nowrap}
+.mleg-d span{font-family:system-ui,sans-serif;font-size:.74rem;color:var(--muted)}
 .mren{display:flex;gap:8px}
 .mren input{flex:1;min-width:0}
 .mexp{margin-top:12px}
@@ -1226,9 +1235,31 @@ function measSnap(pos,res){
 }
 // length by chainage (same road only): end − start, metres
 function measChLen(a,b){if(!a||!b||a.off||b.off||a.road!==b.road)return null;return vdist(a.v,b.v)}
+// road sections ("szakaszok"): a new section starts when the road changes for 3 fixes in a row (junction flicker is ignored)
+const legKey=(x)=>x.off?"off":x.road;
+function newLeg(snap,dist){return {road:snap.off?null:snap.road,kut:snap.kut,pk:snap.pk,off:!!snap.off,from:snap,to:snap,dist:dist||0}}
+function measLeg(M,snap,add){
+  if(!M.legs.length){M.legs.push(newLeg(snap,add));return}
+  const L=M.legs[M.legs.length-1],k=legKey(snap);
+  if(k===legKey(L)){if(M.pend){L.dist+=M.pend.dist;M.pend=null}L.to=snap;L.dist+=add;return}
+  if(!M.pend||M.pend.key!==k){if(M.pend)L.dist+=M.pend.dist;M.pend={key:k,first:snap,n:0,dist:0}}
+  M.pend.n++;M.pend.dist+=add;M.pend.last=snap;
+  if(M.pend.n>=3){const nl=newLeg(M.pend.first,M.pend.dist);nl.to=snap;M.legs.push(nl);M.pend=null}
+}
+function measFinishLegs(M){
+  if(!M.pend)return;const L=M.legs[M.legs.length-1];
+  if(M.pend.n>=2){const nl=newLeg(M.pend.first,M.pend.dist);nl.to=M.pend.last;M.legs.push(nl)}else if(L)L.dist+=M.pend.dist;
+  M.pend=null;
+}
+const legLen=(l)=>l.off||!l.from||!l.to||l.from.off||l.to.off?null:vdist(l.from.v,l.to.v);
+// length by chainage: sum of the road sections (older records: start→end on one road)
+function measChSum(r){
+  if(r.legs&&r.legs.length){let t=0,n=0;for(const l of r.legs){const c=legLen(l);if(c!=null){t+=Math.abs(c);n++}}return n?{len:t,n,roads:r.legs.length,dir:r.legs.length===1?Math.sign(legLen(r.legs[0])||0):0}:null}
+  const c=measChLen(r.start,r.end);return c==null?null:{len:Math.abs(c),n:1,roads:1,dir:Math.sign(c)};
+}
 function measStart(){
   if(measActive)return;
-  measActive={id:Date.now(),t0:Date.now(),start:null,end:null,dist:0,pts:[],trk:[],last:null};
+  measActive={id:Date.now(),t0:Date.now(),start:null,end:null,dist:0,pts:[],trk:[],legs:[],pend:null,last:null};
   measLast=null;
   if(watchId===null)startGPS();
   // use the current fix right away when it is fresh
@@ -1239,7 +1270,8 @@ function measOnFix(pos,res){
   const M=measActive;if(!M||pos.src!=="gps")return;
   if(pos.acc!=null&&pos.acc>50)return;                       // too inaccurate
   const now=Date.now(),snap=measSnap(pos,res);
-  if(!M.start){M.start=snap;M.end=snap;M.last={E:pos.E,N:pos.N,t:now};M.trk.push(snap.E,snap.N);measSaveActive();return}
+  if(!M.legs)M.legs=[];
+  if(!M.start){M.start=snap;M.end=snap;M.last={E:pos.E,N:pos.N,t:now};M.trk.push(snap.E,snap.N);measLeg(M,snap,0);measSaveActive();return}
   const L=M.last,d=Math.hypot(pos.E-L.E,pos.N-L.N),dt=Math.max(1,(now-L.t)/1000);   // GPS fixes come ~1/s
   M.end=snap;
   if(d/dt>75){                                               // jump: a single GPS outlier is ignored; if the new place
@@ -1248,8 +1280,10 @@ function measOnFix(pos,res){
     return}
   M.bad=0;
   const still=pos.spd!=null&&pos.spd<0.6&&d<15;               // standing: don't add GPS jitter
-  if(!still&&d>=Math.max(2,Math.min(8,(pos.acc||5)*0.5))){M.dist+=d;M.last={E:pos.E,N:pos.N,t:now}}
+  let add=0;
+  if(!still&&d>=Math.max(2,Math.min(8,(pos.acc||5)*0.5))){add=d;M.dist+=d;M.last={E:pos.E,N:pos.N,t:now}}
   else if(still)M.last.t=now;
+  measLeg(M,snap,add);
   const n=M.trk.length;if(n<2||Math.hypot(snap.E-M.trk[n-2],snap.N-M.trk[n-1])>=10)M.trk.push(snap.E,snap.N);
   if(now-measSaveT>4000){measSaveT=now;measSaveActive()}
 }
@@ -1262,7 +1296,9 @@ function measStop(){
   if(!M.start){measActive=null;measSaveActive();measTicker();render();return}   // never got a fix: nothing to save
   const n=(+localStorage.getItem("ksz_meas_n")||measList.length)+1;
   try{localStorage.setItem("ksz_meas_n",String(n))}catch(e){}
-  const rec={id:M.id,name:"Mérés "+n,t0:M.t0,t1:Date.now(),start:M.start,end:M.end,dist:Math.round(M.dist),pts:M.pts,trk:M.trk};
+  measFinishLegs(M);
+  const legs=(M.legs||[]).map(l=>Object.assign(l,{dist:Math.round(l.dist)}));
+  const rec={id:M.id,name:"Mérés "+n,t0:M.t0,t1:Date.now(),start:M.start,end:M.end,dist:Math.round(M.dist),pts:M.pts,trk:M.trk,legs};
   measList.unshift(rec);measSaveList();
   measActive=null;measSaveActive();measLast=rec.id;measRename=rec.id;measOpen=rec.id;measTicker();render();
   setTimeout(()=>{const i=document.getElementById("mrn_"+rec.id);if(i){i.focus();i.select()}},50);
@@ -1276,6 +1312,19 @@ function placeHTML(lbl,x,live){
   if(!x)return `<div class="mpl"><div class="mpl-l">${lbl}</div><div class="mpl-v na">${live?"várakozás GPS-re…":"–"}</div></div>`;
   if(x.off)return `<div class="mpl"><div class="mpl-l">${lbl}</div><div class="mpl-v na">úthálózaton kívül</div></div>`;
   return `<div class="mpl"><div class="mpl-l">${lbl}</div><div class="mpl-v">${mini(x)}<span class="mpl-ch">${esc(x.ch)}</span></div><div class="mpl-s">${esc(x.road)}. sz. út${x.pk?" · "+PKOD[x.pk]:""}</div></div>`;
+}
+function chSumHTML(r){
+  const c=measChSum(r);
+  if(!c)return r.start&&r.end&&!r.start.off&&!r.end.off&&r.start.road!==r.end.road?`<span class="na">eltérő utak</span>`:"–";
+  return `${fmtDist(c.len)} <span class="na">(${c.roads>1?c.roads+" szakasz összege":c.dir>=0?"növekvő szelvény":"csökkenő szelvény"})</span>`;
+}
+function legsHTML(r,live){
+  const L=r.legs||[];if(L.length<2)return "";
+  return `<div class="mpth">Szakaszok (${L.length})</div><div class="mlegs">`+L.map((l,i)=>{
+    const c=legLen(l),last=live&&i===L.length-1;
+    if(l.off)return `<div class="mleg"><div class="mleg-r na">úthálózaton kívül</div><div class="mleg-d"><b>–</b><span>${fmtDist(l.dist)} GPS</span></div></div>`;
+    return `<div class="mleg">${mini(l.from)}<div class="mleg-r"><b>${esc(l.from.ch)} → ${esc(l.to.ch)}</b>${last?` <span class="na">(folyamatban)</span>`:""}<span class="na">${esc(l.road)}. sz. út${c?` · ${c>0?"↑ növekvő":"↓ csökkenő"}`:""}</span></div>
+      <div class="mleg-d"><b>${c==null?"–":fmtDist(Math.abs(c))}</b><span>${fmtDist(l.dist)} GPS</span></div></div>`}).join("")+`</div>`;
 }
 function chLenHTML(a,b){
   const L=measChLen(a,b);
@@ -1291,8 +1340,9 @@ function renderMeas(){
     el.className="card mctl rec";
     el.innerHTML=`<div class="mrow"><span class="mrec"><i></i>Mérés folyamatban</span><span class="mtime">${fmtDur(Date.now()-M.t0)}</span></div>
       <div class="mbig">${fmtDist(M.dist)}</div><div class="mbig-l">megtett út (GPS)</div>
-      <div class="mlen">Szelvény szerint: <b>${chLenHTML(M.start,live)}</b></div>
+      <div class="mlen">Szelvény szerint: <b>${M.legs&&M.legs.length?chSumHTML(M):chLenHTML(M.start,live)}</b></div>
       <div class="mplaces">${placeHTML("KEZDET",M.start,true)}${placeHTML("JELENLEG",M.start?live:null,true)}</div>
+      ${legsHTML(M,true)}
       ${M.pts.length?`<div class="mpts">${M.pts.map((p,i)=>`<span class="chip">P${i+1} · ${p.off?"úton kívül":esc(p.road)+" · "+esc(p.ch)}</span>`).join("")}</div>`:""}
       <div class="mbtns"><button class="btn" id="mPoint" ${M.start?"":"disabled"}>＋ Pont rögzítése</button><button class="btn red" id="mStop">■ Leállítás</button></div>`;
     $("mPoint").onclick=measPoint;$("mStop").onclick=measStop;
@@ -1314,15 +1364,16 @@ function renderMeas(){
     const head=ren?`<div class="mren"><input type="text" id="mrn_${r.id}" value="${esc(r.name)}" maxlength="80" placeholder="Mérés neve"><button class="btn pri" data-a="save" data-id="${r.id}">Mentés</button></div>`
       :`<div class="mname">${esc(r.name)}</div>`;
     const sum=`<div class="msum">${r.start&&!r.start.off?esc(r.start.road)+" · "+esc(r.start.ch):"úton kívül"} → ${r.end&&!r.end.off?(r.end.road!==r.start.road?esc(r.end.road)+" · ":"")+esc(r.end.ch):"úton kívül"}</div>
-      <div class="mmeta">${fmtTime(r.t0)} · ${fmtDur(r.t1-r.t0)} · <b>${fmtDist(r.dist)}</b> GPS${(()=>{const c=measChLen(r.start,r.end);return c==null?"":` · <b>${fmtDist(Math.abs(c))}</b> szelvény szerint`})()}</div>`;
+      <div class="mmeta">${fmtTime(r.t0)} · ${fmtDur(r.t1-r.t0)} · <b>${fmtDist(r.dist)}</b> GPS${(()=>{const c=measChSum(r);return c==null?"":` · <b>${fmtDist(c.len)}</b> szelvény szerint`})()}${r.legs&&r.legs.length>1?` · ${r.legs.length} szakasz`:""}</div>`;
     let body="";
     if(open){
       body=`<div class="mdet">
         <div class="mplaces">${placeHTML("KEZDET",r.start)}${placeHTML("VÉGE",r.end)}</div>
-        <dl class="kv"><dt>GPS szerint</dt><dd>${fmtDist(r.dist)}</dd><dt>Szelvény szerint</dt><dd>${chLenHTML(r.start,r.end)}</dd>
+        <dl class="kv"><dt>GPS szerint</dt><dd>${fmtDist(r.dist)}</dd><dt>Szelvény szerint</dt><dd>${chSumHTML(r)}</dd>
         <dt>Kezdés</dt><dd>${fmtTime(r.t0)}</dd><dt>Időtartam</dt><dd>${fmtDur(r.t1-r.t0)}</dd>
         <dt>Kezdőpont</dt><dd class="na">EOV ${r.start.E} / ${r.start.N}${r.start.lat!=null?` · ${r.start.lat}, ${r.start.lon}`:""}</dd>
         <dt>Végpont</dt><dd class="na">EOV ${r.end.E} / ${r.end.N}${r.end.lat!=null?` · ${r.end.lat}, ${r.end.lon}`:""}</dd></dl>
+        ${legsHTML(r,false)}
         ${r.pts.length?`<div class="mpth">Rögzített pontok</div>`+r.pts.map((p,i)=>`<div class="mptr"><b>P${i+1}</b> ${p.off?"úthálózaton kívül":esc(p.road)+" · "+esc(p.ch)} <span class="na">· ${fmtDist(p.dist)} a kezdettől · ${new Date(p.t).toLocaleTimeString("hu-HU",{hour:"2-digit",minute:"2-digit",second:"2-digit"})}</span></div>`).join(""):""}
         <div class="mbtns">${ren?"":`<button class="btn" data-a="ren" data-id="${r.id}">Átnevezés</button>`}<button class="btn" data-a="map" data-id="${r.id}" ${r.trk&&r.trk.length>=2?"":"disabled"}>Térképen</button>
           ${del?`<button class="btn red" data-a="delok" data-id="${r.id}">Biztosan törlöd?</button>`:`<button class="btn" data-a="del" data-id="${r.id}">Törlés</button>`}</div>
@@ -1349,10 +1400,11 @@ function measCSV(){
   const q=(x)=>{x=x==null?"":String(x);return /[;"\n]/.test(x)?'"'+x.replace(/"/g,'""')+'"':x};
   const dc=(x)=>x==null?"":String(x).replace(".",",");
   const pl=(p)=>p&&!p.off?[p.road,p.ch,p.E,p.N,dc(p.lat),dc(p.lon)]:["úton kívül","",p?p.E:"",p?p.N:"",p?dc(p.lat):"",p?dc(p.lon):""];
-  const rows=[["Név","Kezdés","Befejezés","Időtartam (mp)","GPS szerinti hossz (m)","Szelvény szerinti hossz (m)","Kezdő út","Kezdő szelvény","Kezdő EOV Y","Kezdő EOV X","Kezdő szélesség","Kezdő hosszúság","Záró út","Záró szelvény","Záró EOV Y","Záró EOV X","Záró szélesség","Záró hosszúság","Pontok"]];
+  const rows=[["Név","Kezdés","Befejezés","Időtartam (mp)","GPS szerinti hossz (m)","Szelvény szerinti hossz (m)","Kezdő út","Kezdő szelvény","Kezdő EOV Y","Kezdő EOV X","Kezdő szélesség","Kezdő hosszúság","Záró út","Záró szelvény","Záró EOV Y","Záró EOV X","Záró szélesség","Záró hosszúság","Szakaszok","Pontok"]];
   for(const r of measList.slice().reverse()){
-    const c=measChLen(r.start,r.end);
-    rows.push([r.name,fmtTime(r.t0),fmtTime(r.t1),Math.round((r.t1-r.t0)/1000),r.dist,c==null?"":Math.abs(c),...pl(r.start),...pl(r.end),
+    const c=measChSum(r);
+    rows.push([r.name,fmtTime(r.t0),fmtTime(r.t1),Math.round((r.t1-r.t0)/1000),r.dist,c==null?"":c.len,...pl(r.start),...pl(r.end),
+      (r.legs||[]).map(l=>l.off?`úton kívül (${l.dist} m GPS)`:`${l.road} ${l.from.ch}–${l.to.ch} (${Math.abs(legLen(l)||0)} m)`).join("; "),
       r.pts.map((p,i)=>`P${i+1} ${p.off?"úton kívül":p.road+" "+p.ch} (${p.dist} m)`).join(", ")]);
   }
   return "﻿"+rows.map(r=>r.map(q).join(";")).join("\r\n");
