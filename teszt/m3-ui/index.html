@@ -302,11 +302,12 @@ nav button.rec .pill::after{content:"";position:absolute;top:4px;right:16px;widt
 .sh-top{padding:env(safe-area-inset-top) 0 0;flex-shrink:0}
 .sh-head{display:flex;align-items:center;gap:4px;height:64px;padding:0 4px}
 .sh-head .iconbtn{color:var(--on)}
-.stabs{display:flex;gap:0;overflow-x:auto;padding:0 8px;scrollbar-width:none;border-bottom:1px solid var(--outv)}
-.stabs::-webkit-scrollbar{display:none}
-.stabs button{flex:0 0 auto;position:relative;height:48px;padding:0 14px;font-size:.875rem;font-weight:500;color:var(--onv);background:none;white-space:nowrap}
-.stabs button.on{color:var(--pri);font-weight:600}
-.stabs button.on::after{content:"";position:absolute;left:14px;right:14px;bottom:0;height:3px;border-radius:3px 3px 0 0;background:var(--pri)}
+/* settings tab selector: icon pills on one track, 3 × 2 (no scrolling) */
+.stabs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:2px;padding:4px;margin:4px 16px 12px;border-radius:24px;background:var(--sc-high)}
+.stabs button{display:flex;align-items:center;justify-content:center;gap:6px;height:40px;padding:0 6px;border-radius:20px;font-size:.84rem;font-weight:500;color:var(--onv);background:none;white-space:nowrap;min-width:0}
+.stabs button svg{width:18px;height:18px;flex-shrink:0}
+.stabs button span{overflow:hidden;text-overflow:ellipsis}
+.stabs button.on{background:var(--sec-c);color:var(--on-sec-c);font-weight:600}
 .spanes{flex:1;overflow:auto;padding:4px 16px calc(24px + env(safe-area-inset-bottom))}
 .spane{display:none}.spane.on{display:block}
 .seg.wide{display:flex}
@@ -499,7 +500,7 @@ nav button.rec .pill::after{content:"";position:absolute;top:4px;right:16px;widt
   <div class="in">
     <div class="sh-top">
       <div class="sh-head"><button class="iconbtn" id="closeSheet" aria-label="Vissza"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 6l-6 6 6 6"/></svg></button><h2>Beállítások</h2></div>
-      <div class="stabs" id="stabs"><button data-t="gen">Általános</button><button data-t="pos">Pozíció</button><button data-t="map">Térkép</button><button data-t="meas">Mérés</button><button data-t="foto">Fotó</button><button data-t="info">Névjegy</button></div>
+      <div class="stabs" id="stabs" role="tablist"><button data-t="gen" role="tab"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h10M18 7h2M4 17h4M12 17h8"/><circle cx="16" cy="7" r="2"/><circle cx="10" cy="17" r="2"/></svg><span>Általános</span></button><button data-t="pos" role="tab"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg><span>Pozíció</span></button><button data-t="map" role="tab"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 4 3 6v14l6-2 6 2 6-2V4l-6 2-6-2zM9 4v14M15 6v14"/></svg><span>Térkép</span></button><button data-t="meas" role="tab"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2.5 16 16 2.5 21.5 8 8 21.5z"/><path d="M7 11.5l2 2M9.8 8.7l1.4 1.4M12.5 6l2 2"/></svg><span>Mérés</span></button><button data-t="foto" role="tab"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8h4l2-3h6l2 3h4v12H3z"/><circle cx="12" cy="13.5" r="3.6"/></svg><span>Fotó</span></button><button data-t="info" role="tab"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7.5h.01"/></svg><span>Névjegy</span></button></div>
     </div>
     <div class="spanes">
     <div class="spane" data-p="gen">
