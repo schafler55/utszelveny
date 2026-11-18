@@ -338,7 +338,10 @@ nav button.rec .pill::after{content:"";position:absolute;top:4px;right:16px;widt
 .cammsg{position:absolute;inset:0;display:none;flex-direction:column;align-items:center;justify-content:center;gap:14px;text-align:center;padding:24px;color:#BFC9C0;font-size:.95rem;line-height:1.45}
 .cammsg.on{display:flex}
 .cammsg b{color:#DEE4DD;font-size:1.3rem;font-weight:500}
-.camopts{flex-shrink:0;display:flex;justify-content:center;padding:12px 0 0}
+.camopts{flex-shrink:0;display:flex;justify-content:center;align-items:center;gap:10px;padding:12px 0 0}
+.camfl{display:flex;align-items:center;gap:6px;height:36px;padding:0 14px 0 10px;border-radius:18px;background:var(--sc-high);color:var(--onv);font-size:.8125rem;font-weight:500}
+.camfl svg{width:20px;height:20px}
+.camfl.on{background:var(--warn-c);color:var(--on-warn-c);font-weight:600}
 .camopts .seg{min-height:36px;border-radius:18px;padding:3px}
 .camopts .seg button{min-height:30px;padding:4px 16px;border-radius:15px;font-size:.8125rem}
 .cambar{flex-shrink:0;display:flex;align-items:center;justify-content:space-between;padding:12px 36px 14px;background:var(--bg)}
@@ -463,7 +466,7 @@ nav button.rec .pill::after{content:"";position:absolute;top:4px;right:16px;widt
       <div class="camflash" id="camFlash"></div>
       <div class="cammsg" id="camMsg"></div>
     </div>
-    <div class="camopts"><div class="seg" id="camResSeg"><button data-v="best">Legjobb</button><button data-v="fast">Gyors</button></div></div>
+    <div class="camopts"><div class="seg" id="camResSeg"><button data-v="best">Legjobb</button><button data-v="fast">Gyors</button></div><button class="camfl" id="camFl" aria-label="Vaku" style="display:none"></button></div>
     <div class="cambar">
       <button class="camthumb" id="camThumb" aria-label="Elkészült fotók"></button>
       <button class="camshut" id="camShut" aria-label="Fotó készítése" disabled><i></i></button>
@@ -2209,6 +2212,7 @@ async function camStart(){
     try{camIC=("ImageCapture" in window)?new ImageCapture(camTrack):null}catch(e){camIC=null}
     camTrack.addEventListener("ended",()=>{if(camTrack&&camTrack.readyState==="ended"){camStop();if(camOn){camErr="A kamera leállt.";camUI()}}});
     const v=$("camV");v.srcObject=s;v.play().catch(()=>{});
+    setTimeout(camFlashCaps,400);
     navigator.mediaDevices.enumerateDevices().then(L=>{camDevs=L.filter(x=>x.kind==="videoinput").length;camUI()}).catch(()=>{});
   }catch(e){
     const n=e&&e.name;
@@ -2219,7 +2223,7 @@ async function camStart(){
 }
 function camStop(){
   if(camStream)camStream.getTracks().forEach(x=>x.stop());
-  camStream=camTrack=camIC=null;const v=$("camV");if(v)v.srcObject=null;
+  camStream=camTrack=camIC=null;camCaps={torch:false,flash:false};camFlUI();const v=$("camV");if(v)v.srcObject=null;
   $("camO").style.display="none";
 }
 function camSet(on){
@@ -2249,10 +2253,35 @@ let toastT=null;
 function camToast(t,bad){const e=$("camToast");e.textContent=t;e.className="camtoast on"+(bad?" bad":"");clearTimeout(toastT);toastT=setTimeout(()=>e.className="camtoast",bad?4500:2600)}
 const timeout=(p,ms)=>Promise.race([p,new Promise((_,rej)=>setTimeout(()=>rej(new Error("timeout")),ms))]);
 // full-resolution still (ImageCapture), turned to the preview's orientation if needed
-async function camStill(){
+/* flash: off | flash (fires at the shot) | torch (light stays on) – what the camera supports */
+let camCaps={torch:false,flash:false};
+const FL_ICO={off:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2 4 14h7l-1 8 5-6.7M17.5 10H20l-2.6 3.4"/><path d="M3 3l18 18"/></svg>`,
+  flash:`<svg viewBox="0 0 24 24" fill="currentColor"><path d="M13 2 4 14h7l-1 8 9-12h-7z"/></svg>`,
+  torch:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 3h10v4l-2 3v11H9V10L7 7z"/><path d="M7 7h10M12 13v2"/></svg>`};
+const FL_TXT={off:"Vaku ki",flash:"Vaku",torch:"Lámpa"};
+function camFlModes(){const m=["off"];if(camCaps.flash||camCaps.torch)m.push("flash");if(camCaps.torch)m.push("torch");return m}
+function camFlUI(){
+  const b=$("camFl"),m=camFlModes();if(!b)return;
+  if(m.length<2||!camStream){b.style.display="none";return}
+  let v=S.phFlash||"off";if(!m.includes(v))v="off";
+  b.style.display="";b.className="camfl"+(v!=="off"?" on":"");b.innerHTML=FL_ICO[v]+`<span>${FL_TXT[v]}</span>`;
+  b.setAttribute("aria-label","Vaku: "+FL_TXT[v]);
+}
+function camTorch(on){if(!camTrack||!camCaps.torch)return Promise.resolve();return camTrack.applyConstraints({advanced:[{torch:!!on}]}).catch(()=>{})}
+async function camFlashCaps(){
+  camCaps={torch:false,flash:false};const tr=camTrack;
+  try{const c=tr&&tr.getCapabilities?tr.getCapabilities():{};camCaps.torch=!!c.torch}catch(e){}
+  try{if(camIC){const pc=await timeout(camIC.getPhotoCapabilities(),2500);camCaps.flash=(pc.fillLightMode||[]).includes("flash")}}catch(e){}
+  if(tr!==camTrack)return;
+  camFlUI();if(S.phFlash==="torch")camTorch(true);
+}
+$("camFl").onclick=()=>{const m=camFlModes();let i=m.indexOf(S.phFlash||"off");S.phFlash=m[(i+1)%m.length];saveS();camTorch(S.phFlash==="torch");camFlUI()};
+const sleep=(ms)=>new Promise(r=>setTimeout(r,ms));
+async function camStill(flash){
   let opt={};
   try{const pc=await timeout(camIC.getPhotoCapabilities(),2500),mw=pc.imageWidth&&pc.imageWidth.max,mh=pc.imageHeight&&pc.imageHeight.max;
     if(mw&&mh){const k=Math.min(1,CAM_MAXPX/Math.max(mw,mh));opt={imageWidth:Math.round(mw*k),imageHeight:Math.round(mh*k)}}}catch(e){}
+  if(flash)opt.fillLightMode="flash";
   const blob=await timeout(camIC.takePhoto(opt),7000);
   const bmp=await createImageBitmap(blob);
   const v=$("camV");
@@ -2269,9 +2298,14 @@ async function camShoot(){
   const st=stampData();          // position and time of the tap, not of the finished image
   camShooting=true;camUI();camFlash();
   try{
-    let src=null;
-    if(S.phRes!=="fast"&&camIC){try{src=await camStill()}catch(e){src=null}}
-    if(!src){if(!camStream)throw new Error("a kamera leállt");src=camFrame()}
+    let src=null;const fl=(S.phFlash==="flash")&&camFlModes().includes("flash"),still=S.phRes!=="fast"&&camIC;
+    const nativeFl=fl&&still&&camCaps.flash;          // the camera fires its own flash with takePhoto
+    let lit=false;
+    if(fl&&!nativeFl&&camCaps.torch){await camTorch(true);lit=true;await sleep(450)}   // otherwise: light on for the shot
+    try{
+      if(still){try{src=await camStill(nativeFl)}catch(e){src=null}}
+      if(!src){if(!camStream)throw new Error("a kamera leállt");src=camFrame()}
+    }finally{if(lit)camTorch(S.phFlash==="torch")}
     const sw=src.width,sh=src.height,k=Math.min(1,CAM_MAXPX/Math.max(sw,sh)),W=Math.round(sw*k),H=Math.round(sh*k);
     const cv=document.createElement("canvas");cv.width=W;cv.height=H;const c=cv.getContext("2d");
     c.drawImage(src,0,0,W,H);src.close&&src.close();
@@ -2424,6 +2458,31 @@ $("manualGo").onclick=()=>{
   else{let lat=a,lon=b;if(lat<lon){lat=b;lon=a}const xy=EOV.fwd(lat,lon);pos={E:xy.E,N:xy.N,lat,lon,acc:null,src:"manual"}}
   update(pos);$("sheet").classList.remove("on");showView("pos");
 };
+
+/* ---------- back: Android back button, Escape, browser back ---------- */
+// closes the topmost open thing; false = nothing left (then the app may close)
+function goBack(){
+  if($("camViewer").classList.contains("on")){cvClose();return true}
+  if($("sheet").classList.contains("on")){$("closeSheet").click();return true}
+  if($("mapPanel").classList.contains("on")){closeMapPanel();return true}
+  if(mmOn){setMM(false);return true}
+  if(!$("posView").classList.contains("on")){showView("pos");return true}
+  return false;
+}
+window.__back=()=>goBack();          // called by the Android app on the back button
+document.addEventListener("keydown",(e)=>{
+  if(e.key!=="Escape"||e.defaultPrevented)return;
+  if(e.target&&e.target.matches&&e.target.matches("input,textarea")){e.target.blur();return}
+  if(goBack())e.preventDefault();
+});
+// web / PWA: one history entry while something is open, so the browser back closes it instead of leaving
+const navOpen=()=>$("camViewer").classList.contains("on")||$("sheet").classList.contains("on")||$("mapPanel").classList.contains("on")||mmOn||!$("posView").classList.contains("on");
+let navGuard=false;
+function navSync(){if(NB)return;if(navOpen()&&!navGuard){try{history.pushState({ksz:1},"");navGuard=true}catch(e){}}}
+if(!NB){
+  document.addEventListener("click",()=>setTimeout(navSync,0));
+  window.addEventListener("popstate",()=>{navGuard=false;if(goBack())navSync();else history.back()});
+}
 
 /* ---------- boot ---------- */
 window.addEventListener("load",()=>{

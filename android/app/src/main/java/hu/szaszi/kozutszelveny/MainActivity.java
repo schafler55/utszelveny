@@ -447,13 +447,18 @@ public class MainActivity extends Activity {
         return out[0];
     }
 
+    /** Back button: the page closes its topmost layer first (photo viewer, settings, map panel, other tab); the app closes only on the Pozíció page. */
     @Override
     public void onBackPressed() {
-        if (web != null && web.canGoBack()) {
-            web.goBack();
-        } else {
+        if (web == null) {
             super.onBackPressed();
+            return;
         }
+        web.evaluateJavascript("(window.__back&&window.__back())?1:0", v -> {
+            if ("1".equals(v)) return;
+            if (web != null && web.canGoBack()) web.goBack();
+            else super.onBackPressed();
+        });
     }
 
     @Override
