@@ -9,7 +9,7 @@
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" type="image/png" href="icon-192.png">
 <link rel="apple-touch-icon" href="icon-192.png">
-<title>ÚtSzelvény V0.3 Beta</title>
+<title>ÚtSzelvény V0.4 Beta</title>
 <style>
 :root{
   --bg:#16181c; --card:#25282d; --card2:#2d3036; --line:#3a3e45;
@@ -143,6 +143,53 @@ input[type=text]{width:100%;background:#1b1d21;border:1px solid var(--line);colo
 .alert{background:#3b1d1d;border:1px solid #7f1d1d;color:#fecaca;border-radius:14px;padding:12px 14px;font-size:.88rem;line-height:1.45;display:none}
 .alert.on{display:block}
 #boot{position:fixed;inset:0;background:var(--bg);display:grid;place-items:center;z-index:50;font-family:var(--cond);font-size:1.3rem;color:var(--muted)}
+#measView{flex-direction:column;gap:12px}
+.mctl{display:flex;flex-direction:column;gap:6px}
+.mctl.rec{border:2px solid #b91c1c}
+.mtitle{font-family:var(--cond);font-size:1.5rem;font-weight:600}
+.mstart{align-self:center;margin-top:12px}
+.mrow{display:flex;justify-content:space-between;align-items:center}
+.mrec{display:flex;align-items:center;gap:8px;font-family:var(--cond);font-size:1.1rem;color:#fca5a5}
+.mrec i{width:12px;height:12px;border-radius:50%;background:#ef4444;animation:mblink 1.2s infinite}
+@keyframes mblink{50%{opacity:.25}}
+.mtime{font-family:var(--cond);font-size:1.35rem;font-variant-numeric:tabular-nums}
+.mbig{font-family:var(--cond);font-weight:700;font-size:min(16vw,76px);line-height:1;text-align:center;font-variant-numeric:tabular-nums;margin-top:6px}
+.mbig-l{text-align:center;color:var(--muted);font-size:.9rem}
+.mlen{text-align:center;font-size:1rem;margin:4px 0 6px}
+.na{color:var(--muted);font-weight:400}
+.mplaces{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:6px}
+.mpl{background:var(--card2);border-radius:14px;padding:10px 12px;min-width:0}
+.mitem .mpl{background:var(--card)}
+.mpl-l{font-size:.72rem;letter-spacing:.08em;color:var(--dim);font-weight:700}
+.mpl-v{display:flex;align-items:center;gap:8px;margin-top:4px;font-family:var(--cond);font-weight:700;font-size:1.55rem;font-variant-numeric:tabular-nums;white-space:nowrap}
+.mpl-v.na{font-size:1rem;font-weight:400;white-space:normal}
+.mpl-s{font-size:.78rem;color:var(--muted);margin-top:2px}
+.shield.mini{width:42px;height:31px;margin:0;flex-shrink:0}
+.mpts{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
+.mbtns{display:flex;gap:10px;margin-top:10px;flex-wrap:wrap}
+.mbtns .btn{flex:1;min-width:110px}
+.mctl .mbtns .btn{padding:14px 10px;font-size:1.05rem}
+.btn[disabled]{opacity:.45}
+.mlist{display:flex;flex-direction:column;gap:10px;margin-top:8px}
+.mitem{background:var(--card2);border:1px solid var(--line);border-radius:14px;padding:10px 12px}
+.mitem.new{border-color:var(--green2)}
+.mnew{font-size:.85rem;color:#86efac;margin-bottom:6px}
+.mname{font-family:var(--cond);font-size:1.2rem;font-weight:700}
+.mtog{cursor:pointer}
+.msum{font-family:var(--cond);font-size:1.1rem;margin-top:2px}
+.mmeta{font-size:.82rem;color:var(--muted);margin-top:2px}
+.mmeta b{color:var(--text)}
+.mdet{margin-top:10px;border-top:1px solid var(--line);padding-top:10px}
+.mdet .kv{margin-top:10px;font-size:.88rem}
+.mpth{font-size:.75rem;letter-spacing:.06em;color:var(--dim);font-weight:700;margin:10px 0 4px;text-transform:uppercase}
+.mptr{font-size:.9rem;line-height:1.5}
+.mren{display:flex;gap:8px}
+.mren input{flex:1;min-width:0}
+.mexp{margin-top:12px}
+.measchip{position:absolute;top:40px;left:50%;transform:translateX(-50%);display:flex;gap:10px;align-items:center;max-width:78%;background:#3b0764ee;border:1px solid #e879f9;color:#f5d0fe;border-radius:999px;padding:6px 12px;font-size:.85rem;cursor:pointer}
+.measchip span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+nav button.rec .pill{position:relative}
+nav button.rec .pill::after{content:"";position:absolute;top:3px;right:12px;width:10px;height:10px;border-radius:50%;background:#ef4444;box-shadow:0 0 0 2px #1c1e22}
 @media (min-width:760px){ main{max-width:560px;margin:0 auto;width:100%} #mapView{max-width:none} }
 </style>
 </head>
@@ -198,12 +245,22 @@ input[type=text]{width:100%;background:#1b1d21;border:1px solid var(--line);colo
     </div>
   </section>
 
+  <section class="view" id="measView">
+    <div class="card mctl" id="measCtl"></div>
+    <div class="card">
+      <div class="sec-t" style="margin:0">Mentett mérések <span id="measCount" class="na"></span></div>
+      <div id="measList" class="mlist"></div>
+      <div id="measExport" class="mexp"><div class="mbtns"><button class="btn" id="measCopy">Másolás (CSV)</button><button class="btn" id="measDl">Letöltés (CSV)</button></div><div class="note" id="measMsg"></div></div>
+    </div>
+  </section>
+
   <section class="view" id="mapView">
     <div id="tiles"></div>
     <canvas id="map"></canvas>
     <div class="basenote" id="baseNote"></div>
     <div class="attrib" id="attrib"></div>
     <div class="scalebar" id="scalebar"></div>
+    <div class="measchip" id="measChip" style="display:none"></div>
     <div class="mapbtns">
       <button id="rotBtn" aria-label="Térkép iránya: észak felül / menetirány felül"><svg width="26" height="26" viewBox="0 0 24 24"><g id="rotNeedle"><path d="M12 2.5 15.2 12H8.8z" fill="#ef4444"/><path d="M12 21.5 8.8 12h6.4z" fill="#e5e7eb"/><circle cx="12" cy="12" r="1.6" fill="#1b1e23"/></g></svg></button>
       <button id="baseBtn" aria-label="Háttértérkép"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3 2 8l10 5 10-5-10-5zM2 13l10 5 10-5M2 17.5l10 5 10-5" stroke-linejoin="round"/></svg></button>
@@ -224,6 +281,9 @@ input[type=text]{width:100%;background:#1b1d21;border:1px solid var(--line);colo
   <button id="nMap"><span class="pill">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 4 3 6v14l6-2 6 2 6-2V4l-6 2-6-2zM9 4v14M15 6v14"/></svg>
   </span>Térkép</button>
+  <button id="nMeas"><span class="pill">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M2.5 16 16 2.5 21.5 8 8 21.5z"/><path d="M7 11.5l2 2M9.8 8.7l1.4 1.4M12.5 6l2 2"/></svg>
+  </span>Mérés</button>
 </nav>
 
 <div class="sheet" id="sheet">
@@ -254,7 +314,7 @@ input[type=text]{width:100%;background:#1b1d21;border:1px solid var(--line);colo
     <p class="note">Felhasznált NAP adatcsomagok: Országos közúthálózat, Közút neve/kategóriája/kezelője, Szelvényjelek, Sebességkorlátozás, Lakott területi szakaszok, Hídhasználati feltételek, Tehergépjárművekre vonatkozó korlátozások. A sebességkorlát ott, ahol nincs egyedi korlátozás, a KRESZ szerinti alapérték. A térkép alapréteg csak internetkapcsolattal és weboldalról megnyitva érhető el. Koordináta-átszámítás: WGS84 → HD72/EOV (EPSG:23700), kb. 1 m pontossággal.</p>
 
     <div class="about">
-      <div class="about-t">ÚtSzelvény V0.3 Beta</div>
+      <div class="about-t">ÚtSzelvény V0.4 Beta</div>
       <p>© 2026 Szászi Dániel</p>
       <p>Az alkalmazást Szászi Dániel készítette AI segítségével (Gemini 4 Argon, Claude Opus 5.5)</p>
       <p>Forráskód: GPL-3.0 licence - <a href="https://github.com/schafler55/kozutszelveny" target="_blank" rel="noopener">GitHub</a></p>
@@ -639,6 +699,7 @@ function update(pos){
     lastGood={road:ROADS[segRoad[res.best.s]].num,ch:fmtCh(res.ch),E:pos.E,N:pos.N,lat:pos.lat,lon:pos.lon,t:Date.now()};
     try{localStorage.setItem("ksz_last",JSON.stringify(lastGood))}catch(e){}
   }
+  if(measActive)measOnFix(pos,res);
   render();
   if(mapOn){if(follow){const m=posToM(pos);mX=m.x;mY=m.y}drawMap()}
 }
@@ -757,6 +818,7 @@ function render(){
   $("gpsState").textContent=watchId===null?"kikapcsolva":"bekapcsolva";
   $("gpsToggle").textContent=watchId===null?"Indítás":"Leállítás";
   $("gpsToggle").className="btn "+(watchId===null?"pri":"red");
+  renderMeas();
 }
 function renderSpeed(show){
   const card=$("spdCard");if(!show){card.style.display="none";return}
@@ -1033,6 +1095,7 @@ function drawMap(){
   if(sat){ctx.strokeStyle="#000a";for(const s of segs){let w=ST(segKut[s])[1];if(gS<0.06)w*=0.7;ctx.lineWidth=w*LW+2.5;path(s);ctx.stroke()}}
   for(const s of segs){let [col,w]=ST(segKut[s]);if(gS<0.06)w*=0.7;ctx.strokeStyle=col;ctx.lineWidth=w*LW;path(s);ctx.stroke()}
   if(curRoad>=0){ctx.strokeStyle=light?"#f59e0b":"#facc15";ctx.lineWidth=3.2*LW;for(const s of segs)if(segRoad[s]===curRoad){path(s);ctx.stroke()}}
+  drawMeasTrack(mapMeas,"#e879f9");drawMeasTrack(measActive,"#f97316");
   // km posts (under the signs)
   if(gS>=0.15){
     ctx.font="bold 11px Arial,sans-serif";ctx.textAlign="center";ctx.textBaseline="middle";
@@ -1045,7 +1108,7 @@ function drawMap(){
   ctx.textAlign="center";ctx.textBaseline="middle";
   // keep signs off the buttons, the info box and the top labels
   const placed=[],cr=cv.getBoundingClientRect();
-  for(const el of [$("mapInfo"),document.querySelector(".mapbtns"),$("attrib"),$("scalebar"),$("baseNote")]){
+  for(const el of [$("mapInfo"),document.querySelector(".mapbtns"),$("attrib"),$("scalebar"),$("baseNote"),$("measChip")]){
     const r=el.getBoundingClientRect();if(!r.width||!r.height)continue;
     placed.push({x:(r.left+r.right)/2-cr.left,y:(r.top+r.bottom)/2-cr.top,w:r.width+4,h:r.height+4})}
   const free=(x,y,w,h)=>!placed.some(b=>Math.abs(b.x-x)<(b.w+w)/2+6&&Math.abs(b.y-y)<(b.h+h)/2+4);
@@ -1138,14 +1201,221 @@ setRot(S.rot||"north");
 window.addEventListener("resize",()=>{if(mapOn){resizeMap();drawMap()}});
 window.addEventListener("online",()=>{if(baseState==="unknown")baseState=null;if(mapOn){clearTiles();drawMap()}});
 
+/* ---------- Mérés (measurement): start/stop, GPS distance, chainage length, points, saved list ---------- */
+let measActive=null;            // running measurement (also kept in localStorage, survives a restart)
+let measList=[];                // saved measurements, newest first
+let measLast=null;              // id of the just-stopped measurement (naming prompt)
+let mapMeas=null;               // measurement shown on the map
+let measOpen=null;              // id of the expanded card
+let measDel=null;               // id waiting for delete confirmation
+let measRename=null;            // id being renamed
+let measSaveT=0,measTick=null;
+try{measList=JSON.parse(localStorage.getItem("ksz_meas")||"[]")}catch(e){measList=[]}
+try{measActive=JSON.parse(localStorage.getItem("ksz_meas_active")||"null")}catch(e){measActive=null}
+const measSaveList=()=>{try{localStorage.setItem("ksz_meas",JSON.stringify(measList))}catch(e){}};
+const measSaveActive=()=>{try{measActive?localStorage.setItem("ksz_meas_active",JSON.stringify(measActive)):localStorage.removeItem("ksz_meas_active")}catch(e){}};
+const fmtDist=(m)=>m==null?"–":m<1000?Math.round(m)+" m":(m/1000).toLocaleString("hu-HU",{minimumFractionDigits:3,maximumFractionDigits:3})+" km";
+const fmtDur=(ms)=>{const s=Math.max(0,Math.round(ms/1000)),h=Math.floor(s/3600),m=Math.floor(s%3600/60),x=s%60;return (h?h+":"+String(m).padStart(2,"0"):m)+":"+String(x).padStart(2,"0")};
+const fmtTime=(t)=>new Date(t).toLocaleString("hu-HU",{year:"numeric",month:"2-digit",day:"2-digit",hour:"2-digit",minute:"2-digit"});
+// position snapshot: road, chainage, coordinates
+function measSnap(pos,res){
+  const o={t:Date.now(),E:Math.round(pos.E),N:Math.round(pos.N),lat:pos.lat!=null?+pos.lat.toFixed(6):null,lon:pos.lon!=null?+pos.lon.toFixed(6):null};
+  if(!res||res.off){o.off=true;return o}
+  const s=res.best.s;
+  return Object.assign(o,{road:ROADS[segRoad[s]].num,kut:segKut[s],pk:segPk[s],ch:fmtCh(res.ch),v:cval(res.ch)});
+}
+// length by chainage (same road only): end − start, metres
+function measChLen(a,b){if(!a||!b||a.off||b.off||a.road!==b.road)return null;return vdist(a.v,b.v)}
+function measStart(){
+  if(measActive)return;
+  measActive={id:Date.now(),t0:Date.now(),start:null,end:null,dist:0,pts:[],trk:[],last:null};
+  measLast=null;
+  if(watchId===null)startGPS();
+  // use the current fix right away when it is fresh
+  if(cur&&cur.pos.src==="gps"&&Date.now()-lastFixT<5000)measOnFix(cur.pos,cur.res);
+  measSaveActive();measTicker();render();
+}
+function measOnFix(pos,res){
+  const M=measActive;if(!M||pos.src!=="gps")return;
+  if(pos.acc!=null&&pos.acc>50)return;                       // too inaccurate
+  const now=Date.now(),snap=measSnap(pos,res);
+  if(!M.start){M.start=snap;M.end=snap;M.last={E:pos.E,N:pos.N,t:now};M.trk.push(snap.E,snap.N);measSaveActive();return}
+  const L=M.last,d=Math.hypot(pos.E-L.E,pos.N-L.N),dt=Math.max(1,(now-L.t)/1000);   // GPS fixes come ~1/s
+  M.end=snap;
+  if(d/dt>75){                                               // jump: a single GPS outlier is ignored; if the new place
+    M.bad=(M.bad||0)+1;                                      // holds for 3 fixes (e.g. after a long GPS dropout),
+    if(M.bad>=3){M.last={E:pos.E,N:pos.N,t:now};M.bad=0}     // continue from there without counting the jump
+    return}
+  M.bad=0;
+  const still=pos.spd!=null&&pos.spd<0.6&&d<15;               // standing: don't add GPS jitter
+  if(!still&&d>=Math.max(2,Math.min(8,(pos.acc||5)*0.5))){M.dist+=d;M.last={E:pos.E,N:pos.N,t:now}}
+  else if(still)M.last.t=now;
+  const n=M.trk.length;if(n<2||Math.hypot(snap.E-M.trk[n-2],snap.N-M.trk[n-1])>=10)M.trk.push(snap.E,snap.N);
+  if(now-measSaveT>4000){measSaveT=now;measSaveActive()}
+}
+function measPoint(){
+  const M=measActive;if(!M||!cur)return;
+  const p=measSnap(cur.pos,cur.res);p.dist=Math.round(M.dist);M.pts.push(p);measSaveActive();render();
+}
+function measStop(){
+  const M=measActive;if(!M)return;
+  if(!M.start){measActive=null;measSaveActive();measTicker();render();return}   // never got a fix: nothing to save
+  const n=(+localStorage.getItem("ksz_meas_n")||measList.length)+1;
+  try{localStorage.setItem("ksz_meas_n",String(n))}catch(e){}
+  const rec={id:M.id,name:"Mérés "+n,t0:M.t0,t1:Date.now(),start:M.start,end:M.end,dist:Math.round(M.dist),pts:M.pts,trk:M.trk};
+  measList.unshift(rec);measSaveList();
+  measActive=null;measSaveActive();measLast=rec.id;measRename=rec.id;measOpen=rec.id;measTicker();render();
+  setTimeout(()=>{const i=document.getElementById("mrn_"+rec.id);if(i){i.focus();i.select()}},50);
+}
+function measTicker(){
+  if(measActive&&!measTick)measTick=setInterval(()=>{if($("measView").classList.contains("on"))renderMeas()},1000);
+  if(!measActive&&measTick){clearInterval(measTick);measTick=null}
+}
+const mini=(x)=>x&&!x.off?shieldSVG(x.road,x.kut).replace('class="shield"','class="shield mini"'):"";
+function placeHTML(lbl,x,live){
+  if(!x)return `<div class="mpl"><div class="mpl-l">${lbl}</div><div class="mpl-v na">${live?"várakozás GPS-re…":"–"}</div></div>`;
+  if(x.off)return `<div class="mpl"><div class="mpl-l">${lbl}</div><div class="mpl-v na">úthálózaton kívül</div></div>`;
+  return `<div class="mpl"><div class="mpl-l">${lbl}</div><div class="mpl-v">${mini(x)}<span class="mpl-ch">${esc(x.ch)}</span></div><div class="mpl-s">${esc(x.road)}. sz. út${x.pk?" · "+PKOD[x.pk]:""}</div></div>`;
+}
+function chLenHTML(a,b){
+  const L=measChLen(a,b);
+  if(L==null)return a&&b&&!a.off&&!b.off&&a.road!==b.road?`<span class="na">eltérő utak – nincs szelvény szerinti hossz</span>`:"–";
+  return `${fmtDist(Math.abs(L))} <span class="na">(${L>=0?"növekvő":"csökkenő"} szelvény)</span>`;
+}
+function renderMeas(){
+  const el=$("measCtl");if(!el)return;
+  const M=measActive;
+  $("nMeas").classList.toggle("rec",!!M);
+  if(M){
+    const live=cur&&cur.pos.src==="gps"?measSnap(cur.pos,cur.res):M.end;
+    el.className="card mctl rec";
+    el.innerHTML=`<div class="mrow"><span class="mrec"><i></i>Mérés folyamatban</span><span class="mtime">${fmtDur(Date.now()-M.t0)}</span></div>
+      <div class="mbig">${fmtDist(M.dist)}</div><div class="mbig-l">megtett út (GPS)</div>
+      <div class="mlen">Szelvény szerint: <b>${chLenHTML(M.start,live)}</b></div>
+      <div class="mplaces">${placeHTML("KEZDET",M.start,true)}${placeHTML("JELENLEG",M.start?live:null,true)}</div>
+      ${M.pts.length?`<div class="mpts">${M.pts.map((p,i)=>`<span class="chip">P${i+1} · ${p.off?"úton kívül":esc(p.road)+" · "+esc(p.ch)}</span>`).join("")}</div>`:""}
+      <div class="mbtns"><button class="btn" id="mPoint" ${M.start?"":"disabled"}>＋ Pont rögzítése</button><button class="btn red" id="mStop">■ Leállítás</button></div>`;
+    $("mPoint").onclick=measPoint;$("mStop").onclick=measStop;
+  }else{
+    el.className="card mctl";
+    el.innerHTML=`<div class="mtitle">Távolságmérés</div>
+      <div class="note" style="margin-top:2px">Indításkor rögzíti az aktuális utat és szelvényt, menet közben méri a GPS szerint megtett utat, leállításkor elmenti a záró szelvényt is. Közben pontokat is rögzíthetsz.</div>
+      ${watchId===null?`<div class="note">A mérés GPS-t használ – indításkor bekapcsol.</div>`:""}
+      <button class="startbtn mstart" id="mStart">▶ Mérés indítása</button>`;
+    $("mStart").onclick=measStart;
+  }
+  // saved list
+  $("measCount").textContent=measList.length?`(${measList.length})`:"";
+  $("measExport").style.display=measList.length?"":"none";
+  const L=$("measList");
+  if(!measList.length){L.innerHTML=`<div class="note">Még nincs mentett mérés.</div>`;return}
+  L.innerHTML=measList.map(r=>{
+    const open=measOpen===r.id,ren=measRename===r.id,del=measDel===r.id;
+    const head=ren?`<div class="mren"><input type="text" id="mrn_${r.id}" value="${esc(r.name)}" maxlength="80" placeholder="Mérés neve"><button class="btn pri" data-a="save" data-id="${r.id}">Mentés</button></div>`
+      :`<div class="mname">${esc(r.name)}</div>`;
+    const sum=`<div class="msum">${r.start&&!r.start.off?esc(r.start.road)+" · "+esc(r.start.ch):"úton kívül"} → ${r.end&&!r.end.off?(r.end.road!==r.start.road?esc(r.end.road)+" · ":"")+esc(r.end.ch):"úton kívül"}</div>
+      <div class="mmeta">${fmtTime(r.t0)} · ${fmtDur(r.t1-r.t0)} · <b>${fmtDist(r.dist)}</b> GPS${(()=>{const c=measChLen(r.start,r.end);return c==null?"":` · <b>${fmtDist(Math.abs(c))}</b> szelvény szerint`})()}</div>`;
+    let body="";
+    if(open){
+      body=`<div class="mdet">
+        <div class="mplaces">${placeHTML("KEZDET",r.start)}${placeHTML("VÉGE",r.end)}</div>
+        <dl class="kv"><dt>GPS szerint</dt><dd>${fmtDist(r.dist)}</dd><dt>Szelvény szerint</dt><dd>${chLenHTML(r.start,r.end)}</dd>
+        <dt>Kezdés</dt><dd>${fmtTime(r.t0)}</dd><dt>Időtartam</dt><dd>${fmtDur(r.t1-r.t0)}</dd>
+        <dt>Kezdőpont</dt><dd class="na">EOV ${r.start.E} / ${r.start.N}${r.start.lat!=null?` · ${r.start.lat}, ${r.start.lon}`:""}</dd>
+        <dt>Végpont</dt><dd class="na">EOV ${r.end.E} / ${r.end.N}${r.end.lat!=null?` · ${r.end.lat}, ${r.end.lon}`:""}</dd></dl>
+        ${r.pts.length?`<div class="mpth">Rögzített pontok</div>`+r.pts.map((p,i)=>`<div class="mptr"><b>P${i+1}</b> ${p.off?"úthálózaton kívül":esc(p.road)+" · "+esc(p.ch)} <span class="na">· ${fmtDist(p.dist)} a kezdettől · ${new Date(p.t).toLocaleTimeString("hu-HU",{hour:"2-digit",minute:"2-digit",second:"2-digit"})}</span></div>`).join(""):""}
+        <div class="mbtns">${ren?"":`<button class="btn" data-a="ren" data-id="${r.id}">Átnevezés</button>`}<button class="btn" data-a="map" data-id="${r.id}" ${r.trk&&r.trk.length>=2?"":"disabled"}>Térképen</button>
+          ${del?`<button class="btn red" data-a="delok" data-id="${r.id}">Biztosan törlöd?</button>`:`<button class="btn" data-a="del" data-id="${r.id}">Törlés</button>`}</div>
+      </div>`;
+    }
+    return `<div class="mitem${open?" open":""}${measLast===r.id?" new":""}" data-id="${r.id}">${measLast===r.id&&ren?`<div class="mnew">Mérés mentve – adj neki nevet:</div>`:""}${head}<div data-a="tog" data-id="${r.id}" class="mtog">${sum}</div>${body}</div>`;
+  }).join("");
+}
+function measFind(id){return measList.find(r=>r.id===id)}
+function measAction(a,id){
+  const r=measFind(id);if(!r)return;
+  if(a==="tog"){measOpen=measOpen===id?null:id;measDel=null}
+  else if(a==="ren"){measRename=id;setTimeout(()=>{const i=document.getElementById("mrn_"+id);if(i){i.focus();i.select()}},30)}
+  else if(a==="save"){const i=document.getElementById("mrn_"+id);const v=(i&&i.value||"").trim();if(v)r.name=v;measRename=null;measLast=null;measSaveList()}
+  else if(a==="del")measDel=id;
+  else if(a==="delok"){measList=measList.filter(x=>x.id!==id);measSaveList();if(mapMeas&&mapMeas.id===id)mapMeas=null;measDel=null;measOpen=null}
+  else if(a==="map"){showMeasOnMap(r);return}
+  renderMeas();
+}
+$("measList").addEventListener("click",(e)=>{const b=e.target.closest("[data-a]");if(!b||b.disabled)return;measAction(b.dataset.a,+b.dataset.id)});
+$("measList").addEventListener("keydown",(e)=>{if(e.key==="Enter"&&e.target.id&&e.target.id.startsWith("mrn_"))measAction("save",+e.target.id.slice(4))});
+// CSV (semicolon separated, decimal comma – opens directly in Hungarian Excel)
+function measCSV(){
+  const q=(x)=>{x=x==null?"":String(x);return /[;"\n]/.test(x)?'"'+x.replace(/"/g,'""')+'"':x};
+  const dc=(x)=>x==null?"":String(x).replace(".",",");
+  const pl=(p)=>p&&!p.off?[p.road,p.ch,p.E,p.N,dc(p.lat),dc(p.lon)]:["úton kívül","",p?p.E:"",p?p.N:"",p?dc(p.lat):"",p?dc(p.lon):""];
+  const rows=[["Név","Kezdés","Befejezés","Időtartam (mp)","GPS szerinti hossz (m)","Szelvény szerinti hossz (m)","Kezdő út","Kezdő szelvény","Kezdő EOV Y","Kezdő EOV X","Kezdő szélesség","Kezdő hosszúság","Záró út","Záró szelvény","Záró EOV Y","Záró EOV X","Záró szélesség","Záró hosszúság","Pontok"]];
+  for(const r of measList.slice().reverse()){
+    const c=measChLen(r.start,r.end);
+    rows.push([r.name,fmtTime(r.t0),fmtTime(r.t1),Math.round((r.t1-r.t0)/1000),r.dist,c==null?"":Math.abs(c),...pl(r.start),...pl(r.end),
+      r.pts.map((p,i)=>`P${i+1} ${p.off?"úton kívül":p.road+" "+p.ch} (${p.dist} m)`).join(", ")]);
+  }
+  return "﻿"+rows.map(r=>r.map(q).join(";")).join("\r\n");
+}
+$("measCopy").onclick=async()=>{
+  const t=measCSV();let ok=false;
+  try{await navigator.clipboard.writeText(t);ok=true}catch(e){
+    try{const a=document.createElement("textarea");a.value=t;document.body.appendChild(a);a.select();ok=document.execCommand("copy");a.remove()}catch(e2){}}
+  $("measMsg").textContent=ok?"Vágólapra másolva – beillesztheted táblázatba vagy üzenetbe.":"A másolás nem sikerült.";
+};
+$("measDl").onclick=()=>{
+  const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([measCSV()],{type:"text/csv;charset=utf-8"}));
+  a.download="utszelveny_meresek_"+new Date().toISOString().slice(0,10)+".csv";document.body.appendChild(a);a.click();
+  setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},1000);
+  $("measMsg").textContent="Letöltés elindítva (ha a telefonos alkalmazásban nem működik, használd a Másolás gombot).";
+};
+// map overlay: running measurement (orange) and the selected saved one (magenta)
+const trkCache=new WeakMap();
+function trkMerc(M){
+  let c=trkCache.get(M);const n=M.trk.length/2;
+  if(!c)c={x:[],y:[]};
+  for(let i=c.x.length;i<n;i++){const m=eovToM(M.trk[2*i],M.trk[2*i+1]);c.x.push(m.x);c.y.push(m.y)}
+  trkCache.set(M,c);return c;
+}
+function drawMeasTrack(M,col){
+  if(!M||!M.trk||M.trk.length<2)return;
+  const c=trkMerc(M),n=c.x.length;
+  ctx.lineCap="round";ctx.lineJoin="round";
+  ctx.beginPath();for(let i=0;i<n;i++){const x=m2sx(c.x[i],c.y[i]),y=m2sy(c.x[i],c.y[i]);i?ctx.lineTo(x,y):ctx.moveTo(x,y)}
+  ctx.strokeStyle="#000b";ctx.lineWidth=7;ctx.stroke();ctx.strokeStyle=col;ctx.lineWidth=4;ctx.stroke();
+  const mark=(p,fill,lbl)=>{if(!p)return;const m=eovToM(p.E,p.N),x=m2sx(m.x,m.y),y=m2sy(m.x,m.y);
+    ctx.beginPath();ctx.arc(x,y,lbl.length>1?11:9,0,7);ctx.fillStyle=fill;ctx.fill();ctx.lineWidth=2;ctx.strokeStyle="#fff";ctx.stroke();
+    ctx.fillStyle="#fff";ctx.font="bold 11px Arial,sans-serif";ctx.textAlign="center";ctx.textBaseline="middle";ctx.fillText(lbl,x,y+0.5)};
+  (M.pts||[]).forEach((p,i)=>mark(p,"#334155","P"+(i+1)));
+  mark(M.start,"#16a34a","K");
+  if(M!==measActive)mark(M.end,"#dc2626","V");
+}
+function showMeasOnMap(r){
+  mapMeas=r;const c=trkMerc(r);
+  let x1=Infinity,x2=-Infinity,y1=Infinity,y2=-Infinity;
+  for(let i=0;i<c.x.length;i++){x1=Math.min(x1,c.x[i]);x2=Math.max(x2,c.x[i]);y1=Math.min(y1,c.y[i]);y2=Math.max(y2,c.y[i])}
+  showView("map");setFollow(false);
+  const W=cv.clientWidth||360,H=cv.clientHeight||600;
+  mX=(x1+x2)/2;mY=(y1+y2)/2;mS=clampS(Math.min((W-80)/Math.max(30,x2-x1),(H-220)/Math.max(30,y2-y1)));
+  if(headingUp())setRot("north");
+  measChipUI();drawMap();
+}
+function measChipUI(){
+  const el=$("measChip");
+  if(mapMeas){el.innerHTML=`<span>📏 ${esc(mapMeas.name)} · ${fmtDist(mapMeas.dist)}</span><b>✕</b>`;el.style.display=""}
+  else el.style.display="none";
+}
+$("measChip").onclick=()=>{mapMeas=null;measChipUI();drawMap()};
+measTicker();
+
 /* ---------- UI wiring ---------- */
 function showView(v){
   mapOn=v==="map";
-  $("posView").classList.toggle("on",!mapOn);$("mapView").classList.toggle("on",mapOn);
-  $("nPos").classList.toggle("on",!mapOn);$("nMap").classList.toggle("on",mapOn);
-  if(mapOn){resizeMap();if(follow&&cur){const m=posToM(cur.pos);mX=m.x;mY=m.y}drawMap()}
+  for(const [id,nid,k] of [["posView","nPos","pos"],["mapView","nMap","map"],["measView","nMeas","meas"]]){$(id).classList.toggle("on",v===k);$(nid).classList.toggle("on",v===k)}
+  if(mapOn){resizeMap();measChipUI();if(follow&&cur){const m=posToM(cur.pos);mX=m.x;mY=m.y}drawMap()}
+  if(v==="meas")renderMeas();
 }
-$("nPos").onclick=()=>showView("pos");$("nMap").onclick=()=>showView("map");
+$("nPos").onclick=()=>showView("pos");$("nMap").onclick=()=>showView("map");$("nMeas").onclick=()=>showView("meas");
 $("tEov").onclick=()=>{S.coord="eov";saveS();syncTabs();render()};
 $("tWgs").onclick=()=>{S.coord="wgs";saveS();syncTabs();render()};
 function syncTabs(){$("tEov").classList.toggle("on",S.coord==="eov");$("tWgs").classList.toggle("on",S.coord!=="eov")}
