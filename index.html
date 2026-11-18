@@ -9,7 +9,7 @@
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" type="image/png" href="icon-192.png">
 <link rel="apple-touch-icon" href="icon-192.png">
-<title>ÚtSzelvény V0.5 Beta</title>
+<title>ÚtSzelvény V0.5.1 Beta</title>
 <style>
 :root{
   --bg:#16181c; --card:#25282d; --card2:#2d3036; --line:#3a3e45;
@@ -377,7 +377,7 @@ nav button.rec .pill::after{content:"";position:absolute;top:3px;right:12px;widt
       <p class="note" id="dataInfo"></p>
       <p class="note">Felhasznált NAP adatcsomagok: Országos közúthálózat, Közút neve/kategóriája/kezelője, Szelvényjelek, Sebességkorlátozás, Lakott területi szakaszok, Hídhasználati feltételek, Tehergépjárművekre vonatkozó korlátozások. A sebességkorlát ott, ahol nincs egyedi korlátozás, a KRESZ szerinti alapérték. A térkép alapréteg csak internetkapcsolattal és weboldalról megnyitva érhető el. Koordináta-átszámítás: WGS84 → HD72/EOV (EPSG:23700), kb. 1 m pontossággal.</p>
       <div class="about">
-      <div class="about-t">ÚtSzelvény V0.5 Beta</div>
+      <div class="about-t">ÚtSzelvény V0.5.1 Beta</div>
       <p>© 2026 Szászi Dániel</p>
       <p>Az alkalmazást Szászi Dániel készítette AI segítségével (Gemini 4 Argon, Claude Opus 5.5)</p>
       <p>Forráskód: GPL-3.0 licence - <a href="https://github.com/schafler55/kozutszelveny" target="_blank" rel="noopener">GitHub</a></p>
@@ -1564,14 +1564,26 @@ function buildRoadGraph(){
   const par=new Int32Array(n);for(let i=0;i<n;i++)par[i]=i;
   const find=(x)=>{while(par[x]!==x){par[x]=par[par[x]];x=par[x]}return x};
   const attach=[];                                                    // [segment, along, node]
+  const links=[];                                                     // gap links: [node, segment, along, gap m, E0,N0,E1,N1]
+  // in the data, ramps, rest-area roads and motorway segment ends often stop 3–30 m short of the road they join
+  const reach=(k)=>k===1||k===2||k===8||k===9||k===11?30:12;
   for(let s=0;s<NSEG;s++){if(segKut[s]===10)continue;
-    for(let j=0;j<2;j++){const id=segN[2*s+j];if(deg[id]!==1)continue; // dead end: look for a road it touches
-      const v=j?segV1[s]-1:segV0[s];
-      for(const c of candidates(VE[v],VN[v],4)){if(c.d>3||c.s===s||segKut[c.s]===10)continue;
+    for(let j=0;j<2;j++){const id=segN[2*s+j];if(deg[id]!==1)continue; // dead end: look for a road it touches or nearly touches
+      const v=j?segV1[s]-1:segV0[s],R=reach(segKut[s]);
+      let near=null;
+      for(const c of candidates(VE[v],VN[v],R+1)){if(c.s===s||segKut[c.s]===10||c.d>R)continue;
         const L=VC[segV1[c.s]-1];
-        if(c.along<=3)par[find(id)]=find(segN[2*c.s]);else if(c.along>=L-3)par[find(id)]=find(segN[2*c.s+1]);else attach.push([c.s,c.along,id])}}}
+        if(c.d<=3){if(c.along<=3)par[find(id)]=find(segN[2*c.s]);else if(c.along>=L-3)par[find(id)]=find(segN[2*c.s+1]);else attach.push([c.s,c.along,id]);near=null;break}
+        if(!near||c.d<near.d)near=c}
+      if(near){const p=pointAt(near.s,near.along);links.push([id,near.s,near.along,near.d,VE[v],VN[v],p.E,p.N])}}}
   for(let i=0;i<segN.length;i++)if(segN[i]>=0)segN[i]=find(segN[i]);
   for(const a of attach)a[2]=find(a[2]);
+  const linkE=[];   // [from node, to node, gap m, E0,N0,E1,N1]
+  for(const [id,ts,ta,d,E0,N0,E1,N1] of links){
+    const L=VC[segV1[ts]-1];let to;
+    if(ta<=3)to=segN[2*ts];else if(ta>=L-3)to=segN[2*ts+1];else{to=n++;attach.push([ts,ta,to])}
+    linkE.push([find(id),to,d,E0,N0,E1,N1]);
+  }
   // points along each segment: start, attachments, end
   const pts=new Map();
   for(const [s,a,id] of attach){if(!pts.has(s))pts.set(s,[]);pts.get(s).push([a,id])}
@@ -1579,12 +1591,15 @@ function buildRoadGraph(){
   for(let s=0;s<NSEG;s++){if(segKut[s]===10)continue;
     const L=VC[segV1[s]-1],P=[[0,segN[2*s]],...(pts.get(s)||[]).sort((x,y)=>x[0]-y[0]),[L,segN[2*s+1]]];segP[s]=P;
     for(let i=0;i+1<P.length;i++){if(P[i][1]===P[i+1][1]&&P[i+1][0]-P[i][0]<1)continue;eU.push(P[i][1]);eV.push(P[i+1][1]);eW.push(P[i+1][0]-P[i][0]);eS.push(s);eA0.push(P[i][0]);eA1.push(P[i+1][0])}}
+  // gap links: segment -1, the coordinates are kept for drawing (a0/a1 = link index)
+  const LK=[];
+  for(const [u,v,d,E0,N0,E1,N1] of linkE){if(u===v)continue;const k=LK.length;LK.push([E0,N0,E1,N1]);eU.push(u);eV.push(v);eW.push(d);eS.push(-1);eA0.push(k);eA1.push(-1-k)}
   // CSR adjacency (both directions)
   const N=n,off=new Int32Array(N+1);for(let i=0;i<eU.length;i++){off[eU[i]+1]++;off[eV[i]+1]++}
   for(let i=0;i<N;i++)off[i+1]+=off[i];
   const adj=new Int32Array(off[N]),fill=off.slice(0,N);
   for(let i=0;i<eU.length;i++){adj[fill[eU[i]]++]=i;adj[fill[eV[i]]++]=i}
-  RG={N,off,adj,eU,eV,eW,eS,eA0,eA1,segP,ms:Math.round(performance.now()-t0)};
+  RG={N,off,adj,eU,eV,eW,eS,eA0,eA1,segP,LK,links:LK.length,ms:Math.round(performance.now()-t0)};
   return RG;
 }
 // shortest route between two points on the network: {s,a} → {s,a}; returns pieces [{s,a0,a1}] and length
@@ -1613,13 +1628,14 @@ function roadRoute(A,B){
   if(dist[END]===Infinity)return null;
   const pieces=[];for(let v=END;v!==START;v=prev[v])pieces.push({s:pS[v],a0:pA0[v],a1:pA1[v]});
   pieces.reverse();
-  return {len:dist[END],pieces:pieces.filter(p=>Math.abs(p.a1-p.a0)>0.05)};
+  return {len:dist[END],pieces:pieces.filter(p=>p.s<0||Math.abs(p.a1-p.a0)>0.05)};
 }
 // road sections of a route (same structure as the GPS measurement's legs)
 function routeLegs(pieces){
   const legs=[];
   const at=(s,a)=>{const c=chainage(s,a),p=pointAt(s,a);return {road:ROADS[segRoad[s]].num,kut:segKut[s],pk:segPk[s],ch:fmtCh(c),v:cval(c),E:Math.round(p.E),N:Math.round(p.N)}};
   for(const p of pieces){
+    if(p.s<0)continue;                       // gap link between two roads (no chainage)
     const r=ROADS[segRoad[p.s]].num,L=legs[legs.length-1],len=Math.abs(p.a1-p.a0);
     if(L&&L.road===r){L.to=at(p.s,p.a1);L.dist+=len;L.ch+=Math.abs(vdist(cval(chainage(p.s,p.a0)),cval(chainage(p.s,p.a1))))}
     else legs.push({road:r,kut:segKut[p.s],pk:segPk[p.s],off:false,from:at(p.s,p.a0),to:at(p.s,p.a1),dist:len,ch:Math.abs(vdist(cval(chainage(p.s,p.a0)),cval(chainage(p.s,p.a1))))});
@@ -1630,7 +1646,9 @@ function routeLegs(pieces){
 // polyline of a route in EOV (flat array)
 function routeLine(pieces){
   const out=[];const add=(E,N)=>{const n=out.length;if(n&&Math.abs(out[n-2]-E)<0.5&&Math.abs(out[n-1]-N)<0.5)return;out.push(Math.round(E),Math.round(N))};
-  for(const p of pieces){const s=p.s,lo=Math.min(p.a0,p.a1),hi=Math.max(p.a0,p.a1),seq=[];
+  for(const p of pieces){
+    if(p.s<0){const k=p.a0>=0?p.a0:-1-p.a0,c=RG.LK[k],fw=p.a0>=0;if(fw){add(c[0],c[1]);add(c[2],c[3])}else{add(c[2],c[3]);add(c[0],c[1])}continue}
+    const s=p.s,lo=Math.min(p.a0,p.a1),hi=Math.max(p.a0,p.a1),seq=[];
     seq.push(pointAt(s,lo));for(let v=segV0[s];v<segV1[s];v++)if(VC[v]>lo&&VC[v]<hi)seq.push({E:VE[v],N:VN[v]});seq.push(pointAt(s,hi));
     if(p.a1<p.a0)seq.reverse();for(const q of seq)add(q.E,q.N)}
   return out;
