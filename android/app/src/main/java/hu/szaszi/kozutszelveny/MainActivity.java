@@ -55,7 +55,7 @@ public class MainActivity extends Activity {
         s.setGeolocationEnabled(true);
         s.setAllowFileAccess(false);
         s.setAllowContentAccess(false);
-        s.setUserAgentString(s.getUserAgentString() + " UtSzelveny/0.2");
+        s.setUserAgentString(s.getUserAgentString() + " UtSzelveny/0.3");
 
         web.setWebViewClient(new WebViewClient() {
             @Override

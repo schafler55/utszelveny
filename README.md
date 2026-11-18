@@ -7,7 +7,7 @@ A telefon GPS-pozíciójából megmutatja, melyik úton és melyik szelvényben 
 valamint a sebességkorlátot, a lakott területi (átkelési) szakaszt, a közeli hidak súly- és
 magasságkorlátozásait, a tehergépjárművekre vonatkozó korlátozásokat, a kezelőt és a megyét.
 
-**Verzió:** V0.2 Beta · © schafler55 · Licenc: GPL-3.0
+**Verzió:** V0.3 Beta · © schafler55 · Licenc: GPL-3.0
 
 ## Képernyőképek
 
@@ -22,7 +22,8 @@ magasságkorlátozásait, a tehergépjárművekre vonatkozó korlátozásokat, a
 - **Android APK (telepítve):** https://github.com/schafler55/kozutszelveny/releases/download/apk-latest/UtSzelveny.apk
   Letöltés után engedélyezd az ismeretlen forrásból történő telepítést.
 
-A háttértérkép (OpenStreetMap) internetkapcsolatot igényel; minden más adat az alkalmazásba van építve.
+A háttértérkép (OpenStreetMap vagy Esri műholdkép) internetkapcsolatot igényel; minden más adat az alkalmazásba van építve.
+A térkép északkal felfelé vagy menetirány szerint elforgatva is használható.
 
 ## Felépítés
 
@@ -42,7 +43,7 @@ Az APK mindig a repó gyökerében lévő `index.html`-ből épül, ezért új v
   Sebességkorlátozás, Lakott területi szakaszok, Hídhasználati feltételek, Tehergépjárművekre vonatkozó
   korlátozások. Az adatokra a NAP felhasználási
   feltételei vonatkoznak, nem a GPL-3.0 licenc.
-- Háttértérkép: © OpenStreetMap közreműködők.
+- Háttértérkép: © OpenStreetMap közreműködők. Műholdkép: © Esri, Maxar, Earthstar Geographics (Esri World Imagery).
 - Az adatok tájékoztató jellegűek, nem hitelesek – a helyszíni jelzések és a KRESZ az irányadók.
   Vezetés közben ne kezeld az alkalmazást.
 
