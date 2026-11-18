@@ -433,6 +433,7 @@ nav button.rec .pill::after{content:"";position:absolute;top:3px;right:12px;widt
       <h3 style="margin-top:4px">A képre kerül</h3>
       <div class="opt"><div><span>Útnév</span></div><button class="sw on" id="swPhName"></button></div>
       <div class="opt"><div><span>GPS pontosság</span></div><button class="sw on" id="swPhAcc"></button></div>
+      <div class="opt"><div><span>Irány (égtáj)</span><small>Merre néz a kamera, pl. ÉK, DDNY – a telefon iránytűje szerint; ha nincs, menet közben a haladási irány</small></div><button class="sw on" id="swPhDir"></button></div>
       <div class="opt col"><div><span>Koordináták</span><small>Úthálózaton kívül mindig rákerülnek (ha itt „Ki” van, WGS84-ben)</small></div><div class="seg wide" id="phCoordSeg"><button data-v="off">Ki</button><button data-v="eov">EOV</button><button data-v="wgs">WGS84</button><button data-v="both">Mindkettő</button></div></div>
       <h3>Felvétel és mentés</h3>
       <div class="opt col"><div><span>Képminőség</span><small>Legjobb: a kamera teljes felbontása (max. 12 MP, lassabb). Gyors: az élőkép egy kockája.</small></div><div class="seg wide" id="phResSeg"><button data-v="best">Legjobb</button><button data-v="fast">Gyors</button></div></div>
@@ -474,7 +475,7 @@ const KUT=["","autópálya","autóút","elsőrendű főút","másodrendű főút
 const PKOD=["osztatlan pálya","jobb pálya","bal pálya"];
 
 /* ---------- settings ---------- */
-const S={wake:true,bike:true,name:true,coord:"wgs",base:"grey",rot:"north",measCoord:"both",lineW:1.6,secSpd:true,secBr:true,secTr:true,secGps:true,secKez:true,phName:true,phAcc:true,phCoord:"off",phRes:"best",phAuto:true,phExif:true};
+const S={wake:true,bike:true,name:true,coord:"wgs",base:"grey",rot:"north",measCoord:"both",lineW:1.6,secSpd:true,secBr:true,secTr:true,secGps:true,secKez:true,phName:true,phAcc:true,phCoord:"off",phRes:"best",phAuto:true,phExif:true,phDir:true};
 try{Object.assign(S,JSON.parse(localStorage.getItem("kszt_settings")||"{}"))}catch(e){}
 function saveS(){try{localStorage.setItem("kszt_settings",JSON.stringify(S))}catch(e){}}
 
@@ -1840,9 +1841,43 @@ const CAM_MAX=40,CAM_MAXPX=4032;
 const p2=(n)=>String(n).padStart(2,"0");
 const fmtAge=(s)=>s<60?s+" mp":s<3600?Math.round(s/60)+" perc":Math.round(s/3600)+" óra";
 
+/* ---- compass: the direction the rear camera looks at, 16 Hungarian compass points ---- */
+const DIR16=["É","ÉÉK","ÉK","KÉK","K","KDK","DK","DDK","D","DDNY","DNY","NYDNY","NY","NYÉNY","ÉNY","ÉÉNY"];
+const dir16=(h)=>DIR16[Math.round((((h%360)+360)%360)/22.5)%16];
+let cmpX=0,cmpY=0,cmpT=0,cmpOn=false,cmpAbs=false;
+function cmpEvt(e){
+  let h=null;
+  if(e.webkitCompassHeading!=null&&!isNaN(e.webkitCompassHeading))h=e.webkitCompassHeading;     // iOS
+  else{
+    if(e.type==="deviceorientation"&&(cmpAbs||!e.absolute))return;     // north-based values only
+    if(e.alpha==null||e.beta==null||e.gamma==null)return;
+    if(e.type==="deviceorientationabsolute")cmpAbs=true;
+    const r=Math.PI/180,cA=Math.cos(e.alpha*r),sA=Math.sin(e.alpha*r),cB=Math.cos(e.beta*r),sB=Math.sin(e.beta*r),cG=Math.cos(e.gamma*r),sG=Math.sin(e.gamma*r);
+    let x=-cA*sG-sA*sB*cG,y=-sA*sG+cA*sB*cG;          // rear camera axis (device −z): east, north components
+    if(Math.hypot(x,y)<.35){x=-sA*cB;y=cA*cB}         // phone (nearly) flat: direction of its top edge
+    h=Math.atan2(x,y)/r;
+  }
+  const k=Date.now()-cmpT>2000?1:.3,a=h*Math.PI/180;   // smoothing on the circle
+  cmpX+=k*(Math.sin(a)-cmpX);cmpY+=k*(Math.cos(a)-cmpY);cmpT=Date.now();
+}
+function cmpStart(){
+  if(cmpOn)return;cmpOn=true;
+  try{if(typeof DeviceOrientationEvent!=="undefined"&&typeof DeviceOrientationEvent.requestPermission==="function")DeviceOrientationEvent.requestPermission().catch(()=>{})}catch(e){}
+  window.addEventListener("deviceorientationabsolute",cmpEvt);window.addEventListener("deviceorientation",cmpEvt);
+}
+function cmpStop(){if(!cmpOn)return;cmpOn=false;window.removeEventListener("deviceorientationabsolute",cmpEvt);window.removeEventListener("deviceorientation",cmpEvt)}
+// compass if it works, else the GPS course while moving
+function camHeading(){
+  if(cmpOn&&Date.now()-cmpT<3000&&Math.hypot(cmpX,cmpY)>.3)return {h:(Math.atan2(cmpX,cmpY)*180/Math.PI+360)%360,ref:"M"};
+  const p=cur&&cur.pos;
+  if(p&&p.src==="gps"&&p.heading!=null&&p.spd!=null&&p.spd>1.5&&Date.now()-lastFixT<5000)return {h:(p.heading+360)%360,ref:"T"};
+  return null;
+}
+
 // everything the stamp needs, taken at the moment of the tap
 function stampData(){
   const t=Date.now(),d={t,state:"nogps"};
+  const hd=S.phDir?camHeading():null;if(hd){d.hd=Math.round(hd.h)%360;d.hdRef=hd.ref}
   if(!cur)return d;
   const p=cur.pos,gps=p.src==="gps";
   d.src=p.src;d.acc=gps&&p.acc!=null?p.acc:null;
@@ -1870,33 +1905,41 @@ function drawShield(c,x,y,h,num,kut){   // the road-number sign of shieldSVG(), 
 }
 function fitTxt(c,s,w){if(c.measureText(s).width<=w)return s;while(s.length>1&&c.measureText(s+"…").width>w)s=s.slice(0,-1);return s.trimEnd()+"…"}
 function stampCoord(d){
-  if(d.lat==null&&d.E==null)return null;
+  if(d.lat==null)return null;
   let m=S.phCoord||"off";if(m==="off"&&d.state!=="on")m="wgs";
   if(m==="off")return null;
-  const e=`EOV Y ${d.E} · X ${d.N}`,w=`É ${d.lat.toFixed(6)}° · K ${d.lon.toFixed(6)}°`;
-  return m==="eov"?e:m==="wgs"?w:w+"  ·  "+e;
+  const e=`EOV ${d.E}, ${d.N}`,w=`${d.lat.toFixed(6)}, ${d.lon.toFixed(6)}`;
+  return m==="eov"?e:m==="wgs"?w:w+" · "+e;
 }
+/* band, top to bottom: short details · road sign + km+m | time, date · road name · coordinates, accuracy, direction */
 function drawStamp(c,W,H,d){
   const u=Math.min(W,H)/34,pad=u*.75,F=(px,b)=>`${b?"700 ":""}${px}px ${STF}`;
   const t=new Date(d.t),date=`${t.getFullYear()}.${p2(t.getMonth()+1)}.${p2(t.getDate())}.`,time=`${p2(t.getHours())}:${p2(t.getMinutes())}:${p2(t.getSeconds())}`;
   let name=null;
   if(d.state==="on"&&S.phName&&d.name){const n=splitName(d.name);name=n.sub?`${n.main} (${n.sub})`:n.main}
-  const info=[];
-  if(d.state==="on"){info.push(`${d.road}. sz. ${KUT[d.kut]||"út"}`);if(d.pk)info.push(PKOD[d.pk]);
-    if(d.dirInc===1)info.push("↑ növekvő szelvény");else if(d.dirInc===-1)info.push("↓ csökkenő szelvény")}
-  else if(d.state==="off"&&d.near)info.push(`legközelebbi: ${d.near}. sz. út, ${d.nearD} m`);
-  if(d.src==="manual")info.push("kézi pozíció");
-  else if(d.acc!=null&&S.phAcc)info.push(`GPS ±${Math.round(d.acc)} m`);
-  if(d.stale)info.push(`GPS-jel ${fmtAge(d.age)} óta nincs`);
-  const coord=stampCoord(d);
-  const headH=2.4*u,lh=1.32*u;
-  const bandH=pad+headH+(name?lh*1.15:0)+lh+(coord?lh:0)+pad*.7,y0=H-bandH;
+  const top=[];
+  if(d.state==="on"){top.push(KUT[d.kut]||"út");if(d.pk)top.push(PKOD[d.pk]);
+    if(d.dirInc===1)top.push("↑ növekvő");else if(d.dirInc===-1)top.push("↓ csökkenő")}
+  else if(d.state==="off"&&d.near)top.push(`legközelebbi út: ${d.near} (${d.nearD} m)`);
+  const bot=[],coord=stampCoord(d);
+  if(coord)bot.push(coord);
+  if(d.src==="manual")bot.push("kézi pozíció");else if(d.acc!=null&&S.phAcc)bot.push(`±${Math.round(d.acc)} m`);
+  if(d.hd!=null)bot.push(dir16(d.hd));
+  if(d.stale)bot.push(`GPS-jel ${fmtAge(d.age)} óta nincs`);
+  const headH=2.4*u,lh=1.32*u,nh=name?lh*1.15:0;
+  const bandH=pad*.7+lh+u*.15+headH+nh+(bot.length?lh:0)+pad*.6,y0=H-bandH;
+  const yTop=y0+pad*.7+lh/2,yc=y0+pad*.7+lh+u*.15+headH/2,yN=yc+headH/2+nh/2,yB=yc+headH/2+nh+lh/2;
   c.save();
   c.fillStyle="rgba(0,0,0,.6)";c.fillRect(0,y0,W,bandH);
   c.fillStyle="#2e9d50";c.fillRect(0,y0,W,Math.max(2,u*.14));
+  c.textBaseline="middle";
+  // top line: details on the left, app name on the right
+  c.font=F(.78*u);const wm="ÚtSzelvény",ww=c.measureText(wm).width;
+  c.textAlign="right";c.fillStyle="rgba(255,255,255,.5)";c.fillText(wm,W-pad,yTop);
+  c.textAlign="left";c.font=F(.95*u);c.fillStyle="#e5e7eb";
+  if(top.length)c.fillText(fitTxt(c,top.join(" · "),W-2*pad-ww-u),pad,yTop);
   // head row: date/time on the right, road sign + chainage on the left
-  const yc=y0+pad+headH/2;
-  c.textAlign="right";c.textBaseline="middle";c.fillStyle="#fff";
+  c.textAlign="right";c.fillStyle="#fff";
   c.font=F(1.3*u,true);const tw=c.measureText(time).width;c.fillText(time,W-pad,yc-.5*u);
   c.font=F(.95*u);c.fillStyle="#d1d5db";const dw=c.measureText(date).width;c.fillText(date,W-pad,yc+.78*u);
   const leftW=W-2*pad-Math.max(tw,dw)-u;
@@ -1908,14 +1951,8 @@ function drawStamp(c,W,H,d){
     c.font=F(1.55*u,true);c.fillStyle="#fde68a";
     c.fillText(fitTxt(c,d.state==="off"?"Úthálózaton kívül":"Nincs GPS-pozíció",leftW),x,yc);
   }
-  let y=y0+pad+headH+lh*.62;
-  if(name){c.font=F(1.12*u,true);c.fillStyle="#fff";c.fillText(fitTxt(c,name,W-2*pad),pad,y);y+=lh*1.15}
-  // info line + small app name on the right
-  c.font=F(.82*u);const wm="ÚtSzelvény",ww=c.measureText(wm).width;
-  c.textAlign="right";c.fillStyle="rgba(255,255,255,.5)";c.fillText(wm,W-pad,coord?y+lh:y);
-  c.textAlign="left";c.font=F(.95*u);c.fillStyle="#e5e7eb";
-  c.fillText(fitTxt(c,info.join("  ·  ")||" ",W-2*pad-(coord?0:ww+u)),pad,y);
-  if(coord){y+=lh;c.font=F(.9*u);c.fillStyle="#d1d5db";c.fillText(fitTxt(c,coord,W-2*pad-ww-u),pad,y)}
+  if(name){c.font=F(1.12*u,true);c.fillStyle="#fff";c.fillText(fitTxt(c,name,W-2*pad),pad,yN)}
+  if(bot.length){c.font=F(.95*u);c.fillStyle="#e5e7eb";c.fillText(fitTxt(c,bot.join(" · "),W-2*pad),pad,yB)}
   c.restore();
 }
 
@@ -1949,6 +1986,7 @@ function exifTiff(d,W,H){
   if(gps){
     const dms=(v)=>{const t=Math.round(Math.abs(v)*36000000),g=Math.floor(t/36000000),m=Math.floor(t%36000000/600000);return [[g,1],[m,1],[t%600000,10000]]};
     const g=[[0,1,4,Uint8Array.of(2,3,0,0)],[1,2,0,eAsc(d.lat>=0?"N":"S")],[2,5,3,eRat(dms(d.lat))],[3,2,0,eAsc(d.lon>=0?"E":"W")],[4,5,3,eRat(dms(d.lon))]];
+    if(d.hd!=null)g.push([0x10,2,0,eAsc(d.hdRef)],[0x11,5,1,eRat([[d.hd*100,100]])]);
     if(d.acc!=null)g.push([0x1F,5,1,eRat([[Math.round(d.acc*10),10]])]);
     ifds.push(g);
   }
@@ -2014,10 +2052,11 @@ function camSet(on){
   if(on===camOn)return;camOn=on;
   if(on){
     if(watchId===null)startGPS();
+    if(S.phDir)cmpStart();
     camStart();camUI();
-    if(!camTick)camTick=setInterval(camOverlay,1000);
+    if(!camTick)camTick=setInterval(camOverlay,500);
   }else{
-    camStop();if(camTick){clearInterval(camTick);camTick=null}
+    camStop();cmpStop();if(camTick){clearInterval(camTick);camTick=null}
   }
 }
 // live preview of the stamp, over the visible video picture (object-fit: contain)
@@ -2199,7 +2238,7 @@ bindSw("swWake","wake",()=>{S.wake&&watchId!==null?requestWake():releaseWake()})
 bindSw("swBike","bike");
 bindSw("swName","name");
 bindSw("swSpd","secSpd");bindSw("swBr","secBr");bindSw("swTr","secTr");bindSw("swGps","secGps");bindSw("swKez","secKez");
-bindSw("swPhName","phName");bindSw("swPhAcc","phAcc");bindSw("swPhAuto","phAuto");bindSw("swPhExif","phExif");
+bindSw("swPhName","phName");bindSw("swPhAcc","phAcc");bindSw("swPhAuto","phAuto");bindSw("swPhExif","phExif");bindSw("swPhDir","phDir",()=>{S.phDir&&camOn?cmpStart():cmpStop()});
 $("manualGo").onclick=()=>{
   const nums=($("manualIn").value.match(/-?\d+(?:[.,]\d+)?/g)||[]).map(s=>parseFloat(s.replace(",",".")));
   if(nums.length<2)return alert("Adj meg két koordinátát!");
