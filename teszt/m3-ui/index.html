@@ -238,7 +238,12 @@ input[type=text]:focus{outline:2px solid var(--pri);outline-offset:-1px;border-c
 .mbtns .btn{flex:1;min-width:110px}
 .mctl .mbtns .btn{min-height:48px;border-radius:24px;padding:12px 10px;font-size:.95rem}
 .btn[disabled]{opacity:.38}
-.mlist{display:flex;flex-direction:column;gap:8px;margin-top:8px}
+.mlist{display:flex;flex-direction:column;gap:8px;margin-top:12px}
+.mlist:empty{display:none}
+.mshead{display:flex;align-items:center;gap:14px}
+.msico{width:44px;height:44px;border-radius:50%;background:var(--sc-highest);color:var(--onv);display:grid;place-items:center;flex-shrink:0}
+.mst{font-size:1rem;font-weight:500;line-height:1.4}
+.mss{font-size:.8125rem;color:var(--onv);line-height:1.35}
 .mitem{background:var(--sc-high);border-radius:20px;padding:12px 14px}
 .mitem.new{outline:2px solid var(--pri);outline-offset:-2px}
 .mnew{font-size:.85rem;color:var(--pri);margin-bottom:6px}
@@ -415,7 +420,7 @@ nav button.rec .pill::after{content:"";position:absolute;top:4px;right:16px;widt
   <section class="view" id="measView">
     <div class="card mctl" id="measCtl"></div>
     <div class="card">
-      <div class="sec-t" style="margin:0">Mentett mérések <span id="measCount" class="na"></span></div>
+      <div class="mshead"><span class="msico"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h16v14H4z"/><path d="M4 9h16M9 13h6"/></svg></span><div><div class="mst">Mentett mérések</div><div class="mss" id="measSub">Még nincs mentett mérés.</div></div></div>
       <div id="measList" class="mlist"></div>
       <div id="measExport" class="mexp"><div class="mbtns"><button class="btn" id="measCopy">Másolás (CSV)</button><button class="btn" id="measDl">Letöltés (CSV)</button></div><div class="note" id="measMsg"></div></div>
     </div>
@@ -1650,10 +1655,10 @@ function renderMeas(){
     $("mStart").onclick=measStart;$("mMap").onclick=()=>{showView("map");if(!mmOn)setMM(true)};
   }
   // saved list
-  $("measCount").textContent=measList.length?`(${measList.length})`:"";
+  $("measSub").textContent=measList.length?`${measList.length} mentett mérés`:"Még nincs mentett mérés.";
   $("measExport").style.display=measList.length?"":"none";
   const L=$("measList");
-  if(!measList.length){L.innerHTML=`<div class="note">Még nincs mentett mérés.</div>`;return}
+  if(!measList.length){L.innerHTML="";return}
   L.innerHTML=measList.map(r=>{
     const open=measOpen===r.id,ren=measRename===r.id,del=measDel===r.id;
     const head=ren?`<div class="mren"><input type="text" id="mrn_${r.id}" value="${esc(r.name)}" maxlength="80" placeholder="Mérés neve"><button class="btn pri" data-a="save" data-id="${r.id}">Mentés</button></div>`
