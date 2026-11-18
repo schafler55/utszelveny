@@ -209,7 +209,6 @@ input[type=text]{width:100%;background:#1b1d21;border:1px solid var(--line);colo
 .sats{margin-top:12px;padding-top:10px;border-top:1px solid var(--line)}
 .sat-n{font-size:.95rem;margin-top:2px}
 .sat-c{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
-.srcok{color:#86efac}
 .chip.sat{opacity:.6}.chip.sat.on{opacity:1;border-color:var(--green2)}
 .mpair{font-size:.82rem;color:var(--muted);margin:2px 0 6px 21px}.mpair b{color:var(--text)}
 .mren{display:flex;gap:8px}
@@ -327,7 +326,7 @@ nav button.rec .pill::after{content:"";position:absolute;top:3px;right:12px;widt
         <div class="sat-n" id="satN"></div>
         <div class="sat-c" id="satC"></div>
       </div>
-      <div class="meta" id="gpsMeta" style="margin-top:6px">GNSS kikapcsolva</div>
+      <div class="meta" id="gpsMeta" style="margin-top:6px;display:none"></div>
     </div>
 
     <div class="card" id="infoCard" style="display:none">
@@ -438,7 +437,7 @@ nav button.rec .pill::after{content:"";position:absolute;top:3px;right:12px;widt
     </div>
     </div></div>
     <div class="spane" data-p="meas">
-      <div class="opt col"><div><span>Koordináták a mérésekben</span><small>A mentett mérések pontjainál és a térképi mérés pontjainál. A CSV-exportban mindig mindkettő szerepel.</small></div><div class="seg wide" id="measCoordSeg"><button data-v="eov">EOV</button><button data-v="wgs">WGS84</button><button data-v="both">Mindkettő</button></div></div>
+      <div class="opt col"><div><span>Koordináták a mérésekben</span><small>A mentett mérések pontjainál és a térképi mérés pontjainál. A CSV-exportban mindig mindkettő szerepel.</small></div><div class="seg wide" id="measCoordSeg"><button data-v="wgs">WGS84</button><button data-v="eov">EOV</button><button data-v="both">Mindkettő</button></div></div>
       <h3>Mentett mérések</h3>
       <div id="measDelBox"></div>
     </div>
@@ -447,7 +446,7 @@ nav button.rec .pill::after{content:"";position:absolute;top:3px;right:12px;widt
       <div class="opt"><div><span>Útnév</span></div><button class="sw on" id="swPhName"></button></div>
       <div class="opt"><div><span>GNSS pontosság</span></div><button class="sw on" id="swPhAcc"></button></div>
       <div class="opt"><div><span>Irány (égtáj)</span><small>Merre néz a kamera, pl. ÉK, DDNY – a telefon iránytűje szerint; ha nincs, menet közben a haladási irány</small></div><button class="sw on" id="swPhDir"></button></div>
-      <div class="opt col"><div><span>Koordináták</span><small>Úthálózaton kívül mindig rákerülnek (ha itt „Ki” van, WGS84-ben)</small></div><div class="seg wide" id="phCoordSeg"><button data-v="off">Ki</button><button data-v="eov">EOV</button><button data-v="wgs">WGS84</button><button data-v="both">Mindkettő</button></div></div>
+      <div class="opt col"><div><span>Koordináták</span><small>Úthálózaton kívül mindig rákerülnek (ha itt „Ki” van, WGS84-ben)</small></div><div class="seg wide" id="phCoordSeg"><button data-v="off">Ki</button><button data-v="wgs">WGS84</button><button data-v="eov">EOV</button><button data-v="both">Mindkettő</button></div></div>
       <h3>Felvétel és mentés</h3>
       <div class="opt col"><div><span>Képminőség</span><small>Legjobb: a kamera teljes felbontása (max. 12 MP, lassabb). Gyors: az élőkép egy kockája.</small></div><div class="seg wide" id="phResSeg"><button data-v="best">Legjobb</button><button data-v="fast">Gyors</button></div></div>
       <div class="opt"><div><span>Automatikus mentés</span><small id="phAutoNote"></small></div><button class="sw on" id="swPhAuto"></button></div>
@@ -808,28 +807,20 @@ let cur=null;       // latest result for display
 let lastGood=null;  // last on-network result
 let track=[];       // recent EOV positions for heading
 /* ---------- satellites: Android app only (GnssStatus through the bridge); browsers don't expose them ---------- */
-let gnss=null,gnssT=0,gnssSt=null;
+let gnss=null,gnssT=0;
 const GNSS_SYS={1:"GPS",2:"SBAS",3:"GLONASS",4:"QZSS",5:"BeiDou",6:"Galileo",7:"NavIC",0:"egyéb"};
 const GNSS_ORDER=[1,6,3,5,4,7,2,0];
 const hasNativeGnss=()=>!!(window.AndroidBridge&&window.AndroidBridge.gnssStart);
 window.__gnss=(o)=>{gnss=o;gnssT=Date.now();renderSats()};
-window.__gnssState=(st)=>{gnssSt=st;renderSats()};   // on / provoff / nofine / nolm / error
 function renderSats(){
   const row=$("satRow");if(!row)return;
   if(watchId===null){row.style.display="none";return}
   row.style.display="";
   if(!hasNativeGnss()){$("satN").innerHTML=`<span class="na">Műholdadatok csak az Android alkalmazásban érhetők el.</span>`;$("satC").innerHTML="";return}
-  const N=$("satN"),C=$("satC");
-  if(gnssSt==="nofine"){N.innerHTML=`<span class="warnt">Csak hozzávetőleges hely engedélyezett.</span><br><span class="na">A műholdakhoz kapcsold be: Android beállítások → Alkalmazások → ÚtSzelvény → Engedélyek → Hely → „Pontos hely használata”.</span>`;C.innerHTML="";return}
-  if(gnssSt==="nolm"||gnssSt==="error"){N.innerHTML=`<span class="na">A műholdvevő állapota nem kérdezhető le ezen a telefonon.</span>`;C.innerHTML="";return}
-  if(gnss&&gnss.prov===false||(!gnss&&gnssSt==="provoff")){N.innerHTML=`<span class="warnt">A telefon műholdas helymeghatározása ki van kapcsolva.</span><br><span class="na">A pozíció most csak Wi-Fi / mobilhálózat alapján jön.</span>`;C.innerHTML="";return}
-  if(!gnss||Date.now()-gnssT>6000){N.innerHTML=`<span class="na">Várakozás a műholdvevőre…</span>`;C.innerHTML="";return}
-  const fixOk=gnss.fix>=0&&gnss.fix<=3;
-  const src=fixOk?`<span class="srcok">● műholdas fix</span>`:`<span class="warnt">● nincs műholdas fix</span> <span class="na">– a pozíció Wi-Fi / mobilhálózat alapján</span>`;
-  if(!gnss.v){N.innerHTML=`<b>0</b> műhold látható · ${src}<br><span class="na">A vevő nem lát műholdat. Szabad ég alatt (nem épületben) az első fix 1–2 percig is tarthat.</span>`;C.innerHTML="";return}
+  if(!gnss||Date.now()-gnssT>6000){$("satN").innerHTML=`<span class="na">Várakozás a műholdvevőre…</span>`;$("satC").innerHTML="";return}
   const cn=gnss.u?Math.round(gnss.c.reduce((t,c)=>t+c.cn*c.u,0)/gnss.u):0;
-  N.innerHTML=`<b>${gnss.u}</b> használatban · ${gnss.v} látható${gnss.u?` · <span class="na">átl. jel ${cn} dB-Hz</span>`:""}<br>${src}`;
-  C.innerHTML=gnss.c.slice().sort((a,b)=>GNSS_ORDER.indexOf(a.k)-GNSS_ORDER.indexOf(b.k))
+  $("satN").innerHTML=`<b>${gnss.u}</b> használatban · ${gnss.v} látható${gnss.u?` · <span class="na">átl. jel ${cn} dB-Hz</span>`:""}`;
+  $("satC").innerHTML=gnss.c.slice().sort((a,b)=>GNSS_ORDER.indexOf(a.k)-GNSS_ORDER.indexOf(b.k))
     .map(c=>`<span class="chip sat${c.u?" on":""}">${GNSS_SYS[c.k]||"egyéb"} <b>${c.u}</b>/${c.v}</span>`).join("");
 }
 setInterval(()=>{if(watchId!==null&&$("posView").classList.contains("on"))renderSats()},2000);
@@ -846,7 +837,7 @@ function startGPS(){
 function stopGPS(){
   if(watchId!==null)navigator.geolocation.clearWatch(watchId);
   if(hasNativeGnss())try{window.AndroidBridge.gnssStop()}catch(e){}
-  gnss=null;gnssSt=null;
+  gnss=null;
   watchId=null;releaseWake();
   try{localStorage.setItem("kszt_gps","0")}catch(e){}
   render();
@@ -981,13 +972,11 @@ function render(){
   $("accTxt").textContent=p&&p.src==="gps"?Math.round(p.acc)+" méter":"–";
   const bars=$("bars");bars.className="bars "+(q.c==="mid"?"mid":q.c==="bad"?"bad":"");
   [...bars.children].forEach((b,i)=>b.className=i<q.bars?"on":"");
-  let meta=watchId===null?"GNSS kikapcsolva":"GNSS bekapcsolva";
-  if(p&&p.src==="gps"){
-    meta+=` · ${p.spd!=null?Math.round(p.spd*3.6)+" km/h":"sebesség –"}`;
-    meta+=` · frissítve ${Math.max(0,Math.round((Date.now()-lastFixT)/1000))} mp`;
-  }else if(p)meta="Kézi teszt-pozíció";
-  if(wakeLock)meta+=" · képernyő ébren";
-  $("gpsMeta").textContent=meta;
+  // bottom line of the GNSS card: speed and age of the fix only (the main tile shows on/off and signal loss)
+  let meta="";
+  if(p&&p.src==="gps")meta=`${p.spd!=null?Math.round(p.spd*3.6)+" km/h":"sebesség –"} · frissítve ${Math.max(0,Math.round((Date.now()-lastFixT)/1000))} mp`;
+  else if(p)meta="Kézi teszt-pozíció";
+  $("gpsMeta").textContent=meta;$("gpsMeta").style.display=meta?"":"none";
   const onNet=cur&&!cur.res.off&&!lost;
   $("gpsCard").style.display=S.secGps?"":"none";
   renderSpeed(onNet&&S.secSpd);
@@ -1081,7 +1070,7 @@ function lastKnownHTML(inLost){
   return `<div style="margin-top:16px;padding-top:12px;border-top:1px solid #ffffff22;width:100%">
     <div class="rsub" style="margin-top:0">Utolsó ismert pozíció${ago>0?` (${ago<120?ago+" perce":Math.round(ago/60)+" órája"})`:""}</div>
     <div class="big3" style="font-weight:700">${esc(L.road)} út ${esc(L.ch)} km</div>
-    <div class="rsub">${fmtEOV(L.E,L.N)}</div></div>`;
+    <div class="rsub">${L.lat!=null?fmtWGS(L.lat,L.lon):(ll=>fmtWGS(ll.lat,ll.lon))(EOV.inv(L.E,L.N))}</div></div>`;
 }
 
 /* ---------- map (Web Mercator; háttér: OpenStreetMap / Esri műholdkép; É-felül vagy menetirány-felül) ---------- */
@@ -1368,9 +1357,9 @@ function identify(m){
   tapPt={m};
   const gS=mS/Math.cos(ll.lat*Math.PI/180);
   const r=match(E,N,{acc:Math.max(8,12/gS)});
-  if(r.off)$("mapInfo").innerHTML=`<div class="mi-t">Nincs országos közút a közelben.<br>${fmtEOV(E,N)} · ${fmtWGS(ll.lat,ll.lon)}</div>`;
+  if(r.off)$("mapInfo").innerHTML=`<div class="mi-t">Nincs országos közút a közelben.<br>${fmtWGS(ll.lat,ll.lon)} · ${fmtEOV(E,N)}</div>`;
   else{const s=r.best.s,rd=ROADS[segRoad[s]];
-    $("mapInfo").innerHTML=`<div class="mi-ch">${esc(rd.num)} · ${fmtCh(r.ch)}</div><div class="mi-t">${esc((n=>n.sub?n.main+" ("+n.sub+")":n.main)(splitName(rd.name)))}${segPk[s]?" · "+PKOD[segPk[s]]:""}<br>${fmtEOV(E,N)} · ${fmtWGS(ll.lat,ll.lon)}</div>`}
+    $("mapInfo").innerHTML=`<div class="mi-ch">${esc(rd.num)} · ${fmtCh(r.ch)}</div><div class="mi-t">${esc((n=>n.sub?n.main+" ("+n.sub+")":n.main)(splitName(rd.name)))}${segPk[s]?" · "+PKOD[segPk[s]]:""}<br>${fmtWGS(ll.lat,ll.lon)} · ${fmtEOV(E,N)}</div>`}
   drawMap();
 }
 $("zIn").onclick=()=>{mS=clampS(mS*1.6);drawMap()};
@@ -1416,7 +1405,7 @@ const fmtDur=(ms)=>{const s=Math.max(0,Math.round(ms/1000)),h=Math.floor(s/3600)
 function coordFmt(p){
   if(!p)return "";
   const e=fmtEOV(p.E,p.N),w=p.lat!=null?fmtWGS(p.lat,p.lon):null,m=S.measCoord||"both";
-  return m==="eov"?e:m==="wgs"?(w||e):(w?e+" · "+w:e);
+  return m==="eov"?e:m==="wgs"?(w||e):(w?w+" · "+e:e);
 }
 const fmtTime=(t)=>new Date(t).toLocaleString("hu-HU",{year:"numeric",month:"2-digit",day:"2-digit",hour:"2-digit",minute:"2-digit"});
 // position snapshot: road, chainage, coordinates
