@@ -138,6 +138,9 @@ main{flex:1;overflow:auto;padding:4px 12px calc(12px + var(--navh));display:flex
 :root{--navh:calc(96px + env(safe-area-inset-bottom))}
 nav{position:fixed;left:50%;bottom:calc(16px + env(safe-area-inset-bottom));transform:translateX(-50%);z-index:4;width:max-content;max-width:calc(100% - 24px);display:flex;align-items:center;gap:4px;height:64px;padding:0 8px;border-radius:32px;background:var(--sc-high);box-shadow:0 6px 18px rgba(0,0,0,.38),0 1px 3px rgba(0,0,0,.25);transition:transform .38s cubic-bezier(.2,0,0,1),opacity .25s}
 html[data-theme=light] nav{box-shadow:0 6px 18px rgba(0,0,0,.16),0 1px 3px rgba(0,0,0,.12)}
+/* fade behind the toolbar so it stands apart from the content (theme background colour) */
+#navFade{position:fixed;left:0;right:0;bottom:0;height:calc(112px + env(safe-area-inset-bottom));z-index:3;pointer-events:none;background:linear-gradient(to top,var(--bg) 0%,color-mix(in srgb,var(--bg) 88%,transparent) 30%,color-mix(in srgb,var(--bg) 45%,transparent) 65%,transparent 100%);transition:opacity .3s}
+#navFade.hide{opacity:0}
 nav.hide{transform:translateX(-50%) translateY(calc(100% + 32px));opacity:0;pointer-events:none}
 nav button{position:relative;flex-shrink:0;display:flex;align-items:center;height:48px;padding:0 14px;border-radius:24px;color:var(--on);
   transition:background-color .35s cubic-bezier(.2,0,0,1),color .3s,padding .42s cubic-bezier(.2,0,0,1),transform .12s ease}
@@ -553,6 +556,7 @@ input[type=text]:focus{outline:2px solid var(--pri);outline-offset:-1px;border-c
   </section>
 </main>
 
+<div id="navFade" aria-hidden="true"></div>
 <nav aria-label="Fő navigáció" id="navBar">
   <button id="nPos" class="on" aria-label="Pozíció"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg><span class="nl"><span>Pozíció</span></span></button>
   <button id="nMap" aria-label="Térkép"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 4 3 6v14l6-2 6 2 6-2V4l-6 2-6-2zM9 4v14M15 6v14"/></svg><span class="nl"><span>Térkép</span></span></button>
@@ -2484,9 +2488,9 @@ document.querySelectorAll("#phResSeg button,#camResSeg button").forEach(b=>b.onc
 /* ---------- UI wiring ---------- */
 // floating bar: slides away while scrolling down, comes back on scroll up
 (function(){const m=$("main"),n=$("navBar");let y0=0;m.addEventListener("scroll",()=>{const y=m.scrollTop;
-  if(y>y0+8&&y>80)n.classList.add("hide");else if(y<y0-8||y<24)n.classList.remove("hide");y0=y},{passive:true})})();
+  const f=$("navFade");if(y>y0+8&&y>80){n.classList.add("hide");f.classList.add("hide")}else if(y<y0-8||y<24){n.classList.remove("hide");f.classList.remove("hide")}y0=y},{passive:true})})();
 function showView(v){
-  $("navBar").classList.remove("hide");
+  $("navBar").classList.remove("hide");$("navFade").classList.remove("hide");
   mapOn=v==="map";
   for(const [id,nid,k] of [["posView","nPos","pos"],["mapView","nMap","map"],["measView","nMeas","meas"],["fotoView","nFoto","foto"]]){$(id).classList.toggle("on",v===k);$(nid).classList.toggle("on",v===k)}
   if(mapOn){resizeMap();measChipUI();if(follow&&cur){const m=posToM(cur.pos);mX=m.x;mY=m.y}drawMap()}
