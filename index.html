@@ -209,6 +209,7 @@ input[type=text]{width:100%;background:#1b1d21;border:1px solid var(--line);colo
 .sats{margin-top:12px;padding-top:10px;border-top:1px solid var(--line)}
 .sat-n{font-size:.95rem;margin-top:2px}
 .sat-c{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.satv{font-size:.85em;color:var(--muted)}
 .chip.sat{opacity:.6}.chip.sat.on{opacity:1;border-color:var(--green2)}
 .mpair{font-size:.82rem;color:var(--muted);margin:2px 0 6px 21px}.mpair b{color:var(--text)}
 .mren{display:flex;gap:8px}
@@ -818,8 +819,7 @@ function renderSats(){
   row.style.display="";
   if(!hasNativeGnss()){$("satN").innerHTML=`<span class="na">Műholdadatok csak az Android alkalmazásban érhetők el.</span>`;$("satC").innerHTML="";return}
   if(!gnss||Date.now()-gnssT>6000){$("satN").innerHTML=`<span class="na">Várakozás a műholdvevőre…</span>`;$("satC").innerHTML="";return}
-  const cn=gnss.u?Math.round(gnss.c.reduce((t,c)=>t+c.cn*c.u,0)/gnss.u):0;
-  $("satN").innerHTML=`<b>${gnss.u}</b> használatban · ${gnss.v} látható${gnss.u?` · <span class="na">átl. jel ${cn} dB-Hz</span>`:""}`;
+  $("satN").innerHTML=`<b>${gnss.u}</b> használatban <span class="satv">(${gnss.v} látható)</span>`;
   $("satC").innerHTML=gnss.c.slice().sort((a,b)=>GNSS_ORDER.indexOf(a.k)-GNSS_ORDER.indexOf(b.k))
     .map(c=>`<span class="chip sat${c.u?" on":""}">${GNSS_SYS[c.k]||"egyéb"} <b>${c.u}</b>/${c.v}</span>`).join("");
 }
