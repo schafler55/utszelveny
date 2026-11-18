@@ -2299,9 +2299,11 @@ async function camShoot(){
   camShooting=true;camUI();camFlash();
   try{
     let src=null;const fl=(S.phFlash==="flash")&&camFlModes().includes("flash"),still=S.phRes!=="fast"&&camIC;
-    const nativeFl=fl&&still&&camCaps.flash;          // the camera fires its own flash with takePhoto
+    // the browser's own flash (fillLightMode) skips the pre-flash metering, so on many phones (e.g. Pixel) it never fires:
+    // use it only when there is no torch; otherwise light the scene with the torch for the shot
+    const nativeFl=fl&&still&&camCaps.flash&&!camCaps.torch;
     let lit=false;
-    if(fl&&!nativeFl&&camCaps.torch){await camTorch(true);lit=true;await sleep(450)}   // otherwise: light on for the shot
+    if(fl&&!nativeFl&&camCaps.torch){await camTorch(true);lit=true;camFlUI();await sleep(800)}   // light on, let the exposure settle
     try{
       if(still){try{src=await camStill(nativeFl)}catch(e){src=null}}
       if(!src){if(!camStream)throw new Error("a kamera leállt");src=camFrame()}
