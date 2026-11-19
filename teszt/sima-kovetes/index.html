@@ -1237,6 +1237,7 @@ function update(pos){
   }
   if(measActive)measOnFix(pos,res);
   render();
+  if(pos.src==="gps")rotHdFix(pos);
   if(mapOn){if(pos.src==="gps"&&smActive())smFix(pos);else{SM.on=false;if(follow){const m=posToM(pos);mX=m.x;mY=m.y}drawMap()}}
 }
 async function requestWake(){
@@ -1480,7 +1481,7 @@ const angN=(a)=>((a%360)+540)%360-180;            // -180..180
 function updateRotTarget(){
   if(!headingUp()){rotTarget=0;return}
   if(!follow)return;                               // panned away: keep the current rotation
-  const h=SM.on&&smActive()?SM.h:cur&&cur.pos&&cur.pos.heading;
+  const h=SM.on&&smActive()?SM.h:cur&&cur.pos&&cur.pos.src==="gps"?rotHd:cur&&cur.pos&&cur.pos.heading;
   if(h!=null&&!isNaN(h))rotTarget=h;               // no heading (standing still): keep the last one
 }
 function compassUI(){
@@ -1710,6 +1711,14 @@ function queueDraw(){if(drawQueued||SM.raf)return;drawQueued=true;requestAnimati
 // Between two fixes (about 1 s apart) the position is predicted from speed and heading (dead reckoning, at most
 // 1.2 s ahead). When a new fix arrives, the difference between the prediction and the fix is not applied at once:
 // it fades out in ~0.35 s, so the picture never jumps and there is no lag while driving steadily. Heading eases too.
+// heading used to turn the map and the arrow: ignored below 7 km/h (the GNSS heading is noisy when slow), and a
+// sudden turn of more than 50° is only taken once the next fix confirms it (one-fix spikes made the map twitch)
+let rotHd=null,rotPend=null;
+function rotHdFix(pos){
+  const h=pos.heading;if(h==null||isNaN(h)||(pos.spd!=null&&pos.spd<2))return;
+  if(rotHd==null||Math.abs(angN(h-rotHd))<=50){rotHd=h;rotPend=null;return}
+  if(rotPend!=null&&Math.abs(angN(h-rotPend))<30){rotHd=h;rotPend=null}else rotPend=h;
+}
 const SM={on:false,fx:0,fy:0,vx:0,vy:0,ft:0,ex:0,ey:0,h:null,ht:null,raf:0,lt:0,cost:0};
 const smActive=()=>S.smooth!==false&&mapOn&&watchId!==null&&!!(cur&&cur.pos&&cur.pos.src==="gps");
 function smPred(t){const d=Math.min(1.2,Math.max(0,(t-SM.ft)/1000));return {x:SM.fx+SM.vx*d,y:SM.fy+SM.vy*d}}
@@ -1722,8 +1731,8 @@ function smFix(pos){
     // keep the arrow where it is now: the jump to the new fix becomes an offset that fades out
     const q=smPos(now),dx=q.x-m.x,dy=q.y-m.y;
     if(Math.hypot(dx,dy)/k>Math.max(60,(pos.acc||0)*3)){SM.ex=SM.ey=0}else{SM.ex=dx;SM.ey=dy}   // far off: just jump
-  }else{SM.ex=SM.ey=0;SM.h=pos.heading}
-  SM.on=true;SM.fx=m.x;SM.fy=m.y;SM.vx=vx;SM.vy=vy;SM.ft=now;SM.ht=pos.heading;
+  }else{SM.ex=SM.ey=0;SM.h=rotHd}
+  SM.on=true;SM.fx=m.x;SM.fy=m.y;SM.vx=vx;SM.vy=vy;SM.ft=now;SM.ht=rotHd;
   if(SM.h==null)SM.h=SM.ht;
   if(!SM.raf){SM.lt=now;SM.raf=requestAnimationFrame(smTick)}
 }
