@@ -4,6 +4,9 @@ Az ÚtSzelvény változásai, a legújabb elöl. A dátumok UTC szerint értend�
 A nagyobb funkciók saját ágon (branch) készültek teszt oldallal és teszt APK-val, és pull requestként (#) kerültek a `main` ágba;
 a kisebb javítások közvetlenül a `main`-re kerültek.
 
+## [0.16.7] – 2026-11-19
+- Térkép: a koppintás utáni információs buborék útszámtáblával és szelvénnyel jelenik meg, mint a keresés eredménye; a WGS84 és az EOV koordináta külön sorban.
+
 ## [0.16.6] – 2026-11-19
 - GNSS kikapcsolásakor (Beállítások → Általános) a Pozíció fő kártyája „GNSS kikapcsolva” lesz (az utolsó ismert pozícióval), nem marad rajta az utolsó szelvény; a GNSS-kártyán „GNSS kikapcsolva a beállításokban” jelzés.
 
