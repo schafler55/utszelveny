@@ -190,7 +190,7 @@ public class MainActivity extends Activity {
         s.setMediaPlaybackRequiresUserGesture(false);
         s.setAllowFileAccess(false);
         s.setAllowContentAccess(false);
-        s.setUserAgentString(s.getUserAgentString() + " UtSzelveny/0.12.3");
+        s.setUserAgentString(s.getUserAgentString() + " UtSzelveny/0.13.0");
 
         web.addJavascriptInterface(new Bridge(), "AndroidBridge");
 
