@@ -4,6 +4,9 @@ Az ÚtSzelvény változásai, a legújabb elöl. A dátumok UTC szerint értend�
 A nagyobb funkciók saját ágon (branch) készültek teszt oldallal és teszt APK-val, és pull requestként (#) kerültek a `main` ágba;
 a kisebb javítások közvetlenül a `main`-re kerültek.
 
+## [0.16.8] – 2026-11-19
+- Térképi koppintás buborék: útszámtábla és szelvény egy sorban, alatta balra igazítva az út neve, a kezelő (pl. Magyar Közút Nonprofit Zrt.) és a két koordináta.
+
 ## [0.16.7] – 2026-11-19
 - Térkép: a koppintás utáni információs buborék útszámtáblával és szelvénnyel jelenik meg, mint a keresés eredménye; a WGS84 és az EOV koordináta külön sorban.
 
