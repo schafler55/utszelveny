@@ -1702,10 +1702,9 @@ function drawMap(){
   if(cur){
     const sm=SM.on&&smActive(),p=cur.pos,m=sm?smPos():posToM(p),x=mx(m),y=my(m),hd=sm&&SM.h!=null?SM.h:p.heading;
     if(p.acc){ctx.fillStyle="#3b82f633";ctx.beginPath();ctx.arc(x,y,Math.max(6,p.acc*gS),0,7);ctx.fill()}
-    if(hd!=null){ctx.save();ctx.translate(x,y);ctx.rotate((hd-rot)*Math.PI/180);ctx.fillStyle=light?"#1d4ed8":"#fff";ctx.strokeStyle=light?"#fff":"#1d4ed8";ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(0,-16);ctx.lineTo(9,10);ctx.lineTo(0,5);ctx.lineTo(-9,10);ctx.closePath();ctx.fill();ctx.stroke();ctx.restore()}
-    else{ctx.fillStyle="#3b82f6";ctx.strokeStyle="#fff";ctx.lineWidth=3;ctx.beginPath();ctx.arc(x,y,8,0,7);ctx.fill();ctx.stroke()}
+    if(hd!=null)drawPosArrow(x,y,hd-rot);else drawPosDot(x,y);
   }
-  if(tapPt){const x=mx(tapPt.m),y=my(tapPt.m);ctx.strokeStyle="#dc2626";ctx.lineWidth=3;ctx.beginPath();ctx.moveTo(x-8,y-8);ctx.lineTo(x+8,y+8);ctx.moveTo(x+8,y-8);ctx.lineTo(x-8,y+8);ctx.stroke()}
+  if(tapPt)drawTapRing(mx(tapPt.m),my(tapPt.m),light);
   // scale bar (ground metres)
   const target=W*0.25/gS,pow=Math.pow(10,Math.floor(Math.log10(target)));let len=pow;for(const k of[1,2,5])if(k*pow<=target)len=k*pow;
   $("scalebar").innerHTML=`${len>=1000?len/1000+" km":len+" m"}<i style="width:${len*gS}px"></i>`;
@@ -1716,6 +1715,30 @@ function pointAt(s,along){
   return {E:VE[v]+t*(VE[v+1]-VE[v]),N:VN[v]+t*(VN[v+1]-VN[v])};
 }
 let tapPt=null,drawQueued=false;
+/* ---- map markers (Material 3 style): position arrow / dot, tapped point ---- */
+const POS_COL="#1A73E8";
+function mkShadow(b){ctx.shadowColor="rgba(0,0,0,.45)";ctx.shadowBlur=b;ctx.shadowOffsetY=b/4}
+function noShadow(){ctx.shadowColor="transparent";ctx.shadowBlur=0;ctx.shadowOffsetY=0}
+function arrowPath(){const s=1.45;ctx.beginPath();ctx.moveTo(0,-9*s);ctx.lineTo(7*s,8*s);ctx.lineTo(0,4.2*s);ctx.lineTo(-7*s,8*s);ctx.closePath()}
+// rounded blue arrow with a white outline and a soft shadow
+function drawPosArrow(x,y,deg){
+  ctx.save();ctx.translate(x,y);ctx.rotate(deg*Math.PI/180);ctx.lineJoin="round";
+  mkShadow(7);arrowPath();ctx.lineWidth=7;ctx.strokeStyle="#fff";ctx.stroke();noShadow();
+  arrowPath();ctx.fillStyle=POS_COL;ctx.strokeStyle=POS_COL;ctx.lineWidth=2;ctx.fill();ctx.stroke();ctx.restore();
+}
+// no heading yet: blue dot in a white ring
+function drawPosDot(x,y){
+  ctx.save();mkShadow(6);ctx.beginPath();ctx.arc(x,y,9,0,7);ctx.fillStyle="#fff";ctx.fill();noShadow();
+  ctx.beginPath();ctx.arc(x,y,6,0,7);ctx.fillStyle=POS_COL;ctx.fill();ctx.restore();
+}
+// tapped point: thin ring with a centre dot (white; dark with a white halo on the light grey map)
+function drawTapRing(x,y,lt){
+  ctx.save();const col=lt?"#191C1A":"#fff";
+  if(lt){ctx.lineWidth=6;ctx.strokeStyle="rgba(255,255,255,.85)";ctx.beginPath();ctx.arc(x,y,9,0,7);ctx.stroke();ctx.beginPath();ctx.arc(x,y,4.6,0,7);ctx.fillStyle="rgba(255,255,255,.85)";ctx.fill()}
+  else mkShadow(5);
+  ctx.lineWidth=3;ctx.strokeStyle=col;ctx.beginPath();ctx.arc(x,y,9,0,7);ctx.stroke();
+  ctx.beginPath();ctx.arc(x,y,2.8,0,7);ctx.fillStyle=col;ctx.fill();ctx.restore();
+}
 function queueDraw(){if(drawQueued||SM.raf)return;drawQueued=true;requestAnimationFrame(()=>{drawQueued=false;drawMap()})}
 /* ---------- Sima követés: a térkép és a pozíciónyíl a GNSS-frissítések között is folyamatosan mozog ---------- */
 // Between two fixes (about 1 s apart) the position is predicted from speed and heading (dead reckoning, at most
