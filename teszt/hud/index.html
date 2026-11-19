@@ -346,8 +346,8 @@ input[type=text]:focus{outline:2px solid var(--pri);outline-offset:-1px;border-c
 .sh-head{display:flex;align-items:center;gap:4px;height:64px;padding:0 4px}
 .sh-head .iconbtn{color:var(--on)}
 /* settings tab selector: icon pills on one track, 3 × 2 (no scrolling) */
-.stabs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:2px;padding:4px;margin:4px 16px 12px;border-radius:24px;background:var(--sc-high)}
-.stabs button{display:flex;align-items:center;justify-content:center;gap:6px;height:40px;padding:0 6px;border-radius:20px;font-size:.84rem;font-weight:500;color:var(--onv);background:none;white-space:nowrap;min-width:0}
+.stabs{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:2px;padding:4px;margin:4px 16px 12px;border-radius:22px;background:var(--sc-high)}   /* 4 × 2, icon above the label */
+.stabs button{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;height:56px;padding:0 2px;border-radius:18px;font-size:.78rem;font-weight:500;color:var(--onv);background:none;white-space:nowrap;min-width:0}
 .stabs button svg{width:18px;height:18px;flex-shrink:0}
 .stabs button span{overflow:hidden;text-overflow:ellipsis}
 .stabs button.on{background:var(--sec-c);color:var(--on-sec-c);font-weight:600}
