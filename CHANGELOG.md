@@ -4,6 +4,9 @@ Az ÚtSzelvény változásai, a legújabb elöl. A dátumok UTC szerint értend�
 A nagyobb funkciók saját ágon (branch) készültek teszt oldallal és teszt APK-val, és pull requestként (#) kerültek a `main` ágba;
 a kisebb javítások közvetlenül a `main`-re kerültek.
 
+## [0.16.6] – 2026-11-19
+- GNSS kikapcsolásakor (Beállítások → Általános) a Pozíció fő kártyája „GNSS kikapcsolva” lesz (az utolsó ismert pozícióval), nem marad rajta az utolsó szelvény; a GNSS-kártyán „GNSS kikapcsolva a beállításokban” jelzés.
+
 ## [0.16.5] – 2026-11-19
 - Budapest kártya: „nem része az országos közúthálózatnak” kisbetűvel.
 - A térkép felső címkéin az alkalmazás saját ikonjai (vonalzó, nagyító, bezárás) az emojik helyett; a mérés címkéje a térképi címkével azonos hosszt mutat.
