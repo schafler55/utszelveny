@@ -14,7 +14,7 @@ Fotóidra ráírja a helyet és az időt, a méréseidet pedig elnevezheted és 
 Böngészőben és Android-alkalmazásként is fut. Az úthálózati adatok a készüléken vannak, így a szelvényezés internet
 nélkül is működik. Csak a térkép alapréteghez kell internetkapcsolat.
 
-**Verzió:** V0.16.1 Beta · © schafler55 · Licenc: GPL-3.0
+**Verzió:** V0.16.1 Beta · [Változásnapló](CHANGELOG.md) · © schafler55 · Licenc: GPL-3.0
 
 ## Funkciók
 
@@ -88,6 +88,7 @@ A térkép északkal felfelé vagy menetirány szerint elforgatva is használhat
 | `sw.js`, `manifest.webmanifest`, `icon-*.png` | Telepíthető webalkalmazás (PWA) offline gyorsítótárral |
 | `android/` | Android keret (WebView), amely az `index.html`-t futtatja |
 | `.github/workflows/android.yml` | Megépíti az APK-t: a `main` ágból a fenti letöltési linkre, a többi ágból teszt APK-t és teszt weboldalt (`teszt/<ág>/`) |
+| `CHANGELOG.md` | Változásnapló: mi változott az egyes verziókban |
 | `screenshots/` | A README képei |
 
 Az APK mindig a repó gyökerében lévő `index.html`-ből épül, ezért új verzióhoz elég az `index.html`-t cserélni.
