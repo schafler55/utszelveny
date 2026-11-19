@@ -4,6 +4,9 @@ Az ÚtSzelvény változásai, a legújabb elöl. A dátumok UTC szerint értend�
 A nagyobb funkciók saját ágon (branch) készültek teszt oldallal és teszt APK-val, és pull requestként (#) kerültek a `main` ágba;
 a kisebb javítások közvetlenül a `main`-re kerültek.
 
+## [0.16.3] – 2026-11-19
+- Keresés: sikeres keresés után az útszám- és szelvénymezők kiürülnek; mentés után a keresési eredmény kártyája eltűnik a Keresés oldalról (a keresés a mentett listában marad).
+
 ## [0.16.2] – 2026-11-19
 - Mentett mérések és keresések: nagyobb, jobban olvasható útszámtáblák.
 - Térkép: a megjelenített mentett méréseknek is van címkéje (név · hossz) a kezdőpontnál, mint a kereséseknek; a szakaszkereséseknél mindig látszik a címke.
