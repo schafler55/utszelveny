@@ -226,6 +226,11 @@ input[type=text]:focus{outline:2px solid var(--pri);outline-offset:-1px;border-c
 .area{display:inline-flex;align-items:center;min-height:32px;font-size:1.05rem;font-weight:600;padding:3px 12px;border-radius:8px;background:var(--sec-c);color:var(--on-sec-c)}
 .area.bu{background:var(--warn-c);color:var(--on-warn-c)}
 .area.na{background:var(--sc-highest);color:var(--onv)}
+/* town sign (helységnévtábla) on átkelési sections: white plate, red border, black name; shrinks to fit (fitTownSign) */
+.spdrow>.tsign{flex:0 1 auto;min-width:0}
+.tsign{display:inline-flex;max-width:100%;background:#fff;border-radius:10px;padding:3px;box-shadow:0 1px 3px rgba(0,0,0,.4)}
+.tsign>span{display:block;min-width:0;overflow:hidden;white-space:nowrap;border:3px solid #D2232A;border-radius:7px;padding:7px 18px 6px;color:#151515;font-family:Roboto,Arial,sans-serif;font-weight:700;font-size:1.9rem;line-height:1.1;letter-spacing:.01em}
+.spdinfo .sm:first-child{margin-top:10px}
 .sm{font-size:.8125rem;color:var(--onv);line-height:1.45;margin-top:5px}
 .sm b{color:var(--on);font-weight:600}
 .brlist{display:flex;flex-direction:column;gap:12px}
@@ -1387,16 +1392,27 @@ function renderSpeed(show){
   else if(sp.both)signs=`<div class="sgn">${signSVG("s",String(sp.both.inc),64)}<small>↑ növekvő</small></div><div class="sgn">${signSVG("s",String(sp.both.dec),64)}<small>↓ csökkenő</small></div>`;
   else signs=`<div class="sgn">${signSVG("s",String(sp.lim),76)}</div>`;
   const tel=sp.bu===1?telAt(road,pk,v):null;
-  const area=sp.bu===1?`<span class="area bu">Belterület${tel?" · "+esc(tel):""}</span>`:sp.bu===0?`<span class="area">Külterület</span>`:`<span class="area na">Nincs adat</span>`;
+  // variant 2 (user, 2026-11-19): speed sign + town sign side by side; outside built-up areas the green Külterület label
+  const area=tel?`<span class="tsign"><span>${esc(tel)}</span></span>`:sp.bu===1?`<span class="area bu">Belterület</span>`:sp.bu===0?`<span class="area">Külterület</span>`:`<span class="area na">Nincs adat</span>`;
   const areaTxt=sp.bu===1?"lakott területi átkelési szakasz":sp.bu===0?"külsőségi szakasz":"szakasz jellege ismeretlen";
   let src=sp.own?"Egyedi korlátozás":"KRESZ alapérték";
   if(!sp.own&&sp.lim!=null)src+=kut===1?" (autópálya)":kut===2?" (autóút)":sp.bu===1?" (lakott terület)":" (lakott területen kívül)";
-  let lines=`<div class="sm">${areaTxt} · ${src}</div>`;
+  let lines=`<div class="sm">${tel?"Belterület · ":""}${areaTxt} · ${src}</div>`;
   if(sp.both)lines+=`<div class="sm">A korlátozás iránytól függ – haladási irány még nem ismert.</div>`;
   const nx=nextSpeedChange(road,pk,kut,v,dir,sp.lim);
   if(nx)lines+=`<div class="sm">Következő: <b>${nx.lim==null?"–":nx.lim+" km/h"}</b> · ${nx.d<1000?Math.round(nx.d/10)*10+" m":hu1(nx.d/1000)+" km"} múlva</div>`;
   for(const c of sp.cond)lines+=`<div class="sm">⚠ <b>${c.lim} km/h</b> – ${esc(c.kieg)}</div>`;
-  $("spdBody").innerHTML=`<div class="spdrow"><div class="spdsigns">${signs}</div><div>${area}${lines}</div></div>`;
+  $("spdBody").innerHTML=`<div class="spdrow"><div class="spdsigns">${signs}</div>${area}</div><div class="spdinfo">${lines}</div>`;
+  if(tel)fitTownSign($("spdBody").querySelector(".tsign>span"),tel);
+}
+// long names: smaller type until the name fits (result cached per name and width)
+const TSFIT=new Map();
+function fitTownSign(el,name){
+  const w=el.parentNode.parentNode.clientWidth;if(!w)return;const k=name+"|"+w;let f=TSFIT.get(k);
+  if(f){el.style.fontSize=f+"px";return}
+  f=parseFloat(getComputedStyle(el).fontSize);
+  while(el.scrollWidth>el.clientWidth+1&&f>12){f-=1;el.style.fontSize=f+"px"}
+  TSFIT.set(k,f);
 }
 function renderBridges(show){
   const card=$("brCard");if(!show){card.style.display="none";return}
