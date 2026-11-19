@@ -21,6 +21,7 @@ import android.os.Handler;
 import android.os.Looper;
 import android.provider.MediaStore;
 import android.util.Base64;
+import android.view.KeyEvent;
 import android.view.WindowManager;
 import android.webkit.GeolocationPermissions;
 import android.webkit.JavascriptInterface;
@@ -186,7 +187,7 @@ public class MainActivity extends Activity {
         s.setMediaPlaybackRequiresUserGesture(false);
         s.setAllowFileAccess(false);
         s.setAllowContentAccess(false);
-        s.setUserAgentString(s.getUserAgentString() + " UtSzelveny/0.10.1");
+        s.setUserAgentString(s.getUserAgentString() + " UtSzelveny/0.10.2");
 
         web.addJavascriptInterface(new Bridge(), "AndroidBridge");
 
@@ -352,7 +353,28 @@ public class MainActivity extends Activity {
         if (hasFocus && hudOn) applyHud();   // immersive mode is lost after dialogs / the notification shade
     }
 
+    /* ---------- volume keys as the shutter while the Fotó camera is live (set by the page) ---------- */
+    private volatile boolean volShutter = false;
+
+    @Override
+    public boolean dispatchKeyEvent(KeyEvent e) {
+        int k = e.getKeyCode();
+        if (volShutter && web != null && (k == KeyEvent.KEYCODE_VOLUME_UP || k == KeyEvent.KEYCODE_VOLUME_DOWN)) {
+            // one photo per press (no burst when held); the key is consumed: no volume change, no volume panel
+            if (e.getAction() == KeyEvent.ACTION_DOWN && e.getRepeatCount() == 0)
+                web.evaluateJavascript("window.__volShot&&window.__volShot()", null);
+            return true;
+        }
+        return super.dispatchKeyEvent(e);
+    }
+
     private class Bridge {
+        /** Fotó page: camera live and the option on → the volume keys take the photo. */
+        @JavascriptInterface
+        public void setVolShutter(final boolean on) {
+            volShutter = on;
+        }
+
         /** HUD mode on / off; max = full screen brightness while it is on. */
         @JavascriptInterface
         public void setHud(final boolean on, final boolean max) {
