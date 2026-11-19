@@ -1,0 +1,10 @@
+# Android Studio / Gradle local build files
+android/.gradle/
+android/.idea/
+android/local.properties
+android/build/
+android/app/build/
+android/app/src/main/assets/index.html
+*.iml
+.DS_Store
+Thumbs.db

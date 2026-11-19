@@ -20,9 +20,10 @@ nélkül is működik. Csak a térkép alapréteghez kell internetkapcsolat.
 
 ### Pozíció
 Útszám az útjelző tábla formájában, kilométerszelvény (km+m), szelvényirány, az út neve és kategóriája.
-Alatta az érvényes sebességkorlát (belterület / külterület), a következő 3 km hídjai és út feletti akadályai,
+Alatta az érvényes sebességkorlát (belterület / külterület), átkelési szakaszon a település nevével, a következő 3 km hídjai és út feletti akadályai,
 a tehergépjármű- és súlykorlátozások, a GNSS-adatok és a kezelő. Párhuzamos utaknál a közeli út egy koppintással választható.
 Az Android alkalmazás a használt és látható műholdakat is mutatja rendszerenként (GPS, Galileo, GLONASS, BeiDou…).
+Budapest belterületén jelzi, hogy a fővárosi és kerületi utak nem részei az országos közúthálózatnak.
 
 ![Pozíció oldal](screenshots/pozicio.png)
 
@@ -36,6 +37,8 @@ vagy műholdkép. Északkal felfelé vagy menetirány szerint forgatva. Koppint�
 Útszám és kilométerszelvény (km+m) megadásával megkeresi a pontot a térképen, kezdő és záró szelvénnyel pedig
 a teljes útszakaszt (úton mért és szelvény szerinti hosszal, megyével, kezelővel). Nem létező szelvénynél a legközelebbit mutatja.
 A keresések elmenthetők és elnevezhetők, egyenként kapcsolóval jeleníthetők meg a térképen.
+
+![Keresés](screenshots/kereses.png)
 
 ### Mérés
 - **GNSS-mérés:** indítás és leállítás között méri a megtett utat és a szelvény szerinti hosszt; több úton át szakaszokra bont, közbenső pontokat rögzít.
@@ -59,6 +62,8 @@ A műszerfalra fektetett telefon képe a szélvédőn tükröződik: fekete hát
 igény szerint haladási irány, sebesség és sebességkorlát. Tükrözés, fekvő / álló tájolás és szín állítható;
 az Android alkalmazás teljes képernyőre vált és maximális fényerőre állítja a kijelzőt. A beállítások HUD lapján indítható, ott vannak a további beállításai is.
 
+![HUD mód](screenshots/hud.png)
+
 ### Beállítások
 Fülekre bontva (Általános, Pozíció, Térkép, Keresés, Mérés, Fotó, HUD, Névjegy); mindig az aktuális oldal fülén nyílik meg.
 Koordináták: WGS84 (alapértelmezett) vagy EOV.
@@ -68,7 +73,7 @@ Koordináták: WGS84 (alapértelmezett) vagy EOV.
 ## Használat
 
 - **Webalkalmazás (telepítés nélkül):** https://schafler55.github.io/kozutszelveny/
-  Bölgészőben megnyitva az első betöltés után internet nélkül is működik, könyvjelzőként menthető az asztalra.
+  Böngészőben megnyitva az első betöltés után internet nélkül is működik, könyvjelzőként menthető az asztalra.
 - **Android APK (telepítve):** https://github.com/schafler55/kozutszelveny/releases/download/apk-latest/UtSzelveny.apk
   Letöltés után engedélyezni kell az ismeretlen forrásból történő telepítést.
 
@@ -82,7 +87,8 @@ A térkép északkal felfelé vagy menetirány szerint elforgatva is használhat
 | `index.html` | A teljes alkalmazás (kód + beépített úthálózati adatok), egyetlen fájl |
 | `sw.js`, `manifest.webmanifest`, `icon-*.png` | Telepíthető webalkalmazás (PWA) offline gyorsítótárral |
 | `android/` | Android keret (WebView), amely az `index.html`-t futtatja |
-| `.github/workflows/android.yml` | Minden `main`-re feltöltéskor automatikusan megépíti az APK-t |
+| `.github/workflows/android.yml` | Megépíti az APK-t: a `main` ágból a fenti letöltési linkre, a többi ágból teszt APK-t és teszt weboldalt (`teszt/<ág>/`) |
+| `screenshots/` | A README képei |
 
 Az APK mindig a repó gyökerében lévő `index.html`-ből épül, ezért új verzióhoz elég az `index.html`-t cserélni.
 
