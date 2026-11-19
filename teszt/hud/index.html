@@ -155,7 +155,6 @@ nav button.on svg{animation:navPop .42s cubic-bezier(.2,0,0,1)}
 @keyframes navPop{0%{transform:scale(.8)}60%{transform:scale(1.12)}100%{transform:none}}
 nav button:not(.on):hover{background:color-mix(in srgb,var(--on) 8%,transparent)}
 nav button:active{transform:scale(.93)}
-nav.six{gap:3px}nav.six button:not(.on){padding:0 10px}   /* six buttons (HUD on) still fit a 390 px screen */
 nav button.rec::after{content:"";position:absolute;top:8px;right:10px;width:9px;height:9px;border-radius:50%;background:var(--rec);box-shadow:0 0 0 2px var(--sc-high)}
 nav button.on.rec::after{box-shadow:0 0 0 2px var(--pri)}
 
@@ -540,8 +539,9 @@ input[type=text]:focus{outline:2px solid var(--pri);outline-offset:-1px;border-c
 .hud-btns{display:flex;flex-wrap:wrap;justify-content:center;gap:8px}
 .hud-btns button{min-height:48px;padding:12px 20px;border-radius:24px;background:#303632;color:#DEE4DD;font-weight:600;font-size:.9375rem}
 .hud-btns button.pri{background:#8ED5A3;color:#003920}
-#hudSet{margin-left:0}
-#hudSet .opt{padding-left:16px;border-left:2px solid var(--outv)}
+.hudgo{display:flex;flex-direction:column;gap:8px;padding:8px 0 4px}
+.hudgo .btn{display:flex;align-items:center;justify-content:center;gap:8px;min-height:56px;border-radius:28px;font-size:1rem}
+.hudgo small{color:var(--onv);font-size:.8125rem;line-height:1.45}
 @media (prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}}
 @media (min-width:760px){ main{max-width:560px;margin:0 auto;width:100%} #mapView{max-width:none} }
 </style>
@@ -687,7 +687,6 @@ input[type=text]:focus{outline:2px solid var(--pri);outline-offset:-1px;border-c
   <button id="nSrch" aria-label="Keresés"><svg width="2" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.4 15.4l5.1 5.1"/></svg><span class="nl"><span>Keresés</span></span></button>
   <button id="nMeas" aria-label="Mérés"><svg width="2" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><g transform="rotate(-45 12 12)"><rect x="2" y="8.25" width="20" height="7.5" rx="2"/><path d="M6.5 8.25v3M10 8.25v2M13.5 8.25v3M17 8.25v2"/></g></svg><span class="nl"><span>Mérés</span></span></button>
   <button id="nFoto" aria-label="Fotó"><svg width="2" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 7.5h2.6l1.6-2.1c.4-.5 1-.9 1.6-.9h3.4c.6 0 1.2.3 1.6.9l1.6 2.1h2.6c1.1 0 2 .9 2 2V18c0 1.1-.9 2-2 2h-15c-1.1 0-2-.9-2-2V9.5c0-1.1.9-2 2-2z"/><circle cx="12" cy="13.6" r="3.4"/></svg><span class="nl"><span>Fotó</span></span></button>
-  <button id="nHud" aria-label="HUD mód" style="display:none"><svg width="2" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 16.9A8.5 8.5 0 1 1 20 16.9"/><path d="M12 5.5v1.8M6 8l1.27 1.27M18 8l-1.27 1.27"/><path d="M12 14l3.6-3.6"/><circle cx="12" cy="14" r="1.6" fill="currentColor" stroke="none"/></svg><span class="nl"><span>HUD</span></span></button>
 </nav>
 
 <div class="camviewer" id="camViewer">
@@ -708,7 +707,7 @@ input[type=text]:focus{outline:2px solid var(--pri);outline-offset:-1px;border-c
   <div class="in">
     <div class="sh-top">
       <div class="sh-head"><button class="iconbtn" id="closeSheet" aria-label="Vissza"><svg width="24" height="24" width="2" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5.5M11 6l-6 6 6 6"/></svg></button><h2>Beállítások</h2></div>
-      <div class="stabs" id="stabs" role="tablist"><button data-t="gen" role="tab"><svg width="2" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h8.5M19.5 7h.5M4 17h2.5M13.5 17H20"/><circle cx="16" cy="7" r="2.5"/><circle cx="10" cy="17" r="2.5"/></svg><span>Általános</span></button><button data-t="pos" role="tab"><svg width="2" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21.2c-.3 0-.5-.1-.7-.3C8.6 18.5 5 14.4 5 10a7 7 0 0 1 14 0c0 4.4-3.6 8.5-6.3 10.9-.2.2-.4.3-.7.3z"/><circle cx="12" cy="10" r="2.5"/></svg><span>Pozíció</span></button><button data-t="map" role="tab"><svg width="2" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 4l6 2 4.1-1.5c.7-.2 1.4.3 1.4 1v11.4c0 .6-.4 1.2-1 1.4L15 20l-6-2-4.1 1.5c-.7.2-1.4-.3-1.4-1V7.1c0-.6.4-1.2 1-1.4z"/><path d="M9 4v14M15 6v14"/></svg><span>Térkép</span></button><button data-t="meas" role="tab"><svg width="2" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><g transform="rotate(-45 12 12)"><rect x="2" y="8.25" width="20" height="7.5" rx="2"/><path d="M6.5 8.25v3M10 8.25v2M13.5 8.25v3M17 8.25v2"/></g></svg><span>Mérés</span></button><button data-t="foto" role="tab"><svg width="2" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 7.5h2.6l1.6-2.1c.4-.5 1-.9 1.6-.9h3.4c.6 0 1.2.3 1.6.9l1.6 2.1h2.6c1.1 0 2 .9 2 2V18c0 1.1-.9 2-2 2h-15c-1.1 0-2-.9-2-2V9.5c0-1.1.9-2 2-2z"/><circle cx="12" cy="13.6" r="3.4"/></svg><span>Fotó</span></button><button data-t="info" role="tab"><svg width="2" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 11v5.5"/><circle cx="12" cy="7.8" r="1.1" fill="currentColor" stroke="none"/></svg><span>Névjegy</span></button></div>
+      <div class="stabs" id="stabs" role="tablist"><button data-t="gen" role="tab"><svg width="2" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h8.5M19.5 7h.5M4 17h2.5M13.5 17H20"/><circle cx="16" cy="7" r="2.5"/><circle cx="10" cy="17" r="2.5"/></svg><span>Általános</span></button><button data-t="pos" role="tab"><svg width="2" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21.2c-.3 0-.5-.1-.7-.3C8.6 18.5 5 14.4 5 10a7 7 0 0 1 14 0c0 4.4-3.6 8.5-6.3 10.9-.2.2-.4.3-.7.3z"/><circle cx="12" cy="10" r="2.5"/></svg><span>Pozíció</span></button><button data-t="map" role="tab"><svg width="2" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 4l6 2 4.1-1.5c.7-.2 1.4.3 1.4 1v11.4c0 .6-.4 1.2-1 1.4L15 20l-6-2-4.1 1.5c-.7.2-1.4-.3-1.4-1V7.1c0-.6.4-1.2 1-1.4z"/><path d="M9 4v14M15 6v14"/></svg><span>Térkép</span></button><button data-t="srch" role="tab"><svg width="2" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.4 15.4l5.1 5.1"/></svg><span>Keresés</span></button><button data-t="meas" role="tab"><svg width="2" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><g transform="rotate(-45 12 12)"><rect x="2" y="8.25" width="20" height="7.5" rx="2"/><path d="M6.5 8.25v3M10 8.25v2M13.5 8.25v3M17 8.25v2"/></g></svg><span>Mérés</span></button><button data-t="foto" role="tab"><svg width="2" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 7.5h2.6l1.6-2.1c.4-.5 1-.9 1.6-.9h3.4c.6 0 1.2.3 1.6.9l1.6 2.1h2.6c1.1 0 2 .9 2 2V18c0 1.1-.9 2-2 2h-15c-1.1 0-2-.9-2-2V9.5c0-1.1.9-2 2-2z"/><circle cx="12" cy="13.6" r="3.4"/></svg><span>Fotó</span></button><button data-t="hud" role="tab" style="display:none"><svg width="2" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 16.9A8.5 8.5 0 1 1 20 16.9"/><path d="M12 5.5v1.8M6 8l1.27 1.27M18 8l-1.27 1.27"/><path d="M12 14l3.6-3.6"/><circle cx="12" cy="14" r="1.6" fill="currentColor" stroke="none"/></svg><span>HUD</span></button><button data-t="info" role="tab"><svg width="2" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 11v5.5"/><circle cx="12" cy="7.8" r="1.1" fill="currentColor" stroke="none"/></svg><span>Névjegy</span></button></div>
     </div>
     <div class="spanes">
     <div class="spane" data-p="gen">
@@ -717,17 +716,7 @@ input[type=text]:focus{outline:2px solid var(--pri);outline-offset:-1px;border-c
       <div class="opt"><div><span>Képernyő ébren tartása</span><small>Menet közben nem kapcsol ki a kijelző</small></div><button class="sw on" id="swWake"></button></div>
       <div class="opt"><div><span>Kerékpárutak kihagyása</span><small>Út melletti kerékpárút ne „vegye át” a pozíciót</small></div><button class="sw on" id="swBike"></button></div>
       <h3>HUD mód</h3>
-      <div class="opt"><div><span>HUD mód engedélyezése</span><small>A műszerfalra fektetett telefon képe a szélvédőn tükröződik: fekete háttér, nagy, fényes számok. Bekapcsolva megjelenik az alsó menüben.</small></div><button class="sw" id="swHud"></button></div>
-      <div id="hudSet">
-      <div class="opt col"><div><span>Tükrözés</span><small>Ha a szélvédőn fejjel lefelé látszik, válts a másikra, vagy fordítsd meg a telefont. Ki: tartóban, közvetlen nézéshez.</small></div><div class="seg wide" id="hudFlipSeg"><button data-v="x">Bal-jobb</button><button data-v="y">Fel-le</button><button data-v="off">Ki</button></div></div>
-      <div class="opt col"><div><span>Tájolás</span><small>Fekvő: széles, alacsony kép a szélvédő alján. A kép nem fordul el, ha a telefon fekszik.</small></div><div class="seg wide" id="hudOriSeg"><button data-v="land">Fekvő</button><button data-v="port">Álló</button></div></div>
-      <div class="opt col"><div><span>Szín</span></div><div class="seg wide" id="hudColSeg"><button data-v="white">Fehér</button><button data-v="green">Zöld</button><button data-v="yellow">Sárga</button></div></div>
-      <div class="opt col"><div><span>Fényerő</span><small id="hudBrNote"></small></div><div class="seg wide" id="hudBrSeg"><button data-v="max">Maximum</button><button data-v="sys">Rendszer</button></div></div>
-      <div class="opt"><div><span>Haladási irány</span><small>növekvő / csökkenő szelvényezés</small></div><button class="sw on" id="swHudDir"></button></div>
-      <div class="opt"><div><span>Sebesség</span></div><button class="sw on" id="swHudSpd"></button></div>
-      <div class="opt"><div><span>Sebességkorlát</span><small>Túllépésnél a sebesség narancsvörös</small></div><button class="sw on" id="swHudLim"></button></div>
-      <div class="opt"><div><span>Útnév</span></div><button class="sw" id="swHudName"></button></div>
-      </div>
+      <div class="opt"><div><span>HUD mód engedélyezése</span><small>A műszerfalra fektetett telefon képe a szélvédőn tükröződik: fekete háttér, nagy, fényes számok. Bekapcsolva megjelenik a beállítások között a HUD lap, onnan indítható.</small></div><button class="sw" id="swHud"></button></div>
     </div>
     <div class="spane" data-p="pos">
       <div class="opt"><div><span>Útnév mutatása</span><small>Kikapcsolva nagyobb a szelvény-kijelzés</small></div><button class="sw on" id="swName"></button></div>
@@ -754,6 +743,10 @@ input[type=text]:focus{outline:2px solid var(--pri);outline-offset:-1px;border-c
       <div style="display:flex;align-items:center;gap:12px"><div class="rngw" id="lineWw"><input type="range" class="rng" id="lineW" min="0.6" max="3" step="0.1" aria-label="Vonalvastagság"><span class="rngb" id="lineWb"></span></div><span class="rngv" id="lineWv"></span></div>
     </div>
     </div></div>
+    <div class="spane" data-p="srch">
+      <h3 style="margin-top:4px">Mentett keresések</h3>
+      <div id="srchDelBox"></div>
+    </div>
     <div class="spane" data-p="meas">
       <div class="opt col"><div><span>Koordináták a mérésekben</span><small>A mentett mérések pontjainál és a térképi mérés pontjainál. A CSV-exportban mindig mindkettő szerepel.</small></div><div class="seg wide" id="measCoordSeg"><button data-v="wgs">WGS84</button><button data-v="eov">EOV</button><button data-v="both">Mindkettő</button></div></div>
       <h3>Mentett mérések</h3>
@@ -770,6 +763,19 @@ input[type=text]:focus{outline:2px solid var(--pri);outline-offset:-1px;border-c
       <div class="opt"><div><span>Automatikus mentés</span><small id="phAutoNote"></small></div><button class="sw on" id="swPhAuto"></button></div>
       <div class="opt"><div><span>Hely és idő a fájl adataiban (EXIF)</span><small>A galéria így térképen is meg tudja mutatni a fotót</small></div><button class="sw on" id="swPhExif"></button></div>
       <p class="note">A felirat (útszám, szelvény, dátum és idő) az exponálás pillanatában rögzül. Az alkalmazás a fotókat nem tárolja: a Fotó oldal bélyegképe csak az ebben a munkamenetben készült képeket mutatja – a mentett példány a telefonon marad.</p>
+    </div>
+    <div class="spane" data-p="hud">
+      <div class="hudgo"><button class="btn pri" id="hudStart"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 16.9A8.5 8.5 0 1 1 20 16.9"/><path d="M12 5.5v1.8M6 8l1.27 1.27M18 8l-1.27 1.27"/><path d="M12 14l3.6-3.6"/><circle cx="12" cy="14" r="1.6" fill="currentColor" stroke="none"/></svg>HUD indítása</button><small>Fektesd a telefont a műszerfalra a szélvédő alá. Kilépés: Vissza gomb, vagy koppints a képernyőre és „Kilépés”.</small></div>
+      <h3>Kép</h3>
+      <div class="opt col"><div><span>Tükrözés</span><small>Ha a szélvédőn fejjel lefelé látszik, válts a másikra, vagy fordítsd meg a telefont. Ki: tartóban, közvetlen nézéshez.</small></div><div class="seg wide" id="hudFlipSeg"><button data-v="x">Bal-jobb</button><button data-v="y">Fel-le</button><button data-v="off">Ki</button></div></div>
+      <div class="opt col"><div><span>Tájolás</span><small>Fekvő: széles, alacsony kép a szélvédő alján. A kép nem fordul el, ha a telefon fekszik.</small></div><div class="seg wide" id="hudOriSeg"><button data-v="land">Fekvő</button><button data-v="port">Álló</button></div></div>
+      <div class="opt col"><div><span>Szín</span></div><div class="seg wide" id="hudColSeg"><button data-v="white">Fehér</button><button data-v="green">Zöld</button><button data-v="yellow">Sárga</button></div></div>
+      <div class="opt col"><div><span>Fényerő</span><small id="hudBrNote"></small></div><div class="seg wide" id="hudBrSeg"><button data-v="max">Maximum</button><button data-v="sys">Rendszer</button></div></div>
+      <h3>Megjelenik</h3>
+      <div class="opt"><div><span>Haladási irány</span><small>növekvő / csökkenő szelvényezés</small></div><button class="sw on" id="swHudDir"></button></div>
+      <div class="opt"><div><span>Sebesség</span></div><button class="sw on" id="swHudSpd"></button></div>
+      <div class="opt"><div><span>Sebességkorlát</span><small>Túllépésnél a sebesség narancsvörös</small></div><button class="sw on" id="swHudLim"></button></div>
+      <div class="opt"><div><span>Útnév</span></div><button class="sw" id="swHudName"></button></div>
     </div>
     <div class="spane" data-p="info">
       <h3 style="margin-top:4px">Adatok</h3>
@@ -1998,12 +2004,30 @@ function trkMerc(M){
   for(let i=c.x.length;i<n;i++){const m=eovToM(M.trk[2*i],M.trk[2*i+1]);c.x.push(m.x);c.y.push(m.y)}
   trkCache.set(M,c);return c;
 }
+// overlay polyline (search sections, measurement tracks) in Mercator coords: only the part on screen,
+// and vertices closer than ~1.5 px to the previous kept one are dropped, so wide strokes stay cheap at any zoom
+function bboxM(xs,ys){let a=Infinity,b=-Infinity,c=Infinity,d=-Infinity;for(let i=0;i<xs.length;i++){const x=xs[i],y=ys[i];if(x<a)a=x;if(x>b)b=x;if(y<c)c=y;if(y>d)d=y}return [a,b,c,d]}
+function viewBoxM(pad){let a=Infinity,b=-Infinity,c=Infinity,d=-Infinity;for(const [qx,qy] of [[-pad,-pad],[VW.W+pad,-pad],[-pad,VW.H+pad],[VW.W+pad,VW.H+pad]]){const m=s2m(qx,qy);a=Math.min(a,m.x);b=Math.max(b,m.x);c=Math.min(c,m.y);d=Math.max(d,m.y)}return [a,b,c,d]}
+function pathM(xs,ys,bb,vb){
+  if(bb&&vb&&(bb[1]<vb[0]||bb[0]>vb[1]||bb[3]<vb[2]||bb[2]>vb[3]))return false;
+  const W=VW.W,H=VW.H,P=24,n=xs.length;let drew=false,open=false,lx=0,ly=0,po=0;
+  const out=(x,y)=>(x<-P?1:0)|(x>W+P?2:0)|(y<-P?4:0)|(y>H+P?8:0);
+  let px=m2sx(xs[0],ys[0]),py=m2sy(xs[0],ys[0]);po=out(px,py);
+  for(let i=1;i<n;i++){
+    const x=m2sx(xs[i],ys[i]),y=m2sy(xs[i],ys[i]),o=out(x,y);
+    if(po&o){open=false;px=x;py=y;po=o;continue}            // whole piece off one side of the screen
+    if(!open){ctx.moveTo(px,py);lx=px;ly=py;open=true;drew=true}
+    if(i===n-1||Math.abs(x-lx)+Math.abs(y-ly)>=1.5){ctx.lineTo(x,y);lx=x;ly=y}
+    px=x;py=y;po=o;
+  }
+  return drew;
+}
 function drawMeasTrack(M,col,marks){
   if(!M||!M.trk||M.trk.length<2)return;
   if(!marks){
-  const c=trkMerc(M),n=c.x.length;
+  const c=trkMerc(M);if(!c.bb||c.bbN!==c.x.length){c.bb=bboxM(c.x,c.y);c.bbN=c.x.length}   // the active track grows
   ctx.lineCap="round";ctx.lineJoin="round";
-  ctx.beginPath();for(let i=0;i<n;i++){const x=m2sx(c.x[i],c.y[i]),y=m2sy(c.x[i],c.y[i]);i?ctx.lineTo(x,y):ctx.moveTo(x,y)}
+  ctx.beginPath();if(!pathM(c.x,c.y,c.bb,viewBoxM(30)))return;
   ctx.strokeStyle="#000b";ctx.lineWidth=7;ctx.stroke();ctx.strokeStyle=col;ctx.lineWidth=4;ctx.stroke();return}
   const mark=(p,fill,lbl)=>{if(!p)return;const m=eovToM(p.E,p.N),x=m2sx(m.x,m.y),y=m2sy(m.x,m.y);
     ctx.beginPath();ctx.arc(x,y,lbl.length>1?11:9,0,7);ctx.fillStyle=fill;ctx.fill();ctx.lineWidth=2;ctx.strokeStyle="#fff";ctx.stroke();
@@ -2883,17 +2907,18 @@ $("srchList").addEventListener("click",(e)=>{const b=e.target.closest("[data-a]"
 $("srchList").addEventListener("keydown",(e)=>{if(e.key==="Enter"&&e.target.id&&e.target.id.startsWith("srn_"))srchAction("save",+e.target.id.slice(4))});
 // ---- map ----
 function srchOnMap(){const L=srchList.filter(x=>x.show);if(srchCur&&srchCurOn&&!L.includes(srchCur))L.push(srchCur);return L}
-const srchMerc=(o)=>{if(!o.mx){o.mx=[];o.my=[];for(let i=0;i<o.pts.length;i+=2){const m=eovToM(o.pts[i],o.pts[i+1]);o.mx.push(m.x);o.my.push(m.y)}}return o};
+const srchMerc=(o)=>{if(!o.mx){o.mx=[];o.my=[];for(let i=0;i<o.pts.length;i+=2){const m=eovToM(o.pts[i],o.pts[i+1]);o.mx.push(m.x);o.my.push(m.y)}o.bb=bboxM(o.mx,o.my)}return o};
 const hitM=(h)=>{if(!h.m)h.m=toM(h.lat,h.lon);return h.m};
 function drawSrch(marks){
   const L=srchOnMap();if(!L.length)return;
-  ctx.lineCap="round";ctx.lineJoin="round";
+  ctx.lineCap="round";ctx.lineJoin="round";const vb=viewBoxM(30);
   for(const it of L){
     const R=srchEval(it);if(R.err)continue;const foc=it===srchFocus||it===srchCur&&srchCurOn;
     if(!marks){
       if(it.kind!=="sec")continue;
-      for(const p of R.parts){srchMerc(p);ctx.beginPath();for(let i=0;i<p.mx.length;i++){const x=m2sx(p.mx[i],p.my[i]),y=m2sy(p.mx[i],p.my[i]);i?ctx.lineTo(x,y):ctx.moveTo(x,y)}
-        ctx.strokeStyle="#000b";ctx.lineWidth=foc?11:9;ctx.stroke();ctx.strokeStyle=SR_COL;ctx.lineWidth=foc?6:5;ctx.stroke()}
+      // all parts of one search in one path: one casing + one colour stroke
+      ctx.beginPath();let any=false;for(const p of R.parts){srchMerc(p);if(pathM(p.mx,p.my,p.bb,vb))any=true}
+      if(any){ctx.strokeStyle="#000b";ctx.lineWidth=foc?11:9;ctx.stroke();ctx.strokeStyle=SR_COL;ctx.lineWidth=foc?6:5;ctx.stroke()}
       continue;
     }
     // label right of the marker, or left of it when it would run under the map buttons
@@ -2978,13 +3003,15 @@ function showSetTab(t){
   document.querySelectorAll(".spane").forEach(p=>p.classList.toggle("on",p.dataset.p===t));
   if(t==="map")placeMapSet("sheet");
   if(t==="meas")renderMeasSet();
+  if(t==="srch")renderSrchSet();
+  if(t==="hud")hudNavUI();
   if(t==="foto")renderPhSet();
   document.querySelector(".spanes").scrollTop=0;
   const tb=document.querySelector("#stabs button.on");if(tb)tb.scrollIntoView({block:"nearest",inline:"nearest"});
 }
 function openSettings(){
   closeMapPanel();
-  const t=mapOn||$("srchView").classList.contains("on")?"map":$("measView").classList.contains("on")?"meas":$("fotoView").classList.contains("on")?"foto":"pos";
+  const t=$("srchView").classList.contains("on")?"srch":mapOn?"map":$("measView").classList.contains("on")?"meas":$("fotoView").classList.contains("on")?"foto":"pos";
   showSetTab(t);animOpen($("sheet"));
 }
 document.querySelectorAll("#stabs button").forEach(b=>b.onclick=()=>showSetTab(b.dataset.t));
@@ -3009,8 +3036,25 @@ function renderMeasSet(){
   else $("mDelAll").onclick=()=>{measDelAll=true;renderMeasSet()};
 }
 document.querySelectorAll("#measCoordSeg button").forEach(b=>b.onclick=()=>{S.measCoord=b.dataset.v;saveS();renderMeasSet();renderMeas()});
+// Keresés settings: delete all saved searches
+let srchDelAll=false;
+function renderSrchSet(){
+  const n=srchList.length,box=$("srchDelBox");
+  if(!n){box.innerHTML=`<p class="note">Nincs mentett keresés.</p>`;srchDelAll=false;return}
+  box.innerHTML=srchDelAll?`<div class="opt" style="border:0"><div><span style="color:var(--err)">Biztosan törlöd mind a ${n} mentett keresést?</span><small>Ez nem vonható vissza.</small></div></div>
+      <div class="mdelc"><button class="btn red" id="sDelAllOk">Igen, mindet törlöm</button><button class="btn" id="sDelAllNo">Mégse</button></div>`
+    :`<div class="opt" style="border:0"><div><span>${n} mentett keresés</span><small>Pontok és szakaszok együtt. A legutóbbi, el nem mentett keresést ez nem érinti.</small></div><button class="btn red" id="sDelAll">Összes törlése</button></div>`;
+  if(srchDelAll){$("sDelAllOk").onclick=()=>{
+      if(srchFocus&&srchList.includes(srchFocus)){srchFocus=null;if(mapOn){miLast="";mapIdle()}}
+      if(srchCur&&srchList.includes(srchCur))srchCur=null;
+      srchList=[];srchSave();srchOpen=srchDel=srchRename=srchNew=null;srchDelAll=false;
+      renderSrchRes();renderSrch();srchChipUI();renderSrchSet();if(mapOn)drawMap();
+      $("srchDelBox").insertAdjacentHTML("beforeend",`<p class="note" style="color:var(--pri)">Minden mentett keresés törölve.</p>`)};
+    $("sDelAllNo").onclick=()=>{srchDelAll=false;renderSrchSet()}}
+  else $("sDelAll").onclick=()=>{srchDelAll=true;renderSrchSet()};
+}
 function sheetClose(){animClose($("sheet"))}
-$("closeSheet").onclick=()=>{sheetClose();measDelAll=false};
+$("closeSheet").onclick=()=>{sheetClose();measDelAll=false;srchDelAll=false};
 $("sheet").addEventListener("click",(e)=>{if(e.target.id==="sheet")sheetClose()});
 $("gpsToggle").onclick=()=>{watchId===null?startGPS():stopGPS()};
 function bindSw(id,key,after){const b=$(id);b.classList.toggle("on",!!S[key]);b.onclick=()=>{S[key]=!S[key];b.classList.toggle("on",S[key]);saveS();after&&after();render()}}
@@ -3037,8 +3081,7 @@ var hudOn=false,hudUiT=null,hudFitKey="";   // var: render() may run before this
 const HUD_COL={white:"#FFFFFF",green:"#4DFF88",yellow:"#FFD60A"};
 const HUD_FLIP={x:"Bal-jobb",y:"Fel-le",off:"Ki"};
 function hudNavUI(){
-  $("nHud").style.display=S.hud?"":"none";$("navBar").classList.toggle("six",!!S.hud);
-  $("hudSet").style.display=S.hud?"":"none";
+  const tb=document.querySelector('#stabs button[data-t="hud"]');if(tb)tb.style.display=S.hud?"":"none";
   document.querySelectorAll("#hudFlipSeg button").forEach(b=>b.classList.toggle("on",b.dataset.v===(S.hudFlip||"x")));
   document.querySelectorAll("#hudOriSeg button").forEach(b=>b.classList.toggle("on",b.dataset.v===(S.hudOri||"land")));
   document.querySelectorAll("#hudColSeg button").forEach(b=>b.classList.toggle("on",b.dataset.v===(S.hudCol||"white")));
@@ -3084,7 +3127,7 @@ $("hud").addEventListener("click",(e)=>{if(e.target.closest(".hud-btns"))return;
 $("hudExit").onclick=()=>hudClose();
 $("hudFlipB").onclick=()=>{const o=["x","y","off"];S.hudFlip=o[(o.indexOf(S.hudFlip||"x")+1)%3];saveS();hudNavUI();hudLayout();hudUi(true)};
 $("hudOriB").onclick=()=>{S.hudOri=S.hudOri==="port"?"land":"port";saveS();hudNavUI();hudFitKey="";hudLayout();renderHud();hudUi(true)};
-$("nHud").onclick=()=>hudOpen();
+$("hudStart").onclick=()=>{sheetClose();hudOpen()};
 function hudLayout(){
   if(!hudOn)return;
   const vw=innerWidth,vh=innerHeight,land=S.hudOri!=="port",rot=land!==(vw>vh);
