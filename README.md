@@ -14,7 +14,7 @@ Fotóidra ráírja a helyet és az időt, a méréseidet pedig elnevezheted és 
 Böngészőben és Android-alkalmazásként is fut. Az úthálózati adatok a készüléken vannak, így a szelvényezés internet
 nélkül is működik. Csak a térkép alapréteghez kell internetkapcsolat.
 
-**Verzió:** V0.13 Beta · © schafler55 · Licenc: GPL-3.0
+**Verzió:** V0.14 Beta · © schafler55 · Licenc: GPL-3.0
 
 ## Funkciók
 
