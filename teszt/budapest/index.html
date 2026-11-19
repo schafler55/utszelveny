@@ -2450,7 +2450,8 @@ function stampData(){
   d.E=Math.round(p.E);d.N=Math.round(p.N);d.lat=ll.lat;d.lon=ll.lon;
   if(cur.res.off){d.state="off";const nr=cur.res.nearest;if(nr){d.near=ROADS[segRoad[nr.s]].num;d.nearD=Math.round(nr.d)}return d}
   const r=cur.res,s=r.best.s,road=ROADS[segRoad[s]];
-  return Object.assign(d,{state:"on",road:road.num,name:road.name,kut:segKut[s],pk:segPk[s],ch:fmtCh(r.ch),dirInc:r.best.dirInc});
+  const v=cval(r.ch),tel=builtUpAt(segRoad[s],segPk[s],v)===1?telAt(segRoad[s],segPk[s],v):null;
+  return Object.assign(d,{state:"on",road:road.num,name:road.name,kut:segKut[s],pk:segPk[s],ch:fmtCh(r.ch),dirInc:r.best.dirInc,tel});
 }
 
 /* ---- stamp drawing (same function for the live preview and the saved photo) ---- */
@@ -2484,7 +2485,7 @@ function drawStamp(c,W,H,d){
   let name=null;
   if(d.state==="on"&&S.phName&&d.name){const n=splitName(d.name);name=n.sub?`${n.main} (${n.sub})`:n.main}
   const det=[];
-  if(d.state==="on"){det.push(KUT[d.kut]||"út");if(d.pk)det.push(PKOD[d.pk]);
+  if(d.state==="on"){if(d.tel)det.push(d.tel+" belterület");det.push(KUT[d.kut]||"út");if(d.pk)det.push(PKOD[d.pk]);
     if(d.dirInc===1)det.push("↑ növekvő");else if(d.dirInc===-1)det.push("↓ csökkenő")}
   else if(d.state==="off"&&d.near)det.push(`legközelebbi út: ${d.near} (${d.nearD} m)`);
   const bot=[],coord=stampCoord(d);
@@ -2546,7 +2547,7 @@ function tiffBlock(ifds){
 function exifTiff(d,W,H){
   const t=new Date(d.t),dt=`${t.getFullYear()}:${p2(t.getMonth()+1)}:${p2(t.getDate())} ${p2(t.getHours())}:${p2(t.getMinutes())}:${p2(t.getSeconds())}`;
   const o=-t.getTimezoneOffset(),tz=`${o<0?"-":"+"}${p2(Math.floor(Math.abs(o)/60))}:${p2(Math.abs(o)%60)}`;
-  const desc=d.state==="on"?`${d.road}. sz. ut ${d.ch}`:d.state==="off"?"Uthalozaton kivul":"Nincs GNSS-pozicio";
+  const desc=d.state==="on"?`${d.road}. sz. ut ${d.ch}${d.tel?", "+d.tel+" belterulet":""}`:d.state==="off"?"Uthalozaton kivul":"Nincs GNSS-pozicio";
   const gps=S.phExif&&d.lat!=null;
   const i0=[[0x010E,2,0,eAsc(desc)],[0x0112,3,1,eShort(1)],[0x0131,2,0,eAsc(APP_VER)],[0x0132,2,0,eAsc(dt)],[0x8769,4,1,"@1"]];
   if(gps)i0.push([0x8825,4,1,"@2"]);
