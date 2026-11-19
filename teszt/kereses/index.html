@@ -462,13 +462,15 @@ input[type=text]:focus{outline:2px solid var(--pri);outline-offset:-1px;border-c
 .skm input{flex:1;min-width:0;text-align:center}
 .skm b{font-family:var(--cond);font-size:1.5rem;color:var(--onv);font-weight:700}
 .skm .sfx{font-size:.8rem;color:var(--onv);width:20px}
-/* jobb / bal pálya button: slides in right of the m field on divided roads, the fields shrink to make room */
-.skm .spk{flex:0 0 0;width:0;min-width:0;height:52px;margin-left:-8px;opacity:0;overflow:hidden;border-radius:14px;background:var(--sec-c);color:var(--on-sec-c);display:flex;flex-direction:column;align-items:center;justify-content:center;line-height:1.1;white-space:nowrap;transform:scale(.6);pointer-events:none;
-  transition:flex-basis .38s cubic-bezier(.2,0,0,1),margin .38s cubic-bezier(.2,0,0,1),opacity .25s,transform .38s cubic-bezier(.2,0,0,1),background-color .25s,color .25s}
-.skm.div .spk{flex-basis:70px;margin-left:0;opacity:1;transform:none;pointer-events:auto}
+/* pálya button, always right of the m field: "–" until a chainage is typed, then Osztatlan, or Jobb / Bal (tap to switch) where the road is divided at that chainage */
+.skm .spk{flex:0 0 84px;min-width:0;height:52px;border-radius:14px;background:var(--sc-high);color:var(--onv);display:flex;flex-direction:column;align-items:center;justify-content:center;line-height:1.1;white-space:nowrap;overflow:hidden;
+  transition:background-color .25s,color .25s,transform .15s}
 .skm .spk .t{font-size:1rem;font-weight:700}.skm .spk small{font-size:.7rem;opacity:.85}
+.skm .spk.osz .t{font-size:.86rem}
+.skm .spk.none{opacity:.55}
+.skm .spk.jobb{background:var(--sec-c);color:var(--on-sec-c)}
 .skm .spk.bal{background:var(--ter-c);color:var(--on-ter-c)}
-.skm .spk:active{transform:scale(.94)}
+.skm .spk.jobb:active,.skm .spk.bal:active{transform:scale(.94)}
 .skm .spk.flip .t{animation:spkFlip .3s cubic-bezier(.2,0,0,1)}
 @keyframes spkFlip{0%{transform:translateY(8px);opacity:0}100%{transform:none;opacity:1}}
 .sroad{display:flex;align-items:center;gap:12px;min-height:40px}
@@ -591,7 +593,7 @@ input[type=text]:focus{outline:2px solid var(--pri);outline-offset:-1px;border-c
         <div class="sfl-l">KEZDŐ SZELVÉNY <small>– üresen: az út eleje</small></div>
         <div class="skm"><input type="text" class="sinp" id="sK2" inputmode="numeric" placeholder="km" autocomplete="off" aria-label="Kezdő szelvény, km" enterkeyhint="next"><b>+</b><input type="text" class="sinp" id="sM2" inputmode="numeric" placeholder="m" maxlength="4" autocomplete="off" aria-label="Kezdő szelvény, méter" enterkeyhint="next"><button type="button" class="spk" id="sPk2" aria-label="Pálya váltása"><span class="t">Jobb</span><small>pálya</small></button></div>
         <div class="sfl-l" style="margin-top:8px">ZÁRÓ SZELVÉNY <small>– üresen: az út vége</small></div>
-        <div class="skm"><input type="text" class="sinp" id="sK3" inputmode="numeric" placeholder="km" autocomplete="off" aria-label="Záró szelvény, km" enterkeyhint="next"><b>+</b><input type="text" class="sinp" id="sM3" inputmode="numeric" placeholder="m" maxlength="4" autocomplete="off" aria-label="Záró szelvény, méter" enterkeyhint="search"></div>
+        <div class="skm"><input type="text" class="sinp" id="sK3" inputmode="numeric" placeholder="km" autocomplete="off" aria-label="Záró szelvény, km" enterkeyhint="next"><b>+</b><input type="text" class="sinp" id="sM3" inputmode="numeric" placeholder="m" maxlength="4" autocomplete="off" aria-label="Záró szelvény, méter" enterkeyhint="search"><button type="button" class="spk" id="sPk3" aria-label="Pálya váltása"><span class="t">Jobb</span><small>pálya</small></button></div>
       </div>
       <div class="serr" id="sErr"></div>
       <button class="startbtn sgo" id="sGo"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="10.5" cy="10.5" r="6"/><path d="M15 15l5 5"/></svg>Keresés</button>
@@ -2604,7 +2606,7 @@ function roadInfo(r){
   let lo=Infinity,hi=-Infinity,best=-1,bl=-1;
   for(const s of RSEGS[r]){lo=Math.min(lo,segCv0(s));hi=Math.max(hi,segCv1(s));const l=segLen(s);if(l>bl){bl=l;best=s}}
   let dl=0,tl=0;for(const s of RSEGS[r]){const l=segLen(s);if(segPk[s]===2)dl+=l;else tl+=l}
-  I={lo,hi,kut:best>=0?segKut[best]:5,div:dl>0,mostDiv:dl>tl*0.5};RINFO.set(r,I);return I;
+  I={lo,hi,kut:best>=0?segKut[best]:5,div:dl>0};RINFO.set(r,I);return I;
 }
 // position along a segment where the chainage reaches v (chainage grows along the segment geometry)
 function alongAt(s,v){
@@ -2716,21 +2718,33 @@ function srchRoadUI(){
 $("sRoad").addEventListener("input",()=>{$("sErr").textContent="";srchRoadUI()});
 // is the road divided (has a bal pálya) between two chainages?
 function divAt(r,va,vb){if(va>vb)[va,vb]=[vb,va];roadIndex();return RSEGS[r].some(s=>segPk[s]===2&&segCv0(s)<=vb&&segCv1(s)>=va)}
-// carriageway needed for the current form? (no chainage yet: only for mostly divided roads, e.g. motorways)
-function srchDivNeed(r){
-  if(r==null)r=roadFind($("sRoad").value);if(r<0||!normNum($("sRoad").value))return false;
-  const I=roadInfo(r);if(!I.div)return false;
-  if(srchMode==="pt"){const v=parseCh($("sK1").value,$("sM1").value);return v==null||isNaN(v)?I.mostDiv:divAt(r,v,v)}
+// state of one km+m row: "none" (no road / no km yet), "osz" (undivided there) or "div" (jobb / bal pálya there)
+const PK_ROWS=[["sPk1","sK1","sM1","pt"],["sPk2","sK2","sM2","sec"],["sPk3","sK3","sM3","sec"]];
+function rowPk(r,k,m){
+  if(r<0||!$(k).value.trim())return "none";
+  const v=parseCh($(k).value,$(m).value);if(v==null||isNaN(v))return "none";
+  return roadInfo(r).div&&divAt(r,v,v)?"div":"osz";
+}
+// carriageway to search on: the chosen one if the point / section touches a divided part, else none (0)
+function srchPkFor(r){
+  if(r<0||!roadInfo(r).div)return 0;const I=roadInfo(r);
+  if(srchMode==="pt"){const v=parseCh($("sK1").value,$("sM1").value);return v!=null&&!isNaN(v)&&divAt(r,v,v)?srchPk:0}
   let a=parseCh($("sK2").value,$("sM2").value),b=parseCh($("sK3").value,$("sM3").value);
-  if(isNaN(a)||isNaN(b))return I.mostDiv;if(a==null&&b==null)return I.mostDiv;
-  return divAt(r,a==null?I.lo:a,b==null?I.hi:b);
+  if(isNaN(a)||isNaN(b))return 0;return divAt(r,a==null?I.lo:a,b==null?I.hi:b)?srchPk:0;
 }
-function srchDivCheck(r){srchDivUI(srchDivNeed(r))}
-function srchDivUI(on){
-  for(const i of [1,2]){const b=$("sPk"+i);b.closest(".skm").classList.toggle("div",!!on);b.tabIndex=on?0:-1;
-    b.classList.toggle("bal",srchPk===2);b.querySelector(".t").textContent=srchPk===2?"Bal":"Jobb";b.setAttribute("aria-label",`${srchPk===2?"Bal":"Jobb"} pálya – koppintásra vált`)}
+function srchDivCheck(r,flip){
+  if(r==null)r=normNum($("sRoad").value)?roadFind($("sRoad").value):-1;
+  for(const [id,k,m] of PK_ROWS){
+    const b=$(id),st=rowPk(r,k,m),cls=st==="div"?(srchPk===2?"bal":"jobb"):st;
+    const t=st==="div"?(srchPk===2?"Bal":"Jobb"):st==="osz"?"Osztatlan":"–";
+    const changed=b.dataset.st!==cls;b.dataset.st=cls;
+    b.className="spk "+cls;b.querySelector(".t").textContent=t;
+    b.tabIndex=st==="div"?0:-1;b.setAttribute("aria-disabled",st!=="div");
+    b.setAttribute("aria-label",st==="div"?`${t} pálya – koppintásra vált`:st==="osz"?"Osztatlan pálya ezen a szelvényen":"Pálya: add meg a szelvényt");
+    if(changed&&(flip||st!=="none")){b.classList.remove("flip");void b.offsetWidth;b.classList.add("flip")}
+  }
 }
-for(const i of [1,2])$("sPk"+i).onclick=()=>{srchPk=srchPk===2?1:2;srchDivUI(true);const b=$("sPk"+i);b.classList.remove("flip");void b.offsetWidth;b.classList.add("flip")};
+for(const [id] of PK_ROWS)$(id).onclick=()=>{if($(id).dataset.st!=="jobb"&&$(id).dataset.st!=="bal")return;srchPk=srchPk===2?1:2;srchDivCheck(null,true)};
 $("sSug").addEventListener("click",(e)=>{const b=e.target.closest("button[data-r]");if(!b)return;$("sRoad").value=ROADS[+b.dataset.r].num;srchRoadUI();$(srchMode==="sec"?"sK2":"sK1").focus()});
 // km field: typing "+" (or "12+345") jumps to the metre field
 for(const [k,m,nx] of [["sK1","sM1",null],["sK2","sM2","sK3"],["sK3","sM3",null]]){
@@ -2745,7 +2759,7 @@ function srchRun(){
   const err=(t)=>{$("sErr").textContent=t};
   const raw=$("sRoad").value;if(!normNum(raw))return err("Add meg az útszámot.");
   const r=roadFind(raw);if(r<0)return err("Nincs ilyen számú országos közút az adatokban.");
-  const I=roadInfo(r),num=ROADS[r].num,pk=srchDivNeed(r)?srchPk:0;let it;
+  const I=roadInfo(r),num=ROADS[r].num,pk=srchPkFor(r);let it;
   if(srchMode==="pt"){
     const v=parseCh($("sK1").value,$("sM1").value);
     if(v==null)return err("Add meg a szelvényt (km + m).");
@@ -2880,7 +2894,7 @@ $("srchChip").onclick=()=>{srchCurOn=false;if(srchFocus===srchCur){srchFocus=nul
 // on a phone the keyboard pushes the floating navigation over the fields: hide it while typing
 document.addEventListener("focusin",(e)=>{if(e.target.matches&&e.target.matches("main input")){$("navBar").classList.add("hide");$("navFade").classList.add("hide")}});
 document.addEventListener("focusout",(e)=>{if(e.target.matches&&e.target.matches("main input"))setTimeout(()=>{if(!(document.activeElement&&document.activeElement.matches("main input"))){$("navBar").classList.remove("hide");$("navFade").classList.remove("hide")}},60)});
-srchModeUI();
+srchModeUI();srchDivCheck(-1);
 function showView(v){
   $("navBar").classList.remove("hide");$("navFade").classList.remove("hide");
   mapOn=v==="map";
