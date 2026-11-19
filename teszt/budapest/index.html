@@ -88,10 +88,6 @@ main{flex:1;overflow:auto;padding:4px 12px calc(12px + var(--navh));display:flex
 .hico .spin{position:absolute;inset:0;width:64px;height:64px;animation:hspin 1.4s linear infinite}
 @keyframes hspin{to{transform:rotate(360deg)}}
 .hero.nogps .big3{font-size:1.6rem;font-weight:500;line-height:1.25}
-/* Budapest: local roads, not the national network – normal tile, not a warning */
-.hero.bp .hico{background:var(--pri);color:var(--on-pri)}
-.hero.bp .big3{font-size:1.9rem;font-weight:500;line-height:1.2}
-.hero.bp .rsub.bp1{font-size:.95rem;color:var(--on-pri-c);max-width:300px;line-height:1.35}
 .q{position:absolute;top:14px;right:14px;display:flex;align-items:center;gap:6px;height:32px;padding:0 12px 0 10px;border-radius:16px;background:var(--pri-c2);font-size:.8125rem;font-weight:600;color:var(--on-pri-c)}
 .q i{width:8px;height:8px;border-radius:50%;background:var(--dim)}
 .q.good i{background:var(--ok)}.q.mid i{background:var(--warn)}.q.bad i{background:var(--err)}
@@ -823,7 +819,7 @@ input[type=text]:focus{outline:2px solid var(--pri);outline-offset:-1px;border-c
       <p>Adatforrás: Magyar Közút Nonprofit Zrt. - Nemzeti Adathozzáférési Pont (NAP) statikus adatcsomagok (adatállapot: 2026. november)</p>
 <!--      <p class="note">Felhasznált NAP adatcsomagok: Országos közúthálózat, Közút neve/kategóriája/kezelője, Szelvényjelek, Sebességkorlátozás, Lakott területi szakaszok, Hídhasználati feltételek, Tehergépjárművekre vonatkozó korlátozások.</p> -->
       <p>Térkép alapréteg: © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a> közreműködők · Műholdkép: © Esri, Maxar, Earthstar Geographics</p>
-      <p>Budapest közigazgatási határa: © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a> közreműködők, ODbL licenc</p>
+      <p>Budapest határa: © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a> közreműködők, ODbL</p>
       <p class="warn">Az adatok tájékoztató jellegűek, nem hitelesek – a helyszíni jelzések és a KRESZ az irányadók</p>
       <p class="warn">Vezetés közben ne kezeld az alkalmazást</p>
     </div>
@@ -842,30 +838,9 @@ input[type=text]:focus{outline:2px solid var(--pri);outline-offset:-1px;border-c
 /* ============================================================
    ÚtSzelvény – offline útszám + kilométerszelvény kijelző
    ============================================================ */
-/* Budapest közigazgatási határa (a 23 kerület uniója) – © OpenStreetMap közreműködők, ODbL (geoBoundaries HUN ADM2 kivonat).
-   EOV egész méter, ugyanaz a kódolás, mint a szakaszok geometriájánál. Budapesten belül az utak helyi közutak
-   (fővárosi: Budapest Közút Zrt., többi: kerületi önkormányzatok); az országos hálózatból csak az M0, M3, M5, M51 és ágaik vannak itt. */
-const BP_ENC=["qnpf@upzL`DkNlkB`SdRvDfPxDje@~J~PdHpPzJno@hu@bWkRpHcQhE_`@kDyAvCcNtByFvDkS~A}SWgGaCcIwGsKuNaEoVuGhAeJhAyY~BkMzI__@`EaVOwFo@gI^gI{k@ii@uYkRiHwGmFq@{CmJaAqE}AyJm@uMs@_HaAeEOcNLaEBe@r@_EAqE\\qFpAoGqBcNdEOrHoDpQaKnBs@|BoEqb@qZs@YmNEsFse@nC{OfKud@|B_EdH}IvQwVrHcJDe@`Xkg@hP}Ov\\mL|FpK|XbOzFuGhTgWA}HxAoAbIcG|DeC`@_@zCsBlAq@sBuGqBsEiK}[gU~DDOs@mDv@yBaBoA_@qAAw@D_@Le@|@wA^{Ad@}@tAoAVgGeA{CAq@@e@x@kAhKsFrF{BrYuJeCsHiBeE_CaEsAoBaAuBLK{B{C{@[Ty@_F@uGkOgE}O_Cq@y@GMsBnAgAxAcAxJuFhEyBPgDXr@t@PRExIyEhC}Aa@cAFg@JE`Aix@rAcHmAsHjAiMw@kLiAkFUwFQmLo@oJHGfAJdBf@pBP~BhAjDJzCnBnCfA`PgJkNqHcDyDwMgEuJmJuTcPbAyGe@w@f@oCxF_BlCiDlOeI}OeOvh@mdBmh@aPoGcDwMuUc`@nEwm@Zmk@hJme@fOv@oEeBiEmNwQcFsHqDiG`DcFmCeJbYkMsW{UqDrBel@``@sMgNgLvO}CL_RyCaT{G}CWqBeA_KqDsAGsBs@_C~@kCoBkMiB_\\qBe[`Dm@f@aIdAMyA~@oEnB}PpC{C_AyCpFwYc@gBBiAOcBb@yAL}AFkCVa@tA_@b@Sf@UnFmJ`EoJbF_Jd@aBiQaIqHoCuE{@wACu@d@iBAeCcGqAmAkBMg@o@sA_A}AcCwEaAgCEoAFq@Ko@Ho@EWIgIAeGg@eAC_b@jFoKq@_JOqIa@sPxBsa@tH_IUgATyE|JxLj^nEdYtAdq@EtDoNpAyHaRyv@cwAkq@wz@_m@hRlGrTmExHoc@nL_HjCmRvQoFnF}N~FqApAqIoAeDCcTgDwIiDsIzVpIhD_iA|hAzF|F|^tf@e\\b\\e\\}Nck@|m@ea@|b@t\\fMtA`@jT|HrG|Faq@hl@oi@~_@~NrMk~@rn@wAsAoPbMyOwO{V|NkDuA_TwNeDjAoQbTy^h\\cl@gLycA{NmYrn@o^dv@{AjGuArAwEjUeApD_K`e@{AtQgOgDqNA}k@sIgQoA{ZfA_EKmWsCwLmCcA_@{FkAeHiB{BUyRiEmAg@cb@iFsGs@aA[L\\D^s@vEsAnEkArES`@yCtJ`MpSdQ`^jAda@sAfb@}CdJiD|EsGvGK`DwSl\\_OpPmDrBmK|VgB|`@DxQaB`QiJxQ_FxIdTxVnf@bCjCTdc@jM|`@jCtN{CrFA|V~VfQpTtNvXnGpQvZls@j@~AjfAeLhY|kAjWaLlPz_@dRnb@tGeCxEkCbBhBdDgDVoAzPcGmAuKnIoLnFbSzLqE|PrPlq@d|@ki@~c@hf@tl@dJcNlBlKjDjElQfP|D`D`K~IdC~ErI|TzF`N~Qln@zJ~]l@|ChGzU|Td`@pe@rw@fq@hI~q@nL~HDpXfEzYnXnTrVj_@ak@vXmYrzBqsBzPsMmSkc@}KkTfm@oVjFmCbEmI|CkHb]}t@tFiTbNr@lW|BpGzEdGv@xCbAzm@j`@qRj[jK`Nnf@gMhIj^~AnJbHoD`DoCpLpN|DnIbGeD~ADtGwJzE_Ede@xSxI{ShUbKzE_L", "i`df@kywMlHqC|@sBlG{CpB[pAd@jAp@rBBv@K^OVNRjBv@lBz@dFmCb@wHfBwOhE"];
-let BP=null;
-function bpLoad(){
-  BP=BP_ENC.map(str=>{const xs=[],ys=[];let p=0,e=0,n=0;const L=str.length;
-    while(p<L){let r=0,sh=0,b;do{b=str.charCodeAt(p++)-63;r|=(b&31)<<sh;sh+=5}while(b>=32);e+=(r&1)?~(r>>1):(r>>1);
-      r=0;sh=0;do{b=str.charCodeAt(p++)-63;r|=(b&31)<<sh;sh+=5}while(b>=32);n+=(r&1)?~(r>>1):(r>>1);xs.push(e);ys.push(n)}
-    return {xs,ys,x0:Math.min(...xs),x1:Math.max(...xs),y0:Math.min(...ys),y1:Math.max(...ys)}});
-}
-function inBudapest(E,N){
-  if(!BP)bpLoad();
-  for(const R of BP){
-    if(E<R.x0||E>R.x1||N<R.y0||N>R.y1)continue;
-    let c=false;const X=R.xs,Y=R.ys;
-    for(let i=0,j=X.length-1;i<X.length;j=i++)if((Y[i]>N)!==(Y[j]>N)&&E<(X[j]-X[i])*(N-Y[i])/(Y[j]-Y[i])+X[i])c=!c;
-    if(c)return true;
-  }
-  return false;
-}
-const BP_SUB="Fővárosi vagy kerületi helyi közút – nem része az országos közúthálózatnak";
-const BP_KEZ="Budapest Közút Zrt. (fővárosi utak) vagy a kerületi önkormányzat";
-const HICO_BP=`<div class="hico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18"/><path d="M5 21V9l5-3v15"/><path d="M10 21V4l9 4v13"/><path d="M13 10h3M13 14h3M13 18h3M7 12h1M7 16h1"/></svg></div>`;
+/* Budapest határa (EOV, a szakaszokéval azonos kódolás) – © OpenStreetMap közreműködők, ODbL */
+const BP=(["qnpf@upzL`DkNlkB`SdRvDfPxDje@~J~PdHpPzJno@hu@bWkRpHcQhE_`@kDyAvCcNtByFvDkS~A}SWgGaCcIwGsKuNaEoVuGhAeJhAyY~BkMzI__@`EaVOwFo@gI^gI{k@ii@uYkRiHwGmFq@{CmJaAqE}AyJm@uMs@_HaAeEOcNLaEBe@r@_EAqE\\qFpAoGqBcNdEOrHoDpQaKnBs@|BoEqb@qZs@YmNEsFse@nC{OfKud@|B_EdH}IvQwVrHcJDe@`Xkg@hP}Ov\\mL|FpK|XbOzFuGhTgWA}HxAoAbIcG|DeC`@_@zCsBlAq@sBuGqBsEiK}[gU~DDOs@mDv@yBaBoA_@qAAw@D_@Le@|@wA^{Ad@}@tAoAVgGeA{CAq@@e@x@kAhKsFrF{BrYuJeCsHiBeE_CaEsAoBaAuBLK{B{C{@[Ty@_F@uGkOgE}O_Cq@y@GMsBnAgAxAcAxJuFhEyBPgDXr@t@PRExIyEhC}Aa@cAFg@JE`Aix@rAcHmAsHjAiMw@kLiAkFUwFQmLo@oJHGfAJdBf@pBP~BhAjDJzCnBnCfA`PgJkNqHcDyDwMgEuJmJuTcPbAyGe@w@f@oCxF_BlCiDlOeI}OeOvh@mdBmh@aPoGcDwMuUc`@nEwm@Zmk@hJme@fOv@oEeBiEmNwQcFsHqDiG`DcFmCeJbYkMsW{UqDrBel@``@sMgNgLvO}CL_RyCaT{G}CWqBeA_KqDsAGsBs@_C~@kCoBkMiB_\\qBe[`Dm@f@aIdAMyA~@oEnB}PpC{C_AyCpFwYc@gBBiAOcBb@yAL}AFkCVa@tA_@b@Sf@UnFmJ`EoJbF_Jd@aBiQaIqHoCuE{@wACu@d@iBAeCcGqAmAkBMg@o@sA_A}AcCwEaAgCEoAFq@Ko@Ho@EWIgIAeGg@eAC_b@jFoKq@_JOqIa@sPxBsa@tH_IUgATyE|JxLj^nEdYtAdq@EtDoNpAyHaRyv@cwAkq@wz@_m@hRlGrTmExHoc@nL_HjCmRvQoFnF}N~FqApAqIoAeDCcTgDwIiDsIzVpIhD_iA|hAzF|F|^tf@e\\b\\e\\}Nck@|m@ea@|b@t\\fMtA`@jT|HrG|Faq@hl@oi@~_@~NrMk~@rn@wAsAoPbMyOwO{V|NkDuA_TwNeDjAoQbTy^h\\cl@gLycA{NmYrn@o^dv@{AjGuArAwEjUeApD_K`e@{AtQgOgDqNA}k@sIgQoA{ZfA_EKmWsCwLmCcA_@{FkAeHiB{BUyRiEmAg@cb@iFsGs@aA[L\\D^s@vEsAnEkArES`@yCtJ`MpSdQ`^jAda@sAfb@}CdJiD|EsGvGK`DwSl\\_OpPmDrBmK|VgB|`@DxQaB`QiJxQ_FxIdTxVnf@bCjCTdc@jM|`@jCtN{CrFA|V~VfQpTtNvXnGpQvZls@j@~AjfAeLhY|kAjWaLlPz_@dRnb@tGeCxEkCbBhBdDgDVoAzPcGmAuKnIoLnFbSzLqE|PrPlq@d|@ki@~c@hf@tl@dJcNlBlKjDjElQfP|D`D`K~IdC~ErI|TzF`N~Qln@zJ~]l@|ChGzU|Td`@pe@rw@fq@hI~q@nL~HDpXfEzYnXnTrVj_@ak@vXmYrzBqsBzPsMmSkc@}KkTfm@oVjFmCbEmI|CkHb]}t@tFiTbNr@lW|BpGzEdGv@xCbAzm@j`@qRj[jK`Nnf@gMhIj^~AnJbHoD`DoCpLpN|DnIbGeD~ADtGwJzE_Ede@xSxI{ShUbKzE_L", "i`df@kywMlHqC|@sBlG{CpB[pAd@jAp@rBBv@K^OVNRjBv@lBz@dFmCb@wHfBwOhE"]).map(str=>{const P=[];let p=0,v=[0,0];while(p<str.length)for(let k=0;k<2;k++){let r=0,sh=0,b;do{b=str.charCodeAt(p++)-63;r|=(b&31)<<sh;sh+=5}while(b>=32);v[k]+=(r&1)?~(r>>1):(r>>1);if(k)P.push([v[0],v[1]])}return P});
+function inBudapest(E,N){return BP.some(R=>{let c=false;for(let i=0,j=R.length-1;i<R.length;j=i++)if((R[i][1]>N)!==(R[j][1]>N)&&E<(R[j][0]-R[i][0])*(N-R[i][1])/(R[j][1]-R[i][1])+R[i][0])c=!c;return c})}
 const COUNTIES=["","Budapest","Baranya megye","Bács-Kiskun megye","Békés megye","Borsod-Abaúj-Zemplén megye","Csongrád-Csanád megye","Fejér megye","Győr-Moson-Sopron megye","Hajdú-Bihar megye","Heves megye","Komárom-Esztergom megye","Nógrád megye","Pest megye","Somogy megye","Szabolcs-Szatmár-Bereg megye","Jász-Nagykun-Szolnok megye","Tolna megye","Vas megye","Veszprém megye","Zala megye"];
 const KUT=["","autópálya","autóút","elsőrendű főút","másodrendű főút","összekötő út","bekötőút","állomáshoz vezető bekötőút","gyorsforgalmi csomóponti ág","csomóponti ág","kerékpárút","pihenőhelyi út"];
 const PKOD=["osztatlan pálya","jobb pálya","bal pálya"];
@@ -1334,15 +1309,11 @@ function render(){
   }else if(lost){
     hero.className="card hero nogps lost";
     hero.innerHTML=`${HICO_LOST}<div class="big3">Jelvesztés</div><div class="rsub">${gpsErr?esc(gpsErr):"Nincs friss GNSS-pozíció "+Math.round((Date.now()-lastFixT)/1000)+" mp óta."}</div>`+lastKnownHTML(true);
-  }else if(cur.res.off&&inBudapest(cur.pos.E,cur.pos.N)){
-    hero.className="card hero bp";
-    const nr=cur.res.nearest;
-    hero.innerHTML=`${HICO_BP}<div class="big3">Budapest</div><div class="rsub bp1">${BP_SUB}</div>${nr?`<div class="rsub">Legközelebbi országos közút: ${esc(ROADS[segRoad[nr.s]].num)} (${Math.round(nr.d)} m)</div>`:""}`;
-    title="Budapest";
   }else if(cur.res.off){
     hero.className="card hero nogps search off";
     const nr=cur.res.nearest;
-    hero.innerHTML=`${HICO_OFFNET}<div class="big3">Úthálózaton kívül</div><div class="rsub">Nincs országos közút ${Math.round(cur.res.thr)} m-en belül${nr?` · legközelebbi: ${esc(ROADS[segRoad[nr.s]].num)} (${Math.round(nr.d)} m)`:""}</div>`+lastKnownHTML(true);
+    if(inBudapest(cur.pos.E,cur.pos.N))hero.innerHTML=`${HICO_OFFNET}<div class="big3">Budapest</div><div class="rsub">Fővárosi vagy kerületi helyi közút – nem része az országos közúthálózatnak</div>`;
+    else hero.innerHTML=`${HICO_OFFNET}<div class="big3">Úthálózaton kívül</div><div class="rsub">Nincs országos közút ${Math.round(cur.res.thr)} m-en belül${nr?` · legközelebbi: ${esc(ROADS[segRoad[nr.s]].num)} (${Math.round(nr.d)} m)`:""}</div>`+lastKnownHTML(true);
     title=cur.pos.src==="gps"?"Státusz":"Kézi pozíció";
   }else{
     const r=cur.res,s=r.best.s,road=ROADS[segRoad[s]],kut=segKut[s],pk=segPk[s];
@@ -1392,9 +1363,6 @@ function render(){
     const mk=mernoksegFor(s,cur.res.ch);
     const dd=(x,na)=>x?`<dd>${esc(x)}</dd>`:`<dd class="na">${na}</dd>`;
     $("infoTxt").innerHTML=`<dt>Kezelő</dt>${dd(kez,"–")}<dt>Megye</dt>${dd(COUNTIES[cty],"–")}<dt>Mérnökség</dt>${dd(mk,"nincs adat")}`;
-  }else if(cur&&!lost&&cur.res.off&&S.secKez&&inBudapest(cur.pos.E,cur.pos.N)){
-    $("infoCard").style.display="";
-    $("infoTxt").innerHTML=`<dt>Kezelő</dt><dd>${BP_KEZ}</dd><dt>Út</dt><dd>helyi közút, nem országos közút</dd><dt>Megye</dt><dd>Budapest</dd>`;
   }else $("infoCard").style.display="none";
   // settings sheet state
   $("gpsState").textContent=watchId===null?"kikapcsolva":"bekapcsolva";
@@ -1821,7 +1789,6 @@ function mapIdle(){
   const hint="Koppints a térképre egy pont szelvényéért.";
   let h=`<div class="mi-t">${hint}</div>`;
   if(cur&&!cur.res.off){const s=cur.res.best.s;h=`${shieldSVG(ROADS[segRoad[s]].num,segKut[s])}<div class="mi-b"><div class="mi-ch">${fmtCh(cur.res.ch)}</div><div class="mi-t">${hint}</div></div>`}
-  else if(cur&&inBudapest(cur.pos.E,cur.pos.N))h=`<div class="mi-b"><div class="mi-ch">Budapest</div><div class="mi-t">Helyi közút, nem országos közút. ${hint}</div></div>`;
   if(h!==miLast){miLast=h;$("mapInfo").innerHTML=h}
 }
 function identify(m){
@@ -1829,8 +1796,7 @@ function identify(m){
   tapPt={m};miIdle=false;miLast="";
   const gS=mS/Math.cos(ll.lat*Math.PI/180);
   const r=match(E,N,{acc:Math.max(8,12/gS)});
-  if(r.off&&inBudapest(E,N))$("mapInfo").innerHTML=`<div class="mi-ch">Budapest</div><div class="mi-t">${BP_SUB}.<br>Kezelő: ${BP_KEZ}.<br>${fmtWGS(ll.lat,ll.lon)} · ${fmtEOV(E,N)}</div>`;
-  else if(r.off)$("mapInfo").innerHTML=`<div class="mi-t">Nincs országos közút a közelben.<br>${fmtWGS(ll.lat,ll.lon)} · ${fmtEOV(E,N)}</div>`;
+  if(r.off)$("mapInfo").innerHTML=`<div class="mi-t">Nincs országos közút a közelben.<br>${fmtWGS(ll.lat,ll.lon)} · ${fmtEOV(E,N)}</div>`;
   else{const s=r.best.s,rd=ROADS[segRoad[s]];
     $("mapInfo").innerHTML=`<div class="mi-ch">${esc(rd.num)} · ${fmtCh(r.ch)}</div><div class="mi-t">${esc((n=>n.sub?n.main+" ("+n.sub+")":n.main)(splitName(rd.name)))}${segPk[s]?" · "+PKOD[segPk[s]]:""}<br>${fmtWGS(ll.lat,ll.lon)} · ${fmtEOV(E,N)}</div>`}
   drawMap();
@@ -2477,7 +2443,7 @@ function stampData(){
   if(gps){d.age=Math.round((t-lastFixT)/1000);d.stale=watchId===null||d.age>10}
   const ll=p.lat!=null?{lat:p.lat,lon:p.lon}:EOV.inv(p.E,p.N);
   d.E=Math.round(p.E);d.N=Math.round(p.N);d.lat=ll.lat;d.lon=ll.lon;
-  if(cur.res.off){d.state="off";if(inBudapest(p.E,p.N))d.bp=true;const nr=cur.res.nearest;if(nr){d.near=ROADS[segRoad[nr.s]].num;d.nearD=Math.round(nr.d)}return d}
+  if(cur.res.off){d.state="off";const nr=cur.res.nearest;if(nr){d.near=ROADS[segRoad[nr.s]].num;d.nearD=Math.round(nr.d)}return d}
   const r=cur.res,s=r.best.s,road=ROADS[segRoad[s]];
   return Object.assign(d,{state:"on",road:road.num,name:road.name,kut:segKut[s],pk:segPk[s],ch:fmtCh(r.ch),dirInc:r.best.dirInc});
 }
@@ -2515,7 +2481,6 @@ function drawStamp(c,W,H,d){
   const det=[];
   if(d.state==="on"){det.push(KUT[d.kut]||"út");if(d.pk)det.push(PKOD[d.pk]);
     if(d.dirInc===1)det.push("↑ növekvő");else if(d.dirInc===-1)det.push("↓ csökkenő")}
-  else if(d.state==="off"&&d.bp){det.push("helyi közút, nem országos közút");if(d.near)det.push(`legközelebbi országos: ${d.near} (${d.nearD} m)`)}
   else if(d.state==="off"&&d.near)det.push(`legközelebbi út: ${d.near} (${d.nearD} m)`);
   const bot=[],coord=stampCoord(d);
   if(coord)bot.push(coord);
@@ -2539,8 +2504,8 @@ function drawStamp(c,W,H,d){
     const ch=fitTxt(c,d.ch,Math.max(u,W-2*pad-rightW-sw-headH*.19));c.fillText(ch,pad+sw+headH*.19,yc+headH*.05);
     hw=sw+headH*.19+c.measureText(ch).width;
   }else{
-    c.font=F(1.55*u,true);c.fillStyle=d.bp?"#fff":"#fde68a";
-    const s=fitTxt(c,d.bp?"Budapest":d.state==="off"?"Úthálózaton kívül":"Nincs GNSS-pozíció",W-2*pad-rightW);c.fillText(s,pad,yc);hw=c.measureText(s).width;
+    c.font=F(1.55*u,true);c.fillStyle="#fde68a";
+    const s=fitTxt(c,d.state==="off"?"Úthálózaton kívül":"Nincs GNSS-pozíció",W-2*pad-rightW);c.fillText(s,pad,yc);hw=c.measureText(s).width;
   }
   // road name and details between them
   const x=pad+hw+u*.8,mw=W-pad-rightW-x;
@@ -2576,7 +2541,7 @@ function tiffBlock(ifds){
 function exifTiff(d,W,H){
   const t=new Date(d.t),dt=`${t.getFullYear()}:${p2(t.getMonth()+1)}:${p2(t.getDate())} ${p2(t.getHours())}:${p2(t.getMinutes())}:${p2(t.getSeconds())}`;
   const o=-t.getTimezoneOffset(),tz=`${o<0?"-":"+"}${p2(Math.floor(Math.abs(o)/60))}:${p2(Math.abs(o)%60)}`;
-  const desc=d.state==="on"?`${d.road}. sz. ut ${d.ch}`:d.bp?"Budapest, helyi kozut":d.state==="off"?"Uthalozaton kivul":"Nincs GNSS-pozicio";
+  const desc=d.state==="on"?`${d.road}. sz. ut ${d.ch}`:d.state==="off"?"Uthalozaton kivul":"Nincs GNSS-pozicio";
   const gps=S.phExif&&d.lat!=null;
   const i0=[[0x010E,2,0,eAsc(desc)],[0x0112,3,1,eShort(1)],[0x0131,2,0,eAsc(APP_VER)],[0x0132,2,0,eAsc(dt)],[0x8769,4,1,"@1"]];
   if(gps)i0.push([0x8825,4,1,"@2"]);
@@ -2770,7 +2735,7 @@ async function camProcess(src,st,tCap){
     cv.width=cv.height=0;
     if(!blob)throw new Error("a kép nem készült el");
     blob=await addExif(blob,st,W,H);
-    const t=new Date(st.t),tag=st.state==="on"?`_${st.road}_${st.ch}`:st.bp?"_Budapest":st.state==="off"?"_halozaton_kivul":"";
+    const t=new Date(st.t),tag=st.state==="on"?`_${st.road}_${st.ch}`:st.state==="off"?"_halozaton_kivul":"";
     const name=`UtSzelveny_${t.getFullYear()}${p2(t.getMonth()+1)}${p2(t.getDate())}_${p2(t.getHours())}${p2(t.getMinutes())}${p2(t.getSeconds())}${tag}`.replace(/[^\w+-]/g,"")+".jpg";
     const shot={id:++camSeq,blob,url:URL.createObjectURL(blob),name,saved:false,uri:"",tm:{cap:tCap,proc:performance.now()-t1,w:W,h:H}};
     camShots.push(shot);
@@ -3398,7 +3363,6 @@ function renderHud(){
   if(!cur&&watchId===null)h=msg("GNSS kikapcsolva","Indítsd el a helymeghatározást","bad");
   else if(waiting&&!cur)h=msg("Műholdak keresése…",last,"warn");
   else if(lost)h=msg("Nincs jel",last,"bad");
-  else if(cur.res.off&&inBudapest(cur.pos.E,cur.pos.N))h=msg("Budapest","helyi közút","",spdH(false));
   else if(cur.res.off)h=msg("Úthálózaton kívül",cur.res.nearest?`legközelebbi: ${esc(ROADS[segRoad[cur.res.nearest.s]].num)} · ${Math.round(cur.res.nearest.d)} m`:"","warn",spdH(false));
   else{
     const r=cur.res,s=r.best.s,road=ROADS[segRoad[s]],kut=segKut[s];
