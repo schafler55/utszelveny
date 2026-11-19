@@ -4,6 +4,9 @@ Az ÚtSzelvény változásai, a legújabb elöl. A dátumok UTC szerint értend�
 A nagyobb funkciók saját ágon (branch) készültek teszt oldallal és teszt APK-val, és pull requestként (#) kerültek a `main` ágba;
 a kisebb javítások közvetlenül a `main`-re kerültek.
 
+## [0.16.9] – 2026-11-19
+- 4–5 jegyű útszámnál mindenhol szélesebb tábla (fő kártya, térképi buborékok, keresés, javaslatok), a szám ugyanakkora, mint a rövid útszámoknál.
+
 ## [0.16.8] – 2026-11-19
 - Térképi koppintás buborék: útszámtábla és szelvény egy sorban, alatta balra igazítva az út neve, a kezelő (pl. Magyar Közút Nonprofit Zrt.) és a két koordináta.
 
