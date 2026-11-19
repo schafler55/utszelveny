@@ -4,6 +4,10 @@ Az ÚtSzelvény változásai, a legújabb elöl. A dátumok UTC szerint értend�
 A nagyobb funkciók saját ágon (branch) készültek teszt oldallal és teszt APK-val, és pull requestként (#) kerültek a `main` ágba;
 a kisebb javítások közvetlenül a `main`-re kerültek.
 
+## [0.16.5] – 2026-11-19
+- Budapest kártya: „nem része az országos közúthálózatnak” kisbetűvel.
+- A térkép felső címkéin az alkalmazás saját ikonjai (vonalzó, nagyító, bezárás) az emojik helyett; a mérés címkéje a térképi címkével azonos hosszt mutat.
+
 ## [0.16.4] – 2026-11-19
 - Térképi címkék: a koppintás után a telefon kattintása már nem az új oldalra esik (ez néha visszacsukta a megnyitott kártyát vagy levette a kiemelést, vagy egy mezőre esett).
 
