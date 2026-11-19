@@ -190,7 +190,7 @@ public class MainActivity extends Activity {
         s.setMediaPlaybackRequiresUserGesture(false);
         s.setAllowFileAccess(false);
         s.setAllowContentAccess(false);
-        s.setUserAgentString(s.getUserAgentString() + " UtSzelveny/0.16.10");
+        s.setUserAgentString(s.getUserAgentString() + " UtSzelveny/0.17");
 
         web.addJavascriptInterface(new Bridge(), "AndroidBridge");
 
@@ -308,9 +308,9 @@ public class MainActivity extends Activity {
         barsLight = light;
         if (hudOn) return;   // HUD mode: bars stay hidden and black; restored on exit
         android.view.Window w = getWindow();
-        w.setStatusBarColor(light ? 0xFFF6FBF4 : 0xFF0F1511);
-        w.setNavigationBarColor(light ? 0xFFEAEFE9 : 0xFF1B211D);
-        if (web != null) web.setBackgroundColor(light ? 0xFFF6FBF4 : 0xFF0F1511);
+        w.setStatusBarColor(light ? 0xFFE5EBE4 : 0xFF0F1511);
+        w.setNavigationBarColor(light ? 0xFFE5EBE4 : 0xFF1B211D);
+        if (web != null) web.setBackgroundColor(light ? 0xFFE5EBE4 : 0xFF0F1511);
         android.view.View d = w.getDecorView();
         int bits = android.view.View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR | android.view.View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR;
         int f = d.getSystemUiVisibility();

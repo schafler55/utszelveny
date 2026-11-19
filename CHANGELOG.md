@@ -4,6 +4,9 @@ Az ÚtSzelvény változásai, a legújabb elöl. A dátumok UTC szerint értend�
 A nagyobb funkciók saját ágon (branch) készültek teszt oldallal és teszt APK-val, és pull requestként (#) kerültek a `main` ágba;
 a kisebb javítások közvetlenül a `main`-re kerültek.
 
+## [0.17] – 2026-11-20
+- Világos téma: „Fehér kártyák” – fehér kártyák halványszürke háttéren, lágy árnyékkal; a mentett keresések és mérések mind külön fehér kártyák; sötétebb szövegek (címkék, dátumok, koordináták) a jobb olvashatóságért. Az Android állapot- és navigációs sáv színe is ehhez igazodik. A sötét téma nem változott.
+
 ## [0.16.10] – 2026-11-19
 - Térkép: az útszámtáblák helye nagyítás és húzás közben nem ugrál – a táblák az út mentén rögzített pontokon állnak, a már látható tábla a helyén marad (mérve kb. 8–12-szer kevesebb ugrás, eltűnés, felbukkanás).
 
