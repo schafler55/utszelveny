@@ -1939,12 +1939,30 @@ function trkMerc(M){
   for(let i=c.x.length;i<n;i++){const m=eovToM(M.trk[2*i],M.trk[2*i+1]);c.x.push(m.x);c.y.push(m.y)}
   trkCache.set(M,c);return c;
 }
+// overlay polyline (search sections, measurement tracks) in Mercator coords: only the part on screen,
+// and vertices closer than ~1.5 px to the previous kept one are dropped, so wide strokes stay cheap at any zoom
+function bboxM(xs,ys){let a=Infinity,b=-Infinity,c=Infinity,d=-Infinity;for(let i=0;i<xs.length;i++){const x=xs[i],y=ys[i];if(x<a)a=x;if(x>b)b=x;if(y<c)c=y;if(y>d)d=y}return [a,b,c,d]}
+function viewBoxM(pad){let a=Infinity,b=-Infinity,c=Infinity,d=-Infinity;for(const [qx,qy] of [[-pad,-pad],[VW.W+pad,-pad],[-pad,VW.H+pad],[VW.W+pad,VW.H+pad]]){const m=s2m(qx,qy);a=Math.min(a,m.x);b=Math.max(b,m.x);c=Math.min(c,m.y);d=Math.max(d,m.y)}return [a,b,c,d]}
+function pathM(xs,ys,bb,vb){
+  if(bb&&vb&&(bb[1]<vb[0]||bb[0]>vb[1]||bb[3]<vb[2]||bb[2]>vb[3]))return false;
+  const W=VW.W,H=VW.H,P=24,n=xs.length;let drew=false,open=false,lx=0,ly=0,po=0;
+  const out=(x,y)=>(x<-P?1:0)|(x>W+P?2:0)|(y<-P?4:0)|(y>H+P?8:0);
+  let px=m2sx(xs[0],ys[0]),py=m2sy(xs[0],ys[0]);po=out(px,py);
+  for(let i=1;i<n;i++){
+    const x=m2sx(xs[i],ys[i]),y=m2sy(xs[i],ys[i]),o=out(x,y);
+    if(po&o){open=false;px=x;py=y;po=o;continue}            // whole piece off one side of the screen
+    if(!open){ctx.moveTo(px,py);lx=px;ly=py;open=true;drew=true}
+    if(i===n-1||Math.abs(x-lx)+Math.abs(y-ly)>=1.5){ctx.lineTo(x,y);lx=x;ly=y}
+    px=x;py=y;po=o;
+  }
+  return drew;
+}
 function drawMeasTrack(M,col,marks){
   if(!M||!M.trk||M.trk.length<2)return;
   if(!marks){
-  const c=trkMerc(M),n=c.x.length;
+  const c=trkMerc(M);if(!c.bb||c.bbN!==c.x.length){c.bb=bboxM(c.x,c.y);c.bbN=c.x.length}   // the active track grows
   ctx.lineCap="round";ctx.lineJoin="round";
-  ctx.beginPath();for(let i=0;i<n;i++){const x=m2sx(c.x[i],c.y[i]),y=m2sy(c.x[i],c.y[i]);i?ctx.lineTo(x,y):ctx.moveTo(x,y)}
+  ctx.beginPath();if(!pathM(c.x,c.y,c.bb,viewBoxM(30)))return;
   ctx.strokeStyle="#000b";ctx.lineWidth=7;ctx.stroke();ctx.strokeStyle=col;ctx.lineWidth=4;ctx.stroke();return}
   const mark=(p,fill,lbl)=>{if(!p)return;const m=eovToM(p.E,p.N),x=m2sx(m.x,m.y),y=m2sy(m.x,m.y);
     ctx.beginPath();ctx.arc(x,y,lbl.length>1?11:9,0,7);ctx.fillStyle=fill;ctx.fill();ctx.lineWidth=2;ctx.strokeStyle="#fff";ctx.stroke();
@@ -2824,17 +2842,18 @@ $("srchList").addEventListener("click",(e)=>{const b=e.target.closest("[data-a]"
 $("srchList").addEventListener("keydown",(e)=>{if(e.key==="Enter"&&e.target.id&&e.target.id.startsWith("srn_"))srchAction("save",+e.target.id.slice(4))});
 // ---- map ----
 function srchOnMap(){const L=srchList.filter(x=>x.show);if(srchCur&&srchCurOn&&!L.includes(srchCur))L.push(srchCur);return L}
-const srchMerc=(o)=>{if(!o.mx){o.mx=[];o.my=[];for(let i=0;i<o.pts.length;i+=2){const m=eovToM(o.pts[i],o.pts[i+1]);o.mx.push(m.x);o.my.push(m.y)}}return o};
+const srchMerc=(o)=>{if(!o.mx){o.mx=[];o.my=[];for(let i=0;i<o.pts.length;i+=2){const m=eovToM(o.pts[i],o.pts[i+1]);o.mx.push(m.x);o.my.push(m.y)}o.bb=bboxM(o.mx,o.my)}return o};
 const hitM=(h)=>{if(!h.m)h.m=toM(h.lat,h.lon);return h.m};
 function drawSrch(marks){
   const L=srchOnMap();if(!L.length)return;
-  ctx.lineCap="round";ctx.lineJoin="round";
+  ctx.lineCap="round";ctx.lineJoin="round";const vb=viewBoxM(30);
   for(const it of L){
     const R=srchEval(it);if(R.err)continue;const foc=it===srchFocus||it===srchCur&&srchCurOn;
     if(!marks){
       if(it.kind!=="sec")continue;
-      for(const p of R.parts){srchMerc(p);ctx.beginPath();for(let i=0;i<p.mx.length;i++){const x=m2sx(p.mx[i],p.my[i]),y=m2sy(p.mx[i],p.my[i]);i?ctx.lineTo(x,y):ctx.moveTo(x,y)}
-        ctx.strokeStyle="#000b";ctx.lineWidth=foc?11:9;ctx.stroke();ctx.strokeStyle=SR_COL;ctx.lineWidth=foc?6:5;ctx.stroke()}
+      // all parts of one search in one path: one casing + one colour stroke
+      ctx.beginPath();let any=false;for(const p of R.parts){srchMerc(p);if(pathM(p.mx,p.my,p.bb,vb))any=true}
+      if(any){ctx.strokeStyle="#000b";ctx.lineWidth=foc?11:9;ctx.stroke();ctx.strokeStyle=SR_COL;ctx.lineWidth=foc?6:5;ctx.stroke()}
       continue;
     }
     // label right of the marker, or left of it when it would run under the map buttons
