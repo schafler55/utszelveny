@@ -4,6 +4,9 @@ Az ÚtSzelvény változásai, a legújabb elöl. A dátumok UTC szerint értend�
 A nagyobb funkciók saját ágon (branch) készültek teszt oldallal és teszt APK-val, és pull requestként (#) kerültek a `main` ágba;
 a kisebb javítások közvetlenül a `main`-re kerültek.
 
+## [0.16.10] – 2026-11-19
+- Térkép: az útszámtáblák helye nagyítás és húzás közben nem ugrál – a táblák az út mentén rögzített pontokon állnak, a már látható tábla a helyén marad (mérve kb. 8–12-szer kevesebb ugrás, eltűnés, felbukkanás).
+
 ## [0.16.9] – 2026-11-19
 - 4–5 jegyű útszámnál mindenhol szélesebb tábla (fő kártya, térképi buborékok, keresés, javaslatok), a szám ugyanakkora, mint a rövid útszámoknál.
 
