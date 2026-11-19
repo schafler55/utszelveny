@@ -1394,10 +1394,10 @@ function renderSpeed(show){
   const tel=sp.bu===1?telAt(road,pk,v):null;
   // variant 2 (user, 2026-11-19): speed sign + town sign side by side; outside built-up areas the green Külterület label
   const area=tel?`<span class="tsign"><span>${esc(tel)}</span></span>`:sp.bu===1?`<span class="area bu">Belterület</span>`:sp.bu===0?`<span class="area">Külterület</span>`:`<span class="area na">Nincs adat</span>`;
-  const areaTxt=sp.bu===1?"lakott területi átkelési szakasz":sp.bu===0?"külsőségi szakasz":"szakasz jellege ismeretlen";
+  const areaTxt=sp.bu===1?"átkelési szakasz":sp.bu===0?"külsőségi szakasz":"szakasz jellege ismeretlen";
   let src=sp.own?"Egyedi korlátozás":"KRESZ alapérték";
   if(!sp.own&&sp.lim!=null)src+=kut===1?" (autópálya)":kut===2?" (autóút)":sp.bu===1?" (lakott terület)":" (lakott területen kívül)";
-  let lines=`<div class="sm">${tel?"Belterület · ":""}${areaTxt} · ${src}</div>`;
+  let lines=`<div class="sm">${areaTxt}</div><div class="sm">${src}</div>`;
   if(sp.both)lines+=`<div class="sm">A korlátozás iránytól függ – haladási irány még nem ismert.</div>`;
   const nx=nextSpeedChange(road,pk,kut,v,dir,sp.lim);
   if(nx)lines+=`<div class="sm">Következő: <b>${nx.lim==null?"–":nx.lim+" km/h"}</b> · ${nx.d<1000?Math.round(nx.d/10)*10+" m":hu1(nx.d/1000)+" km"} múlva</div>`;
