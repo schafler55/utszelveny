@@ -14,7 +14,7 @@ Fotóidra ráírja a helyet és az időt, a méréseidet pedig elnevezheted és 
 Böngészőben és Android-alkalmazásként is fut. Az úthálózati adatok a készüléken vannak, így a szelvényezés internet
 nélkül is működik. Csak a térkép alapréteghez kell internetkapcsolat.
 
-**Verzió:** V0.10 Beta · © schafler55 · Licenc: GPL-3.0
+**Verzió:** V0.10.1 Beta · © schafler55 · Licenc: GPL-3.0
 
 ## Funkciók
 
@@ -55,7 +55,7 @@ a pozíció a kép adatai közé (EXIF) is bekerül. Az Android alkalmazás a K�
 ### HUD mód
 A műszerfalra fektetett telefon képe a szélvédőn tükröződik: fekete háttér, nagy, fényes útszám és szelvény,
 igény szerint haladási irány, sebesség és sebességkorlát. Tükrözés, fekvő / álló tájolás és szín állítható;
-az Android alkalmazás teljes képernyőre vált és maximális fényerőre állítja a kijelzőt. Az Általános beállításokban kapcsolható be; ekkor megjelenik a beállítások között a HUD lap a további beállításokkal és az indítógombbal.
+az Android alkalmazás teljes képernyőre vált és maximális fényerőre állítja a kijelzőt. A beállítások HUD lapján indítható, ott vannak a további beállításai is.
 
 ### Beállítások
 Fülekre bontva (Általános, Pozíció, Térkép, Mérés, Fotó, Névjegy); mindig az aktuális oldal fülén nyílik meg.
