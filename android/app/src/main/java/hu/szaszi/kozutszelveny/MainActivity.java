@@ -6,6 +6,7 @@ import android.content.ActivityNotFoundException;
 import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.location.GnssStatus;
 import android.location.Location;
@@ -47,6 +48,7 @@ import java.util.concurrent.TimeUnit;
  * A teljes alkalmazás az assets/index.html; ez az osztály csak megjeleníti,
  * GNSS- és kamera-engedélyt kér, a műholdak állapotát továbbítja az oldalnak, ébren tartja a képernyőt, és a "AndroidBridge"
  * JS-hídon keresztül fájlt ment (fotó → Képek/ÚtSzelvény, CSV → Letöltések/ÚtSzelvény) és megoszt.
+ * HUD módban teljes képernyő, maximális fényerő és rögzített tájolás (setHud).
  * Az oldal a https://appassets.androidplatform.net címről töltődik (biztonságos környezet),
  * így a helymeghatározás és a kamera működik, és az OpenStreetMap is kap Referer fejlécet.
  */
@@ -184,7 +186,7 @@ public class MainActivity extends Activity {
         s.setMediaPlaybackRequiresUserGesture(false);
         s.setAllowFileAccess(false);
         s.setAllowContentAccess(false);
-        s.setUserAgentString(s.getUserAgentString() + " UtSzelveny/0.9");
+        s.setUserAgentString(s.getUserAgentString() + " UtSzelveny/0.10");
 
         web.addJavascriptInterface(new Bridge(), "AndroidBridge");
 
@@ -299,6 +301,8 @@ public class MainActivity extends Activity {
     /** Status and navigation bar colours for the page theme (Material 3 surface colours). */
     @SuppressWarnings("deprecation")
     private void applyBars(boolean light) {
+        barsLight = light;
+        if (hudOn) return;   // HUD mode: bars stay hidden and black; restored on exit
         android.view.Window w = getWindow();
         w.setStatusBarColor(light ? 0xFFF6FBF4 : 0xFF0F1511);
         w.setNavigationBarColor(light ? 0xFFEAEFE9 : 0xFF1B211D);
@@ -309,7 +313,56 @@ public class MainActivity extends Activity {
         d.setSystemUiVisibility(light ? (f | bits) : (f & ~bits));
     }
 
+    /* ---------- HUD mode: full screen, black bars, max brightness, rotation locked ---------- */
+    private boolean barsLight = false;
+    private boolean hudOn = false;
+    private boolean hudMax = false;
+
+    @SuppressWarnings("deprecation")
+    private void applyHud() {
+        android.view.Window w = getWindow();
+        WindowManager.LayoutParams lp = w.getAttributes();
+        lp.screenBrightness = hudOn && hudMax ? 1f : WindowManager.LayoutParams.BRIGHTNESS_OVERRIDE_NONE;
+        w.setAttributes(lp);
+        android.view.View d = w.getDecorView();
+        int imm = android.view.View.SYSTEM_UI_FLAG_FULLSCREEN
+                | android.view.View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                | android.view.View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
+                | android.view.View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                | android.view.View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                | android.view.View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION;
+        int f = d.getSystemUiVisibility();
+        if (hudOn) {
+            w.setStatusBarColor(0xFF000000);
+            w.setNavigationBarColor(0xFF000000);
+            if (web != null) web.setBackgroundColor(0xFF000000);
+            d.setSystemUiVisibility(f | imm);
+            // a phone lying flat rotates at random; the page turns the picture itself
+            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LOCKED);
+        } else {
+            d.setSystemUiVisibility(f & ~imm);
+            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
+            applyBars(barsLight);
+        }
+    }
+
+    @Override
+    public void onWindowFocusChanged(boolean hasFocus) {
+        super.onWindowFocusChanged(hasFocus);
+        if (hasFocus && hudOn) applyHud();   // immersive mode is lost after dialogs / the notification shade
+    }
+
     private class Bridge {
+        /** HUD mode on / off; max = full screen brightness while it is on. */
+        @JavascriptInterface
+        public void setHud(final boolean on, final boolean max) {
+            runOnUiThread(() -> {
+                hudOn = on;
+                hudMax = max;
+                applyHud();
+            });
+        }
+
         /** The page switched between the dark and light theme ("dark" / "light"). */
         @JavascriptInterface
         public void setTheme(final String theme) {
@@ -470,6 +523,7 @@ public class MainActivity extends Activity {
     @Override
     protected void onResume() {
         super.onResume();
+        if (hudOn) applyHud();
         if (web != null) {
             web.onResume();
             web.evaluateJavascript("window.__appResume&&window.__appResume()", null);
