@@ -14,7 +14,7 @@ Fotóidra ráírja a helyet és az időt, a méréseidet pedig elnevezheted és 
 Böngészőben és Android-alkalmazásként is fut. Az úthálózati adatok a készüléken vannak, így a szelvényezés internet
 nélkül is működik. Csak a térkép alapréteghez kell internetkapcsolat.
 
-**Verzió:** V0.10.3 Beta · © schafler55 · Licenc: GPL-3.0
+**Verzió:** V0.11 Beta · © schafler55 · Licenc: GPL-3.0
 
 ## Funkciók
 
@@ -46,7 +46,8 @@ A keresések elmenthetők és elnevezhetők, egyenként kapcsolóval jeleníthet
 
 ### Fotó
 Fénykép a helyszínről útszámmal, szelvénnyel, dátummal és idővel a kép tetején (koordináta és égtáj is kérhető),
-a pozíció a kép adatai közé (EXIF) is bekerül. Az Android alkalmazás a Képek / ÚtSzelvény mappába ment.
+a pozíció a kép adatai közé (EXIF) is bekerül. Az Android alkalmazás alapból a Képek / ÚtSzelvény mappába ment;
+a beállításokban a DCIM / ÚtSzelvény, a DCIM / Camera vagy bármely választott mappa is megadható.
 Az Android alkalmazásban a hangerőgombokkal (vagy Bluetooth-os távkioldóval) is lehet exponálni.
 
 ![Fotó funkció – valódi fotók](screenshots/foto.jpg)

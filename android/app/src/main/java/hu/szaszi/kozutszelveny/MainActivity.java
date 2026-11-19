@@ -6,6 +6,7 @@ import android.content.ActivityNotFoundException;
 import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.location.GnssStatus;
@@ -19,6 +20,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Looper;
+import android.provider.DocumentsContract;
 import android.provider.MediaStore;
 import android.util.Base64;
 import android.view.KeyEvent;
@@ -48,7 +50,7 @@ import java.util.concurrent.TimeUnit;
  * ÚtSzelvény – Android keret.
  * A teljes alkalmazás az assets/index.html; ez az osztály csak megjeleníti,
  * GNSS- és kamera-engedélyt kér, a műholdak állapotát továbbítja az oldalnak, ébren tartja a képernyőt, és a "AndroidBridge"
- * JS-hídon keresztül fájlt ment (fotó → Képek/ÚtSzelvény, CSV → Letöltések/ÚtSzelvény) és megoszt.
+ * JS-hídon keresztül fájlt ment (fotó → a Fotó beállításokban választott mappa, alapból Képek/ÚtSzelvény; CSV → Letöltések/ÚtSzelvény) és megoszt.
  * HUD módban teljes képernyő, maximális fényerő és rögzített tájolás (setHud).
  * Az oldal a https://appassets.androidplatform.net címről töltődik (biztonságos környezet),
  * így a helymeghatározás és a kamera működik, és az OpenStreetMap is kap Referer fejlécet.
@@ -61,6 +63,7 @@ public class MainActivity extends Activity {
     private static final int REQ_LOCATION = 1;
     private static final int REQ_CAMERA = 2;
     private static final int REQ_STORAGE = 3;
+    private static final int REQ_TREE = 4;
 
     private WebView web;
     private GeolocationPermissions.Callback pendingCallback;
@@ -187,7 +190,7 @@ public class MainActivity extends Activity {
         s.setMediaPlaybackRequiresUserGesture(false);
         s.setAllowFileAccess(false);
         s.setAllowContentAccess(false);
-        s.setUserAgentString(s.getUserAgentString() + " UtSzelveny/0.10.3");
+        s.setUserAgentString(s.getUserAgentString() + " UtSzelveny/0.11");
 
         web.addJavascriptInterface(new Bridge(), "AndroidBridge");
 
@@ -393,15 +396,16 @@ public class MainActivity extends Activity {
 
         /** Saves a base64 file: image/* → Pictures/ÚtSzelvény (gallery), anything else → Download/ÚtSzelvény. */
         @JavascriptInterface
-        public void saveFile(String b64, final String name, final String mime, final String id) {
-            final byte[] data;
-            try {
-                data = Base64.decode(b64, Base64.DEFAULT);
-            } catch (IllegalArgumentException e) {
-                done(id, false, "hibás adat", "");
-                return;
-            }
+        public void saveFile(final String b64, final String name, final String mime, final String id) {
+            // returns at once: decoding and writing run on a worker thread (the page waits for this call otherwise)
             final Runnable job = () -> new Thread(() -> {
+                final byte[] data;
+                try {
+                    data = Base64.decode(b64, Base64.DEFAULT);
+                } catch (IllegalArgumentException e) {
+                    done(id, false, "hibás adat", "");
+                    return;
+                }
                 try {
                     Uri u = writeFile(data, safeName(name), mime);
                     done(id, true, "", u.toString());
@@ -423,6 +427,40 @@ public class MainActivity extends Activity {
                 pendingStorageJob = job;
                 pendingStorageFail = () -> done(id, false, "nincs tárhely-engedély", "");
                 requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQ_STORAGE);
+            });
+        }
+
+        /** Photo folder: pictures = Pictures/ÚtSzelvény, dcim = DCIM/ÚtSzelvény, camera = DCIM/Camera, custom = folder picked with pickPhotoDir. */
+        @JavascriptInterface
+        public void setPhotoDir(String key) {
+            prefs().edit().putString("photoDir", key == null ? "pictures" : key).apply();
+        }
+
+        /** Readable name of the picked folder, "" when none (or its permission is gone). */
+        @JavascriptInterface
+        public String photoDirLabel() {
+            Uri t = photoTree();
+            return t == null ? "" : treeLabel(t);
+        }
+
+        /** Opens the Android folder picker; the result comes back via __nativeDone (msg = folder name). */
+        @JavascriptInterface
+        public void pickPhotoDir(final String id) {
+            runOnUiThread(() -> {
+                if (pendingTreeId != null) {
+                    done(id, false, "a mappaválasztó már nyitva van", "");
+                    return;
+                }
+                try {
+                    Intent i = new Intent(Intent.ACTION_OPEN_DOCUMENT_TREE);
+                    i.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION
+                            | Intent.FLAG_GRANT_PERSISTABLE_URI_PERMISSION);
+                    pendingTreeId = id;
+                    startActivityForResult(i, REQ_TREE);
+                } catch (ActivityNotFoundException e) {
+                    pendingTreeId = null;
+                    done(id, false, "nincs mappaválasztó a telefonon", "");
+                }
             });
         }
 
@@ -463,6 +501,92 @@ public class MainActivity extends Activity {
         }
     }
 
+    /* ---------- photo folder ---------- */
+    private String pendingTreeId = null;
+
+    private SharedPreferences prefs() {
+        return getSharedPreferences("utszelveny", MODE_PRIVATE);
+    }
+
+    /** The picked folder, if the app still holds write permission to it. */
+    private Uri photoTree() {
+        String t = prefs().getString("photoTree", "");
+        if (t.isEmpty()) return null;
+        Uri u = Uri.parse(t);
+        for (android.content.UriPermission p : getContentResolver().getPersistedUriPermissions()) {
+            if (p.getUri().equals(u) && p.isWritePermission()) return u;
+        }
+        return null;
+    }
+
+    /** "primary:DCIM/Munka" → "DCIM / Munka"; other volumes → "SD-kártya: …". */
+    private static String treeLabel(Uri tree) {
+        String d;
+        try {
+            d = DocumentsContract.getTreeDocumentId(tree);
+        } catch (Exception e) {
+            return "választott mappa";
+        }
+        int c = d.indexOf(':');
+        String vol = c > 0 ? d.substring(0, c) : "";
+        String path = (c >= 0 ? d.substring(c + 1) : d).replace("/", " / ");
+        if ("primary".equals(vol)) return path.isEmpty() ? "Belső tárhely" : path;
+        return "SD-kártya" + (path.isEmpty() ? "" : ": " + path);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode != REQ_TREE) return;
+        String id = pendingTreeId;
+        pendingTreeId = null;
+        if (id == null) return;
+        Uri tree = resultCode == RESULT_OK && data != null ? data.getData() : null;
+        if (tree == null) {
+            done(id, false, "", "");   // cancelled: the page keeps the previous choice
+            return;
+        }
+        int fl = Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION;
+        try {
+            getContentResolver().takePersistableUriPermission(tree, fl);
+            String old = prefs().getString("photoTree", "");
+            if (!old.isEmpty() && !old.equals(tree.toString())) {
+                try {
+                    getContentResolver().releasePersistableUriPermission(Uri.parse(old), fl);
+                } catch (Exception ignored) {
+                }
+            }
+            prefs().edit().putString("photoTree", tree.toString()).putString("photoDir", "custom").apply();
+            done(id, true, treeLabel(tree), tree.toString());
+        } catch (Exception e) {
+            done(id, false, String.valueOf(e.getMessage()), "");
+        }
+    }
+
+    /** Writes into the folder picked with the Android folder picker. */
+    private Uri writeTree(Uri tree, byte[] data, String name, String mime) throws IOException {
+        ContentResolver cr = getContentResolver();
+        Uri doc;
+        try {
+            Uri dir = DocumentsContract.buildDocumentUriUsingTree(tree, DocumentsContract.getTreeDocumentId(tree));
+            doc = DocumentsContract.createDocument(cr, dir, mime, name);
+        } catch (Exception e) {
+            throw new IOException("a választott mappa nem érhető el – válassz újat a Fotó beállításokban");
+        }
+        if (doc == null) throw new IOException("a fájl nem hozható létre a választott mappában");
+        try (OutputStream os = cr.openOutputStream(doc)) {
+            if (os == null) throw new IOException("a fájl nem írható");
+            os.write(data);
+        } catch (IOException e) {
+            try {
+                DocumentsContract.deleteDocument(cr, doc);
+            } catch (Exception ignored) {
+            }
+            throw e;
+        }
+        return doc;
+    }
+
     private static String safeName(String n) {
         String s = n == null ? "" : n.replaceAll("[\\\\/:*?\"<>|]", "_").trim();
         return s.isEmpty() ? "UtSzelveny_" + System.currentTimeMillis() : s;
@@ -470,6 +594,16 @@ public class MainActivity extends Activity {
 
     private Uri writeFile(byte[] data, String name, String mime) throws IOException {
         boolean image = mime != null && mime.startsWith("image/");
+        // photos: folder chosen in the Fotó settings; anything else (CSV): Download/ÚtSzelvény
+        String key = image ? prefs().getString("photoDir", "pictures") : "";
+        if ("custom".equals(key)) {
+            Uri tree = photoTree();
+            if (tree != null) return writeTree(tree, data, name, mime);
+            key = "pictures";
+        }
+        String base = !image ? Environment.DIRECTORY_DOWNLOADS
+                : ("dcim".equals(key) || "camera".equals(key)) ? Environment.DIRECTORY_DCIM : Environment.DIRECTORY_PICTURES;
+        String sub = "camera".equals(key) ? "Camera" : FOLDER;
         if (Build.VERSION.SDK_INT >= 29) {
             ContentResolver cr = getContentResolver();
             Uri coll = image
@@ -478,8 +612,7 @@ public class MainActivity extends Activity {
             ContentValues v = new ContentValues();
             v.put(MediaStore.MediaColumns.DISPLAY_NAME, name);
             v.put(MediaStore.MediaColumns.MIME_TYPE, mime);
-            v.put(MediaStore.MediaColumns.RELATIVE_PATH,
-                    (image ? Environment.DIRECTORY_PICTURES : Environment.DIRECTORY_DOWNLOADS) + "/" + FOLDER);
+            v.put(MediaStore.MediaColumns.RELATIVE_PATH, base + "/" + sub);
             v.put(MediaStore.MediaColumns.IS_PENDING, 1);
             Uri uri = cr.insert(coll, v);
             if (uri == null) throw new IOException("a fájl nem hozható létre");
@@ -496,8 +629,7 @@ public class MainActivity extends Activity {
             return uri;
         }
         // Android 8–9: public folder + media scanner (gives a shareable content:// uri)
-        File dir = new File(Environment.getExternalStoragePublicDirectory(
-                image ? Environment.DIRECTORY_PICTURES : Environment.DIRECTORY_DOWNLOADS), FOLDER);
+        File dir = new File(Environment.getExternalStoragePublicDirectory(base), sub);
         if (!dir.isDirectory() && !dir.mkdirs()) throw new IOException("a mappa nem hozható létre");
         File f = new File(dir, name);
         int dot = name.lastIndexOf('.');
