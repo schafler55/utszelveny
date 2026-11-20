@@ -4,6 +4,10 @@ Az ÚtSzelvény változásai, a legújabb elöl. A dátumok UTC szerint értend�
 A nagyobb funkciók saját ágon (branch) készültek teszt oldallal és teszt APK-val, és pull requestként (#) kerültek a `main` ágba;
 a kisebb javítások közvetlenül a `main`-re kerültek.
 
+## [0.23] – 2026-11-20
+- Új NAP adat: Közúti azonosítópontok (17 114 pont – csomópontok, útvégek és más hálózati pontok hivatalos kóddal, pl. „C020001”). Beépítése: `tools/nap_azonositopontok.py`.
+- Szakasz adatai: ha a koppintás egy azonosítópont közelében van, új „Azonosítópont” szakasz mutatja a kódot, a távolságot, és az ott találkozó összes utat útszám-táblával, mindegyiket a saját szelvényével (JOBB / BAL chippel osztott pályán) és nevével.
+
 ## [0.22.4] – 2026-11-20
 - Hidak kártya (Pozíció oldal) és a Részletek „Híd” szakasza egyforma soros elrendezést kapott: balra mindig a híd ikonja, alatta (a Pozíció oldalon) a távolság, pl. „150 m” vagy „itt”.
 - Új, kéttónusú híd ikonok az alkalmazás színeivel: ugyanaz a híd, a zöld nyíl felfelé mutat a híd felett („Áthaladsz rajta”), lefelé a híd alatt („Alatta haladsz el”), mellette felfelé, ha a híd az út mellett van.
