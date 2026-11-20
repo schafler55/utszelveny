@@ -4,6 +4,10 @@ Az ÚtSzelvény változásai, a legújabb elöl. A dátumok UTC szerint értend�
 A nagyobb funkciók saját ágon (branch) készültek teszt oldallal és teszt APK-val, és pull requestként (#) kerültek a `main` ágba;
 a kisebb javítások közvetlenül a `main`-re kerültek.
 
+## [0.22.2] – 2026-11-20
+- Térkép: a hidak hosszabbak, és méterben méreteződnek, így nagyításkor is megtartják hosszukat és arányukat.
+- Beállítások → Térkép: csúszka, hogy melyik nagyítási szinttől látszanak a hidak (12–18, alapból 15).
+
 ## [0.22.1] – 2026-11-20
 - Térkép: a híd, amely alatt az út áthalad (pl. földúti híd az M44 felett), kitöltött hídpályaként jelenik meg az úton keresztben, a két pálya rekordja egy hídként; két országos út keresztezésénél a felső út alatt is hídpálya van, így látszik, mi halad felül.
 
