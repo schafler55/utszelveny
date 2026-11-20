@@ -14,7 +14,7 @@ Fotóidra ráírja a helyet és az időt, a méréseidet pedig elnevezheted és 
 Böngészőben és Android-alkalmazásként is fut. Az úthálózati adatok a készüléken vannak, így a szelvényezés internet
 nélkül is működik. Csak a térkép alapréteghez kell internetkapcsolat.
 
-**Verzió:** V0.23.3 Beta · [Változásnapló](CHANGELOG.md) · © 2026 Szászi Dániel · Licenc: GPL-3.0
+**Verzió:** V0.23.4 Beta · [Változásnapló](CHANGELOG.md) · © 2026 Szászi Dániel · Licenc: GPL-3.0
 
 ## Funkciók
 
@@ -29,7 +29,7 @@ Budapest belterületén jelzi, hogy a fővárosi és kerületi utak nem részei 
 
 ### Térkép
 Országos közúthálózat útszám-táblákkal (autópálya, autóút kék, főút zöld), alaprétegként OpenStreetMap (szürke vagy sötét)
-vagy műholdkép. Északkal felfelé vagy menetirány szerint forgatva. Koppintásra megmutatja a pont útját és szelvényét; onnan a pont elmenthető keresésként, az Utcakép gomb megnyitja a Google Utcaképet (Google Térkép alkalmazásban vagy új böngészőlapon) a menetirány felé nézve, a Részletek pedig a szakasz minden adatát mutatja (kezelő, sávok, burkolat, forgalom, sebességkorlát, terület, híd, tehergépjármű-korlátozás). Nagyobb nagyításnál a hidak is látszanak (kikapcsolható); ahol egy országos út egy másik felett halad át, a magasságkorlát az alatta haladó úton jelenik meg.
+vagy műholdkép. Északkal felfelé vagy menetirány szerint forgatva. Koppintásra megmutatja a pont útját és szelvényét; onnan a pont elmenthető keresésként, az Utcakép gomb megnyitja a Google Utcaképet (Google Térkép alkalmazásban vagy új böngészőlapon) a menetirány felé nézve, az Adatok pedig a szakasz minden adatát mutatja (kezelő, sávok, burkolat, forgalom, sebességkorlát, terület, híd, tehergépjármű-korlátozás). Nagyobb nagyításnál a hidak is látszanak (kikapcsolható); ahol egy országos út egy másik felett halad át, a magasságkorlát az alatta haladó úton jelenik meg.
 
 ![Térkép oldal](screenshots/terkep.png)
 
@@ -74,7 +74,7 @@ Koordináták: WGS84 (alapértelmezett) vagy EOV.
 
 - **Webalkalmazás (telepítés nélkül):** https://schafler55.github.io/utszelveny/
   Böngészőben megnyitva az első betöltés után internet nélkül is működik, könyvjelzőként menthető az asztalra.
-- **Android APK (telepítve):** https://github.com/schafler55/utszelveny/releases/tag/apk-latest (a fájl neve tartalmazza a verziót, pl. `UtSzelveny-V0.23.3-Beta.apk`)
+- **Android APK (telepítve):** https://github.com/schafler55/utszelveny/releases/tag/apk-latest (a fájl neve tartalmazza a verziót, pl. `UtSzelveny-V0.23.4-Beta.apk`)
   Letöltés után engedélyezni kell az ismeretlen forrásból történő telepítést.
 
 A térkép alapréteg (OpenStreetMap vagy Esri műholdkép) internetkapcsolatot igényel; minden más adat az alkalmazásba van építve.

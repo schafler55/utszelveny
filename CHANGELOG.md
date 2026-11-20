@@ -4,6 +4,10 @@ Az ÚtSzelvény változásai, a legújabb elöl. A dátumok UTC szerint értend�
 A nagyobb funkciók saját ágon (branch) készültek teszt oldallal és teszt APK-val, és pull requestként (#) kerültek a `main` ágba;
 a kisebb javítások közvetlenül a `main`-re kerültek.
 
+## [0.23.4] – 2026-11-20
+- Térképi buborék: a WGS84 és az EOV koordináta egy sorban; a kezelő (pl. MKIF) nem jelenik meg benne; a „Részletek” gomb neve „Adatok”.
+- A hidak alapból már a 14-es nagyítástól látszanak a térképen (eddig 15; a csúszkán beállított érték megmarad).
+
 ## [0.23.3] – 2026-11-20
 - Javítás: böngészőben az Utcakép gomb az ÚtSzelvény lapját is átvitte a Google Térképre; most csak új lapon nyílik meg, az ÚtSzelvény a helyén marad.
 - Térképi buborék: rövidebb gombok, az ikon a felirat mellett; „Pont mentése” helyett „Mentés”.
