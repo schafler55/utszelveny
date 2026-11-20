@@ -4,6 +4,15 @@ Az ÚtSzelvény változásai, a legújabb elöl. A dátumok UTC szerint értend�
 A nagyobb funkciók saját ágon (branch) készültek teszt oldallal és teszt APK-val, és pull requestként (#) kerültek a `main` ágba;
 a kisebb javítások közvetlenül a `main`-re kerültek.
 
+## [0.19.4] – 2026-11-20
+- JOBB / BAL címkék függőlegesen a számok közepén (a keresési részletek nagy szelvénye mellett is).
+- Mérések: a kezdet → vég nyíl vastagabb, nagyobb és a számok közepére igazítva (kártya, buborék, szakaszok).
+- A Keresés oldal ugyanazzal az animációval nyílik meg, mint a Pozíció és a Mérés.
+- Folyamatban lévő mérés: jobb felső sarokban a GNSS-pontosság jelzése (mint a Pozíció fő kártyáján), az eltelt idő a „Mérés folyamatban” alatt.
+- Fotó: az elő- / hátlapi kamera váltó gomb kikapcsolva (a kód megmaradt).
+- A félszélességű mezőkben „KEZDETE” a „KEZDET” helyett.
+- Mentett térképi mérés: KEZDETE / VÉGE mezők; a pontok listájában zöld K, P1, P2 … és piros V jel, mint a térképen (a szakaszok is K→P1, P1→V).
+
 ## [0.19.3] – 2026-11-20
 - A kis JOBB / BAL címkék keskenyített felirattal: ugyanaz a félkövér betű 80%-os szélességre szűkítve, mint az útszámtáblákon (külön betűtípus nélkül). A Pozíció fő kártya címkéje nem változott.
 
