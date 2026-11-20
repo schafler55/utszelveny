@@ -10,8 +10,8 @@ android {
         applicationId "hu.szaszi.kozutszelveny"
         minSdk 26          // Android 8.0
         targetSdk 34
-        versionCode 75
-        versionName "0.18.2-beta"
+        versionCode 76
+        versionName "0.19-beta"
     }
 
     // Fixed key, so a new APK installs over the previous one without uninstalling.
@@ -37,4 +37,5 @@ android {
 
 dependencies {
     implementation 'androidx.webkit:webkit:1.11.0'
+    implementation 'androidx.car.app:app:1.4.0'   // Android Auto (Car App Library)
 }

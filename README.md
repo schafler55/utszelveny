@@ -14,7 +14,7 @@ Fotóidra ráírja a helyet és az időt, a méréseidet pedig elnevezheted és 
 Böngészőben és Android-alkalmazásként is fut. Az úthálózati adatok a készüléken vannak, így a szelvényezés internet
 nélkül is működik. Csak a térkép alapréteghez kell internetkapcsolat.
 
-**Verzió:** V0.18.2 Beta · [Változásnapló](CHANGELOG.md) · © schafler55 · Licenc: GPL-3.0
+**Verzió:** V0.19 Beta · [Változásnapló](CHANGELOG.md) · © schafler55 · Licenc: GPL-3.0
 
 ## Funkciók
 
@@ -63,6 +63,12 @@ igény szerint haladási irány, sebesség és sebességkorlát. Tükrözés, fe
 az Android alkalmazás teljes képernyőre vált és maximális fényerőre állítja a kijelzőt. A beállítások HUD lapján indítható, ott vannak a további beállításai is.
 
 ![HUD mód](screenshots/hud.png)
+
+### Android Auto (teszt)
+- Az Android alkalmazás megjelenik az autó kijelzőjén: balra a fő kártya (útszámtábla, km+m, irány, pontosság, út neve), jobbra a sebességkártya (korlátozás, saját sebesség, helységnévtábla vagy Külterület, következő változás). Nincs jel / úthálózaton kívül / Budapest: piros vagy narancs kártya.
+- Nappal világos, éjjel sötét (az autó szerint); a „Téma” gombbal kézzel is váltható.
+- Mivel az APK nem a Google Playből jön, az Android Auto csak akkor mutatja, ha az Android Auto beállításaiban be van kapcsolva a fejlesztői mód (a verziószámra többször koppintva) és ott az **Ismeretlen források**.
+- A számolást ugyanaz az `index.html` végzi (egy rejtett második példányban); a webes változatban nincs Android Auto.
 
 ### Beállítások
 Fülekre bontva (Általános, Pozíció, Térkép, Keresés, Mérés, Fotó, HUD, Névjegy); mindig az aktuális oldal fülén nyílik meg.

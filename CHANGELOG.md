@@ -4,6 +4,11 @@ Az ÚtSzelvény változásai, a legújabb elöl. A dátumok UTC szerint értend�
 A nagyobb funkciók saját ágon (branch) készültek teszt oldallal és teszt APK-val, és pull requestként (#) kerültek a `main` ágba;
 a kisebb javítások közvetlenül a `main`-re kerültek.
 
+## [0.19] – 2026-11-20 (teszt: `android-auto` ág)
+- **Android Auto (prototípus):** az Android alkalmazás megjelenik az autó kijelzőjén (navigációs kategória). Kinézet: a „B · Material 3 kártyák” terv – balra a fő kártya (útszámtábla, km+m, irány, pontosság, út neve), jobbra a sebességkártya (korlátozás tábla, saját sebesség, helységnévtábla / Külterület, szakasz jellege, következő változás). Nincs GNSS-jel, Úthálózaton kívül és Budapest esetén piros / narancs kártya, mint a telefonon. Nappal világos, éjjel sötét (az autó szerint), a „Téma” gombbal kézzel is váltható.
+- Ugyanaz az `index.html` számol: az alkalmazás az autóhoz egy rejtett második példányban tölti be (`?car=1`), a GNSS-pozíciót Java adja neki, az eredményt kis JSON-ban kapja vissza és rajzolja ki. A rejtett példány csak olvassa a telefonos beállításokat, nem ír semmit. A böngészős / webes változatban nincs változás.
+- A letölthető APK fájlneve tartalmazza a verziót (main: `UtSzelveny-V0.19-Beta.apk`), a teszt APK-é az ág nevét és a build számát.
+
 ## [0.18.2] – 2026-11-20
 - Térkép: a rétegek gomb nem nyitja meg az alsó beállításpanelt, csak végiglépteti az alapréteget (Szürke → Sötét → Műhold → Ki), a választott réteg neve rövid ideig megjelenik. A többi térképbeállítás a Beállítások → Térkép fülön van.
 
