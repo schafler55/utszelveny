@@ -74,7 +74,7 @@ Koordináták: WGS84 (alapértelmezett) vagy EOV.
 
 - **Webalkalmazás (telepítés nélkül):** https://schafler55.github.io/kozutszelveny/
   Böngészőben megnyitva az első betöltés után internet nélkül is működik, könyvjelzőként menthető az asztalra.
-- **Android APK (telepítve):** https://github.com/schafler55/kozutszelveny/releases/download/apk-latest/UtSzelveny.apk
+- **Android APK (telepítve):** https://github.com/schafler55/kozutszelveny/releases/tag/apk-latest (a fájl neve tartalmazza a verziót, pl. `UtSzelveny-V0.18.2-Beta.apk`)
   Letöltés után engedélyezni kell az ismeretlen forrásból történő telepítést.
 
 A térkép alapréteg (OpenStreetMap vagy Esri műholdkép) internetkapcsolatot igényel; minden más adat az alkalmazásba van építve.

@@ -45,21 +45,33 @@ jobs:
         working-directory: ${{ steps.proj.outputs.dir }}
         run: gradle assembleDebug --no-daemon --stacktrace
 
-      - name: Rename APK
-        run: cp "${{ steps.proj.outputs.dir }}/app/build/outputs/apk/debug/app-debug.apk" UtSzelveny.apk
+      # File name carries the version (main) or the branch name + build number (test branches),
+      # e.g. UtSzelveny-V0.18.2-Beta.apk and UtSzelveny-teszt-auto-V0.19-Beta-b123.apk
+      - name: Name the APK
+        id: apk
+        env:
+          B: ${{ github.ref_name }}
+        run: |
+          vn=$(grep -m1 'versionName' "${{ steps.proj.outputs.dir }}/app/build.gradle" | sed -E 's/.*"([^"]+)".*/\1/')
+          ver="V$(echo "$vn" | sed -E 's/-beta$/-Beta/; s/-stable$/-Stable/')"
+          if [ "$GITHUB_REF" = "refs/heads/main" ]; then
+            name="UtSzelveny-$ver.apk"
+          else
+            br=$(echo "$B" | sed -E 's/[^A-Za-z0-9._-]+/-/g')
+            name="UtSzelveny-teszt-$br-$ver-b${{ github.run_number }}.apk"
+          fi
+          cp "${{ steps.proj.outputs.dir }}/app/build/outputs/apk/debug/app-debug.apk" "$name"
+          echo "name=$name" >> "$GITHUB_OUTPUT"
+          echo "APK: $name"
 
       - name: Keep the APK as a build artifact
         uses: actions/upload-artifact@v4
         with:
           name: UtSzelveny-apk-${{ github.ref_name }}
-          path: UtSzelveny.apk
+          path: ${{ steps.apk.outputs.name }}
 
       # Test builds from other branches: own pre-release "apk-teszt-<branch>",
       # the public "apk-latest" stays untouched until the branch is merged into main.
-      - name: Publish test APK (non-main branches)
-        if: github.ref != 'refs/heads/main'
-        run: cp UtSzelveny.apk UtSzelveny-teszt.apk
-
       - name: Publish to the "apk-teszt-<branch>" release
         if: github.ref != 'refs/heads/main'
         uses: softprops/action-gh-release@v2
@@ -68,7 +80,7 @@ jobs:
           target_commitish: ${{ github.sha }}
           name: ÚtSzelvény – TESZT APK (${{ github.ref_name }} ág)
           prerelease: true
-          files: UtSzelveny-teszt.apk
+          files: ${{ steps.apk.outputs.name }}
           body: |
             TESZT változat a(z) ${{ github.ref_name }} ágból – nem a hivatalos kiadás.
             A telepített alkalmazást felülírja (ugyanaz az app), a beállítások megmaradnak.
@@ -80,10 +92,23 @@ jobs:
           tag_name: apk-latest
           name: ÚtSzelvény – legfrissebb APK
           prerelease: true
-          files: UtSzelveny.apk
+          files: ${{ steps.apk.outputs.name }}
           body: |
-            Automatikusan épített APK a main ág legutóbbi állapotából.
-            Telepítés: töltsd le a UtSzelveny.apk fájlt a telefonon, és engedélyezd az ismeretlen forrásból történő telepítést.
+            Automatikusan épített APK a main ág legutóbbi állapotából: ${{ steps.apk.outputs.name }}
+            Telepítés: töltsd le az APK fájlt a telefonon, és engedélyezd az ismeretlen forrásból történő telepítést.
+
+      # Only the newest APK stays in the release (older file names are removed).
+      - name: Remove older APKs from the release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG: ${{ github.ref == 'refs/heads/main' && 'apk-latest' || format('apk-teszt-{0}', github.ref_name) }}
+          KEEP: ${{ steps.apk.outputs.name }}
+        run: |
+          gh release view "$TAG" -R "$GITHUB_REPOSITORY" --json assets -q '.assets[].name' | while read -r a; do
+            if [ -n "$a" ] && [ "$a" != "$KEEP" ]; then
+              echo "removing $a"; gh release delete-asset "$TAG" "$a" -R "$GITHUB_REPOSITORY" -y
+            fi
+          done
 
   # Test web page for non-main branches, served by GitHub Pages from main under teszt/<branch>/:
   #   https://schafler55.github.io/kozutszelveny/teszt/<branch>/
