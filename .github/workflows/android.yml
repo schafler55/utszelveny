@@ -111,7 +111,7 @@ jobs:
           done
 
   # Test web page for non-main branches, served by GitHub Pages from main under teszt/<branch>/:
-  #   https://schafler55.github.io/kozutszelveny/teszt/<branch>/
+  #   https://schafler55.github.io/utszelveny/teszt/<branch>/
   # Own settings (kszt_* keys), no service worker (it would clear the real app's offline cache),
   # and a small TESZT label. The real app at the site root is not touched.
   test-page:
