@@ -4,6 +4,12 @@ Az ÚtSzelvény változásai, a legújabb elöl. A dátumok UTC szerint értend�
 A nagyobb funkciók saját ágon (branch) készültek teszt oldallal és teszt APK-val, és pull requestként (#) kerültek a `main` ágba;
 a kisebb javítások közvetlenül a `main`-re kerültek.
 
+## [0.23.1] – 2026-11-20
+- Sebességkártya: kisebb helységnévtábla; a sebességkorlátozó táblának vékony fehér szegélye van (halvány körvonallal, hogy világos témán is látsszon), a számok keskenyebbek, mint az útszámtáblákon. A „KRESZ alapérték” / „Egyedi korlátozás” félkövér.
+- Térkép, sötét alapréteg: a kerékpárutak a műholdképhez hasonló világos sárga színnel látszanak (eddig barna).
+- Beállítások → Általános: új kapcsoló „Kerékpárutak a térképen”. Kikapcsolva a kerékpárutak és a rajtuk lévő hidak nem látszanak a térképen, és koppintással sem választhatók.
+- Szakasz adatai → Forgalom: sorrend Egységjármű, Összes jármű, Nehéz motoros, Számlálóállomás.
+
 ## [0.23] – 2026-11-20
 - Új NAP adat: Közúti azonosítópontok (17 114 pont – csomópontok, útvégek és más hálózati pontok hivatalos kóddal, pl. „C020001”). Beépítése: `tools/nap_azonositopontok.py`.
 - Szakasz adatai: ha a koppintás egy azonosítópont közelében van, új „Azonosítópont” szakasz mutatja a kódot, a távolságot, és az ott találkozó összes utat útszám-táblával, mindegyiket a saját szelvényével (JOBB / BAL chippel osztott pályán) és nevével.
