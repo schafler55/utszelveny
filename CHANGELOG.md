@@ -4,6 +4,10 @@ Az ÚtSzelvény változásai, a legújabb elöl. A dátumok UTC szerint értend�
 A nagyobb funkciók saját ágon (branch) készültek teszt oldallal és teszt APK-val, és pull requestként (#) kerültek a `main` ágba;
 a kisebb javítások közvetlenül a `main`-re kerültek.
 
+## [0.20] – 2026-11-20
+- Új beépített NAP szakaszadatok az úthálózathoz: forgalmi sávok száma, burkolat típusa és szélessége, éves keresztmetszeti forgalom (2025). A felület még nem mutatja őket; egy későbbi verzióban a térképen koppintott szakasz részleteinél jelennek meg.
+- Új eszköz: `tools/nap_szakaszadatok.py` – a NAP-ból letöltött fájlokból újra előállítja ezeket az adatokat.
+
 ## [0.19.5] – 2026-11-20
 - A GitHub-tároló új neve `schafler55/utszelveny`; a webalkalmazás címe https://schafler55.github.io/utszelveny/. A linkek (README, Névjegy, változásnapló) az új címre mutatnak. Az Android alkalmazás azonosítója nem változott, a frissítések ugyanúgy települnek.
 

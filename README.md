@@ -14,7 +14,7 @@ Fotóidra ráírja a helyet és az időt, a méréseidet pedig elnevezheted és 
 Böngészőben és Android-alkalmazásként is fut. Az úthálózati adatok a készüléken vannak, így a szelvényezés internet
 nélkül is működik. Csak a térkép alapréteghez kell internetkapcsolat.
 
-**Verzió:** V0.19.5 Beta · [Változásnapló](CHANGELOG.md) · © 2026 Szászi Dániel · Licenc: GPL-3.0
+**Verzió:** V0.20 Beta · [Változásnapló](CHANGELOG.md) · © 2026 Szászi Dániel · Licenc: GPL-3.0
 
 ## Funkciók
 
@@ -74,7 +74,7 @@ Koordináták: WGS84 (alapértelmezett) vagy EOV.
 
 - **Webalkalmazás (telepítés nélkül):** https://schafler55.github.io/utszelveny/
   Böngészőben megnyitva az első betöltés után internet nélkül is működik, könyvjelzőként menthető az asztalra.
-- **Android APK (telepítve):** https://github.com/schafler55/utszelveny/releases/tag/apk-latest (a fájl neve tartalmazza a verziót, pl. `UtSzelveny-V0.19.5-Beta.apk`)
+- **Android APK (telepítve):** https://github.com/schafler55/utszelveny/releases/tag/apk-latest (a fájl neve tartalmazza a verziót, pl. `UtSzelveny-V0.20-Beta.apk`)
   Letöltés után engedélyezni kell az ismeretlen forrásból történő telepítést.
 
 A térkép alapréteg (OpenStreetMap vagy Esri műholdkép) internetkapcsolatot igényel; minden más adat az alkalmazásba van építve.
@@ -89,6 +89,7 @@ A térkép északkal felfelé vagy menetirány szerint elforgatva is használhat
 | `android/` | Android keret (WebView), amely az `index.html`-t futtatja |
 | `.github/workflows/android.yml` | Megépíti az APK-t: a `main` ágból a fenti letöltési linkre, a többi ágból teszt APK-t és teszt weboldalt (`teszt/<ág>/`) |
 | `CHANGELOG.md` | Változásnapló: mi változott az egyes verziókban |
+| `tools/nap_szakaszadatok.py` | A NAP sáv-, burkolat- és forgalmi adatait (WFS GeoJSON) az `index.html` beépített adatai közé írja |
 | `screenshots/` | A README képei |
 
 Az APK mindig a repó gyökerében lévő `index.html`-ből épül, ezért új verzióhoz elég az `index.html`-t cserélni.
@@ -98,7 +99,8 @@ Az APK mindig a repó gyökerében lévő `index.html`-ből épül, ezért új v
 - Útadatok: Magyar Közút Nonprofit Zrt. – Nemzeti Adathozzáférési Pont (NAP), statikus adatcsomagok
   (adatállapot: 2026. november): Országos közúthálózat, Közút neve/kategóriája/kezelője, Szelvényjelek,
   Sebességkorlátozás, Lakott területi szakaszok, Hídhasználati feltételek, Tehergépjárművekre vonatkozó
-  korlátozások. Az adatokra a NAP felhasználási
+  korlátozások, Összes gépjármű forgalmi sávok száma, Burkolat típusa és szélessége, Éves keresztmetszeti
+  forgalmi adatok (2025). Az adatokra a NAP felhasználási
   feltételei vonatkoznak, nem a GPL-3.0 licenc.
 - Térkép alapréteg: © OpenStreetMap közreműködők. Műholdkép: © Esri, Maxar, Earthstar Geographics (Esri World Imagery).
 - Az adatok tájékoztató jellegűek, nem hitelesek – a helyszíni jelzések és a KRESZ az irányadók.
