@@ -4,6 +4,10 @@ Az ÚtSzelvény változásai, a legújabb elöl. A dátumok UTC szerint értend�
 A nagyobb funkciók saját ágon (branch) készültek teszt oldallal és teszt APK-val, és pull requestként (#) kerültek a `main` ágba;
 a kisebb javítások közvetlenül a `main`-re kerültek.
 
+## [0.23.3] – 2026-11-20
+- Javítás: böngészőben az Utcakép gomb az ÚtSzelvény lapját is átvitte a Google Térképre; most csak új lapon nyílik meg, az ÚtSzelvény a helyén marad.
+- Térképi buborék: rövidebb gombok, az ikon a felirat mellett; „Pont mentése” helyett „Mentés”.
+
 ## [0.23.2] – 2026-11-20
 - Térkép: a koppintott pont buborékában új középső gomb, **Utcakép**: megnyitja a Google Utcaképet a pontnál, az út menetirányába nézve (bal pályán az ellenkező irányba). Az Android alkalmazásban a Google Térkép alkalmazásban, böngészőben új lapon nyílik meg. A három gomb ikonja a felirat fölé került, hogy kiférjenek.
 
