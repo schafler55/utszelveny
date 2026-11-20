@@ -1113,7 +1113,8 @@ const nn=(x)=>x<0?null:x;
 function lanesAt(r,pk,v){const x=szdHit(SAV,r,pk,v);return x?x.n:null}
 // pavement: {width (m), type} or null
 function pavementAt(r,pk,v){const x=szdHit(BUR,r,pk,v);return x?{width:x.w<0?null:x.w/10,type:x.k<0?null:SZD.burt[x.k]}:null}
-// annual cross-section traffic: {asz, anf, oj, ongj2, year} as in the NAP data, or null
+// annual cross-section traffic (NAP leírás): asz = forgalomszámláló állomás száma, anf = évi átlagos napi keresztmetszeti
+// forgalom (egységjármű/nap), oj = összes jármű (jármű/nap), ongj2 = nehéz motoros forgalom (jármű/nap); or null
 function trafficAt(r,pk,v){const x=szdHit(ANF,r,pk,v);if(!x)return null;const k=x.s*4,a=SZD.ksz;
   return {asz:nn(a[k]),anf:nn(a[k+1]),oj:nn(a[k+2]),ongj2:nn(a[k+3]),year:SZD.ev}}
 // everything for one place: road r, carriageway pk, chainage value v
