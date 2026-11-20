@@ -4,6 +4,9 @@ Az ÚtSzelvény változásai, a legújabb elöl. A dátumok UTC szerint értend�
 A nagyobb funkciók saját ágon (branch) készültek teszt oldallal és teszt APK-val, és pull requestként (#) kerültek a `main` ágba;
 a kisebb javítások közvetlenül a `main`-re kerültek.
 
+## [0.19.2] – 2026-11-20
+- A kis JOBB / BAL címkék kisebbek, kitöltés nélkül, vékonyabb (1 px) zöld kerettel. A Pozíció fő kártya címkéje és a Keresés pályaválasztó gombja nem változott.
+
 ## [0.19.1] – 2026-11-20
 - JOBB / BAL címke: az alkalmazás zöld kiemelőszíne (halvány kitöltés, zöld keret), ugyanaz a betűtípus, mint mindenhol, a felirat függőlegesen középen. A beágyazott keskeny betűtípus és a hozzá tartozó forrásmegjelölés megszűnt.
 - Egy betűcsalád az egész alkalmazásban (Roboto, ennek hiányában a rendszer betűtípusa): szövegek, szelvényszámok, térképi feliratok és táblák, fotóbélyegző – web és APK ugyanúgy.
