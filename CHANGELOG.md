@@ -4,6 +4,9 @@ Az ÚtSzelvény változásai, a legújabb elöl. A dátumok UTC szerint értend�
 A nagyobb funkciók saját ágon (branch) készültek teszt oldallal és teszt APK-val, és pull requestként (#) kerültek a `main` ágba;
 a kisebb javítások közvetlenül a `main`-re kerültek.
 
+## [0.23.2] – 2026-11-20
+- Térkép: a koppintott pont buborékában új középső gomb, **Utcakép**: megnyitja a Google Utcaképet a pontnál, az út menetirányába nézve (bal pályán az ellenkező irányba). Az Android alkalmazásban a Google Térkép alkalmazásban, böngészőben új lapon nyílik meg. A három gomb ikonja a felirat fölé került, hogy kiférjenek.
+
 ## [0.23.1] – 2026-11-20
 - Sebességkártya: kisebb helységnévtábla; a sebességkorlátozó táblának vékony fehér szegélye van (halvány körvonallal, hogy világos témán is látsszon), a számok keskenyebbek, mint az útszámtáblákon. A „KRESZ alapérték” / „Egyedi korlátozás” félkövér.
 - Térkép, sötét alapréteg: a kerékpárutak a műholdképhez hasonló világos sárga színnel látszanak (eddig barna).
