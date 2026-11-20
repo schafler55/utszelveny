@@ -4,6 +4,10 @@ Az ÚtSzelvény változásai, a legújabb elöl. A dátumok UTC szerint értend�
 A nagyobb funkciók saját ágon (branch) készültek teszt oldallal és teszt APK-val, és pull requestként (#) kerültek a `main` ágba;
 a kisebb javítások közvetlenül a `main`-re kerültek.
 
+## [0.23.6] – 2026-11-20
+- Tehergépjármű- és súlykorlátozások kártya (Pozíció oldal és Adatok) a hídkártyával azonos elrendezésben: balra a táblák (új, fehér szegélyes, keskeny számú kivitel, mint a sebességkártyán) és alattuk a távolság („120 m”, „itt”), jobbra korlátozásonként félkövér piros felirat az értékkel piros chipben (pl. „Össztömeg-korlátozás [7,5 t]”), alatta a kivétel, majd a szelvénytartomány („még 400 m”, ha benne vagy).
+- A tehergépkocsi össztömeg-korlátozása röviden „Össztömeg-korlátozás” (a tábla mutatja, hogy tehergépkocsira vonatkozik).
+
 ## [0.23.5] – 2026-11-20
 - Térkép alapréteg választó: valósághű előnézeti képek (kisváros utcákkal, házakkal, folyóval, erdővel és szántóval; a Világos és a Sötét kép ugyanazzal a színszűrővel készül, mint a valódi térképréteg, a Műhold légifotó-szerű). A „Szürke” réteg neve „Világos”.
 
