@@ -4,6 +4,9 @@ Az ÚtSzelvény változásai, a legújabb elöl. A dátumok UTC szerint értend�
 A nagyobb funkciók saját ágon (branch) készültek teszt oldallal és teszt APK-val, és pull requestként (#) kerültek a `main` ágba;
 a kisebb javítások közvetlenül a `main`-re kerültek.
 
+## [0.22.1] – 2026-11-20
+- Térkép: a híd, amely alatt az út áthalad (pl. földúti híd az M44 felett), kitöltött hídpályaként jelenik meg az úton keresztben, a két pálya rekordja egy hídként; két országos út keresztezésénél a felső út alatt is hídpálya van, így látszik, mi halad felül.
+
 ## [0.22] – 2026-11-20
 - Hidak a térképen nagyobb nagyításnál (térképi hídjel; kikapcsolható: Beállítások → Térkép). A korlátozott hidak sárgák a súly- vagy magasságkorláttal.
 - Két országos út keresztezésénél az alkalmazás megkeresi, melyik út halad a hídon és melyik alatta (764 ilyen híd). A híd magasságkorlátja az alatta haladó úté: ott jelenik meg a térképen (↧), a Pozíció oldal hídkártyáján és a Részleteknél („Alatta haladsz el · M1 hídja”); a hídon haladók csak tájékoztatást kapnak („Alatta: 81106 …”).
