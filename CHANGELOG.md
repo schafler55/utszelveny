@@ -4,6 +4,37 @@ Az ÚtSzelvény változásai, a legújabb elöl. A dátumok UTC szerint értend�
 A nagyobb funkciók saját ágon (branch) készültek teszt oldallal és teszt APK-val, és pull requestként (#) kerültek a `main` ágba;
 a kisebb javítások közvetlenül a `main`-re kerültek.
 
+## [0.23] – 2026-11-20
+- Új NAP adat: Közúti azonosítópontok (17 114 pont – csomópontok, útvégek és más hálózati pontok hivatalos kóddal, pl. „C020001”). Beépítése: `tools/nap_azonositopontok.py`.
+- Szakasz adatai: ha a koppintás egy azonosítópont közelében van, új „Azonosítópont” szakasz mutatja a kódot, a távolságot, és az ott találkozó összes utat útszám-táblával, mindegyiket a saját szelvényével (JOBB / BAL chippel osztott pályán) és nevével.
+
+## [0.22.4] – 2026-11-20
+- Hidak kártya (Pozíció oldal) és a Részletek „Híd” szakasza egyforma soros elrendezést kapott: balra mindig a híd ikonja, alatta (a Pozíció oldalon) a távolság, pl. „150 m” vagy „itt”.
+- Új, kéttónusú híd ikonok az alkalmazás színeivel: ugyanaz a híd, a zöld nyíl felfelé mutat a híd felett („Áthaladsz rajta”), lefelé a híd alatt („Alatta haladsz el”), mellette felfelé, ha a híd az út mellett van.
+- A korlátozások félkövér piros szöveggel, soronként egy, az érték piros chipben (mint a JOBB / BAL), pl. „Össztömeg [40 t]”; a nagy táblaképek ebből a listából kikerültek.
+
+## [0.22.3] – 2026-11-20
+- Ha egy út osztott pályás út (pl. autópálya) felett halad át, mindkét pálya megkapja a „Alatta haladsz el” hidat (eddig csak a hídhoz közelebbi pálya); a térképen a hídpálya mindkét pálya fölé ér.
+
+## [0.22.2] – 2026-11-20
+- Térkép: a hidak hosszabbak, és méterben méreteződnek, így nagyításkor is megtartják hosszukat és arányukat.
+- Beállítások → Térkép: csúszka, hogy melyik nagyítási szinttől látszanak a hidak (12–18, alapból 15).
+
+## [0.22.1] – 2026-11-20
+- Térkép: a híd, amely alatt az út áthalad (pl. földúti híd az M44 felett), kitöltött hídpályaként jelenik meg az úton keresztben, a két pálya rekordja egy hídként; két országos út keresztezésénél a felső út alatt is hídpálya van, így látszik, mi halad felül.
+
+## [0.22] – 2026-11-20
+- Hidak a térképen nagyobb nagyításnál (térképi hídjel; kikapcsolható: Beállítások → Térkép). A korlátozott hidak sárgák a súly- vagy magasságkorláttal.
+- Két országos út keresztezésénél az alkalmazás megkeresi, melyik út halad a hídon és melyik alatta (764 ilyen híd). A híd magasságkorlátja az alatta haladó úté: ott jelenik meg a térképen (↧), a Pozíció oldal hídkártyáján és a Részleteknél („Alatta haladsz el · M1 hídja”); a hídon haladók csak tájékoztatást kapnak („Alatta: 81106 …”).
+
+## [0.21] – 2026-11-20
+- Térkép: egy útra koppintva a buborékban két gomb: **Pont mentése** (a pont mentett keresés lesz, és megnyílik a Keresés oldalon) és **Részletek**.
+- Új Szakasz adatai oldal: út (kategória, kezelő, megye, Mérnökség, pálya, szelvények), forgalmi sávok és burkolat, éves forgalom, sebességkorlát, belterület / külterület és település, a ponton lévő híd és az ott érvényes tehergépjármű-korlátozás, koordináták.
+
+## [0.20] – 2026-11-20
+- Új beépített NAP szakaszadatok az úthálózathoz: forgalmi sávok száma, burkolat típusa és szélessége, éves keresztmetszeti forgalom (2025). A felület még nem mutatja őket; egy későbbi verzióban a térképen koppintott szakasz részleteinél jelennek meg.
+- Új eszköz: `tools/nap_szakaszadatok.py` – a NAP-ból letöltött fájlokból újra előállítja ezeket az adatokat.
+
 ## [0.19.5] – 2026-11-20
 - A GitHub-tároló új neve `schafler55/utszelveny`; a webalkalmazás címe https://schafler55.github.io/utszelveny/. A linkek (README, Névjegy, változásnapló) az új címre mutatnak. Az Android alkalmazás azonosítója nem változott, a frissítések ugyanúgy települnek.
 
