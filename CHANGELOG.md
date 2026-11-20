@@ -4,6 +4,9 @@ Az ÚtSzelvény változásai, a legújabb elöl. A dátumok UTC szerint értend�
 A nagyobb funkciók saját ágon (branch) készültek teszt oldallal és teszt APK-val, és pull requestként (#) kerültek a `main` ágba;
 a kisebb javítások közvetlenül a `main`-re kerültek.
 
+## [0.19.3] – 2026-11-20
+- A kis JOBB / BAL címkék keskenyített felirattal: ugyanaz a félkövér betű 80%-os szélességre szűkítve, mint az útszámtáblákon (külön betűtípus nélkül). A Pozíció fő kártya címkéje nem változott.
+
 ## [0.19.2] – 2026-11-20
 - A kis JOBB / BAL címkék kisebbek, kitöltés nélkül, vékonyabb (1 px) zöld kerettel. A Pozíció fő kártya címkéje és a Keresés pályaválasztó gombja nem változott.
 
