@@ -4,6 +4,10 @@ Az ÚtSzelvény változásai, a legújabb elöl. A dátumok UTC szerint értend�
 A nagyobb funkciók saját ágon (branch) készültek teszt oldallal és teszt APK-val, és pull requestként (#) kerültek a `main` ágba;
 a kisebb javítások közvetlenül a `main`-re kerültek.
 
+## [0.19] – 2026-11-20
+- Jobb / bal pálya mindenhol egyformán: kis „JOBB” / „BAL” címke (halvány türkiz kitöltés, türkiz keret, keskeny félkövér betű) a km+m mellett – Pozíció fő kártya, térképi buborékok, mentett keresések, keresési részletek; a mérések Kezdet / Vége mezőiben a km alatti sorban. A Keresés pályaválasztó gombja ugyanilyen színű, „JOBB” / „BAL” felirattal.
+- A címke betűtípusa beágyazott Roboto (legkeskenyebb szélesség, csak a szükséges betűk, ~5 KB), így minden telefonon ugyanúgy néz ki.
+
 ## [0.18.2] – 2026-11-20
 - Térkép: a rétegek gomb nem nyitja meg az alsó beállításpanelt, csak végiglépteti az alapréteget (Szürke → Sötét → Műhold → Ki), a választott réteg neve rövid ideig megjelenik. A többi térképbeállítás a Beállítások → Térkép fülön van.
 
