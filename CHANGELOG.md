@@ -4,6 +4,9 @@ Az ÚtSzelvény változásai, a legújabb elöl. A dátumok UTC szerint értend�
 A nagyobb funkciók saját ágon (branch) készültek teszt oldallal és teszt APK-val, és pull requestként (#) kerültek a `main` ágba;
 a kisebb javítások közvetlenül a `main`-re kerültek.
 
+## [0.18.1] – 2026-11-20
+- Az OpenStreetMap és az Esri forrásmegjelölése sima szöveg, nem link (a térképen és a Névjegyben).
+
 ## [0.18] – 2026-11-20
 - Térkép: a mentett keresés és mérés „Térképen” gombja ugyanúgy működik – ráközelít, és alul egy közös buborékot mutat: név a keresés / mérés színében, útszámtábla + szelvény (szakasznál kezdet – vég, mérésnél kezdet → vég), az út neve vagy „Több úton: …”, hossz és dátum.
 - A buborék gombjai: Elrejtés (ugyanaz a kapcsoló, mint a mentett listában), Törlés (megerősítéssel), Részletek (megnyitja a mentett kártyát kinyitva, kiemelve). Nem mentett keresés: Törlés és Mentés.
