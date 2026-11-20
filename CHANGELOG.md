@@ -4,6 +4,13 @@ Az ÚtSzelvény változásai, a legújabb elöl. A dátumok UTC szerint értend�
 A nagyobb funkciók saját ágon (branch) készültek teszt oldallal és teszt APK-val, és pull requestként (#) kerültek a `main` ágba;
 a kisebb javítások közvetlenül a `main`-re kerültek.
 
+## [0.19.1] – 2026-11-20
+- JOBB / BAL címke: az alkalmazás zöld kiemelőszíne (halvány kitöltés, zöld keret), ugyanaz a betűtípus, mint mindenhol, a felirat függőlegesen középen. A beágyazott keskeny betűtípus és a hozzá tartozó forrásmegjelölés megszűnt.
+- Egy betűcsalád az egész alkalmazásban (Roboto, ennek hiányában a rendszer betűtípusa): szövegek, szelvényszámok, térképi feliratok és táblák, fotóbélyegző – web és APK ugyanúgy.
+- Mentett keresés részleteiből kikerült a „Pálya” sor (a JOBB / BAL a cím szelvénye mellett látszik).
+- Mérés a térképen: mentés után a mérőeszköz alaphelyzetbe áll, alul a mentett mérés buborékja jelenik meg. A lerakott pontok és vonalak a mérések lila-rózsaszín színét kapják.
+- Mérésnél JOBB / BAL címke, ha a mérés végig egy úton és ugyanazon a pályán van.
+
 ## [0.19] – 2026-11-20
 - Jobb / bal pálya mindenhol egyformán: kis „JOBB” / „BAL” címke (halvány türkiz kitöltés, türkiz keret, keskeny félkövér betű) a km+m mellett – Pozíció fő kártya, térképi buborékok, mentett keresések, keresési részletek; a mérések Kezdet / Vége mezőiben a km alatti sorban. A Keresés pályaválasztó gombja ugyanilyen színű, „JOBB” / „BAL” felirattal.
 - A címke betűtípusa beágyazott Roboto (legkeskenyebb szélesség, csak a szükséges betűk, ~5 KB), így minden telefonon ugyanúgy néz ki.
