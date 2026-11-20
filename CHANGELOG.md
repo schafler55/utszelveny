@@ -4,6 +4,9 @@ Az ÚtSzelvény változásai, a legújabb elöl. A dátumok UTC szerint értend�
 A nagyobb funkciók saját ágon (branch) készültek teszt oldallal és teszt APK-val, és pull requestként (#) kerültek a `main` ágba;
 a kisebb javítások közvetlenül a `main`-re kerültek.
 
+## [0.18.2] – 2026-11-20
+- Térkép: a rétegek gomb nem nyitja meg az alsó beállításpanelt, csak végiglépteti az alapréteget (Szürke → Sötét → Műhold → Ki), a választott réteg neve rövid ideig megjelenik. A többi térképbeállítás a Beállítások → Térkép fülön van.
+
 ## [0.18.1] – 2026-11-20
 - Az OpenStreetMap és az Esri forrásmegjelölése sima szöveg, nem link (a térképen és a Névjegyben).
 
