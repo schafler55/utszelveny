@@ -5,6 +5,8 @@ Beolvassa a NAP WFS-ből letöltött GeoJSON-fájlokat, és a beágyazott `roadd
   sav  – forgalmi sávok száma        [út, pálya, tól, ig, sávok]
   bur  – burkolat típusa, szélessége [út, pálya, tól, ig, szélesség dm-ben, típus-index] + burt (típusnevek); hiányzó adat: -1
   anf  – éves keresztmetszeti forgalom [út, pálya, tól, ig, állomás-index] + ksz (állomásonként asz, anf, oj, ongj2; hiányzó: -1) + anfEv
+         asz = forgalomszámláló állomás száma, anf = évi átlagos napi keresztmetszeti forgalom (egységjármű/nap),
+         oj = összes jármű forgalom (jármű/nap), ongj2 = nehéz motoros forgalom (jármű/nap)  – a NAP adatcsomag-leírás szerint
 A geometriát nem használja (az alkalmazásban már megvan): az út száma (kszam), a pálya (pkod)
 és a szelvény (kszelv / vszelv, km*10000+m) köti az utakhoz. Az egymáshoz érő, azonos értékű darabok összevonódnak.
 
