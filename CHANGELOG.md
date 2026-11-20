@@ -4,6 +4,10 @@ Az ÚtSzelvény változásai, a legújabb elöl. A dátumok UTC szerint értend�
 A nagyobb funkciók saját ágon (branch) készültek teszt oldallal és teszt APK-val, és pull requestként (#) kerültek a `main` ágba;
 a kisebb javítások közvetlenül a `main`-re kerültek.
 
+## [0.22] – 2026-11-20
+- Hidak a térképen nagyobb nagyításnál (térképi hídjel; kikapcsolható: Beállítások → Térkép). A korlátozott hidak sárgák a súly- vagy magasságkorláttal.
+- Két országos út keresztezésénél az alkalmazás megkeresi, melyik út halad a hídon és melyik alatta (764 ilyen híd). A híd magasságkorlátja az alatta haladó úté: ott jelenik meg a térképen (↧), a Pozíció oldal hídkártyáján és a Részleteknél („Alatta haladsz el · M1 hídja”); a hídon haladók csak tájékoztatást kapnak („Alatta: 81106 …”).
+
 ## [0.21] – 2026-11-20
 - Térkép: egy útra koppintva a buborékban két gomb: **Pont mentése** (a pont mentett keresés lesz, és megnyílik a Keresés oldalon) és **Részletek**.
 - Új Szakasz adatai oldal: út (kategória, kezelő, megye, Mérnökség, pálya, szelvények), forgalmi sávok és burkolat, éves forgalom, sebességkorlát, belterület / külterület és település, a ponton lévő híd és az ott érvényes tehergépjármű-korlátozás, koordináták.
