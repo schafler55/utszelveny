@@ -4,6 +4,9 @@ Az ÚtSzelvény változásai, a legújabb elöl. A dátumok UTC szerint értend�
 A nagyobb funkciók saját ágon (branch) készültek teszt oldallal és teszt APK-val, és pull requestként (#) kerültek a `main` ágba;
 a kisebb javítások közvetlenül a `main`-re kerültek.
 
+## [0.22.3] – 2026-11-20
+- Ha egy út osztott pályás út (pl. autópálya) felett halad át, mindkét pálya megkapja a „Alatta haladsz el” hidat (eddig csak a hídhoz közelebbi pálya); a térképen a hídpálya mindkét pálya fölé ér.
+
 ## [0.22.2] – 2026-11-20
 - Térkép: a hidak hosszabbak, és méterben méreteződnek, így nagyításkor is megtartják hosszukat és arányukat.
 - Beállítások → Térkép: csúszka, hogy melyik nagyítási szinttől látszanak a hidak (12–18, alapból 15).
