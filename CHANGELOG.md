@@ -4,6 +4,9 @@ Az ÚtSzelvény változásai, a legújabb elöl. A dátumok UTC szerint értend�
 A nagyobb funkciók saját ágon (branch) készültek teszt oldallal és teszt APK-val, és pull requestként (#) kerültek a `main` ágba;
 a kisebb javítások közvetlenül a `main`-re kerültek.
 
+## [0.23.5] – 2026-11-20
+- Térkép alapréteg választó: valósághű előnézeti képek (kisváros utcákkal, házakkal, folyóval, erdővel és szántóval; a Világos és a Sötét kép ugyanazzal a színszűrővel készül, mint a valódi térképréteg, a Műhold légifotó-szerű). A „Szürke” réteg neve „Világos”.
+
 ## [0.23.4] – 2026-11-20
 - Térképi buborék: a WGS84 és az EOV koordináta egy sorban; a kezelő (pl. MKIF) nem jelenik meg benne; a „Részletek” gomb neve „Adatok”.
 - A hidak alapból már a 14-es nagyítástól látszanak a térképen (eddig 15; a csúszkán beállított érték megmarad).
