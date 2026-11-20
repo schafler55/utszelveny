@@ -769,7 +769,7 @@ html[data-theme=light] .mapinfo .bh{color:color-mix(in srgb,var(--k) 55%,#000)}
     </div>
     <div class="spanes">
     <div class="spane" data-p="gen">
-      <div class="opt col"><div><span>Megjelenés</span><small>A világos téma erős napfényben jobban olvasható. Rendszer: a telefon beállítását követi.</small></div><div class="seg wide" id="themeSeg"><button data-v="dark">Sötét</button><button data-v="light">Világos</button><button data-v="auto">Rendszer</button></div></div>
+      <div class="opt col"><div><span>Megjelenés</span><small>A világos téma erős napfényben jobban olvasható.</small></div><div class="seg wide" id="themeSeg"><button data-v="dark">Sötét</button><button data-v="light">Világos</button><button data-v="auto">Rendszer</button></div></div>
       <div class="opt"><div><span>GNSS követés</span><small id="gpsState">kikapcsolva</small></div><button class="btn pri" id="gpsToggle">Indítás</button></div>
       <div class="opt"><div><span>Képernyő ébren tartása</span><small>Menet közben nem kapcsol ki a kijelző</small></div><button class="sw on" id="swWake"></button></div>
       <div class="opt"><div><span>Kerékpárutak kihagyása</span><small>Út melletti kerékpárút ne „vegye át” a pozíciót</small></div><button class="sw on" id="swBike"></button></div>
@@ -777,7 +777,7 @@ html[data-theme=light] .mapinfo .bh{color:color-mix(in srgb,var(--k) 55%,#000)}
     </div>
     <div class="spane" data-p="pos">
       <div class="opt"><div><span>Útnév mutatása</span><small>Kikapcsolva nagyobb a szelvény-kijelzés</small></div><button class="sw on" id="swName"></button></div>
-      <div class="opt col"><div><span>Koordináták</span><small>A GNSS-kártyán (ott a fülekkel is váltható)</small></div><div class="seg wide" id="posCoordSeg"><button data-v="wgs">WGS84</button><button data-v="eov">EOV</button></div></div>
+      <div class="opt col"><div><span>Koordináták</span><small>A GNSS kártyán (ott a fülekkel is váltható)</small></div><div class="seg wide" id="posCoordSeg"><button data-v="wgs">WGS84</button><button data-v="eov">EOV</button></div></div>
       <h3>Megjelenített részek</h3>
       <div class="opt"><div><span>Sebességkorlát, belterület / külterület</span></div><button class="sw on" id="swSpd"></button></div>
       <div class="opt"><div><span>Hidak, súly- és magasságkorlátozás</span></div><button class="sw on" id="swBr"></button></div>
@@ -789,7 +789,7 @@ html[data-theme=light] .mapinfo .bh{color:color-mix(in srgb,var(--k) 55%,#000)}
     <div id="mapSet">
       <div class="mset-l">Térkép alapréteg</div>
       <div class="basepick" id="baseSeg"><button data-v="grey"><svg viewBox="0 0 64 40"><rect width="64" height="40" fill="#e7e5e0"/><path d="M0 30C18 26 30 14 64 10" stroke="#9aa0a8" stroke-width="5" fill="none"/><path d="M-2 12C20 16 40 26 66 34" stroke="#16a34a" stroke-width="3" fill="none"/></svg><span>Szürke</span></button><button data-v="dark"><svg viewBox="0 0 64 40"><rect width="64" height="40" fill="#2b2e34"/><path d="M0 30C18 26 30 14 64 10" stroke="#6b7280" stroke-width="5" fill="none"/><path d="M-2 12C20 16 40 26 66 34" stroke="#22c55e" stroke-width="3" fill="none"/></svg><span>Sötét</span></button><button data-v="sat"><svg viewBox="0 0 64 40"><rect width="64" height="40" fill="#3e4a33"/><rect x="4" y="3" width="18" height="12" fill="#556347"/><rect x="40" y="22" width="20" height="14" fill="#5d5a48"/><rect x="30" y="4" width="12" height="9" fill="#2f3a28"/><path d="M0 30C18 26 30 14 64 10" stroke="#cbd5e1" stroke-width="4" fill="none"/><path d="M-2 12C20 16 40 26 66 34" stroke="#4ade80" stroke-width="3" fill="none"/></svg><span>Műhold</span></button><button data-v="off"><svg viewBox="0 0 64 40"><rect width="64" height="40" fill="#1b1e23"/><path d="M-2 12C20 16 40 26 66 34" stroke="#22c55e" stroke-width="3" fill="none"/><path d="M0 30C18 26 30 14 64 10" stroke="#e5e7eb" stroke-width="2" fill="none"/></svg><span>Ki</span></button></div>
-      <p class="note" style="margin-top:6px">OpenStreetMap vagy Esri műholdkép – internet kell hozzá; offline csak a közúthálózat látszik.</p>
+      <p class="note" style="margin-top:6px">Az OpenStreetMap vagy Esri műholdképhez internet szükséges, offline csak a közúthálózat látszik.</p>
       <div class="mset-l">Térkép iránya</div>
       <div class="seg wide" id="rotSeg"><button data-v="north">Észak</button><button data-v="heading">Menetirány</button></div>
       <p class="note" style="margin-top:6px">Menetirány: a térkép a haladási irányba fordul. A térképen az iránytű gombbal is váltható.</p>
@@ -798,7 +798,7 @@ html[data-theme=light] .mapinfo .bh{color:color-mix(in srgb,var(--k) 55%,#000)}
       <p class="note" style="margin-top:6px">Az út, amelyiken éppen vagy, mindig a saját színében látszik: kiemelve, vagy a többivel egyformán.</p>
       <div class="mset-l">Mozgás követéskor</div>
       <div class="seg wide" id="smSeg"><button data-v="on">Sima</button><button data-v="off">Frissítésenként</button></div>
-      <p class="note" style="margin-top:6px">Sima: a GNSS-frissítések (kb. másodpercenként) között is folyamatosan halad a térkép és a nyíl. Frissítésenként: ugrásokkal, de kevesebbet fogyaszt.</p>
+      <p class="note" style="margin-top:6px">Sima: a GNSS frissítések között is folyamatosan halad a térkép és a nyíl. Frissítésenként: ugrásokkal, de kevesebbet fogyaszt.</p>
       <div class="mset-l">Vonalvastagság</div>
       <div style="display:flex;align-items:center;gap:12px"><div class="rngw" id="lineWw"><input type="range" class="rng" id="lineW" min="0.6" max="3" step="0.1" aria-label="Vonalvastagság"><span class="rngb" id="lineWb"></span></div><span class="rngv" id="lineWv"></span></div>
     </div>
@@ -818,20 +818,20 @@ html[data-theme=light] .mapinfo .bh{color:color-mix(in srgb,var(--k) 55%,#000)}
       <h3 style="margin-top:4px">A képre kerül</h3>
       <div class="opt"><div><span>Útnév</span></div><button class="sw on" id="swPhName"></button></div>
       <div class="opt"><div><span>GNSS pontosság</span></div><button class="sw on" id="swPhAcc"></button></div>
-      <div class="opt"><div><span>Irány (égtáj)</span><small>Merre néz a kamera, pl. ÉK, DDNY – a telefon iránytűje szerint; ha nincs, menet közben a haladási irány</small></div><button class="sw on" id="swPhDir"></button></div>
+      <div class="opt"><div><span>Tájolás</span><small>A kamera nézésiránya (pl. ÉK, DDNY) a telefon iránytűje szerint.</small></div><button class="sw on" id="swPhDir"></button></div>
       <div class="opt col"><div><span>Koordináták</span><small>Úthálózaton kívül mindig rákerülnek (ha itt „Ki” van, WGS84-ben)</small></div><div class="seg wide" id="phCoordSeg"><button data-v="off">Ki</button><button data-v="wgs">WGS84</button><button data-v="eov">EOV</button><button data-v="both">Mindkettő</button></div></div>
       <h3>Felvétel és mentés</h3>
-      <div class="opt col"><div><span>Képminőség</span><small>Legjobb: a kamera teljes felbontása (max. 12 MP, lassabb). Gyors: az élőkép egy kockája.</small></div><div class="seg wide" id="phResSeg"><button data-v="best">Legjobb</button><button data-v="fast">Gyors</button></div></div>
-      <div class="opt"><div><span>Exponálás a hangerőgombokkal</span><small id="phVolNote"></small></div><button class="sw on" id="swPhVol"></button></div>
-      <div class="opt col" id="phFolderOpt"><div><span>Mentés helye</span><small id="phFolderNote"></small></div><div class="radl" id="phFolderList"><button data-v="pictures"><i></i><span>Képek / ÚtSzelvény<small>alapértelmezett</small></span></button><button data-v="dcim"><i></i><span>DCIM / ÚtSzelvény<small>a kamera mappája mellett, saját almappában</small></span></button><button data-v="camera"><i></i><span>DCIM / Camera<small>a telefon kamerájának fotói közé</small></span></button><button data-v="custom"><i></i><span>Egyéni mappa…<small id="phTreeLbl">Válassz mappát a telefonon</small></span></button></div></div>
+      <div class="opt col"><div><span>Képminőség</span><small>Legjobb: a kamera teljes felbontása (max. 12 MP). Gyors: az élőkép egy kockája.</small></div><div class="seg wide" id="phResSeg"><button data-v="best">Legjobb</button><button data-v="fast">Gyors</button></div></div>
+      <div class="opt"><div><span>Fotózás a hangerőgombokkal</span><small id="phVolNote"></small></div><button class="sw on" id="swPhVol"></button></div>
+      <div class="opt col" id="phFolderOpt"><div><span>Fotók mentésének helye</span><small id="phFolderNote"></small></div><div class="radl" id="phFolderList"><button data-v="pictures"><i></i><span>Képek / ÚtSzelvény<small>alapértelmezett</small></span></button><button data-v="dcim"><i></i><span>DCIM / ÚtSzelvény<small>a kamera mappája mellett, saját almappában</small></span></button><button data-v="camera"><i></i><span>DCIM / Camera<small>a telefon kamerájának fotói közé</small></span></button><button data-v="custom"><i></i><span>Egyéni mappa…<small id="phTreeLbl">Válassz mappát a telefonon</small></span></button></div></div>
       <div class="opt"><div><span>Automatikus mentés</span><small id="phAutoNote"></small></div><button class="sw on" id="swPhAuto"></button></div>
-      <div class="opt"><div><span>Hely és idő a fájl adataiban (EXIF)</span><small>A galéria így térképen is meg tudja mutatni a fotót</small></div><button class="sw on" id="swPhExif"></button></div>
-      <p class="note">A felirat (útszám, szelvény, dátum és idő) az exponálás pillanatában rögzül. Az alkalmazás a fotókat nem tárolja: a Fotó oldal bélyegképe csak az ebben a munkamenetben készült képeket mutatja – a mentett példány a telefonon marad.</p>
+      <div class="opt"><div><span>Hely és idő mentése a fájl adataiba</span><small>A galéria így térképen is meg tudja mutatni a fotót</small></div><button class="sw on" id="swPhExif"></button></div>
+      <p class="note">A felirat (útszám, szelvény stb.) az fotózás pillanatában rögzül. Az alkalmazás a fotókat nem tárolja, a bélyegkép csak az ebben a munkamenetben készült képeket mutatja de az elmentett fotók a telefonon maradnak.</p>
     </div>
     <div class="spane" data-p="hud">
-      <div class="hudgo"><button class="btn pri" id="hudStart"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 16.9A8.5 8.5 0 1 1 20 16.9"/><path d="M12 5.5v1.8M6 8l1.27 1.27M18 8l-1.27 1.27"/><path d="M12 14l3.6-3.6"/><circle cx="12" cy="14" r="1.6" fill="currentColor" stroke="none"/></svg>HUD indítása</button><small>Fektesd a telefont a műszerfalra a szélvédő alá. Kilépés: Vissza gomb, vagy koppints a képernyőre és „Kilépés”.</small></div>
+      <div class="hudgo"><button class="btn pri" id="hudStart"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 16.9A8.5 8.5 0 1 1 20 16.9"/><path d="M12 5.5v1.8M6 8l1.27 1.27M18 8l-1.27 1.27"/><path d="M12 14l3.6-3.6"/><circle cx="12" cy="14" r="1.6" fill="currentColor" stroke="none"/></svg>HUD indítása</button><small>Fektesd a telefont a műszerfalra a szélvédő alá, így a szélvédőről tükröződve láthatod az adatokat.</small></div>
       <h3>Kép</h3>
-      <div class="opt col"><div><span>Tükrözés</span><small>Ha a szélvédőn fejjel lefelé látszik, válts a másikra, vagy fordítsd meg a telefont. Ki: tartóban, közvetlen nézéshez.</small></div><div class="seg wide" id="hudFlipSeg"><button data-v="x">Bal-jobb</button><button data-v="y">Fel-le</button><button data-v="off">Ki</button></div></div>
+      <div class="opt col"><div><span>Tükrözés</span><small>Ha a szélvédőn fejjel lefelé látszik, válts a másikra, vagy fordítsd meg a telefont.</small></div><div class="seg wide" id="hudFlipSeg"><button data-v="x">Bal-jobb</button><button data-v="y">Fel-le</button><button data-v="off">Ki</button></div></div>
       <div class="opt col"><div><span>Tájolás</span><small>Fekvő: széles, alacsony kép a szélvédő alján. A kép nem fordul el, ha a telefon fekszik.</small></div><div class="seg wide" id="hudOriSeg"><button data-v="land">Fekvő</button><button data-v="port">Álló</button></div></div>
       <div class="opt col"><div><span>Szín</span></div><div class="seg wide" id="hudColSeg"><button data-v="white">Fehér</button><button data-v="green">Zöld</button><button data-v="yellow">Sárga</button></div></div>
       <div class="opt col"><div><span>Fényerő</span><small id="hudBrNote"></small></div><div class="seg wide" id="hudBrSeg"><button data-v="max">Maximum</button><button data-v="sys">Rendszer</button></div></div>
@@ -862,7 +862,7 @@ html[data-theme=light] .mapinfo .bh{color:color-mix(in srgb,var(--k) 55%,#000)}
       <h3>Haladó: teszt / kézi pozíció</h3>
       <input type="text" id="manualIn" placeholder="pl. 47.13285 19.41772  vagy  EOV 678089 198812" inputmode="decimal">
       <div style="display:flex;gap:8px;margin-top:8px"><button class="btn pri" id="manualGo">Lekérdezés</button></div>
-      <p class="note">WGS84 (szélesség, hosszúság) vagy EOV (Y, X) koordináta. A kézi pozíciót a következő GNSS-jel felülírja.</p>
+      <p class="note">WGS84 (szélesség, hosszúság) vagy EOV (Y, X) koordináta. A kézi pozíciót a következő GNSS jel felülírja.</p>
     </div>
     </div>
   </div>
@@ -1269,7 +1269,7 @@ function onErr(err){
     gpsErr="A helymeghatározás le van tiltva. Engedélyezd a böngészőben (lakat ikon → Hely), és a telefonon kapcsold be a Helyadatokat.";
     if(location.protocol==="file:"||location.protocol==="content:")showProtoAlert();
     stopGPS();
-  }else if(err.code===2)gpsErr="Nincs GNSS-jel. Ellenőrizd, hogy a telefon helymeghatározása be van-e kapcsolva.";
+  }else if(err.code===2)gpsErr="Nincs GNSS jel. Ellenőrizd, hogy a telefon helymeghatározása be van-e kapcsolva.";
   else gpsErr=null; // timeout: keep waiting
   render();
 }
@@ -1354,11 +1354,11 @@ function render(){
     hero.innerHTML=`${HICO_SEARCH}<div class="big3">Műholdak keresése…</div><div class="rsub">${gpsErr?esc(gpsErr):"Az első pozíció 5–30 másodperc is lehet."}</div>`+lastKnownHTML();
   }else if(lost){
     hero.className="card hero nogps lost";
-    hero.innerHTML=`${HICO_LOST}<div class="big3">Jelvesztés</div><div class="rsub">${gpsErr?esc(gpsErr):"Nincs friss GNSS-pozíció "+Math.round((Date.now()-lastFixT)/1000)+" mp óta."}</div>`+lastKnownHTML(true);
+    hero.innerHTML=`${HICO_LOST}<div class="big3">Jelvesztés</div><div class="rsub">${gpsErr?esc(gpsErr):"Nincs friss GNSS pozíció "+Math.round((Date.now()-lastFixT)/1000)+" mp óta."}</div>`+lastKnownHTML(true);
   }else if(cur.res.off){
     hero.className="card hero nogps search off";
     const nr=cur.res.nearest;
-    if(inBudapest(cur.pos.E,cur.pos.N))hero.innerHTML=`${HICO_BP}<div class="big3">Budapest</div><div class="rsub">Fővárosi vagy kerületi helyi út,<br>nem része az országos közúthálózatnak</div>`;
+    if(inBudapest(cur.pos.E,cur.pos.N))hero.innerHTML=`${HICO_BP}<div class="big3">Budapest</div><div class="rsub">Ez fővárosi vagy kerületi helyi út,<br>nem része az országos közúthálózatnak.</div>`;
     else hero.innerHTML=`${HICO_OFFNET}<div class="big3">Úthálózaton kívül</div><div class="rsub">Nincs országos közút ${Math.round(cur.res.thr)} m-en belül${nr?` · legközelebbi: ${esc(ROADS[segRoad[nr.s]].num)} (${Math.round(nr.d)} m)`:""}</div>`+lastKnownHTML(true);
     title=cur.pos.src==="gps"?"Státusz":"Kézi pozíció";
   }else{
@@ -1884,7 +1884,7 @@ function drawTapRing(x,y,lt){
   ctx.beginPath();ctx.arc(x,y,2.8,0,7);ctx.fillStyle=col;ctx.fill();ctx.restore();
 }
 function queueDraw(){if(drawQueued||SM.raf)return;drawQueued=true;requestAnimationFrame(()=>{drawQueued=false;drawMap()})}
-/* ---------- Sima követés: a térkép és a pozíciónyíl a GNSS-frissítések között is folyamatosan mozog ---------- */
+/* ---------- Sima követés: a térkép és a pozíciónyíl a GNSS frissítések között is folyamatosan mozog ---------- */
 // Between two fixes (about 1 s apart) the position is predicted from speed and heading (dead reckoning, at most
 // 1.2 s ahead). When a new fix arrives, the difference between the prediction and the fix is not applied at once:
 // it fades out in ~0.35 s, so the picture never jumps and there is no lag while driving steadily. Heading eases too.
@@ -2708,7 +2708,7 @@ function drawStamp(c,W,H,d){
   if(coord)bot.push(coord);
   if(d.src==="manual")bot.push("kézi pozíció");else if(d.acc!=null&&S.phAcc)bot.push(`±${Math.round(d.acc)} m`);
   if(d.hd!=null)bot.push(dir16(d.hd));
-  if(d.stale)bot.push(`GNSS-jel ${fmtAge(d.age)} óta nincs`);
+  if(d.stale)bot.push(`GNSS jel ${fmtAge(d.age)} óta nincs`);
   const bandH=pad*.7+hh+lh+pad*.55,yc=pad*.7+hh/2,yB=pad*.7+hh+lh/2,gl=Math.max(2,u*.14);
   c.save();
   c.fillStyle="rgba(0,0,0,.6)";c.fillRect(0,0,W,bandH);
@@ -2727,7 +2727,7 @@ function drawStamp(c,W,H,d){
     hw=sw+headH*.19+c.measureText(ch).width;
   }else{
     c.font=F(1.55*u,true);c.fillStyle="#fde68a";
-    const s=fitTxt(c,d.state==="off"?"Úthálózaton kívül":"Nincs GNSS-pozíció",W-2*pad-rightW);c.fillText(s,pad,yc);hw=c.measureText(s).width;
+    const s=fitTxt(c,d.state==="off"?"Úthálózaton kívül":"Nincs GNSS pozíció",W-2*pad-rightW);c.fillText(s,pad,yc);hw=c.measureText(s).width;
   }
   // road name and details between them
   const x=pad+hw+u*.8,mw=W-pad-rightW-x;
@@ -2763,7 +2763,7 @@ function tiffBlock(ifds){
 function exifTiff(d,W,H){
   const t=new Date(d.t),dt=`${t.getFullYear()}:${p2(t.getMonth()+1)}:${p2(t.getDate())} ${p2(t.getHours())}:${p2(t.getMinutes())}:${p2(t.getSeconds())}`;
   const o=-t.getTimezoneOffset(),tz=`${o<0?"-":"+"}${p2(Math.floor(Math.abs(o)/60))}:${p2(Math.abs(o)%60)}`;
-  const desc=d.state==="on"?`${d.road}. sz. ut ${d.ch}${d.tel?", "+d.tel+" belterulet":""}`:d.state==="off"?"Uthalozaton kivul":"Nincs GNSS-pozicio";
+  const desc=d.state==="on"?`${d.road}. sz. ut ${d.ch}${d.tel?", "+d.tel+" belterulet":""}`:d.state==="off"?"Uthalozaton kivul":"Nincs GNSS pozicio";
   const gps=S.phExif&&d.lat!=null;
   const i0=[[0x010E,2,0,eAsc(desc)],[0x0112,3,1,eShort(1)],[0x0131,2,0,eAsc(APP_VER)],[0x0132,2,0,eAsc(dt)],[0x8769,4,1,"@1"]];
   if(gps)i0.push([0x8825,4,1,"@2"]);
@@ -3033,7 +3033,7 @@ if(!NB)window.addEventListener("beforeunload",(e)=>{if(camShots.some(x=>!x.saved
 function renderPhSet(){
   document.querySelectorAll("#phCoordSeg button").forEach(b=>b.classList.toggle("on",b.dataset.v===(S.phCoord||"off")));
   document.querySelectorAll("#phResSeg button,#camResSeg button").forEach(b=>b.classList.toggle("on",b.dataset.v===(S.phRes||"best")));
-  $("phAutoNote").textContent=NB?"Exponálás után a Mentés helye szerinti mappába":"Exponálás után letöltés (Letöltések mappa). Kikapcsolva a bélyegképről menthetsz vagy oszthatsz meg.";
+  $("phAutoNote").textContent=NB?"Fotózás után a beállított mappába":"Fotózás után letöltés (Letöltések mappába).";
 }
 document.querySelectorAll("#phCoordSeg button").forEach(b=>b.onclick=()=>{S.phCoord=b.dataset.v;saveS();renderPhSet();camOverlay()});
 document.querySelectorAll("#phResSeg button,#camResSeg button").forEach(b=>b.onclick=()=>{S.phRes=b.dataset.v;saveS();renderPhSet()});
@@ -3493,7 +3493,7 @@ function renderMeasSet(){
   if(!n){box.innerHTML=`<p class="note">Nincs mentett mérés.</p>`;measDelAll=false;return}
   box.innerHTML=measDelAll?`<div class="opt" style="border:0"><div><span style="color:var(--err)">Biztosan törlöd mind a ${n} mentett mérést?</span><small>Ez nem vonható vissza. Előtte a Mérés oldalon kimásolhatod őket (CSV).</small></div></div>
       <div class="mdelc"><button class="btn red" id="mDelAllOk">Igen, mindet törlöm</button><button class="btn" id="mDelAllNo">Mégse</button></div>`
-    :`<div class="opt" style="border:0"><div><span>${n} mentett mérés</span><small>${measActive?"A folyamatban lévő mérést ez nem érinti.":"GNSS- és térképi mérések együtt."}</small></div><button class="btn red" id="mDelAll">Összes törlése</button></div>`;
+    :`<div class="opt" style="border:0"><div><span>${n} mentett mérés</span><small>${measActive?"A folyamatban lévő mérést ez nem érinti.":"GNSS és térképi mérések együtt."}</small></div><button class="btn red" id="mDelAll">Összes törlése</button></div>`;
   if(measDelAll){$("mDelAllOk").onclick=()=>{measList=[];measSaveList();try{localStorage.setItem("ksz_meas_n","0")}catch(e){}
       mapMeas=null;measOpen=measDel=measRename=measLast=null;measDelAll=false;miRefresh();renderMeas();renderMeasSet();if(mapOn)drawMap();
       $("measDelBox").insertAdjacentHTML("beforeend",`<p class="note" style="color:var(--pri)">Minden mentett mérés törölve.</p>`)};
@@ -3529,7 +3529,7 @@ bindSw("swName","name");
 bindSw("swMeasCsv","measCsv",()=>renderMeas());bindSw("swSrchCsv","srchCsv",()=>renderSrch());
 bindSw("swSpd","secSpd");bindSw("swBr","secBr");bindSw("swTr","secTr");bindSw("swGps","secGps");bindSw("swKez","secKez");
 bindSw("swPhName","phName");bindSw("swPhAcc","phAcc");bindSw("swPhAuto","phAuto");bindSw("swPhExif","phExif");bindSw("swPhDir","phDir",()=>{S.phDir&&camOn?cmpStart():cmpStop()});bindSw("swPhVol","phVol",volSync);
-$("phVolNote").textContent=NB&&NB.setVolShutter?"Hangerő fel / le gomb vagy Bluetooth-os távkioldó; a Fotó oldalon kívül a gombok a hangerőt állítják":"Csak az Android alkalmazásban működik: a böngésző nem kapja meg a hangerőgombokat";
+$("phVolNote").textContent=NB&&NB.setVolShutter?"Fotó elkészítése a hangerő gombokkal.":"Csak az Android alkalmazásban működik, a böngészőben nem";
 $("manualGo").onclick=()=>{
   const nums=($("manualIn").value.match(/-?\d+(?:[.,]\d+)?/g)||[]).map(s=>parseFloat(s.replace(",",".")));
   if(nums.length<2)return alert("Adj meg két koordinátát!");
