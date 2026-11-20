@@ -2,7 +2,7 @@
 
 <h1 align="center">ÚtSzelvény</h1>
 
-<p align="center"><b>Pontosan tudod, hol jársz az úton!</b></p>
+<p align="center"><b>Kilométerkő minden méteren — a zsebedben.</b></p>
 
 Az <b>ÚtSzelvény</b> megmutatja, melyik országos közúton és melyik kilométerszelvényben állsz, internet nélkül is.
 A telefon GNSS-pozícióját a közúthálózat adataihoz illeszti. Egy pillantással látod az útszámot
