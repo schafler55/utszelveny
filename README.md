@@ -5,7 +5,7 @@
 <p align="center"><b>Kilométerkő minden méteren – a zsebedben.</b></p>
 
 Az <b>ÚtSzelvény</b> megmutatja, melyik országos közúton és melyik kilométerszelvényben állsz, internet nélkül is.
-A telefon GNSS-pozícióját a közúthálózat adataihoz illeszti. Egy pillantással látod az útszámot
+A telefon GNSS pozícióját a közúthálózat adataihoz illeszti. Egy pillantással látod az útszámot
 és a szelvényt, valamint mindazt, ami az adott szakaszra vonatkozik.
 
 Terepi munkára is alkalmas. Útszám és szelvény alapján megkeres egy pontot vagy egy útszakaszt a térképen. Mérhetsz vele szelvénytől szelvényig, akár több úton át, vagy pontokat lerakva a térképen.
@@ -21,7 +21,7 @@ nélkül is működik. Csak a térkép alapréteghez kell internetkapcsolat.
 ### Pozíció
 Útszám az útjelző tábla formájában, kilométerszelvény (km+m), szelvényirány, az út neve és kategóriája.
 Alatta az érvényes sebességkorlát (belterület / külterület), átkelési szakaszon a település nevével, a következő 3 km hídjai és út feletti akadályai,
-a tehergépjármű- és súlykorlátozások, a GNSS-adatok és a kezelő. Párhuzamos utaknál a közeli út egy koppintással választható.
+a tehergépjármű- és súlykorlátozások, a GNSS adatok és a kezelő. Párhuzamos utaknál a közeli út egy koppintással választható.
 Az Android alkalmazás a használt és látható műholdakat is mutatja rendszerenként (GPS, Galileo, GLONASS, BeiDou…).
 Budapest belterületén jelzi, hogy a fővárosi és kerületi utak nem részei az országos közúthálózatnak.
 
@@ -41,7 +41,7 @@ A keresések elmenthetők és elnevezhetők, egyenként kapcsolóval jeleníthet
 ![Keresés](screenshots/kereses.png)
 
 ### Mérés
-- **GNSS-mérés:** indítás és leállítás között méri a megtett utat és a szelvény szerinti hosszt; több úton át szakaszokra bont, közbenső pontokat rögzít.
+- **GNSS mérés:** indítás és leállítás között méri a megtett utat és a szelvény szerinti hosszt; több úton át szakaszokra bont, közbenső pontokat rögzít.
 - **Mérés a térképen:** lerakott pontok között légvonal, úton mért (legrövidebb útvonal az országos hálózaton) és szelvény szerinti távolság.
 - **Mentett mérések:** elnevezhetők, térképen megjeleníthetők, CSV-be exportálhatók.
 
