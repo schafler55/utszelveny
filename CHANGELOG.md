@@ -4,6 +4,11 @@ Az ÚtSzelvény változásai, a legújabb elöl. A dátumok UTC szerint értend�
 A nagyobb funkciók saját ágon (branch) készültek teszt oldallal és teszt APK-val, és pull requestként (#) kerültek a `main` ágba;
 a kisebb javítások közvetlenül a `main`-re kerültek.
 
+## [0.22.4] – 2026-11-20
+- Hidak kártya (Pozíció oldal) és a Részletek „Híd” szakasza egyforma soros elrendezést kapott: balra mindig a híd ikonja, alatta (a Pozíció oldalon) a távolság, pl. „150 m” vagy „itt”.
+- Új, kéttónusú híd ikonok az alkalmazás színeivel: ugyanaz a híd, a zöld nyíl felfelé mutat a híd felett („Áthaladsz rajta”), lefelé a híd alatt („Alatta haladsz el”), mellette felfelé, ha a híd az út mellett van.
+- A korlátozások félkövér piros szöveggel, soronként egy, az érték piros chipben (mint a JOBB / BAL), pl. „Össztömeg [40 t]”; a nagy táblaképek ebből a listából kikerültek.
+
 ## [0.22.3] – 2026-11-20
 - Ha egy út osztott pályás út (pl. autópálya) felett halad át, mindkét pálya megkapja a „Alatta haladsz el” hidat (eddig csak a hídhoz közelebbi pálya); a térképen a hídpálya mindkét pálya fölé ér.
 
