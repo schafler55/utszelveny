@@ -1779,7 +1779,7 @@ const KUT=TXA("road_type",12);
 const PKOD=TXA("carriageway",3);
 
 /* ---------- settings ---------- */
-const S={wake:true,bike:true,navHide:true,name:true,coord:"wgs",base:"grey",rot:"north",measCoord:"both",measCsv:true,srchCsv:true,lineW:1.6,hl:"bold",smooth:true,secSpd:true,secBr:true,secTr:true,secGps:true,secKez:true,phName:true,phAcc:true,phCoord:"off",phRes:"best",phAuto:true,phExif:true,phDir:true,phVol:true,phFolder:"pictures",hudFlip:"x",hudOri:"land",hudCol:"white",hudBr:"max",hudDir:true,hudSpd:true,hudLim:true,hudName:false};
+const S={theme:"auto",wake:true,bike:true,navHide:true,name:true,coord:"wgs",base:"grey",rot:"north",measCoord:"both",measCsv:true,srchCsv:true,lineW:1.5,hl:"off",smooth:true,secSpd:true,secBr:true,secTr:true,secGps:true,secKez:true,phName:true,phAcc:true,phCoord:"both",phRes:"fast",phAuto:true,phExif:true,phDir:true,phVol:true,phFolder:"pictures",hudFlip:"x",hudOri:"land",hudCol:"white",hudBr:"max",hudDir:true,hudSpd:true,hudLim:true,hudName:false};
 try{Object.assign(S,JSON.parse(localStorage.getItem("ksz_settings")||"{}"))}catch(e){}
 function saveS(){try{localStorage.setItem("ksz_settings",JSON.stringify(S))}catch(e){}}
 /* ---------- theme: Sötét / Világos / Rendszer (dark / light / system) ---------- */
@@ -2759,7 +2759,7 @@ function drawMap(){
   // static layer: roads, current-road highlight, searched sections, measurement tracks, km posts
   const paint=(W,H,segs)=>{
   ctx.lineCap="round";ctx.lineJoin="round";
-  const LW=S.lineW||1.6;
+  const LW=S.lineW||1.5;
   // roads are stroked as one path per road type (a few stroke calls instead of one per segment); of each segment
   // only the part on screen is added, and vertices closer than ~1 px to the previous kept one are skipped
   const PM=40,oc=(x,y)=>(x<-PM?1:0)|(x>W+PM?2:0)|(y<-PM?4:0)|(y>H+PM?8:0);
@@ -2773,7 +2773,7 @@ function drawMap(){
   const groups=(list)=>{const G=new Map();for(const s of list){const k=segKut[s];let g=G.get(k);if(!g)G.set(k,g={k,p:new Path2D()});addSeg(g.p,s)}return [...G.values()]};
   const stroke=(p,col,w)=>{ctx.strokeStyle=col;ctx.lineWidth=w;ctx.stroke(p)};
   // roads; the one we are on keeps its own colour and is emphasised (S.hl: bold | halo | off)
-  {const hl=curRoad>=0?(S.hl||"bold"):"off",wk=k=>{let w=ST(k)[1];if(gS<0.06)w*=0.7;return w};
+  {const hl=curRoad>=0?(S.hl||"off"):"off",wk=k=>{let w=ST(k)[1];if(gS<0.06)w*=0.7;return w};
   const GO=groups(hl==="off"?segs:segs.filter(s=>segRoad[s]!==curRoad)),GM=hl==="off"?[]:groups(segs.filter(s=>segRoad[s]===curRoad));
   // dark casing under the roads on the satellite image, so they stand out
   if(sat)for(const g of GO)stroke(g.p,"#000a",wk(g.k)*LW+2.5);
@@ -2888,7 +2888,7 @@ function kmPosts(s){let K=KMP.get(s);if(K)return K;K=[];const A=segAnc[s],L=segL
 const BR_X_D=20,BR_X_REACH=48;      // a crossing road within 20 m of the bridge point; its carriageways within ±48 m along the bridge
 const mapZoom=()=>Math.log2(mS*WORLD/256);            // the map's zoom level (inverse of zToS)
 const brZoom=()=>S.brZ>=10&&S.brZ<=19?S.brZ:14;       // bridges are shown from this zoom level (slider in Térkép settings)
-const kmZoom=()=>S.kmZ>=10&&S.kmZ<=19?S.kmZ:14;       // km posts and their km numbers from this zoom level (slider in Térkép settings)
+const kmZoom=()=>S.kmZ>=10&&S.kmZ<=19?S.kmZ:15;       // km posts and their km numbers from this zoom level (slider in Térkép settings)
 let BRPOS=null,BRX=null,BRXB=null,BRU=null;
 function bridgePositions(){
   if(BRPOS)return BRPOS;BRPOS=[];roadIndex();
@@ -2966,7 +2966,7 @@ function overOnBridges(){
   ctx.restore();
 }
 function drawBridgeMarks(W,H,gS){
-  const P=bridgePositions(),light=S.base==="grey",sat=S.base==="sat",boxes=[],seen=new Set(),LW=S.lineW||1.6;
+  const P=bridgePositions(),light=S.base==="grey",sat=S.base==="sat",boxes=[],seen=new Set(),LW=S.lineW||1.5;
   const ST=sat?STYLE_SAT:light?STYLE_LIGHT:STYLE_DARK;
   const deckF=sat?"rgba(214,217,222,.94)":light?"#c9ccd0":"#5d646b",deckE=light?"#2f3833":"#f1f3f5",amber="#f59e0b";
   const label=(txt,x,y)=>{ctx.font="600 11px Roboto,Arial,sans-serif";const w=ctx.measureText(txt).width+10;
@@ -3290,7 +3290,7 @@ function setRot(v){S.rot=v==="heading"?"heading":"north";saveS();document.queryS
 $("rotBtn").onclick=()=>setRot(headingUp()?"north":"heading");
 document.querySelectorAll("#rotSeg button").forEach(b=>b.onclick=()=>setRot(b.dataset.v));
 setRot(S.rot||"north");
-function setHl(v){S.hl=["bold","halo","off"].includes(v)?v:"bold";saveS();document.querySelectorAll("#hlSeg button").forEach(b=>b.classList.toggle("on",b.dataset.v===S.hl));drawMap()}
+function setHl(v){S.hl=["bold","halo","off"].includes(v)?v:"off";saveS();document.querySelectorAll("#hlSeg button").forEach(b=>b.classList.toggle("on",b.dataset.v===S.hl));drawMap()}
 document.querySelectorAll("#hlSeg button").forEach(b=>b.onclick=()=>setHl(b.dataset.v));
 document.querySelectorAll("#smSeg button").forEach(b=>b.onclick=()=>setSmooth(b.dataset.v));setSmooth(S.smooth===false?"off":"on");
 setHl(S.hl);
@@ -3962,7 +3962,7 @@ function drawShield(c,x,y,h,num,kut){   // the road-number sign of shieldSVG(), 
 function fitTxt(c,s,w){if(c.measureText(s).width<=w)return s;while(s.length>1&&c.measureText(s+"…").width>w)s=s.slice(0,-1);return s.trimEnd()+"…"}
 function stampCoord(d){
   if(d.lat==null)return null;
-  let m=S.phCoord||"off";if(m==="off"&&d.state!=="on")m="wgs";
+  let m=S.phCoord||"both";if(m==="off"&&d.state!=="on")m="wgs";
   if(m==="off")return null;
   const e=fmtEOV(d.E,d.N),w=fmtWGS(d.lat,d.lon);
   return m==="eov"?e:m==="wgs"?w:w+" · "+e;
@@ -4227,7 +4227,7 @@ async function camCaptureLoop(){
   while(camTaps.length&&camStream){
     const tap=camTaps.shift();let src=null;
     try{
-      const fl=(S.phFlash==="flash")&&camFlModes().includes("flash"),still=S.phRes!=="fast"&&camIC;
+      const fl=(S.phFlash==="flash")&&camFlModes().includes("flash"),still=(S.phRes||"fast")!=="fast"&&camIC;
       // the browser's own flash (fillLightMode) skips the pre-flash metering, so on many phones (e.g. Pixel) it never fires:
       // use it only when there is no torch; otherwise light the scene with the torch for the shot
       const nativeFl=fl&&still&&camCaps.flash&&!camCaps.torch;
@@ -4331,8 +4331,8 @@ window.__appResume=()=>{if(camOn){camStart();camUI()}};
 if(!NB)window.addEventListener("beforeunload",(e)=>{if(camShots.some(x=>!x.saved)||camPend){e.preventDefault();e.returnValue=""}});
 /* Fotó settings */
 function renderPhSet(){
-  document.querySelectorAll("#phCoordSeg button").forEach(b=>b.classList.toggle("on",b.dataset.v===(S.phCoord||"off")));
-  document.querySelectorAll("#phResSeg button,#camResSeg button").forEach(b=>b.classList.toggle("on",b.dataset.v===(S.phRes||"best")));
+  document.querySelectorAll("#phCoordSeg button").forEach(b=>b.classList.toggle("on",b.dataset.v===(S.phCoord||"both")));
+  document.querySelectorAll("#phResSeg button,#camResSeg button").forEach(b=>b.classList.toggle("on",b.dataset.v===(S.phRes||"fast")));
   $("phAutoNote").textContent=NB?TX("settings.photo_auto_app"):TX("settings.photo_auto_browser");
 }
 document.querySelectorAll("#phCoordSeg button").forEach(b=>b.onclick=()=>{S.phCoord=b.dataset.v;saveS();renderPhSet();camOverlay()});
@@ -4909,7 +4909,7 @@ $("tWgs").onclick=()=>{S.coord="wgs";saveS();syncTabs();render()};
 function syncTabs(){$("tEov").classList.toggle("on",S.coord==="eov");$("tWgs").classList.toggle("on",S.coord!=="eov");
   document.querySelectorAll("#posCoordSeg button").forEach(b=>b.classList.toggle("on",(b.dataset.v==="eov")===(S.coord==="eov")))}
 document.querySelectorAll("#posCoordSeg button").forEach(b=>b.onclick=()=>{S.coord=b.dataset.v;saveS();syncTabs();render()});
-function syncThemeSeg(){document.querySelectorAll("#themeSeg button").forEach(b=>b.classList.toggle("on",b.dataset.v===(S.theme||"dark")))}
+function syncThemeSeg(){document.querySelectorAll("#themeSeg button").forEach(b=>b.classList.toggle("on",b.dataset.v===(S.theme||"auto")))}
 document.querySelectorAll("#themeSeg button").forEach(b=>b.onclick=()=>{S.theme=b.dataset.v;saveS();applyTheme();syncThemeSeg()});
 syncThemeSeg();
 // Beállítások: tabs; opens on the tab of the page you are on
