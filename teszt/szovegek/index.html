@@ -934,14 +934,18 @@ nav button.on.rec::after{box-shadow:0 0 0 2px var(--pri)}
 .basenote{position:absolute;left:12px;right:12px;top:48px;background:var(--warn-c);color:var(--on-warn-c);border-radius:16px;padding:10px 14px;font-size:.82rem;line-height:1.4;display:none;box-shadow:var(--shadow)}
 /* Material 3 slider: 4 px track (filled part in primary), 20 px handle with a halo, value bubble while dragging */
 .rngw{position:relative;flex:1;min-width:0;--p:.5}
-.rng{-webkit-appearance:none;appearance:none;width:100%;height:44px;background:none;margin:0;cursor:pointer;display:block}
+/* sliders move only by the dot: the track lets touches through (scrolling the settings never changes a value),
+   the dot keeps a 44 px touch target (12 px transparent border round the 20 px dot); the input is 24 px wider than
+   its wrapper so the dot still travels from end to end of the visible track */
+.rng{-webkit-appearance:none;appearance:none;width:calc(100% + 24px);height:44px;background:none;margin:0 -12px;cursor:pointer;display:block;pointer-events:none}
 .rng:focus{outline:none}
-.rng::-webkit-slider-runnable-track{height:4px;border-radius:2px;background:linear-gradient(to right,var(--pri) calc(var(--p)*100%),var(--sc-highest) calc(var(--p)*100%))}
-.rng::-moz-range-track{height:4px;border-radius:2px;background:var(--sc-highest)}
-.rng::-moz-range-progress{height:4px;border-radius:2px;background:var(--pri)}
-.rng::-webkit-slider-thumb{-webkit-appearance:none;width:20px;height:20px;margin-top:-8px;border-radius:50%;background:var(--pri);border:0;box-shadow:0 0 0 0 transparent;transition:box-shadow .15s}
-.rng::-moz-range-thumb{width:20px;height:20px;border-radius:50%;background:var(--pri);border:0}
-.rng:active::-webkit-slider-thumb,.rng:focus-visible::-webkit-slider-thumb{box-shadow:0 0 0 10px color-mix(in srgb,var(--pri) 18%,transparent)}
+.rng::-webkit-slider-runnable-track{height:4px;background:linear-gradient(to right,transparent 12px,var(--pri) 12px,var(--pri) calc(22px + (100% - 44px)*var(--p)),var(--sc-highest) calc(22px + (100% - 44px)*var(--p)),var(--sc-highest) calc(100% - 12px),transparent calc(100% - 12px))}
+.rng::-moz-range-track{height:4px;background:linear-gradient(to right,transparent 12px,var(--pri) 12px,var(--pri) calc(22px + (100% - 44px)*var(--p)),var(--sc-highest) calc(22px + (100% - 44px)*var(--p)),var(--sc-highest) calc(100% - 12px),transparent calc(100% - 12px))}
+.rng::-moz-range-progress{background:none}
+.rng::-webkit-slider-thumb{-webkit-appearance:none;width:44px;height:44px;margin-top:-20px;border-radius:50%;background:var(--pri);background-clip:padding-box;border:12px solid transparent;box-sizing:border-box;pointer-events:auto;transition:border-color .15s}
+.rng::-moz-range-thumb{width:44px;height:44px;border-radius:50%;background:var(--pri);background-clip:padding-box;border:12px solid transparent;box-sizing:border-box;pointer-events:auto;transition:border-color .15s}
+.rng:active::-webkit-slider-thumb,.rng:focus-visible::-webkit-slider-thumb{border-color:color-mix(in srgb,var(--pri) 18%,transparent)}
+.rng:active::-moz-range-thumb,.rng:focus-visible::-moz-range-thumb{border-color:color-mix(in srgb,var(--pri) 18%,transparent)}
 .rngb{position:absolute;bottom:34px;left:calc(10px + (100% - 20px) * var(--p));transform:translateX(-50%) scale(.6);transform-origin:50% 100%;opacity:0;pointer-events:none;min-width:38px;height:28px;padding:0 8px;border-radius:14px;background:var(--pri);color:var(--on-pri);font-size:.8125rem;font-weight:600;display:grid;place-items:center;font-variant-numeric:tabular-nums;transition:opacity .15s,transform .15s cubic-bezier(.2,0,0,1)}
 .rngb::after{content:"";position:absolute;left:50%;bottom:-5px;width:10px;height:10px;background:var(--pri);transform:translateX(-50%) rotate(45deg);border-radius:0 0 2px 0;z-index:-1}
 .rngw.drag .rngb{opacity:1;transform:translateX(-50%) scale(1)}
