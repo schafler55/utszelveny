@@ -53,7 +53,7 @@ import java.util.concurrent.TimeUnit;
  * The whole app is assets/index.html (the same file as the web app); this class only shows it,
  * asks for the location (GNSS) and camera permissions, passes the satellite status to the page, keeps the screen on,
  * and through the "AndroidBridge" JS bridge saves files (photo → the folder chosen in the Fotó settings, by default
- * Pictures/ÚtSzelvény; CSV → Download/ÚtSzelvény), shares them and copies text to the clipboard.
+ * Pictures/ÚtSzelvény; CSV → Download), shares them and copies text to the clipboard.
  * HUD mode: full screen, maximum brightness and a locked orientation (setHud).
  * The page is loaded from https://appassets.androidplatform.net (a secure context), so geolocation and the camera
  * work, and OpenStreetMap gets a Referer header.
@@ -194,7 +194,7 @@ public class MainActivity extends Activity {
         s.setAllowFileAccess(false);
         s.setAllowContentAccess(false);
         // OpenStreetMap tile usage policy: an app must identify itself (name/version + project URL)
-        s.setUserAgentString(s.getUserAgentString() + " UtSzelveny/1.0.2 (+https://github.com/schafler55/utszelveny)");
+        s.setUserAgentString(s.getUserAgentString() + " UtSzelveny/1.0.3 (+https://github.com/schafler55/utszelveny)");
 
         web.addJavascriptInterface(new Bridge(), "AndroidBridge");
 
@@ -411,7 +411,7 @@ public class MainActivity extends Activity {
             runOnUiThread(() -> applyBars("light".equals(theme)));
         }
 
-        /** Saves a base64 file: image/* → Pictures/ÚtSzelvény (gallery), anything else → Download/ÚtSzelvény. */
+        /** Saves a base64 file: image/* → Pictures/ÚtSzelvény (gallery), anything else → Download. */
         @JavascriptInterface
         public void saveFile(final String b64, final String name, final String mime, final String id) {
             // returns at once: decoding and writing run on a worker thread (the page waits for this call otherwise)
@@ -447,7 +447,7 @@ public class MainActivity extends Activity {
             });
         }
 
-        /** Photo folder: pictures = Pictures/ÚtSzelvény, dcim = DCIM/ÚtSzelvény, camera = DCIM/Camera, custom = folder picked with pickPhotoDir. */
+        /** Photo folder: pictures = Pictures/ÚtSzelvény, dcim = DCIM/ÚtSzelvény, custom = folder picked with pickPhotoDir. */
         @JavascriptInterface
         public void setPhotoDir(String key) {
             prefs().edit().putString("photoDir", key == null ? "pictures" : key).apply();
@@ -611,7 +611,7 @@ public class MainActivity extends Activity {
 
     private Uri writeFile(byte[] data, String name, String mime) throws IOException {
         boolean image = mime != null && mime.startsWith("image/");
-        // photos: folder chosen in the Fotó settings; anything else (CSV): Download/ÚtSzelvény
+        // photos: folder chosen in the Fotó settings (an old "camera" choice falls back to Pictures); anything else (CSV): Download
         String key = image ? prefs().getString("photoDir", "pictures") : "";
         if ("custom".equals(key)) {
             Uri tree = photoTree();
@@ -619,8 +619,8 @@ public class MainActivity extends Activity {
             key = "pictures";
         }
         String base = !image ? Environment.DIRECTORY_DOWNLOADS
-                : ("dcim".equals(key) || "camera".equals(key)) ? Environment.DIRECTORY_DCIM : Environment.DIRECTORY_PICTURES;
-        String sub = "camera".equals(key) ? "Camera" : FOLDER;
+                : "dcim".equals(key) ? Environment.DIRECTORY_DCIM : Environment.DIRECTORY_PICTURES;
+        String sub = image ? FOLDER : "";
         if (Build.VERSION.SDK_INT >= 29) {
             ContentResolver cr = getContentResolver();
             Uri coll = image
@@ -629,7 +629,7 @@ public class MainActivity extends Activity {
             ContentValues v = new ContentValues();
             v.put(MediaStore.MediaColumns.DISPLAY_NAME, name);
             v.put(MediaStore.MediaColumns.MIME_TYPE, mime);
-            v.put(MediaStore.MediaColumns.RELATIVE_PATH, base + "/" + sub);
+            v.put(MediaStore.MediaColumns.RELATIVE_PATH, sub.isEmpty() ? base : base + "/" + sub);
             v.put(MediaStore.MediaColumns.IS_PENDING, 1);
             Uri uri = cr.insert(coll, v);
             if (uri == null) throw new IOException("a fájl nem hozható létre");
@@ -646,7 +646,7 @@ public class MainActivity extends Activity {
             return uri;
         }
         // Android 8–9: public folder + media scanner (gives a shareable content:// uri)
-        File dir = new File(Environment.getExternalStoragePublicDirectory(base), sub);
+        File dir = sub.isEmpty() ? Environment.getExternalStoragePublicDirectory(base) : new File(Environment.getExternalStoragePublicDirectory(base), sub);
         if (!dir.isDirectory() && !dir.mkdirs()) throw new IOException("a mappa nem hozható létre");
         File f = new File(dir, name);
         int dot = name.lastIndexOf('.');

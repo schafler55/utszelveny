@@ -4,6 +4,10 @@ Az ÚtSzelvény változásai, a legújabb elöl. A dátumok UTC szerint értend�
 A nagyobb funkciók saját ágon (branch) készültek teszt oldallal és teszt APK-val, és pull requestként (#) kerültek a `main` ágba;
 a kisebb javítások közvetlenül a `main`-re kerültek.
 
+## [1.0.3] – 2026-11-21
+- Android: a CSV-exportok közvetlenül a Letöltések mappába kerülnek (nem a Letöltések / ÚtSzelvény almappába).
+- Fotó beállítások: a „DCIM / Camera” mappa megszűnt; aki ezt választotta, annak a fotói ismét a Képek / ÚtSzelvény mappába kerülnek.
+
 ## [1.0.2] – 2026-11-21
 - Szövegek: 38 felirat és magyarázat átfogalmazva, rövidítve (gondolatjelek helyett mondatok, felesleges részletek nélkül).
 - Pozíció, GNSS kártya: a rendszer neve és a műholdszám között szóköz van („GPS 2/6”, „Galileo 8/9”).
