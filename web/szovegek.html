@@ -26,6 +26,7 @@ section{margin-top:18px}
 h2{font-size:1rem;margin:0 0 2px;display:flex;align-items:baseline;gap:8px;scroll-margin-top:180px}
 h2 code{font-size:.8rem;color:var(--onv);font-weight:400}
 .gd{color:var(--onv);font-size:.82rem;margin-bottom:8px}
+.sh{font-size:.95rem;font-weight:500;margin:16px 0 6px;color:var(--on)}
 .it{background:var(--sc);border:1px solid var(--line);border-radius:14px;padding:8px 10px;margin-bottom:6px}
 .it.ch{border-color:var(--pri);box-shadow:inset 3px 0 0 var(--pri)}
 .it.bad{border-color:var(--err);box-shadow:inset 3px 0 0 var(--err)}
@@ -98,19 +99,31 @@ const GROUPS={
   coord:"Coordinate input errors (Keresés, manual position)",
   photo:"Fotó – camera, flash, stamp on the photo, saving, viewer",
   hud:"HUD mode screen",
-  settings:"Beállítások – every tab",
-  about:"Névjegy – about text, data line, privacy, manual position",
-  start:"First-start statement (shown once, before GNSS starts; Névjegy can show it again)",
+  settings:"Beállítások – in screen order: header and tab names, then each tab with its green group headings and the settings under them",
+  about:"Névjegy – texts in the cards (the Alkalmazás and Fontos headings are in settings)",
+  start:"First-start statement (shown once on the first start, before GNSS starts)",
   common:"Words used on several screens (changing one changes it everywhere)",
   road_type:"Road types (lookup list by NAP code)",
   carriageway:"Carriageway names (0 osztatlan, 1 jobb, 2 bal)",
   truck_limit:"Truck restriction types (lookup list by NAP code)",
   bridge_limit:"Bridge restriction types (lookup list by NAP code)"
 };
+// sub-headings inside a group: shown above the given key (settings follow the tabs of Beállítások)
+const SUB={
+  "settings.title":"Header and tab names",
+  "settings.grp_look":"Általános tab",
+  "settings.grp_ch":"Pozíció tab",
+  "settings.grp_base":"Térkép tab (also the settings panel over the map)",
+  "settings.srch_csv":"Keresés tab",
+  "settings.grp_meas":"Mérés tab",
+  "settings.photo_stamp":"Fotó tab",
+  "settings.hud_start":"HUD tab",
+  "settings.grp_app":"Névjegy tab (its other texts are in the about group)"
+};
 const LS="utszelveny_texts_draft";
 const $=id=>document.getElementById(id);
 const branch=(location.pathname.match(/\/teszt\/([^/]+)\//)||[])[1]||"main";
-let ORIG=null, draft={}, USE={aria:new Set(),ph:new Set(),vis:new Set()};
+let ORIG=null, draft={}, USE={aria:new Set(),ph:new Set(),vis:new Set(),head:new Set()};
 try{draft=JSON.parse(localStorage.getItem(LS)||"{}")}catch(e){draft={}}
 
 const isArr=v=>Array.isArray(v);
@@ -137,6 +150,7 @@ async function load(){
   const rest=html.slice(0,X.start)+html.slice(X.end);
   for(const m of rest.matchAll(/data-tx-aria-label="([^"]+)"/g))USE.aria.add(m[1]);
   for(const m of rest.matchAll(/data-tx-placeholder="([^"]+)"/g))USE.ph.add(m[1]);
+  for(const m of rest.matchAll(/class="sgrp-h" data-tx="([^"]+)"/g))USE.head.add(m[1]);
   for(const m of rest.matchAll(/(?<!data-tx-aria-label=|data-tx-placeholder=)["']([a-z_]+\.[a-z0-9_]+)["']/g))USE.vis.add(m[1]);
   const ver=(html.match(/<title>([^<]*)<\/title>/)||[])[1]||"";
   let n=0;for(const g in ORIG)n+=Object.keys(ORIG[g]).length;
@@ -153,6 +167,7 @@ function render(){
     out.push(`<section data-g="${g}"><h2 id="g-${g}">${esc(g)} <code>${Object.keys(ORIG[g]).length}</code></h2><div class="gd">${esc(GROUPS[g]||"")}</div>`);
     for(const [key,v] of Object.entries(ORIG[g])){
       const k=g+"."+key,cur=k in draft?draft[k]:v;
+      if(SUB[k])out.push(`<h3 class="sh">${esc(SUB[k])}</h3>`);
       out.push(`<div class="it" data-k="${esc(k)}"><div class="k"><span>${esc(k)}</span><button type="button" data-undo>undo</button></div>`+
         `<textarea rows="1" spellcheck="true" lang="hu">${esc(toEdit(cur))}</textarea><div class="m"></div><div class="old hide"></div></div>`);
     }
@@ -171,6 +186,7 @@ function upd(it){
   it.classList.toggle("ch",ch);it.classList.toggle("bad",ch&&(miss.length>0||tmiss.length>0));
   const m=[];
   if(isArr(o))m.push(`list – one item per line (${o.length})`);
+  if(USE.head.has(k))m.push("green group heading in Beállítások");
   if(USE.ph.has(k))m.push("hint in the empty input field");
   else if((USE.aria.has(k)&&!USE.vis.has(k))||/_aria$/.test(key))m.push("screen reader label (not shown)");
   if(P.length)m.push("fills in: "+P.map(p=>`<span class="p">${esc(p)}</span>`).join(" "));
@@ -199,6 +215,7 @@ $("q").addEventListener("input",()=>{
   document.querySelectorAll("section").forEach(s=>{
     let any=false;
     s.querySelectorAll(".it").forEach(it=>{const hit=!q||it.dataset.k.toLowerCase().includes(q)||it.querySelector("textarea").value.toLowerCase().includes(q);it.classList.toggle("hide",!hit);any=any||hit});
+    s.querySelectorAll(".sh").forEach(h=>h.classList.toggle("hide",!!q));
     s.classList.toggle("hide",!any);
   });
 });
