@@ -4,6 +4,15 @@ Az ÚtSzelvény változásai, a legújabb elöl. A dátumok UTC szerint értend�
 A nagyobb funkciók saját ágon (branch) készültek teszt oldallal és teszt APK-val, és pull requestként (#) kerültek a `main` ágba;
 a kisebb javítások közvetlenül a `main`-re kerültek.
 
+## [1.0] – 2026-11-21
+Első stabil kiadás.
+- **Indítási tájékoztató:** az első indításkor egy ablak jelenik meg (az adatok tájékoztató jellegűek, nem hitelesek; vezetés közben ne kezeld; helyadat-használat; GPL-3.0, garancia nélkül). A GNSS csak az „Elfogadom” után indul, így a helyengedély kérése a magyarázat után jön. A Névjegyben az „Indítási tájékoztató” gombbal újra megnézhető.
+- **Adatvédelem:** új szakasz a Névjegyben és a README-ben: mi marad a készüléken, és mit látnak a térképszolgáltatók.
+- **Térkép:** a műholdkép forrásmegjelölése „Powered by Esri · © Esri, Maxar, Earthstar Geographics, GIS User Community” (az Esri előírása szerint). Az Android alkalmazás a térképcsempék kérésekor azonosítja magát (`UtSzelveny/1.0` a projekt címével), ahogy az OpenStreetMap csempeszabályzata előírja.
+- **Android:** az APK a V1.0-tól saját, titkos kulccsal aláírt kiadási (release) változat; a nyilvános debug kulcs kikerült a tárolóból. **A béta APK-t a V1.0 telepítése előtt el kell távolítani**, ezzel a mentett mérések és keresések is törlődnek, ezért előtte érdemes CSV-be menteni őket.
+- **Kiadás:** egy `v*` címke (pl. `v1.0`) stabil GitHub kiadást készít az APK-val; a README letöltési linkje (`releases/latest`) erre mutat. Az `apk-latest` továbbra is a `main` ág legfrissebb állapota.
+- Verzió mindenhol V1.0 (a „Beta” jelzés megszűnt), versionCode 100.
+
 ## [0.25.1] – 2026-11-21
 - Térkép alapréteg választó (Beállítások → Térkép és a térkép panel): a négy előnézeti kép valódi térképrészlet ugyanarról a helyről (Báránd, 42-es főút és 4801-es út): Világos és Sötét az OpenStreetMap csempéiből, ugyanazzal a színszűrővel, mint a térkép; Műhold az Esri műholdképből; Ki csak az utakkal. Az utak a térkép színeivel (Műholdon sötét szegéllyel). A képek az alkalmazásba vannak építve (WebP, összesen ~48 KB, nagyjából annyi, mint a korábbi rajzok), offline is látszanak.
 - README: új képernyőképek a V0.25-ből, a Pixel 7 Pro kijelzőjével megegyező méretben, valódi térkép-alapréteggel, és valódi, az alkalmazással készült fotók.

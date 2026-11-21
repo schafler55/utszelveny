@@ -10,23 +10,35 @@ android {
         applicationId "hu.szaszi.kozutszelveny"
         minSdk 26          // Android 8.0
         targetSdk 34
-        versionCode 98
-        versionName "0.25.1-beta"
+        versionCode 100
+        versionName "1.0"
     }
 
-    // Fixed key, so a new APK installs over the previous one without uninstalling.
+    // Release key: private, never in the repository. The GitHub workflow decodes it from the
+    // RELEASE_KEYSTORE_B64 secret into a file and passes its path and password in these variables.
+    // Always the same key, so a new APK installs over the previous one without uninstalling.
     signingConfigs {
-        debug {
-            storeFile file('debug.keystore')
-            storePassword 'android'
-            keyAlias 'androiddebugkey'
-            keyPassword 'android'
+        release {
+            def ks = System.getenv('RELEASE_KEYSTORE_FILE')
+            if (ks) {
+                storeFile file(ks)
+                storeType 'pkcs12'
+                storePassword System.getenv('RELEASE_KEYSTORE_PASSWORD')
+                keyAlias System.getenv('RELEASE_KEY_ALIAS')
+                keyPassword System.getenv('RELEASE_KEYSTORE_PASSWORD')
+            }
         }
     }
     buildTypes {
-        debug {
-            signingConfig signingConfigs.debug
+        release {
+            minifyEnabled false
+            signingConfig signingConfigs.release
         }
+    }
+
+    // same as the earlier debug builds: lint does not stop the release build
+    lint {
+        checkReleaseBuilds false
     }
 
     compileOptions {

@@ -193,7 +193,8 @@ public class MainActivity extends Activity {
         s.setMediaPlaybackRequiresUserGesture(false);
         s.setAllowFileAccess(false);
         s.setAllowContentAccess(false);
-        s.setUserAgentString(s.getUserAgentString() + " UtSzelveny/0.25.1");
+        // OpenStreetMap tile usage policy: an app must identify itself (name/version + project URL)
+        s.setUserAgentString(s.getUserAgentString() + " UtSzelveny/1.0 (+https://github.com/schafler55/utszelveny)");
 
         web.addJavascriptInterface(new Bridge(), "AndroidBridge");
 
