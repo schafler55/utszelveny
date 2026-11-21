@@ -132,6 +132,8 @@ jobs:
           name: ÚtSzelvény ${{ steps.apk.outputs.ver }}
           prerelease: false
           make_latest: true
+          # keep release notes written by hand on GitHub; the lines below are added after them
+          append_body: true
           files: ${{ steps.apk.outputs.name }}
           body: |
             ÚtSzelvény ${{ steps.apk.outputs.ver }} – stabil kiadás. Változások: [CHANGELOG.md](https://github.com/${{ github.repository }}/blob/${{ github.ref_name }}/CHANGELOG.md)
