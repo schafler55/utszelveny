@@ -56,7 +56,7 @@ Az Android alkalmazásban a hangerőgombokkal (vagy Bluetooth-os távkioldóval)
 
 ![Fotó funkció – valódi fotók](screenshots/foto.jpg)
 
-<sub>Valódi, az alkalmazással készült fotók (Pixel 7 Pro, 2026. 11. 19.), a bélyegzővel együtt, ahogy az alkalmazás elmentette.</sub>
+<sub>Valódi, az alkalmazással készült fotók (Pixel 7 Pro, 2026. 11. 19.), a bélyegzővel együtt, ahogy az alkalmazás elmentette; kettő a Fotó oldal képernyőképébe illesztve, ahogy exponálás előtt látszik.</sub>
 
 ### HUD mód
 A műszerfalra fektetett telefon képe a szélvédőn tükröződik: fekete háttér, nagy, fényes útszám és szelvény,
