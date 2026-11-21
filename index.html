@@ -910,9 +910,12 @@ html[data-theme=light] .mapinfo .bh{color:color-mix(in srgb,var(--k) 55%,#000)}
       <div class="opt"><div><span>Hidak a térképen</span><span class="sm" style="display:block;margin-top:2px">Sárga: korlátozott híd; ↧: magasságkorlát a híd alatt haladó úton.</span></div><button class="sw on" id="swMapBr"></button></div>
       <div id="brZBox"><div class="mset-l">Hidak ettől a nagyítástól</div>
       <div style="display:flex;align-items:center;gap:12px"><div class="rngw" id="brZw"><input type="range" class="rng" id="brZ" min="12" max="18" step="1" aria-label="Hidak ettől a nagyítástól"><span class="rngb" id="brZb"></span></div><span class="rngv" id="brZv"></span></div></div>
-      <div class="opt"><div><span>Kilométerszelvények a térképen</span><span class="sm" style="display:block;margin-top:2px">Pont az úton és vonalka az út mellé; osztott pályán és egymás melletti utaknál kifelé. A km-szám egy szinttel nagyobb nagyítástól látszik.</span></div><button class="sw on" id="swMapKm"></button></div>
+      <div class="opt"><div><span>Kilométerszelvények a térképen</span><span class="sm" style="display:block;margin-top:2px">Pont az úton és vonalka az út mellé; osztott pályán és egymás melletti utaknál kifelé.</span></div><button class="sw on" id="swMapKm"></button></div>
       <div id="kmZBox"><div class="mset-l">Kilométerszelvények ettől a nagyítástól</div>
-      <div style="display:flex;align-items:center;gap:12px"><div class="rngw" id="kmZw"><input type="range" class="rng" id="kmZ" min="11" max="18" step="1" aria-label="Kilométerszelvények ettől a nagyítástól"><span class="rngb" id="kmZb"></span></div><span class="rngv" id="kmZv"></span></div></div>
+      <div style="display:flex;align-items:center;gap:12px"><div class="rngw" id="kmZw"><input type="range" class="rng" id="kmZ" min="11" max="18" step="1" aria-label="Kilométerszelvények ettől a nagyítástól"><span class="rngb" id="kmZb"></span></div><span class="rngv" id="kmZv"></span></div>
+      <div class="mset-l">Km-számok ettől a nagyítástól</div>
+      <div style="display:flex;align-items:center;gap:12px"><div class="rngw" id="kmTZw"><input type="range" class="rng" id="kmTZ" min="11" max="18" step="1" aria-label="Km-számok ettől a nagyítástól"><span class="rngb" id="kmTZb"></span></div><span class="rngv" id="kmTZv"></span></div>
+      <p class="note" style="margin-top:6px">A km-számok csak ott látszanak, ahol a kilométerszelvény is.</p></div>
       <div class="mset-l">Mozgás követéskor</div>
       <div class="seg wide" id="smSeg"><button data-v="on">Sima</button><button data-v="off">Frissítésenként</button></div>
       <p class="note" style="margin-top:6px">Sima: a GNSS frissítések között is folyamatosan halad a térkép és a nyíl. Frissítésenként: ugrásokkal, de kevesebbet fogyaszt.</p>
@@ -1951,7 +1954,7 @@ function drawMap(){
     return segs};
   const curRoad=cur&&!cur.res.off?segRoad[cur.res.best.s]:-1;
   const ST=sat?STYLE_SAT:light?STYLE_LIGHT:STYLE_DARK;
-  const zl=mapZoom(),kmOn=S.mapKm!==false&&zl>=kmZoom(),kmTxt=kmOn&&zl>=kmZoom()+1;
+  const zl=mapZoom(),kmOn=S.mapKm!==false&&zl>=kmZoom(),kmTxt=kmOn&&zl>=kmTxtZoom();
   // static layer: roads, current-road highlight, searched sections, measurement tracks, km posts
   const paint=(W,H,segs)=>{
   ctx.lineCap="round";ctx.lineJoin="round";
@@ -2084,7 +2087,8 @@ function kmPosts(s){let K=KMP.get(s);if(K)return K;K=[];const A=segAnc[s],L=segL
 const BR_X_D=20,BR_X_REACH=48;      // a crossing road within 20 m of the bridge point; its carriageways within ±48 m along the bridge
 const mapZoom=()=>Math.log2(mS*WORLD/256);            // the map's zoom level (inverse of zToS)
 const brZoom=()=>S.brZ>=10&&S.brZ<=19?S.brZ:14;       // bridges are shown from this zoom level (slider in Térkép settings)
-const kmZoom=()=>S.kmZ>=10&&S.kmZ<=19?S.kmZ:14;       // km posts from this zoom level, their numbers one level more (slider in Térkép settings)
+const kmZoom=()=>S.kmZ>=10&&S.kmZ<=19?S.kmZ:14;       // km posts from this zoom level (slider in Térkép settings)
+const kmTxtZoom=()=>S.kmTZ>=10&&S.kmTZ<=19?S.kmTZ:15; // their km numbers from this zoom level (own slider; only where the posts show too)
 let BRPOS=null,BRX=null,BRXB=null,BRU=null;
 function bridgePositions(){
   if(BRPOS)return BRPOS;BRPOS=[];roadIndex();
@@ -4185,6 +4189,7 @@ function zoomSlider(id,get,set){const r=$(id),v=$(id+"v"),w=$(id+"w"),bb=$(id+"b
   r.value=get();show();r.oninput=()=>{set(+r.value);show();saveS();drawMap()}}
 zoomSlider("brZ",brZoom,(z)=>S.brZ=z);
 zoomSlider("kmZ",kmZoom,(z)=>S.kmZ=z);
+zoomSlider("kmTZ",kmTxtZoom,(z)=>S.kmTZ=z);
 $("swMapKm").classList.toggle("on",S.mapKm!==false);$("kmZBox").style.display=S.mapKm===false?"none":"";
 $("swMapKm").onclick=()=>{S.mapKm=S.mapKm===false;saveS();$("swMapKm").classList.toggle("on",S.mapKm);$("kmZBox").style.display=S.mapKm?"":"none";drawMap()};
 bindSw("swSpd","secSpd");bindSw("swBr","secBr");bindSw("swTr","secTr");bindSw("swGps","secGps");bindSw("swKez","secKez");
