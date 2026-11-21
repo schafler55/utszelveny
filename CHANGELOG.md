@@ -4,6 +4,10 @@ Az ÚtSzelvény változásai, a legújabb elöl. A dátumok UTC szerint értend�
 A nagyobb funkciók saját ágon (branch) készültek teszt oldallal és teszt APK-val, és pull requestként (#) kerültek a `main` ágba;
 a kisebb javítások közvetlenül a `main`-re kerültek.
 
+## [0.25.1] – 2026-11-21
+- Térkép alapréteg választó (Beállítások → Térkép és a térkép panel): a négy előnézeti kép valódi térképrészlet ugyanarról a helyről (Báránd, 42-es főút és 4801-es út): Világos és Sötét az OpenStreetMap csempéiből, ugyanazzal a színszűrővel, mint a térkép; Műhold az Esri műholdképből; Ki csak az utakkal. Az utak a térkép színeivel (Műholdon sötét szegéllyel). A képek az alkalmazásba vannak építve (WebP, összesen ~48 KB, nagyjából annyi, mint a korábbi rajzok), offline is látszanak.
+- README: új képernyőképek a V0.25-ből, a Pixel 7 Pro kijelzőjével megegyező méretben, valódi térkép-alapréteggel, és valódi, az alkalmazással készült fotók.
+
 ## [0.25] – 2026-11-21
 - Fejlesztés: az alkalmazás összes szövege (címek, magyarázatok, gombfeliratok, üzenetek, hibaüzenetek, a fotó felirata, CSV-oszlopnevek, képernyőolvasó-címkék; 613 szöveg) egy helyre került: az `index.html` elején lévő szövegblokkba (`id="texts"`), képernyők szerint csoportosítva. A felület nem változott.
 - Új oldal: **szovegek.html** – az összes szöveg képernyőnként, kereséssel; a szövegek ott átírhatók, a változások kimásolhatók vagy a módosított `index.html` letölthető.

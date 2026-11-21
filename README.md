@@ -14,7 +14,7 @@ Fotóidra ráírja a helyet és az időt, a méréseidet pedig elnevezheted és 
 Böngészőben és Android-alkalmazásként is fut. Az úthálózati adatok a készüléken vannak, így a szelvényezés internet
 nélkül is működik. Csak a térkép alapréteghez kell internetkapcsolat.
 
-**Verzió:** V0.25 Beta · [Változásnapló](CHANGELOG.md) · © 2026 Szászi Dániel · Licenc: GPL-3.0
+**Verzió:** V0.25.1 Beta · [Változásnapló](CHANGELOG.md) · © 2026 Szászi Dániel · Licenc: GPL-3.0
 
 ## Funkciók
 
@@ -56,7 +56,7 @@ Az Android alkalmazásban a hangerőgombokkal (vagy Bluetooth-os távkioldóval)
 
 ![Fotó funkció – valódi fotók](screenshots/foto.jpg)
 
-<sub>Látványterv: valódi, az alkalmazással készült fotók, a bélyegző a jelenlegi verzió elrendezésével újrarajzolva; a rendszámok kitakarva.</sub>
+<sub>Valódi, az alkalmazással készült fotók (Pixel 7 Pro, 2026. 11. 19.), a bélyegzővel együtt, ahogy az alkalmazás elmentette.</sub>
 
 ### HUD mód
 A műszerfalra fektetett telefon képe a szélvédőn tükröződik: fekete háttér, nagy, fényes útszám és szelvény,
@@ -75,7 +75,7 @@ Koordináták: WGS84 (alapértelmezett) vagy EOV.
 
 - **Webalkalmazás (telepítés nélkül):** https://schafler55.github.io/utszelveny/
   Böngészőben megnyitva az első betöltés után internet nélkül is működik, könyvjelzőként menthető az asztalra.
-- **Android APK (telepítve):** https://github.com/schafler55/utszelveny/releases/tag/apk-latest (a fájl neve tartalmazza a verziót, pl. `UtSzelveny-V0.25-Beta.apk`)
+- **Android APK (telepítve):** https://github.com/schafler55/utszelveny/releases/tag/apk-latest (a fájl neve tartalmazza a verziót, pl. `UtSzelveny-V0.25.1-Beta.apk`)
   Letöltés után engedélyezni kell az ismeretlen forrásból történő telepítést.
 
 A térkép alapréteg (OpenStreetMap vagy Esri műholdkép) internetkapcsolatot igényel; minden más adat az alkalmazásba van építve.

@@ -10,8 +10,8 @@ android {
         applicationId "hu.szaszi.kozutszelveny"
         minSdk 26          // Android 8.0
         targetSdk 34
-        versionCode 97
-        versionName "0.25-beta"
+        versionCode 98
+        versionName "0.25.1-beta"
     }
 
     // Fixed key, so a new APK installs over the previous one without uninstalling.
