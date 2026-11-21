@@ -551,7 +551,7 @@
     "map_smooth_on": "Sima",
     "map_smooth_off": "Frissítésenként",
     "map_smooth_note": "Sima: a GNSS frissítések között is folyamatosan halad a térkép és a nyíl, frissítésenként: ugrásokkal, de kevesebbet fogyaszt",
-    "map_line": "Vonalvastagság",
+    "map_line": "Utak vonalvastagsága",
     "srch_csv": "CSV-gombok a mentett kereséseknél",
     "srch_csv_note": "Másolás és letöltés a Keresés oldalon, a lista alatt",
     "meas_coord": "Koordináták a mérésekben",
@@ -650,7 +650,6 @@
     "privacy_net": "A térkép alapréteg csempéi az OpenStreetMap és az Esri szervereiről töltődnek le, így ezek a szolgáltatók – mint bármely weboldal esetén – látják az IP-címedet és a megnézett térképrészletet. A Street View gomb a Google Térképet nyitja meg.",
     "privacy_backup": "Androidon a rendszer biztonsági mentése a beállításaid szerint az alkalmazás adatait is mentheti a Google-fiókodba.",
     "license": "A program a GPL-3.0 licenc alapján, mindenféle garancia nélkül használható.",
-    "show_start": "Indítási tájékoztató",
     "manual_title": "Haladó: teszt / kézi pozíció",
     "manual_ph": "pl. 47.13285 19.41772  vagy  EOV 678089 198812",
     "manual_go": "Lekérdezés",
@@ -971,7 +970,7 @@ nav button.on.rec::after{box-shadow:0 0 0 2px var(--pri)}
 .rngb{position:absolute;bottom:34px;left:calc(10px + (100% - 20px) * var(--p));transform:translateX(-50%) scale(.6);transform-origin:50% 100%;opacity:0;pointer-events:none;min-width:38px;height:28px;padding:0 8px;border-radius:14px;background:var(--pri);color:var(--on-pri);font-size:.8125rem;font-weight:600;display:grid;place-items:center;font-variant-numeric:tabular-nums;transition:opacity .15s,transform .15s cubic-bezier(.2,0,0,1)}
 .rngb::after{content:"";position:absolute;left:50%;bottom:-5px;width:10px;height:10px;background:var(--pri);transform:translateX(-50%) rotate(45deg);border-radius:0 0 2px 0;z-index:-1}
 .rngw.drag .rngb{opacity:1;transform:translateX(-50%) scale(1)}
-.rngv{font-variant-numeric:tabular-nums;color:var(--on);font-size:.8125rem;font-weight:600;min-width:44px;text-align:center;background:var(--sc-highest);border-radius:14px;padding:4px 8px}
+.rngv,.opt .rngv{font-variant-numeric:tabular-nums;color:var(--on);font-size:.8125rem;line-height:1.4;font-weight:600;min-width:44px;text-align:center;background:var(--sc-highest);border-radius:14px;padding:4px 8px}
 .opt.col{flex-direction:column;align-items:stretch;gap:12px}
 .opt.col .seg{display:flex}
 .mapbtns{position:absolute;right:12px;bottom:calc(84px + var(--navh));display:flex;flex-direction:column;align-items:flex-end;gap:10px}
@@ -1684,8 +1683,8 @@ html[data-theme=light] .mapinfo .bh{color:color-mix(in srgb,var(--k) 55%,#000)}
     </div></div>
     <div class="spane" data-p="srch">
       <div class="sgrp"><div class="sgrp-h" data-tx="search.saved_title"></div><div class="sgrp-c">
-        <div class="opt"><div><span data-tx="settings.srch_csv"></span><small data-tx="settings.srch_csv_note"></small></div><button class="sw on" id="swSrchCsv"></button></div>
         <div id="srchDelBox"></div>
+        <div class="opt"><div><span data-tx="settings.srch_csv"></span><small data-tx="settings.srch_csv_note"></small></div><button class="sw on" id="swSrchCsv"></button></div>
       </div></div>
     </div>
     <div class="spane" data-p="meas">
@@ -1693,8 +1692,8 @@ html[data-theme=light] .mapinfo .bh{color:color-mix(in srgb,var(--k) 55%,#000)}
         <div class="opt col"><div><span data-tx="settings.meas_coord"></span><small data-tx="settings.meas_coord_note"></small></div><div class="seg wide" id="measCoordSeg"><button data-v="wgs">WGS84</button><button data-v="eov">EOV</button><button data-v="both" data-tx="settings.coord_both"></button></div></div>
       </div></div>
       <div class="sgrp"><div class="sgrp-h" data-tx="measure.saved_title"></div><div class="sgrp-c">
-        <div class="opt"><div><span data-tx="settings.meas_csv"></span><small data-tx="settings.meas_csv_note"></small></div><button class="sw on" id="swMeasCsv"></button></div>
         <div id="measDelBox"></div>
+        <div class="opt"><div><span data-tx="settings.meas_csv"></span><small data-tx="settings.meas_csv_note"></small></div><button class="sw on" id="swMeasCsv"></button></div>
       </div></div>
     </div>
     <div class="spane" data-p="foto">
@@ -1734,15 +1733,14 @@ html[data-theme=light] .mapinfo .bh{color:color-mix(in srgb,var(--k) 55%,#000)}
     </div>
     <div class="spane" data-p="info">
       <div class="sgrp"><div class="sgrp-h" data-tx="settings.grp_app"></div><div class="sgrp-c">
-        <div class="sgrp-t"><div class="about-t">ÚtSzelvény V1.0.3 (103)</div><p data-tx="about.copyright"></p><p data-tx="about.made_with"></p><p data-tx="about.source"></p></div>
+        <div class="sgrp-t"><div class="about-t">ÚtSzelvény V1.0.3 (103)</div><p data-tx="about.copyright"></p><p data-tx="about.source"></p></div>
       </div></div>
       <div class="sgrp"><div class="sgrp-h" data-tx="about.data_title"></div><div class="sgrp-c">
         <div class="sgrp-t"><p id="dataInfo"></p><p data-tx="about.data_source"></p></div>
         <div class="sgrp-t"><p data-tx="about.attr_osm"></p><p data-tx="about.attr_sat"></p><p data-tx="about.attr_bp"></p></div>
       </div></div>
       <div class="sgrp"><div class="sgrp-h" data-tx="settings.grp_important"></div><div class="sgrp-c">
-        <div class="sgrp-t"><p class="warn" data-tx="about.warn_info"></p><p class="warn" data-tx="about.warn_signs"></p><p class="warn" data-tx="about.warn_driving"></p><p data-tx="about.license"></p></div>
-        <div class="sgrp-t"><button class="btn" id="showStart" data-tx="about.show_start"></button></div>
+        <div class="sgrp-t"><p class="warn" data-tx="about.warn_info"></p><p class="warn" data-tx="about.warn_signs"></p><p class="warn" data-tx="about.warn_driving"></p><p data-tx="about.license"></p><p data-tx="about.made_with"></p></div>
       </div></div>
       <div class="sgrp"><div class="sgrp-h" data-tx="about.privacy_title"></div><div class="sgrp-c">
         <div class="sgrp-t"><p data-tx="about.privacy"></p><p data-tx="about.privacy_net"></p><p data-tx="about.privacy_backup"></p></div>
@@ -5193,7 +5191,6 @@ function showStart(onAccept){
   };
   d.classList.add("on");setTimeout(()=>{try{ok.focus()}catch(e){}},50);
 }
-$("showStart").onclick=()=>showStart();
 
 /* ---------- boot ---------- */
 window.addEventListener("load",()=>{
