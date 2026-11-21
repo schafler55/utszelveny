@@ -116,3 +116,7 @@ Az alkalmazás minden felirata, magyarázata és gombszövege egy helyen van: az
   Vezetés közben ne kezeld az alkalmazást.
 
 Az alkalmazás Claude Opus 5.5 segítségével készült.
+
+## Közreműködés
+
+A projekt nem fogad el kódhozzájárulást, a pull requesteket a rendszer automatikusan lezárja. Hibajelentést és ötletet issue-ként szívesen fogadok. Részletek: [CONTRIBUTING.md](CONTRIBUTING.md).
