@@ -114,10 +114,10 @@ Az alkalmazás minden felirata, magyarázata és gombszövege egy helyen van: a 
   (adatállapot: 2026. november): Országos közúthálózat, Közút neve/kategóriája/kezelője, Szelvényjelek,
   Sebességkorlátozás, Lakott területi szakaszok, Hídhasználati feltételek, Tehergépjárművekre vonatkozó
   korlátozások, Összes gépjármű forgalmi sávok száma, Burkolat típusa és szélessége, Éves keresztmetszeti
-  forgalmi adatok (2025), Közúti azonosítópontok. **Az adatokra a NAP felhasználási
+  forgalmi adatok (2025), Közúti azonosítópontok.<br>**Az adatokra a NAP felhasználási
   feltételei vonatkoznak, nem a GPL-3.0 licenc.**
 - Térkép alapréteg: © OpenStreetMap közreműködők (ODbL).<br>
-  Műholdkép: Powered by Esri · © Esri, Maxar, Earthstar Geographics, GIS User Community (Esri World Imagery).
+  Műholdkép: © Esri, Maxar, Earthstar Geographics, GIS User Community (Esri World Imagery).
 - Az adatok tájékoztató jellegűek, nem hitelesek. A helyszíni jelzések és a KRESZ az irányadók.
   Vezetés közben ne kezeld az alkalmazást.
 
