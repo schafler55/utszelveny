@@ -11,6 +11,7 @@ a kisebb javítások közvetlenül a `main`-re kerültek.
 - Térkép: a kilométerszelvény nemcsak pont az úton, hanem egy rövid vonalka is az út mellé, a végén a km-számmal. Osztott pályán mindkét pálya kifelé mutat (egymástól el), osztatlan úton jobbra, kivéve ha 30 m-en belül egy másik út fut azon az oldalon.
 - Új ikon a saját pozícióhoz: navigációs nyíl a térkép Követés gombján és a Keresés „Saját” gombján (zöld); a célkereszt csak a koordinátát jelöli (limezöld).
 - Térkép: ahol egy országos út hídon halad át egy másik felett (pl. M1 az M7 felett), a híd felett haladó út a híd jelölése fölé rajzolódik; a keresett szakasz és a mérés vonala a hídon haladó úton a híd felett is látszik.
+- Mérések színe: a GNSS mérés rózsaszín, a térképi mérés lila (a térképen, a kártyákon, a buborékban és a térképi mérés pontjain); a futó GNSS mérés továbbra is narancs.
 - Fejlesztés: a kód megjegyzései angolul, az index.html elején angol szójegyzék a magyar szakkifejezésekhez (szelvény, pálya, átkelési szakasz…); a felület magyar marad.
 - Beállítások → Térkép: „Kilométerszelvények a térképen” kapcsoló és „Kilométerszelvények ettől a nagyítástól” csúszka (11–18, alapból 14, mint eddig); a km-szám egy szinttel nagyobb nagyítástól.
 
