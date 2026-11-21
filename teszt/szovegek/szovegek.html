@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<!--
+  ÚtSzelvény – overview of every text the app shows (the texts block in index.html, id="texts").
+  Read-only for the app: this page only reads index.html. Edits made here stay in this browser until they are
+  copied (to send them on) or written into a downloaded index.html.
+-->
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>ÚtSzelvény – texts</title>
+<style>
+:root{--bg:#0F1511;--sc:#171D19;--sch:#1B211D;--line:#2A322D;--on:#DEE4DD;--onv:#A8B3AB;--pri:#6FDB98;--pric:#00522F;--warn:#F2B661;--err:#FFB4AB;--ph:#9CCBFF;--tag:#7d8a82;color-scheme:dark}
+@media (prefers-color-scheme:light){:root{--bg:#EEF2EE;--sc:#FFFFFF;--sch:#F6F8F5;--line:#D5DCD6;--on:#171D19;--onv:#4F5A53;--pri:#006D3E;--pric:#C3EFD2;--warn:#8A5A00;--err:#B3261E;--ph:#00639B;--tag:#7a857e;color-scheme:light}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--on);font:15px/1.45 Roboto,system-ui,-apple-system,"Segoe UI",sans-serif}
+header{position:sticky;top:0;z-index:5;background:var(--bg);padding:12px 14px 10px;border-bottom:1px solid var(--line)}
+h1{font-size:1.15rem;margin:0 0 2px}
+.sub{color:var(--onv);font-size:.85rem}
+#q{width:100%;margin-top:10px;padding:10px 12px;border-radius:12px;border:1px solid var(--line);background:var(--sc);color:var(--on);font:inherit}
+.chips{display:flex;gap:6px;overflow-x:auto;margin-top:8px;padding-bottom:2px;scrollbar-width:none}
+.chips a{flex:none;font-size:.8rem;color:var(--onv);text-decoration:none;border:1px solid var(--line);border-radius:8px;padding:3px 8px}
+main{padding:6px 14px 120px;max-width:900px;margin:0 auto}
+section{margin-top:18px}
+h2{font-size:1rem;margin:0 0 2px;display:flex;align-items:baseline;gap:8px;scroll-margin-top:180px}
+h2 code{font-size:.8rem;color:var(--onv);font-weight:400}
+.gd{color:var(--onv);font-size:.82rem;margin-bottom:8px}
+.it{background:var(--sc);border:1px solid var(--line);border-radius:14px;padding:8px 10px;margin-bottom:6px}
+.it.ch{border-color:var(--pri);box-shadow:inset 3px 0 0 var(--pri)}
+.it.bad{border-color:var(--err);box-shadow:inset 3px 0 0 var(--err)}
+.k{display:flex;justify-content:space-between;gap:8px;font:12px/1.3 ui-monospace,SFMono-Regular,Menlo,monospace;color:var(--onv);word-break:break-all}
+.k button{flex:none;font:12px Roboto,system-ui,sans-serif;color:var(--pri);background:none;border:0;padding:0;cursor:pointer;display:none}
+.it.ch .k button{display:inline}
+textarea{display:block;width:100%;margin-top:4px;padding:6px 8px;border-radius:8px;border:1px solid transparent;background:var(--sch);color:var(--on);font:inherit;resize:vertical;min-height:2.2em;overflow:hidden}
+textarea:focus{outline:none;border-color:var(--pri)}
+.m{font-size:.78rem;color:var(--onv);margin-top:4px}
+.m .p{color:var(--ph);font-family:ui-monospace,monospace}
+.m .t{color:var(--tag)}
+.m .e{color:var(--err)}
+.old{font-size:.78rem;color:var(--onv);margin-top:3px;text-decoration:line-through;white-space:pre-wrap}
+.bar{position:fixed;left:0;right:0;bottom:0;z-index:6;background:var(--sch);border-top:1px solid var(--line);padding:10px 14px calc(10px + env(safe-area-inset-bottom));display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.bar .n{flex:1 1 100%;font-size:.85rem;color:var(--onv)}
+.bar button{flex:1 1 0;min-width:0;padding:10px 8px;border-radius:20px;border:1px solid var(--line);background:var(--sc);color:var(--on);font:500 .9rem Roboto,system-ui,sans-serif;cursor:pointer}
+.bar button.pri{background:var(--pri);border-color:var(--pri);color:var(--bg)}
+.bar button:disabled{opacity:.45;cursor:default}
+.help{background:var(--sc);border:1px solid var(--line);border-radius:14px;padding:10px 12px;font-size:.88rem;color:var(--onv);margin-top:12px}
+.help b{color:var(--on)}
+.hide{display:none}
+#msg{position:fixed;left:50%;bottom:120px;transform:translateX(-50%);background:var(--on);color:var(--bg);padding:8px 14px;border-radius:10px;font-size:.88rem;opacity:0;transition:opacity .2s;pointer-events:none;z-index:9;max-width:90vw}
+#msg.on{opacity:1}
+</style>
+</head>
+<body>
+<header>
+  <h1>ÚtSzelvény – texts</h1>
+  <div class="sub" id="sub">Loading index.html…</div>
+  <input id="q" type="search" placeholder="Search text or key…" autocomplete="off">
+  <div class="chips" id="chips"></div>
+</header>
+<main>
+  <div class="help">
+    Every text the app shows, by screen. Type in a box to change a text; your changes stay in this browser.
+    <b>Copy changes</b> gives a short list you can send to Claude, who puts them into the app.
+    <b>Download index.html</b> gives the whole app file with your changes in it, which you can upload to GitHub
+    (Add file → Upload files) to replace index.html.<br>
+    Keep the <span style="color:var(--ph)">{placeholders}</span> – the app fills them in (road number, distance…).
+    HTML tags such as &lt;b&gt;…&lt;/b&gt; or &lt;br&gt; stay as they are. Units (km, m, km/h), version numbers and
+    road / county names from the data are not in this list.
+  </div>
+  <div id="list"></div>
+</main>
+<div class="bar">
+  <div class="n" id="cnt">No changes</div>
+  <button id="bCopy" disabled>Copy changes</button>
+  <button id="bDl" class="pri" disabled>Download index.html</button>
+  <button id="bReset" disabled>Undo all</button>
+</div>
+<div id="msg"></div>
+<script>
+"use strict";
+const REPO="schafler55/utszelveny";
+// what each group of the texts block is for (group order = order in index.html)
+const GROUPS={
+  app:"App name, splash screen, header buttons",
+  nav:"Bottom navigation",
+  position:"Pozíció – main tile, header line, last known position, Kezelő card",
+  gnss:"Pozíció – GNSS card, satellites, GNSS error messages",
+  speed:"Pozíció – speed limit card (also used on Szakasz adatai)",
+  bridges:"Bridges card (Pozíció and Szakasz adatai)",
+  trucks:"Truck and weight restriction card (Pozíció and Szakasz adatai)",
+  map:"Térkép – buttons, tap bubble, base layer notes",
+  details:"Szakasz adatai page (map tap → Adatok)",
+  search:"Keresés – form, results, errors, CSV",
+  saved:"Saved cards (Keresés and Mérés lists)",
+  measure:"Mérés – GNSS measurement, measuring on the map, CSV",
+  csv:"CSV copy / download buttons and messages (Mérés and Keresés)",
+  coord:"Coordinate input errors (Keresés, manual position)",
+  photo:"Fotó – camera, flash, stamp on the photo, saving, viewer",
+  hud:"HUD mode screen",
+  settings:"Beállítások – every tab",
+  about:"Névjegy – about text, data line, manual position",
+  common:"Words used on several screens (changing one changes it everywhere)",
+  road_type:"Road types (lookup list by NAP code)",
+  carriageway:"Carriageway names (0 osztatlan, 1 jobb, 2 bal)",
+  truck_limit:"Truck restriction types (lookup list by NAP code)",
+  bridge_limit:"Bridge restriction types (lookup list by NAP code)"
+};
+const LS="utszelveny_texts_draft";
+const $=id=>document.getElementById(id);
+const branch=(location.pathname.match(/\/teszt\/([^/]+)\//)||[])[1]||"main";
+let ORIG=null, draft={}, USE={aria:new Set(),ph:new Set(),vis:new Set()};
+try{draft=JSON.parse(localStorage.getItem(LS)||"{}")}catch(e){draft={}}
+
+const isArr=v=>Array.isArray(v);
+const toEdit=v=>isArr(v)?v.join("\n"):v;
+const fromEdit=(o,s)=>isArr(o)?s.split("\n"):s;
+const same=(a,b)=>JSON.stringify(a)===JSON.stringify(b);
+const phs=s=>[...new Set((isArr(s)?s.join(" "):String(s)).match(/\{\w+\}/g)||[])];
+const tags=s=>(isArr(s)?"":String(s)).match(/<[^>]+>/g)||[];
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+function toast(t){const m=$("msg");m.textContent=t;m.classList.add("on");clearTimeout(m._t);m._t=setTimeout(()=>m.classList.remove("on"),2200)}
+
+function extract(html){
+  const m=html.match(/<script type="application\/json" id="texts">([\s\S]*?)<\/script>/);
+  if(!m)throw new Error("no texts block in index.html");
+  return {json:JSON.parse(m[1]),start:m.index,end:m.index+m[0].length,raw:m[0]};
+}
+async function load(){
+  // ?fresh skips the app's service worker cache, so the page always shows the published file
+  const r=await fetch("index.html?fresh="+Date.now(),{cache:"no-store"});
+  if(!r.ok)throw new Error("index.html: HTTP "+r.status);
+  const html=await r.text();
+  const X=extract(html);ORIG=X.json;
+  // how each key is used: screen-reader label only, input hint, or shown text
+  const rest=html.slice(0,X.start)+html.slice(X.end);
+  for(const m of rest.matchAll(/data-tx-aria-label="([^"]+)"/g))USE.aria.add(m[1]);
+  for(const m of rest.matchAll(/data-tx-placeholder="([^"]+)"/g))USE.ph.add(m[1]);
+  for(const m of rest.matchAll(/(?<!data-tx-aria-label=|data-tx-placeholder=)["']([a-z_]+\.[a-z0-9_]+)["']/g))USE.vis.add(m[1]);
+  const ver=(html.match(/<title>([^<]*)<\/title>/)||[])[1]||"";
+  let n=0;for(const g in ORIG)n+=Object.keys(ORIG[g]).length;
+  $("sub").textContent=`${n} texts · ${ver}${branch!=="main"?" · branch "+branch:""}`;
+  for(const k of Object.keys(draft)){const [g,key]=split(k);if(!ORIG[g]||!(key in ORIG[g]))delete draft[k]}
+  render();
+}
+function split(k){const i=k.indexOf(".");return [k.slice(0,i),k.slice(i+1)]}
+
+function render(){
+  const chips=[],out=[];
+  for(const g of Object.keys(ORIG)){
+    chips.push(`<a href="#g-${g}">${g}</a>`);
+    out.push(`<section data-g="${g}"><h2 id="g-${g}">${esc(g)} <code>${Object.keys(ORIG[g]).length}</code></h2><div class="gd">${esc(GROUPS[g]||"")}</div>`);
+    for(const [key,v] of Object.entries(ORIG[g])){
+      const k=g+"."+key,cur=k in draft?draft[k]:v;
+      out.push(`<div class="it" data-k="${esc(k)}"><div class="k"><span>${esc(k)}</span><button type="button" data-undo>undo</button></div>`+
+        `<textarea rows="1" spellcheck="true" lang="hu">${esc(toEdit(cur))}</textarea><div class="m"></div><div class="old hide"></div></div>`);
+    }
+    out.push(`</section>`);
+  }
+  $("chips").innerHTML=chips.join("");
+  $("list").innerHTML=out.join("");
+  document.querySelectorAll(".it").forEach(upd);
+  requestAnimationFrame(()=>document.querySelectorAll("textarea").forEach(grow));
+  count();
+}
+function grow(t){t.style.height="auto";t.style.height=t.scrollHeight+2+"px"}
+function upd(it){
+  const k=it.dataset.k,[g,key]=split(k),o=ORIG[g][key],t=it.querySelector("textarea"),v=fromEdit(o,t.value);
+  const ch=!same(v,o),P=phs(o),miss=P.filter(p=>!phs(v).includes(p)),T=tags(o),tmiss=T.filter(x=>!tags(v).includes(x));
+  it.classList.toggle("ch",ch);it.classList.toggle("bad",ch&&(miss.length>0||tmiss.length>0));
+  const m=[];
+  if(isArr(o))m.push(`list – one item per line (${o.length})`);
+  if(USE.ph.has(k))m.push("hint in the empty input field");
+  else if((USE.aria.has(k)&&!USE.vis.has(k))||/_aria$/.test(key))m.push("screen reader label (not shown)");
+  if(P.length)m.push("fills in: "+P.map(p=>`<span class="p">${esc(p)}</span>`).join(" "));
+  if(T.length)m.push(`<span class="t">has HTML: ${esc([...new Set(T)].join(" "))}</span>`);
+  if(miss.length)m.push(`<span class="e">missing ${esc(miss.join(" "))}</span>`);
+  if(tmiss.length)m.push(`<span class="e">missing tag ${esc(tmiss.join(" "))}</span>`);
+  it.querySelector(".m").innerHTML=m.join(" · ");
+  const old=it.querySelector(".old");old.classList.toggle("hide",!ch);old.textContent=ch?toEdit(o):"";
+  if(ch)draft[k]=v;else delete draft[k];
+}
+function count(){
+  const n=Object.keys(draft).length;
+  $("cnt").textContent=n?`${n} change${n>1?"s":""} (kept in this browser)`:"No changes";
+  $("bCopy").disabled=$("bDl").disabled=$("bReset").disabled=!n;
+}
+function save(){try{localStorage.setItem(LS,JSON.stringify(draft))}catch(e){}}
+
+$("list").addEventListener("input",e=>{const t=e.target;if(t.tagName!=="TEXTAREA")return;grow(t);upd(t.closest(".it"));count();save()});
+$("list").addEventListener("click",e=>{
+  if(!e.target.hasAttribute("data-undo"))return;
+  const it=e.target.closest(".it"),[g,key]=split(it.dataset.k),t=it.querySelector("textarea");
+  t.value=toEdit(ORIG[g][key]);grow(t);upd(it);count();save();
+});
+$("q").addEventListener("input",()=>{
+  const q=$("q").value.trim().toLowerCase();
+  document.querySelectorAll("section").forEach(s=>{
+    let any=false;
+    s.querySelectorAll(".it").forEach(it=>{const hit=!q||it.dataset.k.toLowerCase().includes(q)||it.querySelector("textarea").value.toLowerCase().includes(q);it.classList.toggle("hide",!hit);any=any||hit});
+    s.classList.toggle("hide",!any);
+  });
+});
+
+function changesText(){
+  const L=[`ÚtSzelvény – text changes (${Object.keys(draft).length})`,""];
+  for(const [k,v] of Object.entries(draft)){const [g,key]=split(k);L.push(k,"- "+JSON.stringify(ORIG[g][key]),"+ "+JSON.stringify(v),"")}
+  return L.join("\n");
+}
+$("bCopy").onclick=async()=>{
+  const t=changesText();
+  try{await navigator.clipboard.writeText(t);toast("Copied – paste it into the chat")}
+  catch(e){const a=document.createElement("textarea");a.value=t;document.body.appendChild(a);a.select();try{document.execCommand("copy");toast("Copied – paste it into the chat")}catch(x){toast("Copy failed")}a.remove()}
+};
+$("bReset").onclick=()=>{if(!confirmReset())return;draft={};save();render()};
+let resetArm=0;
+function confirmReset(){if(Date.now()-resetArm<3000)return true;resetArm=Date.now();toast("Tap again to undo all changes");return false}
+
+// texts block in the same layout as index.html: one key per line, groups in the same order
+function blockText(T,nl){
+  const L=['<script type="application/json" id="texts">',"{"],G=Object.keys(T);
+  G.forEach((g,gi)=>{
+    L.push(`  ${JSON.stringify(g)}: {`);
+    const E=Object.entries(T[g]);
+    E.forEach(([k,v],i)=>L.push(`    ${JSON.stringify(k)}: ${isArr(v)?"["+v.map(x=>JSON.stringify(x)).join(", ")+"]":JSON.stringify(v)}${i<E.length-1?",":""}`));
+    L.push("  }"+(gi<G.length-1?",":""));
+  });
+  L.push("}","<\/script>");
+  return L.join(nl);
+}
+$("bDl").onclick=async()=>{
+  const b=$("bDl");b.disabled=true;b.textContent="Downloading…";
+  try{
+    // the file in the repository is the source (the published test page copy is changed for testing)
+    let html=null;
+    try{const r=await fetch(`https://raw.githubusercontent.com/${REPO}/${branch}/index.html?t=${Date.now()}`,{cache:"no-store"});if(r.ok){const h=await r.text();if(h.includes('id="texts"'))html=h}}catch(e){}
+    if(html===null){
+      if(branch!=="main")throw new Error("could not load the branch file from GitHub");
+      const r=await fetch("index.html?fresh="+Date.now(),{cache:"no-store"});html=await r.text();
+    }
+    const X=extract(html),T=JSON.parse(JSON.stringify(X.json));
+    let n=0;
+    for(const [k,v] of Object.entries(draft)){const [g,key]=split(k);if(T[g]&&key in T[g]){T[g][key]=v;n++}}
+    const nl=X.raw.includes("\r\n")?"\r\n":"\n";
+    const out=html.slice(0,X.start)+blockText(T,nl)+html.slice(X.end);
+    extract(out);   // the new block must still parse
+    const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([out],{type:"text/html"}));a.download="index.html";
+    document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},2000);
+    toast(`index.html with ${n} change${n>1?"s":""} – upload it to the ${branch} branch on GitHub`);
+  }catch(e){toast("Download failed: "+(e&&e.message||e))}
+  b.textContent="Download index.html";count();
+};
+load().catch(e=>{$("sub").textContent="Could not read index.html: "+(e&&e.message||e)});
+</script>
+</body>
+</html>
