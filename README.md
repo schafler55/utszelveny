@@ -128,8 +128,7 @@ Az alkalmazás Claude Opus 5.5 segítségével készült.
 Az alkalmazás nem gyűjt és nem küld el személyes adatot: nincs fiók, reklám vagy statisztika.
 A helyadat, a mérések, a keresések és a beállítások csak a készüléken tárolódnak, a fotók a készülékre mentődnek.
 A térkép alapréteg csempéi az OpenStreetMap és az Esri szervereiről töltődnek le, így ezek a szolgáltatók – mint bármely weboldal esetén –
-látják az IP-címet és a megnézett térképrészletet. A Street View gomb a Google Térképet nyitja meg.
-Androidon a rendszer biztonsági mentése a felhasználó beállításai szerint az alkalmazás adatait is mentheti a Google-fiókba.
+látják az IP-címet és a megnézett térképrészletet. A Utcakép gomb a Google Térképet nyitja meg.
 
 ## Közreműködés
 
