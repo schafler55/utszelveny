@@ -49,13 +49,14 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
 /**
- * ÚtSzelvény – Android keret.
- * A teljes alkalmazás az assets/index.html; ez az osztály csak megjeleníti,
- * GNSS- és kamera-engedélyt kér, a műholdak állapotát továbbítja az oldalnak, ébren tartja a képernyőt, és a "AndroidBridge"
- * JS-hídon keresztül fájlt ment (fotó → a Fotó beállításokban választott mappa, alapból Képek/ÚtSzelvény; CSV → Letöltések/ÚtSzelvény) és megoszt.
- * HUD módban teljes képernyő, maximális fényerő és rögzített tájolás (setHud).
- * Az oldal a https://appassets.androidplatform.net címről töltődik (biztonságos környezet),
- * így a helymeghatározás és a kamera működik, és az OpenStreetMap is kap Referer fejlécet.
+ * ÚtSzelvény – Android wrapper.
+ * The whole app is assets/index.html (the same file as the web app); this class only shows it,
+ * asks for the location (GNSS) and camera permissions, passes the satellite status to the page, keeps the screen on,
+ * and through the "AndroidBridge" JS bridge saves files (photo → the folder chosen in the Fotó settings, by default
+ * Pictures/ÚtSzelvény; CSV → Download/ÚtSzelvény), shares them and copies text to the clipboard.
+ * HUD mode: full screen, maximum brightness and a locked orientation (setHud).
+ * The page is loaded from https://appassets.androidplatform.net (a secure context), so geolocation and the camera
+ * work, and OpenStreetMap gets a Referer header.
  */
 public class MainActivity extends Activity {
 
@@ -206,7 +207,7 @@ public class MainActivity extends Activity {
             public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
                 Uri uri = request.getUrl();
                 if (HOST.equals(uri.getHost())) return false;
-                // külső hivatkozás (pl. OpenStreetMap copyright) → böngészőben
+                // any other link (e.g. OpenStreetMap copyright, Google Street View) → the browser / the app that handles it
                 try {
                     startActivity(new Intent(Intent.ACTION_VIEW, uri));
                 } catch (ActivityNotFoundException ignored) {

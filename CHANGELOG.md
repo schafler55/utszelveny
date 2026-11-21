@@ -9,6 +9,9 @@ a kisebb javítások közvetlenül a `main`-re kerültek.
 - A koordinátás keresések **limezöld** színűek a térképen (szakasz vonal, gombostű, a megadott pont célkereszttel és szaggatott vonallal az út pontjához), a mentett kártyán („Koordináta” / „Koord. szakasz”) és a buborékban; a részletekben a megadott koordináta és a távolság az úttól. CSV-ben a Megjegyzés oszlopban.
 - Minden koordináta (GNSS kártya, térképi buborék, Adatok → Helyzet, utolsó ismert pozíció, mérések és keresések részletei) **hosszú nyomással vágólapra másolható**; értesítés: „WGS84 koordináta másolva” / „EOV koordináta másolva”. Csak a számok kerülnek a vágólapra (pl. „47.13285 19.41772”, „678089 198812”). Android: natív vágólap (`copyText`).
 - Térkép: a kilométerszelvény nemcsak pont az úton, hanem egy rövid vonalka is az út mellé, a végén a km-számmal. Osztott pályán mindkét pálya kifelé mutat (egymástól el), osztatlan úton jobbra, kivéve ha 30 m-en belül egy másik út fut azon az oldalon.
+- Új ikon a saját pozícióhoz: navigációs nyíl a térkép Követés gombján és a Keresés „Saját” gombján (zöld); a célkereszt csak a koordinátát jelöli (limezöld).
+- Térkép: ahol egy országos út hídon halad át egy másik felett (pl. M1 az M7 felett), a híd felett haladó út a híd jelölése fölé rajzolódik; a keresett szakasz és a mérés vonala a hídon haladó úton a híd felett is látszik.
+- Fejlesztés: a kód megjegyzései angolul, az index.html elején angol szójegyzék a magyar szakkifejezésekhez (szelvény, pálya, átkelési szakasz…); a felület magyar marad.
 - Beállítások → Térkép: „Kilométerszelvények a térképen” kapcsoló és „Kilométerszelvények ettől a nagyítástól” csúszka (11–18, alapból 14, mint eddig); a km-szám egy szinttel nagyobb nagyítástól.
 
 ## [0.23.6] – 2026-11-20

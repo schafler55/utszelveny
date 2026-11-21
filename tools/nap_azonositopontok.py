@@ -1,17 +1,17 @@
 #!/usr/bin/env python3
-"""NAP közúti azonosítópontok beépítése az ÚtSzelvény index.html-be.
+"""Imports the NAP road identification points (közúti azonosítópontok) into ÚtSzelvény's index.html.
 
-Beolvassa a NAP WFS-ből letöltött „Közti azonosító pontok” GeoJSON-t (nap_b5_csp), és a beágyazott
-`roaddata` JSON-ba írja:
-  cspk – az azonosítópontok kódjai (kod), pl. "C020001"
-  csp  – pontonként egymás után: [pontok száma, E, N, E, N, …, utak száma, útindex, útindex, …]
-         E, N: EOV (EPSG:23700) méterre kerekítve; útindex: a roaddata `roads` listájának indexe
-         (kszamok = az azonosítópontba csatlakozó utak útszáma, a NAP adatcsomag-leírás szerint)
-A MultiPoint egy azonosítópontnál több helyen is lehet (pl. az osztott pálya két oldalán); az 1 m-en belüli
-ismétlődő pontok összevonódnak.
+Reads the "Közti azonosító pontok" GeoJSON downloaded from the NAP WFS (nap_b5_csp) and writes into the embedded
+`roaddata` JSON:
+  cspk – the codes of the identification points (kod), e.g. "C020001"
+  csp  – one point after the other: [number of positions, E, N, E, N, …, number of roads, road index, road index, …]
+         E, N: EOV (EPSG:23700) rounded to metres; road index: index into the roaddata `roads` list
+         (kszamok = numbers of the roads meeting at the point, as in the NAP data package description)
+One identification point can have several positions in the MultiPoint (e.g. on both sides of a divided road);
+repeated positions within 1 m are merged.
 
-Használat:  python3 tools/nap_azonositopontok.py <mappa a .json fájllal> [index.html]
-A fájlt a neve eleje alapján ismeri fel (Közti_azonosító_pontok… vagy K_z_ti_azonos_t_pontok…).
+Usage:  python3 tools/nap_azonositopontok.py <folder with the .json file> [index.html]
+The file is recognised by the start of its name (Közti_azonosító_pontok… or K_z_ti_azonos_t_pontok…).
 """
 import json, sys, os, unicodedata
 
@@ -23,7 +23,7 @@ def find(folder):
         n = norm(f)
         if f.endswith(".json") and ("közti_azonosító_pontok" in n or "k_z_ti_azonos_t_pontok" in n):
             return os.path.join(folder, f)
-    sys.exit(f"Nem találom a Közti azonosító pontok .json fájlt a {folder} mappában")
+    sys.exit(f"Not found: the Közti azonosító pontok .json file in {folder}")
 
 def main():
     folder = sys.argv[1]
@@ -37,7 +37,7 @@ def main():
     src = json.load(open(find(folder), encoding="utf-8"))
     crs = (src.get("crs") or {}).get("properties", {}).get("name", "")
     if crs and not crs.endswith("23700"):
-        sys.exit(f"nem EOV koordináták: {crs}")
+        sys.exit(f"not EOV coordinates: {crs}")
     feats = sorted(src["features"], key=lambda f: f["properties"]["kod"])
     codes, flat, npt = [], [], 0
     for f in feats:
@@ -53,7 +53,7 @@ def main():
         for r in str(p["kszamok"] or "").split(","):
             r = r.strip()
             if not r: continue
-            if r not in RI: raise SystemExit(f"ismeretlen út: {r!r} ({p['kod']})")
+            if r not in RI: raise SystemExit(f"unknown road: {r!r} ({p['kod']})")
             if RI[r] not in roads: roads.append(RI[r])
         codes.append(p["kod"])
         flat.append(len(uniq)); npt += len(uniq)
@@ -65,7 +65,7 @@ def main():
     js = json.dumps(D, ensure_ascii=False, separators=(",", ":"))
     open(html, "w", encoding="utf-8", newline="").write(s[:i] + js + s[j:])
     add = len(json.dumps(codes, separators=(",", ":"))) + len(json.dumps(flat, separators=(",", ":")))
-    print(f"azonosítópontok: {len(codes)} kód, {npt} pont · +{add/1e6:.2f} MB · roaddata {len(js)/1e6:.2f} MB")
+    print(f"identification points: {len(codes)} codes, {npt} positions · +{add/1e6:.2f} MB · roaddata {len(js)/1e6:.2f} MB")
 
 if __name__ == "__main__":
     main()
