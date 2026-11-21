@@ -14,7 +14,7 @@ Fotóidra ráírja a helyet és az időt, a méréseidet pedig elnevezheted és 
 Böngészőben és Android-alkalmazásként is fut. Az úthálózati adatok a készüléken vannak, így a szelvényezés internet
 nélkül is működik. Csak a térkép alapréteghez kell internetkapcsolat.
 
-**Verzió:** V0.24 Beta · [Változásnapló](CHANGELOG.md) · © 2026 Szászi Dániel · Licenc: GPL-3.0
+**Verzió:** V0.25 Beta · [Változásnapló](CHANGELOG.md) · © 2026 Szászi Dániel · Licenc: GPL-3.0
 
 ## Funkciók
 
@@ -75,7 +75,7 @@ Koordináták: WGS84 (alapértelmezett) vagy EOV.
 
 - **Webalkalmazás (telepítés nélkül):** https://schafler55.github.io/utszelveny/
   Böngészőben megnyitva az első betöltés után internet nélkül is működik, könyvjelzőként menthető az asztalra.
-- **Android APK (telepítve):** https://github.com/schafler55/utszelveny/releases/tag/apk-latest (a fájl neve tartalmazza a verziót, pl. `UtSzelveny-V0.24-Beta.apk`)
+- **Android APK (telepítve):** https://github.com/schafler55/utszelveny/releases/tag/apk-latest (a fájl neve tartalmazza a verziót, pl. `UtSzelveny-V0.25-Beta.apk`)
   Letöltés után engedélyezni kell az ismeretlen forrásból történő telepítést.
 
 A térkép alapréteg (OpenStreetMap vagy Esri műholdkép) internetkapcsolatot igényel; minden más adat az alkalmazásba van építve.
@@ -90,10 +90,18 @@ A térkép északkal felfelé vagy menetirány szerint elforgatva is használhat
 | `android/` | Android keret (WebView), amely az `index.html`-t futtatja |
 | `.github/workflows/android.yml` | Megépíti az APK-t: a `main` ágból a fenti letöltési linkre, a többi ágból teszt APK-t és teszt weboldalt (`teszt/<ág>/`) |
 | `CHANGELOG.md` | Változásnapló: mi változott az egyes verziókban |
+| `szovegek.html` | Az alkalmazás összes szövege képernyőnként (kereshető, szerkeszthető): https://schafler55.github.io/utszelveny/szovegek.html |
+| `tools/szovegek.py` | Ellenőrzi az `index.html` szövegblokkját (érvényes JSON, minden kulcs megvan); a build is futtatja |
 | `tools/nap_szakaszadatok.py` | A NAP sáv-, burkolat- és forgalmi adatait (WFS GeoJSON) az `index.html` beépített adatai közé írja |
 | `screenshots/` | A README képei |
 
 Az APK mindig a repó gyökerében lévő `index.html`-ből épül, ezért új verzióhoz elég az `index.html`-t cserélni.
+
+## Szövegek
+
+Az alkalmazás minden felirata, magyarázata és gombszövege egy helyen van: az `index.html` elején, a `<script type="application/json" id="texts">` blokkban, képernyők szerint csoportosítva (pl. `position`, `search`, `settings`). A kód csak a kulcsokra hivatkozik (`TX("search.title")`, `data-tx="search.title"`).
+
+Áttekintés és szerkesztés: **[szovegek.html](https://schafler55.github.io/utszelveny/szovegek.html)** – kereshető lista; a módosítások a böngészőben maradnak, a „Copy changes” rövid listát másol, a „Download index.html” a módosított teljes fájlt adja, ami GitHubon feltölthető. A `{kapcsos}` helyőrzőket (útszám, távolság…) és a HTML-jelöléseket (`<b>`, `<br>`) meg kell hagyni.
 
 ## Adatforrás és felelősség
 

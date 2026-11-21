@@ -36,6 +36,10 @@ jobs:
           echo "dir=$d" >> "$GITHUB_OUTPUT"
           echo "Android project found in: $d"
 
+      # the texts block (id="texts") must be valid JSON and hold every key the app asks for
+      - name: Check the texts block
+        run: python3 tools/szovegek.py index.html
+
       - name: Copy the web app (index.html) into the APK
         run: |
           mkdir -p "${{ steps.proj.outputs.dir }}/app/src/main/assets"
@@ -139,6 +143,7 @@ jobs:
               -e "s|</body>|<div style=\"position:fixed;top:4px;left:50%;transform:translateX(-50%);z-index:50;background:#dc2626;color:#fff;font:700 11px/1 Arial,sans-serif;padding:3px 8px;border-radius:6px;pointer-events:none\">TESZT · $B</div></body>|" \
               branch/index.html > "$D/index.html"
           cp branch/icon-192.png branch/icon-512.png "$D/"
+          cp branch/szovegek.html "$D/" 2>/dev/null || true
           grep -q 'TESZT' "$D/index.html"
       - name: Publish it (commit to main, teszt/ folder only)
         env:

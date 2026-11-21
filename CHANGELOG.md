@@ -4,6 +4,13 @@ Az ÚtSzelvény változásai, a legújabb elöl. A dátumok UTC szerint értend�
 A nagyobb funkciók saját ágon (branch) készültek teszt oldallal és teszt APK-val, és pull requestként (#) kerültek a `main` ágba;
 a kisebb javítások közvetlenül a `main`-re kerültek.
 
+## [0.25] – 2026-11-21
+- Fejlesztés: az alkalmazás összes szövege (címek, magyarázatok, gombfeliratok, üzenetek, hibaüzenetek, a fotó felirata, CSV-oszlopnevek, képernyőolvasó-címkék; 613 szöveg) egy helyre került: az `index.html` elején lévő szövegblokkba (`id="texts"`), képernyők szerint csoportosítva. A felület nem változott.
+- Új oldal: **szovegek.html** – az összes szöveg képernyőnként, kereséssel; a szövegek ott átírhatók, a változások kimásolhatók vagy a módosított `index.html` letölthető.
+- Tehergépjármű- és súlykorlátozó táblák a KRESZ táblák pontos másolataként (C-007, C-008, C-009, C-010, C-011, C-012, C-023, C-024; zóna: E-030): valósághű tehergépkocsi, pótkocsis szerelvény, tengely és narancs tábla; a szám egész része nagy, a tizedes és a „t” kisebb. A kerek táblák kerete a sebességkorlátozó tábláéval azonos.
+- Csúszkák (Beállítások → Térkép és a térkép panel): csak a pöttyel állíthatók. A csúszka vonalára koppintás vagy onnan indított görgetés már nem változtatja meg az értéket, csak görget; a pötty érintési területe nagyobb lett.
+- Ha a szövegblokk hibás (pl. hiányzó vessző), az alkalmazás akkor is elindul: a szövegek helyén a kulcsok látszanak, felül piros sor jelzi a hibát. A build (`tools/szovegek.py`) ellenőrzi a blokkot.
+
 ## [0.24] – 2026-11-21
 - Keresés: új választó a Pont / Szakasz fölött: **Útszám / Koordináta**. Koordináta módban WGS84 („47.13285 19.41772”, vesszővel, É/K-val, fokkal, fok-perc(-mp) alakban is) vagy EOV („EOV 678089 198812”, „Y 678 089 X 198 812”) koordináta adható meg; a mező alatt látszik, mit ismert fel (a másik rendszerben is) és a legközelebbi út szelvénye a távolsággal. A „Saját” gomb a GNSS-pozíciót írja be. Szakasznál két koordináta: ha a két pont ugyanarra az útra esik, az út szakasza (mint az útszámos keresésnél); ha más-más útra, a térképi méréshez hasonlóan a legrövidebb útvonal az országos közúthálózaton, utanként a kezdő – záró szelvénnyel és hosszal („Több úton: 5, 52108”).
 - A koordinátás keresések **limezöld** színűek a térképen (szakasz vonal, gombostű, a megadott pont célkereszttel és szaggatott vonallal az út pontjához), a mentett kártyán („Koordináta” / „Koord. szakasz”) és a buborékban; a részletekben a megadott koordináta és a távolság az úttól. CSV-ben a Megjegyzés oszlopban.
