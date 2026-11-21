@@ -119,4 +119,4 @@ Az alkalmazás Claude Opus 5.5 segítségével készült.
 
 ## Közreműködés
 
-Hibajelentést és ötletet issue-ként szívesen fogadok, de a projekt nem fogad el kódhozzájárulást, a pull requesteket a rendszer automatikusan lezárja. Részletek: [CONTRIBUTING.md](CONTRIBUTING.md).
+**Hibajelentést és ötletet issue-ként szívesen fogadok,** de a projekt nem fogad el kódhozzájárulást, a pull requesteket a rendszer automatikusan lezárja. Részletek: [CONTRIBUTING.md](CONTRIBUTING.md).
