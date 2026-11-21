@@ -14,7 +14,7 @@ Fotóidra ráírja a helyet és az időt, a méréseidet pedig elnevezheted és 
 Böngészőben és Android-alkalmazásként is fut. Az úthálózati adatok a készüléken vannak, így a szelvényezés internet
 nélkül is működik. Csak a térkép alapréteghez kell internetkapcsolat.
 
-**Verzió:** V0.25.1 Beta · [Változásnapló](CHANGELOG.md) · © 2026 Szászi Dániel · Licenc: GPL-3.0
+**Verzió:** V1.0 · [Változásnapló](CHANGELOG.md) · © 2026 Szászi Dániel · Licenc: GPL-3.0
 
 ## Funkciók
 
@@ -75,8 +75,11 @@ Koordináták: WGS84 (alapértelmezett) vagy EOV.
 
 - **Webalkalmazás (telepítés nélkül):** https://schafler55.github.io/utszelveny/
   Böngészőben megnyitva az első betöltés után internet nélkül is működik, könyvjelzőként menthető az asztalra.
-- **Android APK (telepítve):** https://github.com/schafler55/utszelveny/releases/tag/apk-latest (a fájl neve tartalmazza a verziót, pl. `UtSzelveny-V0.25.1-Beta.apk`)
+- **Android APK (telepítve):** https://github.com/schafler55/utszelveny/releases/latest – a legutóbbi stabil kiadás (pl. `UtSzelveny-V1.0.apk`).
   Letöltés után engedélyezni kell az ismeretlen forrásból történő telepítést.
+  A `main` ág legfrissebb, még nem kiadott állapota: [apk-latest](https://github.com/schafler55/utszelveny/releases/tag/apk-latest).
+- **Frissítés a béta változatokról (V0.x) a V1.0-ra:** a V1.0-tól az APK új aláírókulccsal készül, ezért a béta APK-t előbb el kell távolítani.
+  Ezzel a mentett mérések és keresések is törlődnek, ezért előtte érdemes CSV-be menteni őket.
 
 A térkép alapréteg (OpenStreetMap vagy Esri műholdkép) internetkapcsolatot igényel; minden más adat az alkalmazásba van építve.
 A térkép északkal felfelé vagy menetirány szerint elforgatva is használható.
@@ -111,11 +114,19 @@ Az alkalmazás minden felirata, magyarázata és gombszövege egy helyen van: az
   korlátozások, Összes gépjármű forgalmi sávok száma, Burkolat típusa és szélessége, Éves keresztmetszeti
   forgalmi adatok (2025), Közúti azonosítópontok. **Az adatokra a NAP felhasználási
   feltételei vonatkoznak, nem a GPL-3.0 licenc.**
-- Térkép alapréteg: © OpenStreetMap közreműködők. Műholdkép: © Esri, Maxar, Earthstar Geographics (Esri World Imagery).
+- Térkép alapréteg: © [OpenStreetMap közreműködők](https://www.openstreetmap.org/copyright) (ODbL). Műholdkép: Powered by Esri · © Esri, Maxar, Earthstar Geographics, GIS User Community (Esri World Imagery).
 - Az adatok tájékoztató jellegűek, nem hitelesek. A helyszíni jelzések és a KRESZ az irányadók.
   Vezetés közben ne kezeld az alkalmazást.
 
 Az alkalmazás Claude Opus 5.5 segítségével készült.
+
+## Adatvédelem
+
+Az alkalmazás nem gyűjt és nem küld el személyes adatot: nincs fiók, reklám vagy statisztika.
+A helyadat, a mérések, a keresések és a beállítások csak a készüléken tárolódnak, a fotók a készülékre mentődnek.
+A térkép alapréteg csempéi az OpenStreetMap és az Esri szervereiről töltődnek le, így ezek a szolgáltatók – mint bármely weboldal esetén –
+látják az IP-címet és a megnézett térképrészletet. A Street View gomb a Google Térképet nyitja meg.
+Androidon a rendszer biztonsági mentése a felhasználó beállításai szerint az alkalmazás adatait is mentheti a Google-fiókba.
 
 ## Közreműködés
 

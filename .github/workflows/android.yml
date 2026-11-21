@@ -3,6 +3,8 @@ name: Android APK
 on:
   push:
     branches: ['**']
+    # a version tag (v1.0, v1.1 …) publishes a stable release
+    tags: ['v*']
   workflow_dispatch:
 
 permissions:
@@ -45,12 +47,31 @@ jobs:
           mkdir -p "${{ steps.proj.outputs.dir }}/app/src/main/assets"
           cp index.html "${{ steps.proj.outputs.dir }}/app/src/main/assets/index.html"
 
+      # Release signing: the private key lives only in the repository secrets
+      # (RELEASE_KEYSTORE_B64 = the .p12 file in base64, RELEASE_KEYSTORE_PASSWORD, RELEASE_KEY_ALIAS).
+      - name: Decode the release key
+        env:
+          KS_B64: ${{ secrets.RELEASE_KEYSTORE_B64 }}
+          KS_PASS: ${{ secrets.RELEASE_KEYSTORE_PASSWORD }}
+          KS_ALIAS: ${{ secrets.RELEASE_KEY_ALIAS }}
+        run: |
+          if [ -z "$KS_B64" ] || [ -z "$KS_PASS" ] || [ -z "$KS_ALIAS" ]; then
+            echo "::error::Release key missing: add RELEASE_KEYSTORE_B64, RELEASE_KEYSTORE_PASSWORD and RELEASE_KEY_ALIAS under Settings → Secrets and variables → Actions"
+            exit 1
+          fi
+          f="$RUNNER_TEMP/release.p12"
+          echo "$KS_B64" | base64 -d > "$f"
+          echo "RELEASE_KEYSTORE_FILE=$f" >> "$GITHUB_ENV"
+
       - name: Build APK
         working-directory: ${{ steps.proj.outputs.dir }}
-        run: gradle assembleDebug --no-daemon --stacktrace
+        env:
+          RELEASE_KEYSTORE_PASSWORD: ${{ secrets.RELEASE_KEYSTORE_PASSWORD }}
+          RELEASE_KEY_ALIAS: ${{ secrets.RELEASE_KEY_ALIAS }}
+        run: gradle assembleRelease --no-daemon --stacktrace
 
-      # File name carries the version (main) or the branch name + build number (test branches),
-      # e.g. UtSzelveny-V0.18.2-Beta.apk and UtSzelveny-teszt-auto-V0.19-Beta-b123.apk
+      # File name carries the version (main, version tags) or the branch name + build number (test branches),
+      # e.g. UtSzelveny-V1.0.apk and UtSzelveny-teszt-auto-V1.1-b123.apk
       - name: Name the APK
         id: apk
         env:
@@ -58,14 +79,15 @@ jobs:
         run: |
           vn=$(grep -m1 'versionName' "${{ steps.proj.outputs.dir }}/app/build.gradle" | sed -E 's/.*"([^"]+)".*/\1/')
           ver="V$(echo "$vn" | sed -E 's/-beta$/-Beta/; s/-stable$/-Stable/')"
-          if [ "$GITHUB_REF" = "refs/heads/main" ]; then
+          if [ "$GITHUB_REF" = "refs/heads/main" ] || [ "$GITHUB_REF_TYPE" = "tag" ]; then
             name="UtSzelveny-$ver.apk"
           else
             br=$(echo "$B" | sed -E 's/[^A-Za-z0-9._-]+/-/g')
             name="UtSzelveny-teszt-$br-$ver-b${{ github.run_number }}.apk"
           fi
-          cp "${{ steps.proj.outputs.dir }}/app/build/outputs/apk/debug/app-debug.apk" "$name"
+          cp "${{ steps.proj.outputs.dir }}/app/build/outputs/apk/release/app-release.apk" "$name"
           echo "name=$name" >> "$GITHUB_OUTPUT"
+          echo "ver=$ver" >> "$GITHUB_OUTPUT"
           echo "APK: $name"
 
       - name: Keep the APK as a build artifact
@@ -77,7 +99,7 @@ jobs:
       # Test builds from other branches: own pre-release "apk-teszt-<branch>",
       # the public "apk-latest" stays untouched until the branch is merged into main.
       - name: Publish to the "apk-teszt-<branch>" release
-        if: github.ref != 'refs/heads/main'
+        if: github.ref_type == 'branch' && github.ref != 'refs/heads/main'
         uses: softprops/action-gh-release@v2
         with:
           tag_name: apk-teszt-${{ github.ref_name }}
@@ -101,8 +123,23 @@ jobs:
             Automatikusan épített APK a main ág legutóbbi állapotából: ${{ steps.apk.outputs.name }}
             Telepítés: töltsd le az APK fájlt a telefonon, és engedélyezd az ismeretlen forrásból történő telepítést.
 
+      # Version tag (v1.0 …): a stable, non-pre-release GitHub Release; /releases/latest points to it.
+      - name: Publish the stable release
+        if: github.ref_type == 'tag'
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ github.ref_name }}
+          name: ÚtSzelvény ${{ steps.apk.outputs.ver }}
+          prerelease: false
+          make_latest: true
+          files: ${{ steps.apk.outputs.name }}
+          body: |
+            ÚtSzelvény ${{ steps.apk.outputs.ver }} – stabil kiadás. Változások: [CHANGELOG.md](https://github.com/${{ github.repository }}/blob/${{ github.ref_name }}/CHANGELOG.md)
+            Telepítés: töltsd le az APK fájlt a telefonon, és engedélyezd az ismeretlen forrásból történő telepítést.
+
       # Only the newest APK stays in the release (older file names are removed).
       - name: Remove older APKs from the release
+        if: github.ref_type == 'branch'
         env:
           GH_TOKEN: ${{ github.token }}
           TAG: ${{ github.ref == 'refs/heads/main' && 'apk-latest' || format('apk-teszt-{0}', github.ref_name) }}
@@ -119,7 +156,7 @@ jobs:
   # Own settings (kszt_* keys), no service worker (it would clear the real app's offline cache),
   # and a small TESZT label. The real app at the site root is not touched.
   test-page:
-    if: github.ref != 'refs/heads/main'
+    if: github.ref_type == 'branch' && github.ref != 'refs/heads/main'
     runs-on: ubuntu-latest
     permissions:
       contents: write
