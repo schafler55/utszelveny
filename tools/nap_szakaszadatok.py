@@ -1,17 +1,19 @@
 #!/usr/bin/env python3
-"""NAP szakaszadatok beépítése az ÚtSzelvény index.html-be.
+"""Imports NAP section data into ÚtSzelvény's index.html.
 
-Beolvassa a NAP WFS-ből letöltött GeoJSON-fájlokat, és a beágyazott `roaddata` JSON-ba írja:
-  sav  – forgalmi sávok száma        [út, pálya, tól, ig, sávok]
-  bur  – burkolat típusa, szélessége [út, pálya, tól, ig, szélesség dm-ben, típus-index] + burt (típusnevek); hiányzó adat: -1
-  anf  – éves keresztmetszeti forgalom [út, pálya, tól, ig, állomás-index] + ksz (állomásonként asz, anf, oj, ongj2; hiányzó: -1) + anfEv
-         asz = forgalomszámláló állomás száma, anf = évi átlagos napi keresztmetszeti forgalom (egységjármű/nap),
-         oj = összes jármű forgalom (jármű/nap), ongj2 = nehéz motoros forgalom (jármű/nap)  – a NAP adatcsomag-leírás szerint
-A geometriát nem használja (az alkalmazásban már megvan): az út száma (kszam), a pálya (pkod)
-és a szelvény (kszelv / vszelv, km*10000+m) köti az utakhoz. Az egymáshoz érő, azonos értékű darabok összevonódnak.
+Reads the GeoJSON files downloaded from the NAP WFS and writes into the embedded `roaddata` JSON:
+  sav  – number of traffic lanes         [road, carriageway, from, to, lanes]
+  bur  – pavement type and width         [road, carriageway, from, to, width in dm, type index] + burt (type names); missing: -1
+  anf  – annual cross-section traffic    [road, carriageway, from, to, station index] + ksz (per station asz, anf, oj, ongj2; missing: -1) + anfEv
+         asz = traffic counting station number, anf = annual average daily cross-section traffic (PCU/day),
+         oj = all vehicles (vehicles/day), ongj2 = heavy motor vehicles (vehicles/day)  – as in the NAP data package description
+The geometry is not used (the app already has it): the road number (kszam), the carriageway (pkod, 0 undivided /
+1 jobb / 2 bal) and the chainage (kszelv / vszelv, km*10000+m) join the records to the roads. Touching pieces with the
+same value are merged.
 
-Használat:  python3 tools/nap_szakaszadatok.py <mappa a .json fájlokkal> [index.html]
-A fájlokat a nevük eleje alapján ismeri fel (Összes_gépjármű_forgalmi_sávok_száma…, Burkolat_típusa…, Éves_keresztmetszeti_forgalmi…).
+Usage:  python3 tools/nap_szakaszadatok.py <folder with the .json files> [index.html]
+The files are recognised by the start of their names (Összes_gépjármű_forgalmi_sávok_száma…, Burkolat_típusa…,
+Éves_keresztmetszeti_forgalmi…).
 """
 import json, re, sys, os, unicodedata
 
@@ -22,12 +24,12 @@ def find(folder, prefix):
     for f in sorted(os.listdir(folder)):
         if norm(f).startswith(norm(prefix)) and f.endswith(".json"):
             return os.path.join(folder, f)
-    sys.exit(f"Nem találom: {prefix}*.json a {folder} mappában")
+    sys.exit(f"Not found: {prefix}*.json in {folder}")
 
 CH = re.compile(r"\s*(\d+)\s*\+\s*(\d+)\s*$")
 def cval(s):
     m = CH.match(str(s))
-    if not m: raise ValueError(f"rossz szelvény: {s!r}")
+    if not m: raise ValueError(f"bad chainage: {s!r}")
     return int(m[1]) * 10000 + int(m[2])
 
 def load(path):
@@ -39,7 +41,7 @@ def ranges(props, RI, val):
     rows = []
     for p in props:
         r = RI.get(str(p["kszam"]).strip())
-        if r is None: raise SystemExit(f"ismeretlen út: {p['kszam']!r}")
+        if r is None: raise SystemExit(f"unknown road: {p['kszam']!r}")
         f, t = cval(p["kszelv"]), cval(p["vszelv"])
         rows.append((r, int(p["pkod"]), min(f, t), max(f, t), val(p)))
     rows.sort()
@@ -66,14 +68,14 @@ def main():
 
     bp = load(find(folder, "Burkolat_típusa"))
     burt = sorted({p["rbtip"] for p in bp if p["rbtip"]})
-    # hiányzó szélesség / típus (néhány földút): -1
+    # missing width / type (a few dirt roads): -1
     bur = ranges(bp, RI, lambda p: (round(float(p["rbtsz"]) * 10) if p["rbtsz"] is not None else -1,
                                     burt.index(p["rbtip"]) if p["rbtip"] else -1))
     D["burt"] = burt
     D["bur"] = [v for x in bur for v in (x[0], x[1], x[2], x[3], x[4][0], x[4][1])]
 
     ap = load(find(folder, "Éves_keresztmetszeti_forgalmi"))
-    num = lambda v: int(v) if v is not None else -1          # hiányzó érték: -1
+    num = lambda v: int(v) if v is not None else -1          # missing value: -1
     key = lambda p: (num(p["asz"]), num(p["anf"]), num(p["oj"]), num(p["ongj2"]))
     st = sorted({key(p) for p in ap})
     si = {k: n for n, k in enumerate(st)}
@@ -84,8 +86,8 @@ def main():
 
     js = json.dumps(D, ensure_ascii=False, separators=(",", ":"))
     open(html, "w", encoding="utf-8", newline="").write(s[:i] + js + s[j:])
-    print(f"sáv {len(sav)} szakasz · burkolat {len(bur)} szakasz, {len(burt)} típus · "
-          f"forgalom {len(anf)} szakasz, {len(st)} állomás ({D['anfEv']}) · roaddata {len(js)/1e6:.2f} MB")
+    print(f"lanes {len(sav)} ranges · pavement {len(bur)} ranges, {len(burt)} types · "
+          f"traffic {len(anf)} ranges, {len(st)} stations ({D['anfEv']}) · roaddata {len(js)/1e6:.2f} MB")
 
 if __name__ == "__main__":
     main()

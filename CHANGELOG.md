@@ -4,6 +4,17 @@ Az ÚtSzelvény változásai, a legújabb elöl. A dátumok UTC szerint értend�
 A nagyobb funkciók saját ágon (branch) készültek teszt oldallal és teszt APK-val, és pull requestként (#) kerültek a `main` ágba;
 a kisebb javítások közvetlenül a `main`-re kerültek.
 
+## [0.24] – 2026-11-21
+- Keresés: új választó a Pont / Szakasz fölött: **Útszám / Koordináta**. Koordináta módban WGS84 („47.13285 19.41772”, vesszővel, É/K-val, fokkal, fok-perc(-mp) alakban is) vagy EOV („EOV 678089 198812”, „Y 678 089 X 198 812”) koordináta adható meg; a mező alatt látszik, mit ismert fel (a másik rendszerben is) és a legközelebbi út szelvénye a távolsággal. A „Saját” gomb a GNSS-pozíciót írja be. Szakasznál két koordináta: ha a két pont ugyanarra az útra esik, az út szakasza (mint az útszámos keresésnél); ha más-más útra, a térképi méréshez hasonlóan a legrövidebb útvonal az országos közúthálózaton, utanként a kezdő – záró szelvénnyel és hosszal („Több úton: 5, 52108”).
+- A koordinátás keresések **limezöld** színűek a térképen (szakasz vonal, gombostű, a megadott pont célkereszttel és szaggatott vonallal az út pontjához), a mentett kártyán („Koordináta” / „Koord. szakasz”) és a buborékban; a részletekben a megadott koordináta és a távolság az úttól. CSV-ben a Megjegyzés oszlopban.
+- Minden koordináta (GNSS kártya, térképi buborék, Adatok → Helyzet, utolsó ismert pozíció, mérések és keresések részletei) **hosszú nyomással vágólapra másolható**; értesítés: „WGS84 koordináta másolva” / „EOV koordináta másolva”. Csak a számok kerülnek a vágólapra (pl. „47.13285 19.41772”, „678089 198812”). Android: natív vágólap (`copyText`).
+- Térkép: a kilométerszelvény nemcsak pont az úton, hanem egy rövid vonalka is az út mellé, a végén a km-számmal. Osztott pályán mindkét pálya kifelé mutat (egymástól el), osztatlan úton jobbra, kivéve ha 30 m-en belül egy másik út fut azon az oldalon.
+- Új ikon a saját pozícióhoz: navigációs nyíl a térkép Követés gombján és a Keresés „Saját” gombján (zöld); a célkereszt csak a koordinátát jelöli (limezöld).
+- Térkép: ahol egy országos út hídon halad át egy másik felett (pl. M1 az M7 felett), a híd felett haladó út a híd jelölése fölé rajzolódik; a keresett szakasz és a mérés vonala a hídon haladó úton a híd felett is látszik.
+- Mérések színe: a GNSS mérés rózsaszín, a térképi mérés lila (a térképen, a kártyákon, a buborékban és a térképi mérés pontjain); a futó GNSS mérés továbbra is narancs.
+- Fejlesztés: a kód megjegyzései angolul, az index.html elején angol szójegyzék a magyar szakkifejezésekhez (szelvény, pálya, átkelési szakasz…); a felület magyar marad.
+- Beállítások → Térkép: „Kilométerszelvények a térképen” kapcsoló, „Kilométerszelvények ettől a nagyítástól” csúszka (11–18, alapból 14, mint eddig) és külön „Km-számok ettől a nagyítástól” csúszka (alapból 15); a km-szám csak ott látszik, ahol a szelvényjel is.
+
 ## [0.23.6] – 2026-11-20
 - Tehergépjármű- és súlykorlátozások kártya (Pozíció oldal és Adatok) a hídkártyával azonos elrendezésben: balra a táblák (új, fehér szegélyes, keskeny számú kivitel, mint a sebességkártyán) és alattuk a távolság („120 m”, „itt”), jobbra korlátozásonként félkövér piros felirat az értékkel piros chipben (pl. „Össztömeg-korlátozás [7,5 t]”), alatta a kivétel, majd a szelvénytartomány („még 400 m”, ha benne vagy).
 - A tehergépkocsi össztömeg-korlátozása röviden „Össztömeg-korlátozás” (a tábla mutatja, hogy tehergépkocsira vonatkozik).

@@ -2,6 +2,8 @@ package hu.szaszi.kozutszelveny;
 
 import android.Manifest;
 import android.app.Activity;
+import android.content.ClipData;
+import android.content.ClipboardManager;
 import android.content.ActivityNotFoundException;
 import android.content.ContentResolver;
 import android.content.ContentValues;
@@ -47,13 +49,14 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
 /**
- * ÚtSzelvény – Android keret.
- * A teljes alkalmazás az assets/index.html; ez az osztály csak megjeleníti,
- * GNSS- és kamera-engedélyt kér, a műholdak állapotát továbbítja az oldalnak, ébren tartja a képernyőt, és a "AndroidBridge"
- * JS-hídon keresztül fájlt ment (fotó → a Fotó beállításokban választott mappa, alapból Képek/ÚtSzelvény; CSV → Letöltések/ÚtSzelvény) és megoszt.
- * HUD módban teljes képernyő, maximális fényerő és rögzített tájolás (setHud).
- * Az oldal a https://appassets.androidplatform.net címről töltődik (biztonságos környezet),
- * így a helymeghatározás és a kamera működik, és az OpenStreetMap is kap Referer fejlécet.
+ * ÚtSzelvény – Android wrapper.
+ * The whole app is assets/index.html (the same file as the web app); this class only shows it,
+ * asks for the location (GNSS) and camera permissions, passes the satellite status to the page, keeps the screen on,
+ * and through the "AndroidBridge" JS bridge saves files (photo → the folder chosen in the Fotó settings, by default
+ * Pictures/ÚtSzelvény; CSV → Download/ÚtSzelvény), shares them and copies text to the clipboard.
+ * HUD mode: full screen, maximum brightness and a locked orientation (setHud).
+ * The page is loaded from https://appassets.androidplatform.net (a secure context), so geolocation and the camera
+ * work, and OpenStreetMap gets a Referer header.
  */
 public class MainActivity extends Activity {
 
@@ -190,7 +193,7 @@ public class MainActivity extends Activity {
         s.setMediaPlaybackRequiresUserGesture(false);
         s.setAllowFileAccess(false);
         s.setAllowContentAccess(false);
-        s.setUserAgentString(s.getUserAgentString() + " UtSzelveny/0.23.6");
+        s.setUserAgentString(s.getUserAgentString() + " UtSzelveny/0.24");
 
         web.addJavascriptInterface(new Bridge(), "AndroidBridge");
 
@@ -204,7 +207,7 @@ public class MainActivity extends Activity {
             public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
                 Uri uri = request.getUrl();
                 if (HOST.equals(uri.getHost())) return false;
-                // külső hivatkozás (pl. OpenStreetMap copyright) → böngészőben
+                // any other link (e.g. OpenStreetMap copyright, Google Street View) → the browser / the app that handles it
                 try {
                     startActivity(new Intent(Intent.ACTION_VIEW, uri));
                 } catch (ActivityNotFoundException ignored) {
@@ -385,6 +388,19 @@ public class MainActivity extends Activity {
                 hudOn = on;
                 hudMax = max;
                 applyHud();
+            });
+        }
+
+        /** Long press on a coordinate: copies the text to the system clipboard (label = "WGS84" / "EOV"). */
+        @JavascriptInterface
+        public void copyText(final String label, final String text) {
+            // on the UI thread: the clipboard service may create a Handler, which needs a Looper
+            runOnUiThread(() -> {
+                try {
+                    ClipboardManager cm = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
+                    if (cm != null) cm.setPrimaryClip(ClipData.newPlainText(label, text));
+                } catch (Exception ignored) {
+                }
             });
         }
 
