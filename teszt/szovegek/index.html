@@ -5112,7 +5112,7 @@ window.addEventListener("load",()=>{
     loadData();
     const ms=Math.round(performance.now()-t0);
     $("dataInfo").textContent=TX("about.data_info",{segs:NSEG.toLocaleString("hu-HU"),roads:ROADS.length.toLocaleString("hu-HU"),pts:NV.toLocaleString("hu-HU"),ms});
-    {const sp=$("boot"),wait=Math.max(0,1500-performance.now());   // splash: at least ~1.5 s from start, then fade
+    {const sp=$("boot"),wait=Math.max(0,2000-performance.now());   // splash: at least 2 s from start, then fade
      setTimeout(()=>{sp.classList.add("out");setTimeout(()=>sp.remove(),420)},wait)}
     syncTabs();renderPhSet();
     setTimeout(()=>{try{bridgeCrossings();if(cur)render();if(mapOn)drawMap()}catch(e){console.error(e)}},2500);
