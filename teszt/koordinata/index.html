@@ -1,4 +1,51 @@
 <!DOCTYPE html>
+<!--
+  ÚtSzelvény – offline road number + kilometre chainage display for the Hungarian national road network.
+  One file for the web app (PWA) and the Android app (android/ copies it into the APK assets).
+  Development language: English (code, comments, commit messages). User interface: Hungarian.
+
+  ===================== Glossary – Hungarian terms used in the UI, the data and the code =====================
+  Roads and chainage
+    út / közút / országos közút      road / public road / national road (run by Magyar Közút; the app's whole network)
+    útszám                           road number ("7", "M1", "52108"); útszámtábla = road number sign
+    szelvény, kilométerszelvény      chainage, kilometre position along a road, written km+m: "46+275"
+    km-kő, szelvényjel               kilometre post / chainage marker (the dots + ticks on the map)
+    növekvő / csökkenő szelvény      chainage growing / falling (direction of travel relative to the chainage)
+    pálya                            carriageway; osztatlan = undivided (pkod 0), jobb pálya = right carriageway, in the
+                                     direction of growing chainage (pkod 1), bal pálya = left carriageway (pkod 2)
+    autópálya / autóút               motorway / expressway (M roads, blue signs)
+    főút (első-, másodrendű)         main road, 1st / 2nd class (1–2 / 3-digit numbers, green signs)
+    összekötő út / bekötőút          connecting road / access road (4–5 digit numbers, white signs)
+    csomóponti ág, gyorsforgalmi ~   junction ramp, motorway junction ramp;  pihenőhelyi út = rest-area road
+    kerékpárút                       cycle path (also numbered, 95xxx–99xxx)
+    szakasz                          section (of a road; also a search between two chainages)
+    átkelési szakasz / belterület    section through a town / inside a built-up area;  külterület = outside built-up areas
+    külsőségi szakasz                section outside towns (between built-up areas)
+    település, helységnévtábla       settlement (town / village), town name sign
+    kezelő, mérnökség, megye         road operator (e.g. Magyar Közút, MKIF), road maintenance district, county
+    híd, áthaladsz rajta / alatta    bridge, you cross it / you pass under it;  teherbírás = load capacity
+    magasságkorlátozás, össztömeg-k. height limit, total weight limit;  tehergépjármű = truck (heavy goods vehicle)
+    sebességkorlátozás, KRESZ alapérték   speed limit, the default limit of the Highway Code (no sign)
+    azonosítópont                    road identification point (NAP code like "C020001", e.g. a junction)
+    forgalom: egységjármű, összes jármű, nehéz motoros, számlálóállomás
+                                     traffic: passenger car units, all vehicles, heavy motor vehicles, counting station
+    sáv, burkolat                    traffic lane, pavement (surface)
+  App screens (bottom navigation) and common UI words
+    Pozíció · Térkép · Keresés · Mérés · Fotó     Position (main screen) · Map · Search · Measurement · Photo
+    Beállítások, Általános, Névjegy               Settings, General, About;  HUD mód = windshield head-up display mode
+    Pont / Szakasz, Útszám / Koordináta           point / section; by road number / by coordinates (Keresés modes)
+    Kezdete / Vége, kezdőpont / végpont           start / end (K / V markers on the map)
+    Mentés, Mentett, Átnevezés, Törlés, Elrejtés  save, saved, rename, delete, hide;  Térképen = show on the map
+    Adatok, Szakasz adatai, Helyzet               data, section details page, location (coordinates)
+    Utcakép                                       Street View;  Saját (pozíció) = my (own) position
+    légvonal / úton / szelvény szerint            straight line / along the road / by chainage (lengths)
+    alapréteg: Világos, Sötét, Műhold, Ki         base map: light, dark, satellite, off
+    másolva                                       copied (clipboard note)
+  Coordinates and data
+    WGS84 (GNSS lat lon) / EOV (Hungarian grid, EPSG:23700, "Y X" = E N); É / K = north / east
+    NAP = Nemzeti Hozzáférési Pont (national access point for traffic data), source of all road data
+    GNSS = satellite positioning (the UI never says "GPS")
+-->
 <html lang="hu">
 <head>
 <meta charset="UTF-8">
@@ -293,7 +340,7 @@ input[type=text]:focus{outline:2px solid var(--pri);outline-offset:-1px;border-c
 @keyframes spBar{from{left:-40%}to{left:100%}}
 @media (prefers-reduced-motion:reduce){.sp-ico,.sp-name,.sp-by{animation:none}}
 
-/* ---------- Mérés ---------- */
+/* ---------- Mérés (measurement) ---------- */
 #measView{flex-direction:column;gap:8px}
 .mctl{display:flex;flex-direction:column;gap:6px;border-radius:28px}
 .mctl.rec{border:1px solid var(--err-line)}
@@ -354,7 +401,7 @@ input[type=text]:focus{outline:2px solid var(--pri);outline-offset:-1px;border-c
 .mitem.hl,#sRes.hl{outline:2px solid var(--k,var(--pri));outline-offset:-2px;scroll-margin-top:8px;animation:svhl 1.4s ease-out 2}
 @keyframes svhl{0%{box-shadow:0 0 0 0 color-mix(in srgb,var(--k,var(--pri)) 55%,transparent)}100%{box-shadow:0 0 0 12px transparent}}
 @media (prefers-reduced-motion:reduce){.mitem.hl,#sRes.hl{animation:none}}
-/* shared saved-item card (mérések + keresések) */
+/* shared saved-item card (measurements + searches) */
 .kchip{display:inline-flex;align-items:center;gap:5px;height:22px;padding:0 9px 0 7px;border-radius:999px;font-size:.78rem;font-weight:600;color:color-mix(in srgb,var(--k) 72%,var(--on));background:color-mix(in srgb,var(--k) 16%,transparent);vertical-align:1px;margin-right:2px;white-space:nowrap}
 .kchip svg{width:14px;height:14px;flex-shrink:0}
 .msum.sv{display:flex;align-items:center;flex-wrap:wrap;gap:4px 6px;font-size:1.05rem}
@@ -393,7 +440,7 @@ input[type=text]:focus{outline:2px solid var(--pri);outline-offset:-1px;border-c
 .mmp-v small{display:block;font-size:.7rem;color:var(--onv)}.mmp-v b{font-family:var(--cond);font-size:1.3rem;white-space:nowrap}
 .mmp-p{font-size:.8rem;color:var(--onv);white-space:nowrap;overflow-x:auto}
 .mmn.k{background:#16a34a}.mmn.v{background:#dc2626}.mmn.p{background:#334155;width:auto;min-width:17px;padding:0 4px;border-radius:9px}
-.mmn{display:inline-grid;place-items:center;width:17px;height:17px;border-radius:50%;background:#c026d3;color:#fff;font-size:.7rem;font-weight:700;margin-right:4px;vertical-align:1px}
+.mmn{display:inline-grid;place-items:center;width:17px;height:17px;border-radius:50%;background:var(--mm-pt,#c026d3);color:#fff;font-size:.7rem;font-weight:700;margin-right:4px;vertical-align:1px}
 .mmp-b{display:flex;gap:8px}.mmp-b .btn{flex:1;padding:9px 6px;font-size:.875rem}
 .warnt{color:var(--warn)}
 .mmapbtn{align-self:center;margin-top:10px;display:inline-flex;align-items:center;gap:8px;padding-left:16px}
@@ -444,7 +491,7 @@ input[type=text]:focus{outline:2px solid var(--pri);outline-offset:-1px;border-c
 .mpback{position:absolute;inset:0;z-index:5;display:none;background:var(--scrim)}.mpback.on{display:block}
 .mdelc{display:flex;gap:8px;margin-top:10px}.mdelc .btn{flex:1}
 
-/* ---------- Fotó ---------- */
+/* ---------- Fotó (photo) ---------- */
 #fotoView{flex:1;flex-direction:column;margin:-4px -12px -12px;background:var(--bg);min-height:300px;overflow:hidden}
 /* the rounded frame takes the camera picture's own shape (no black bars); camFit() sizes it */
 .camwrap{position:relative;flex:1;min-height:0;display:flex;align-items:center;justify-content:center;margin:0 12px}
@@ -536,7 +583,7 @@ input[type=text]:focus{outline:2px solid var(--pri);outline-offset:-1px;border-c
 .btn,.startbtn,.mapbtns button,.camfl,.chip.tap,.chip.man,.camthumb,.camflip,.cv-nav{transition:transform .12s ease,background-color .2s,color .2s}
 .btn:active,.startbtn:active,.mapbtns button:active,.camfl:active,.chip.tap:active,.chip.man:active,.camthumb:active,.camflip:active{transform:scale(.95)}
 .camtoast{transition:opacity .25s,transform .3s cubic-bezier(.2,0,0,1)}
-/* ---------- Keresés (útszám + szelvény → pont / szakasz) ---------- */
+/* ---------- Keresés (search: road number + chainage → point / section; or coordinates) ---------- */
 #srchView{flex-direction:column;gap:8px}
 .sctl{display:flex;flex-direction:column;gap:14px;border-radius:28px}
 .sfl{display:flex;flex-direction:column;gap:6px}
@@ -562,10 +609,11 @@ input[type=text]:focus{outline:2px solid var(--pri);outline-offset:-1px;border-c
 .sroad{display:flex;align-items:center;gap:12px;min-height:40px}
 .sroad:empty{display:none}
 .sr-ms{font-size:1.1rem;flex-wrap:wrap}
-/* coordinate search (lime): one field per point, WGS84 or EOV recognised by the numbers; "Saját" fills in the GNSS position */
+/* coordinate search (lime): one field per point, WGS84 or EOV recognised by the numbers; "Saját" fills in the GNSS position.
+   Icons: crosshair = a coordinate (lime), navigation arrow = my position (map follow button, "Saját"; user's pick "A") */
 .sco input{text-align:left;font-size:1.15rem!important}
 .sco input::placeholder{font-family:var(--font);font-weight:400;font-size:1rem}
-.skm .spk.sgps{flex:0 0 64px;gap:1px}.skm .spk.sgps svg{color:var(--sc-lime)}.skm .spk.sgps:active{transform:scale(.94)}
+.skm .spk.sgps{flex:0 0 64px;gap:1px}.skm .spk.sgps svg{color:var(--pri)}.skm .spk.sgps:active{transform:scale(.94)}
 .scoi .sroad-n b{font-family:var(--cond);font-size:1.05rem}
 .scoi .cdot{width:30px;height:30px;border-radius:50%;flex-shrink:0;display:grid;place-items:center;color:var(--sc-lime);background:color-mix(in srgb,var(--sc-lime) 18%,transparent)}
 .scoi .cdot svg{width:20px;height:20px}
@@ -608,7 +656,7 @@ input[type=text]:focus{outline:2px solid var(--pri);outline-offset:-1px;border-c
 .mapinfo .bsum .shield{width:auto;height:30px;margin:0}.mapinfo .bsum .ar{color:var(--onv);font-weight:400}.mapinfo .bsum .na{font-size:1rem;font-weight:500;color:var(--onv)}
 .mapinfo .mmp{gap:6px}
 html[data-theme=light] .mapinfo .bh{color:color-mix(in srgb,var(--k) 55%,#000)}
-/* ============ HUD mód: black background (see-through in the windshield), bright text, mirrored ============ */
+/* ============ HUD mode: black background (see-through in the windshield), bright text, mirrored ============ */
 .hud{position:fixed;inset:0;z-index:40;background:#000;display:none;overflow:hidden;touch-action:none;user-select:none;-webkit-user-select:none}
 .hud.on{display:block}
 .hud-m{position:absolute;left:50%;top:50%;color:var(--hc);font-family:var(--cond);display:flex;flex-direction:column;justify-content:center;padding:calc(var(--u)*5);gap:calc(var(--u)*3)}
@@ -740,15 +788,15 @@ html[data-theme=light] .mapinfo .bh{color:color-mix(in srgb,var(--k) 55%,#000)}
       </div>
       <div class="sfl" id="sCoPtF" style="display:none">
         <label class="sfl-l" for="sC1">KOORDINÁTA <small>– WGS84 vagy EOV</small></label>
-        <div class="skm sco"><input type="text" class="sinp" id="sC1" placeholder="pl. 47.13285 19.41772" autocomplete="off" autocapitalize="off" spellcheck="false" aria-label="Koordináta" enterkeyhint="search"><button type="button" class="spk sgps" id="sCg1" aria-label="Saját pozíció beírása"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="6.5"/><circle cx="12" cy="12" r="1.6" fill="currentColor" stroke="none"/><path d="M12 2.5v3M12 18.5v3M2.5 12h3M18.5 12h3"/></svg><small>Saját</small></button></div>
+        <div class="skm sco"><input type="text" class="sinp" id="sC1" placeholder="pl. 47.13285 19.41772" autocomplete="off" autocapitalize="off" spellcheck="false" aria-label="Koordináta" enterkeyhint="search"><button type="button" class="spk sgps" id="sCg1" aria-label="Saját pozíció beírása"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M12 3.2 19.2 20.2 12 16.3 4.8 20.2z" fill="currentColor" stroke-width="1.6"/></svg><small>Saját</small></button></div>
         <div class="sroad scoi" id="sCi1"></div>
       </div>
       <div class="sfl" id="sCoSecF" style="display:none">
         <label class="sfl-l" for="sC2">KEZDŐPONT <small>– WGS84 vagy EOV</small></label>
-        <div class="skm sco"><input type="text" class="sinp" id="sC2" placeholder="pl. 47.13285 19.41772" autocomplete="off" autocapitalize="off" spellcheck="false" aria-label="Kezdőpont koordinátája" enterkeyhint="next"><button type="button" class="spk sgps" id="sCg2" aria-label="Saját pozíció beírása"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="6.5"/><circle cx="12" cy="12" r="1.6" fill="currentColor" stroke="none"/><path d="M12 2.5v3M12 18.5v3M2.5 12h3M18.5 12h3"/></svg><small>Saját</small></button></div>
+        <div class="skm sco"><input type="text" class="sinp" id="sC2" placeholder="pl. 47.13285 19.41772" autocomplete="off" autocapitalize="off" spellcheck="false" aria-label="Kezdőpont koordinátája" enterkeyhint="next"><button type="button" class="spk sgps" id="sCg2" aria-label="Saját pozíció beírása"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M12 3.2 19.2 20.2 12 16.3 4.8 20.2z" fill="currentColor" stroke-width="1.6"/></svg><small>Saját</small></button></div>
         <div class="sroad scoi" id="sCi2"></div>
         <label class="sfl-l" for="sC3" style="margin-top:8px">VÉGPONT</label>
-        <div class="skm sco"><input type="text" class="sinp" id="sC3" placeholder="pl. EOV 678089 198812" autocomplete="off" autocapitalize="off" spellcheck="false" aria-label="Végpont koordinátája" enterkeyhint="search"><button type="button" class="spk sgps" id="sCg3" aria-label="Saját pozíció beírása"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="6.5"/><circle cx="12" cy="12" r="1.6" fill="currentColor" stroke="none"/><path d="M12 2.5v3M12 18.5v3M2.5 12h3M18.5 12h3"/></svg><small>Saját</small></button></div>
+        <div class="skm sco"><input type="text" class="sinp" id="sC3" placeholder="pl. EOV 678089 198812" autocomplete="off" autocapitalize="off" spellcheck="false" aria-label="Végpont koordinátája" enterkeyhint="search"><button type="button" class="spk sgps" id="sCg3" aria-label="Saját pozíció beírása"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M12 3.2 19.2 20.2 12 16.3 4.8 20.2z" fill="currentColor" stroke-width="1.6"/></svg><small>Saját</small></button></div>
         <div class="sroad scoi" id="sCi3"></div>
       </div>
       <div class="serr" id="sErr"></div>
@@ -777,7 +825,7 @@ html[data-theme=light] .mapinfo .bh{color:color-mix(in srgb,var(--k) 55%,#000)}
       <button id="zIn" aria-label="Nagyítás"><svg width="22" height="22" width="2.2" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5.5v13M5.5 12h13"/></svg></button>
       <button id="zOut" aria-label="Kicsinyítés"><svg width="22" height="22" width="2.2" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5.5 12h13"/></svg></button>
       <button id="follow" class="on" aria-label="Követés">
-        <svg width="24" height="24" width="2" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="6.5"/><circle cx="12" cy="12" r="2.4" fill="currentColor" stroke="none"/><path d="M12 2.5v3M12 18.5v3M2.5 12h3M18.5 12h3"/></svg>
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3.2 19.2 20.2 12 16.3 4.8 20.2z" fill="currentColor" stroke-width="1.6"/></svg>
       </button>
     </div>
     <div class="mapinfo" id="mapInfo"><div class="mi-t">Koppints a térképre egy pont szelvényének lekérdezéséhez.</div></div>
@@ -942,9 +990,9 @@ html[data-theme=light] .mapinfo .bh{color:color-mix(in srgb,var(--k) 55%,#000)}
 // the app's one font family, also for the map, road signs and photo stamp (same as --font in the CSS)
 const APPF="Roboto,'Roboto Flex',system-ui,-apple-system,'Segoe UI',sans-serif";
 /* ============================================================
-   ÚtSzelvény – offline útszám + kilométerszelvény kijelző
+   ÚtSzelvény – offline road number + kilometre chainage display (glossary of Hungarian terms at the top of the file)
    ============================================================ */
-/* Budapest határa (EOV, a szakaszokéval azonos kódolás) – © OpenStreetMap közreműködők, ODbL */
+/* Budapest boundary (EOV, same encoding as the road segments) – © OpenStreetMap contributors, ODbL */
 const BP=(["qnpf@upzL`DkNlkB`SdRvDfPxDje@~J~PdHpPzJno@hu@bWkRpHcQhE_`@kDyAvCcNtByFvDkS~A}SWgGaCcIwGsKuNaEoVuGhAeJhAyY~BkMzI__@`EaVOwFo@gI^gI{k@ii@uYkRiHwGmFq@{CmJaAqE}AyJm@uMs@_HaAeEOcNLaEBe@r@_EAqE\\qFpAoGqBcNdEOrHoDpQaKnBs@|BoEqb@qZs@YmNEsFse@nC{OfKud@|B_EdH}IvQwVrHcJDe@`Xkg@hP}Ov\\mL|FpK|XbOzFuGhTgWA}HxAoAbIcG|DeC`@_@zCsBlAq@sBuGqBsEiK}[gU~DDOs@mDv@yBaBoA_@qAAw@D_@Le@|@wA^{Ad@}@tAoAVgGeA{CAq@@e@x@kAhKsFrF{BrYuJeCsHiBeE_CaEsAoBaAuBLK{B{C{@[Ty@_F@uGkOgE}O_Cq@y@GMsBnAgAxAcAxJuFhEyBPgDXr@t@PRExIyEhC}Aa@cAFg@JE`Aix@rAcHmAsHjAiMw@kLiAkFUwFQmLo@oJHGfAJdBf@pBP~BhAjDJzCnBnCfA`PgJkNqHcDyDwMgEuJmJuTcPbAyGe@w@f@oCxF_BlCiDlOeI}OeOvh@mdBmh@aPoGcDwMuUc`@nEwm@Zmk@hJme@fOv@oEeBiEmNwQcFsHqDiG`DcFmCeJbYkMsW{UqDrBel@``@sMgNgLvO}CL_RyCaT{G}CWqBeA_KqDsAGsBs@_C~@kCoBkMiB_\\qBe[`Dm@f@aIdAMyA~@oEnB}PpC{C_AyCpFwYc@gBBiAOcBb@yAL}AFkCVa@tA_@b@Sf@UnFmJ`EoJbF_Jd@aBiQaIqHoCuE{@wACu@d@iBAeCcGqAmAkBMg@o@sA_A}AcCwEaAgCEoAFq@Ko@Ho@EWIgIAeGg@eAC_b@jFoKq@_JOqIa@sPxBsa@tH_IUgATyE|JxLj^nEdYtAdq@EtDoNpAyHaRyv@cwAkq@wz@_m@hRlGrTmExHoc@nL_HjCmRvQoFnF}N~FqApAqIoAeDCcTgDwIiDsIzVpIhD_iA|hAzF|F|^tf@e\\b\\e\\}Nck@|m@ea@|b@t\\fMtA`@jT|HrG|Faq@hl@oi@~_@~NrMk~@rn@wAsAoPbMyOwO{V|NkDuA_TwNeDjAoQbTy^h\\cl@gLycA{NmYrn@o^dv@{AjGuArAwEjUeApD_K`e@{AtQgOgDqNA}k@sIgQoA{ZfA_EKmWsCwLmCcA_@{FkAeHiB{BUyRiEmAg@cb@iFsGs@aA[L\\D^s@vEsAnEkArES`@yCtJ`MpSdQ`^jAda@sAfb@}CdJiD|EsGvGK`DwSl\\_OpPmDrBmK|VgB|`@DxQaB`QiJxQ_FxIdTxVnf@bCjCTdc@jM|`@jCtN{CrFA|V~VfQpTtNvXnGpQvZls@j@~AjfAeLhY|kAjWaLlPz_@dRnb@tGeCxEkCbBhBdDgDVoAzPcGmAuKnIoLnFbSzLqE|PrPlq@d|@ki@~c@hf@tl@dJcNlBlKjDjElQfP|D`D`K~IdC~ErI|TzF`N~Qln@zJ~]l@|ChGzU|Td`@pe@rw@fq@hI~q@nL~HDpXfEzYnXnTrVj_@ak@vXmYrzBqsBzPsMmSkc@}KkTfm@oVjFmCbEmI|CkHb]}t@tFiTbNr@lW|BpGzEdGv@xCbAzm@j`@qRj[jK`Nnf@gMhIj^~AnJbHoD`DoCpLpN|DnIbGeD~ADtGwJzE_Ede@xSxI{ShUbKzE_L", "i`df@kywMlHqC|@sBlG{CpB[pAd@jAp@rBBv@K^OVNRjBv@lBz@dFmCb@wHfBwOhE"]).map(str=>{const P=[];let p=0,v=[0,0];while(p<str.length)for(let k=0;k<2;k++){let r=0,sh=0,b;do{b=str.charCodeAt(p++)-63;r|=(b&31)<<sh;sh+=5}while(b>=32);v[k]+=(r&1)?~(r>>1):(r>>1);if(k)P.push([v[0],v[1]])}return P});
 function inBudapest(E,N){return BP.some(R=>{let c=false;for(let i=0,j=R.length-1;i<R.length;j=i++)if((R[i][1]>N)!==(R[j][1]>N)&&E<(R[j][0]-R[i][0])*(N-R[i][1])/(R[j][1]-R[i][1])+R[i][0])c=!c;return c})}
 const HICO_BP=`<div class="hico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18"/><path d="M5 21V9l5-3v15"/><path d="M10 21V4l9 4v13"/><path d="M13 10h3M13 14h3M13 18h3M7 12h1M7 16h1"/></svg></div>`;
@@ -956,7 +1004,7 @@ const PKOD=["osztatlan pálya","jobb pálya","bal pálya"];
 const S={wake:true,bike:true,navHide:true,name:true,coord:"wgs",base:"grey",rot:"north",measCoord:"both",measCsv:true,srchCsv:true,lineW:1.6,hl:"bold",smooth:true,secSpd:true,secBr:true,secTr:true,secGps:true,secKez:true,phName:true,phAcc:true,phCoord:"off",phRes:"best",phAuto:true,phExif:true,phDir:true,phVol:true,phFolder:"pictures",hudFlip:"x",hudOri:"land",hudCol:"white",hudBr:"max",hudDir:true,hudSpd:true,hudLim:true,hudName:false};
 try{Object.assign(S,JSON.parse(localStorage.getItem("kszt_settings")||"{}"))}catch(e){}
 function saveS(){try{localStorage.setItem("kszt_settings",JSON.stringify(S))}catch(e){}}
-/* ---------- theme: Sötét / Világos / Rendszer ---------- */
+/* ---------- theme: Sötét / Világos / Rendszer (dark / light / system) ---------- */
 const mqLight=window.matchMedia?matchMedia("(prefers-color-scheme: light)"):null;
 function applyTheme(){
   const t=S.theme==="light"||(S.theme==="auto"&&mqLight&&mqLight.matches)?"light":"dark";
@@ -967,10 +1015,11 @@ function applyTheme(){
 applyTheme();
 if(mqLight&&mqLight.addEventListener)mqLight.addEventListener("change",()=>{if(S.theme==="auto")applyTheme()});
 
-/* ---------- Mérnökség-beosztás (a NAP adatok ezt NEM tartalmazzák) ----------
-   Kitölthető szabálylista, felülről az első egyező sor érvényes. Minden mező elhagyható:
+/* ---------- Mérnökség (road maintenance district) table – NOT in the NAP data ----------
+   A rule list to fill in; the first matching row from the top wins. Every field is optional:
    { megye: 9, ut: "48", tol: "0+000", ig: "35+000", nev: "Debreceni Mérnökség" }
-   megye = KSH megyekód (1 Budapest … 20 Zala), ut = útszám ("*" vagy elhagyva = minden út) */
+   megye = KSH county code (1 Budapest … 20 Zala), ut = road number ("*" or left out = every road),
+   tol / ig = chainage from / to, nev = name shown */
 const MERNOKSEG=[
 ];
 
@@ -1159,7 +1208,7 @@ const cval=(c)=>c.km*10000+c.m;                    // sortable chainage value
 const vfmt=(v)=>Math.floor(v/10000)+"+"+String(v%10000).padStart(3,"0");
 const vdist=(a,b)=>(Math.floor(b/10000)-Math.floor(a/10000))*1000+(b%10000-a%10000); // ≈ metres from a to b
 function recsFor(M,r,pk){return M.get(rkey(r,pk))||(pk?M.get(rkey(r,0)):null)||[]}
-/* ---------- NAP szakaszadatok: forgalmi sávok, burkolat, éves keresztmetszeti forgalom ----------
+/* ---------- NAP section data: traffic lanes, pavement, annual cross-section traffic ----------
    Ranges per road and carriageway like the speed limits (built by tools/nap_szakaszadatok.py).
    Not shown in the interface yet. Missing values in the source are -1 → null here. */
 let SZD=null;const SAV=new Map(),BUR=new Map(),ANF=new Map();
@@ -1175,8 +1224,8 @@ const nn=(x)=>x<0?null:x;
 function lanesAt(r,pk,v){const x=szdHit(SAV,r,pk,v);return x?x.n:null}
 // pavement: {width (m), type} or null
 function pavementAt(r,pk,v){const x=szdHit(BUR,r,pk,v);return x?{width:x.w<0?null:x.w/10,type:x.k<0?null:SZD.burt[x.k]}:null}
-// annual cross-section traffic (NAP leírás): asz = forgalomszámláló állomás száma, anf = évi átlagos napi keresztmetszeti
-// forgalom (egységjármű/nap), oj = összes jármű (jármű/nap), ongj2 = nehéz motoros forgalom (jármű/nap); or null
+// annual cross-section traffic (NAP description): asz = traffic counting station number, anf = annual average daily
+// cross-section traffic (PCU/day, "egységjármű"), oj = all vehicles (vehicles/day), ongj2 = heavy motor vehicles; or null
 function trafficAt(r,pk,v){const x=szdHit(ANF,r,pk,v);if(!x)return null;const k=x.s*4,a=SZD.ksz;
   return {asz:nn(a[k]),anf:nn(a[k+1]),oj:nn(a[k+2]),ongj2:nn(a[k+3]),year:SZD.ev}}
 // everything for one place: road r, carriageway pk, chainage value v
@@ -1660,7 +1709,7 @@ function lastKnownHTML(inLost){
     <div class="rsub">${L.lat!=null?cpW(L.lat,L.lon):(ll=>cpW(ll.lat,ll.lon))(EOV.inv(L.E,L.N))}</div></div>`;
 }
 
-/* ---------- map (Web Mercator; háttér: OpenStreetMap / Esri műholdkép; É-felül vagy menetirány-felül) ---------- */
+/* ---------- map (Web Mercator; base layer OpenStreetMap / Esri satellite; north-up or heading-up) ---------- */
 const cv=$("map"),tileDiv=$("tiles");let ctx=cv.getContext("2d");   // let: the cached map layer is painted with the same code (see paintLayer)
 const RM=6378137,WORLD=2*Math.PI*RM;
 const toM=(lat,lon)=>({x:RM*lon*Math.PI/180,y:RM*Math.log(Math.tan(Math.PI/4+lat*Math.PI/360))});
@@ -1934,7 +1983,7 @@ function drawMap(){
     if(GM.length)stroke(hp,light?"rgba(37,99,235,.30)":"rgba(255,255,255,.38)",hw);
     if(sat)for(const g of GM)stroke(g.p,"#000a",wk(g.k)*LW+2.5);
     for(const g of GM)stroke(g.p,ST(g.k)[0],wk(g.k)*LW*1.3)}}
-  drawSrch(false);for(const M of measShown())drawMeasTrack(M,"#e879f9");drawMeasTrack(measActive,"#f97316");
+  drawSrch(false);for(const M of measShown())drawMeasTrack(M,msCol(M));drawMeasTrack(measActive,msCol(measActive));
   // km posts (under the signs): a dot on the road and a short tick beside it, pointing away from the other
   // carriageway / a road running close by; the km number at the end of the tick
   if(kmOn){
@@ -1966,7 +2015,8 @@ function drawMap(){
   for(const el of [$("mapInfo"),document.querySelector(".mapbtns"),$("attrib"),$("scalebar"),$("baseNote")]){
     const r=el.getBoundingClientRect();if(!r.width||!r.height)continue;
     placed.push({x:(r.left+r.right)/2-cr.left,y:(r.top+r.bottom)/2-cr.top,w:r.width+4,h:r.height+4})}
-  if(S.mapBr!==false&&mapZoom()>=brZoom())for(const b of drawBridgeMarks(W,H,gS))placed.push(b);     // bridges (Beállítások → Térkép)
+  brStrips=[];
+  if(S.mapBr!==false&&mapZoom()>=brZoom()){for(const b of drawBridgeMarks(W,H,gS))placed.push(b);overOnBridges()}     // bridges (Beállítások → Térkép)
   const free=(x,y,w,h)=>!placed.some(b=>Math.abs(b.x-x)<(b.w+w)/2+6&&Math.abs(b.y-y)<(b.h+h)/2+4);
   const lastAt=new Map(); // same road number: at least 150 px apart
   // Signs stay put while panning and zooming: the places a sign may stand are fixed points along each segment
@@ -2033,8 +2083,8 @@ function kmPosts(s){let K=KMP.get(s);if(K)return K;K=[];const A=segAnc[s],L=segL
    get the height warning (BRXB). Worked out once, a few seconds after start (bridgeCrossings). */
 const BR_X_D=20,BR_X_REACH=48;      // a crossing road within 20 m of the bridge point; its carriageways within ±48 m along the bridge
 const mapZoom=()=>Math.log2(mS*WORLD/256);            // the map's zoom level (inverse of zToS)
-const brZoom=()=>S.brZ>=10&&S.brZ<=19?S.brZ:14;
-const kmZoom=()=>S.kmZ>=10&&S.kmZ<=19?S.kmZ:14;       // km posts from this zoom level, their numbers one level more (Térkép settings)       // bridges are shown from this zoom level (slider in Térkép settings)
+const brZoom=()=>S.brZ>=10&&S.brZ<=19?S.brZ:14;       // bridges are shown from this zoom level (slider in Térkép settings)
+const kmZoom=()=>S.kmZ>=10&&S.kmZ<=19?S.kmZ:14;       // km posts from this zoom level, their numbers one level more (slider in Térkép settings)
 let BRPOS=null,BRX=null,BRXB=null,BRU=null;
 function bridgePositions(){
   if(BRPOS)return BRPOS;BRPOS=[];roadIndex();
@@ -2092,6 +2142,25 @@ function brLimitK(b,k){let v=0;for(let i=0;i<b.rs.length;i+=2){const t=RTYPE[b.r
 // - a bridge carrying a national road over another one: a deck under the bridge road, which is drawn again on top
 // - other bridges (rivers, valleys): the map symbol, the bridge edges beside the road
 // Restricted bridges: amber edges and a label (weight on the bridge, "↧ height" on the road under it).
+// strips of the bridge roads redrawn over crossing decks (screen px), filled by drawBridgeMarks
+let brStrips=[];
+// a search / measurement line on a road that crosses over another one on a bridge: the bridge drawing paints that
+// road again on top of the deck, which hid the line there; draw those lines once more, clipped to the bridge strips
+// (only lines that use the bridge road, so a line on the road below stays under the deck)
+function overOnBridges(){
+  const L=brStrips;if(!L.length)return;
+  const roads=new Set(L.map(b=>ROADS[b.road].num));
+  const its=srchOnMap().filter(it=>it.kind==="sec"&&(it.multi&&it.rt?it.rt.legs.some(l=>roads.has(l.road)):roads.has(it.road)));
+  const ms=[...measShown(),measActive].filter(M=>M&&M.trk&&(M.legs||[]).some(l=>roads.has(l.road)));
+  if(!its.length&&!ms.length)return;
+  ctx.save();ctx.beginPath();
+  for(const b of L){const c=Math.cos(b.ang),sn=Math.sin(b.ang),hl=b.len/2,hw=b.w/2;
+    ctx.moveTo(b.x-c*hl+sn*hw,b.y-sn*hl-c*hw);ctx.lineTo(b.x+c*hl+sn*hw,b.y+sn*hl-c*hw);ctx.lineTo(b.x+c*hl-sn*hw,b.y+sn*hl+c*hw);ctx.lineTo(b.x-c*hl-sn*hw,b.y-sn*hl+c*hw);ctx.closePath()}
+  ctx.clip();
+  if(its.length)drawSrch(false,its);
+  for(const M of ms)drawMeasTrack(M,msCol(M));
+  ctx.restore();
+}
 function drawBridgeMarks(W,H,gS){
   const P=bridgePositions(),light=S.base==="grey",sat=S.base==="sat",boxes=[],seen=new Set(),LW=S.lineW||1.6;
   const ST=sat?STYLE_SAT:light?STYLE_LIGHT:STYLE_DARK;
@@ -2124,6 +2193,17 @@ function drawBridgeMarks(W,H,gS){
     const hl=L.map(v=>brLimitK(v.o.b,"h")).find(Boolean),wl=L.map(v=>brLimitK(v.o.b,"w")).find(Boolean);
     ctx.save();ctx.translate(cx,cy);ctx.rotate(ang+Math.PI/2);deck(across,along,hl?amber:deckE);ctx.restore();
     boxes.push({x:cx,y:cy,w:across+12,h:across+12});
+    // a national road running over the deck is the road on the bridge (e.g. M7 over M1): draw it again on top
+    {const mc=s2m(cx,cy),ll=fromM(mc.x,mc.y),pe=EOV.fwd(ll.lat,ll.lon),hm=across/2/gS+12,done=new Set();
+      for(const c of candidates(pe.E,pe.N,Math.max(12,along/gS))){const r2=segRoad[c.s];
+        if(r2===g.r||segKut[c.s]===10||done.has(c.s))continue;done.add(c.s);
+        const P=slicePts(c.s,Math.max(0,c.along-hm),Math.min(segLen(c.s),c.along+hm)),k=segKut[c.s],w2=ST(k)[1]*LW;
+        {const e0=eovToM(P[0],P[1]),e1=eovToM(P[P.length-2],P[P.length-1]);   // only a road that crosses (a ramp alongside stays under)
+          let d=Math.abs(Math.atan2(m2sy(e1.x,e1.y)-m2sy(e0.x,e0.y),m2sx(e1.x,e1.y)-m2sx(e0.x,e0.y))-ang)%Math.PI;if(d>Math.PI/2)d=Math.PI-d;if(d<0.45)continue}
+        ctx.beginPath();for(let i=0;i<P.length;i+=2){const m=eovToM(P[i],P[i+1]);i?ctx.lineTo(m2sx(m.x,m.y),m2sy(m.x,m.y)):ctx.moveTo(m2sx(m.x,m.y),m2sy(m.x,m.y))}
+        ctx.lineCap="butt";if(sat){ctx.strokeStyle="#000a";ctx.lineWidth=w2+2.5;ctx.stroke()}ctx.strokeStyle=ST(k)[0];ctx.lineWidth=w2;ctx.stroke();
+        const a0=eovToM(P[0],P[1]),a1=eovToM(P[P.length-2],P[P.length-1]),x0=m2sx(a0.x,a0.y),y0=m2sy(a0.x,a0.y),x1=m2sx(a1.x,a1.y),y1=m2sy(a1.x,a1.y);
+        brStrips.push({x:(x0+x1)/2,y:(y0+y1)/2,ang:Math.atan2(y1-y0,x1-x0),len:Math.hypot(x1-x0,y1-y0),w:Math.max(w2+8,14),road:r2})}}
     if(hl)label("↧ "+hl.t,cx+Math.cos(ang)*(along/2+18),cy+Math.sin(ang)*(along/2+18));
     else if(wl)label(wl.t,cx+Math.cos(ang)*(along/2+18),cy+Math.sin(ang)*(along/2+18));
   }
@@ -2136,6 +2216,7 @@ function drawBridgeMarks(W,H,gS){
     if(X){ // crossing: a deck under the bridge road over the road below, and the bridge road drawn again on top
       const len=Math.max(50,2*(X.reach||0)+24)*gS;deck(len,Math.max(rw+10,14*gS),wl?amber:deckE);   // ≥ 50 m long, over every carriageway; 14 m wide
       ctx.lineCap="butt";ctx.strokeStyle=st[0];ctx.lineWidth=rw;ctx.beginPath();ctx.moveTo(-len/2-8,0);ctx.lineTo(len/2+8,0);ctx.stroke();
+      brStrips.push({x,y,ang,len:len+16,w:Math.max(rw+8,14),road:segRoad[o.s]});   // searched / measured lines on this road go back on top
     }else{ // bridge over a river or valley: the edges beside the road
       const len=45*gS,off=Math.max(rw/2+4,6*gS);                                               // 45 m long
       ctx.strokeStyle=wl||hl?amber:light?"#3f4a44":"#e5e7eb";ctx.lineWidth=2;ctx.lineCap="round";
@@ -2182,7 +2263,7 @@ function drawTapRing(x,y,lt){
   ctx.beginPath();ctx.arc(x,y,2.8,0,7);ctx.fillStyle=col;ctx.fill();ctx.restore();
 }
 function queueDraw(){if(drawQueued||SM.raf)return;drawQueued=true;requestAnimationFrame(()=>{drawQueued=false;drawMap()})}
-/* ---------- Sima követés: a térkép és a pozíciónyíl a GNSS frissítések között is folyamatosan mozog ---------- */
+/* ---------- smooth following ("Sima"): the map and the position arrow keep moving between GNSS fixes ---------- */
 // Between two fixes (about 1 s apart) the position is predicted from speed and heading (dead reckoning, at most
 // 1.2 s ahead). When a new fix arrives, the difference between the prediction and the fix is not applied at once:
 // it fades out in ~0.35 s, so the picture never jumps and there is no lag while driving steadily. Heading eases too.
@@ -2427,11 +2508,15 @@ let measOpen=null;              // id of the expanded card
 let measDel=null;               // id waiting for delete confirmation
 let measRename=null;            // id being renamed
 
-/* ---------- Mentett elemek: a mentett mérések és a mentett keresések közös kártyája és viselkedése ---------- */
+/* ---------- saved items: one card and one behaviour for saved measurements and saved searches ---------- */
 // one card layout and one set of actions for both lists (name + map switch, start → end, type chip, details,
 // Térképen / Átnevezés / Törlés); the per-list state lives in the existing variables, reached through MS / SS
 const SC_COL="#a3e635",SC_ICON=`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="1.8" fill="currentColor" stroke="none"/><path d="M12 2.5v3.2M12 18.3v3.2M2.5 12h3.2M18.3 12h3.2"/></svg>`;
-const SV_KIND={gnss:["GNSS mérés","#e879f9",`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><g transform="rotate(-45 12 12)"><rect x="2" y="8.25" width="20" height="7.5" rx="2"/><path d="M6.5 8.25v3M10 8.25v2M13.5 8.25v3M17 8.25v2"/></g></svg>`],map:["Térképi mérés","#e879f9",`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21.2c-.3 0-.5-.1-.7-.3C8.6 18.5 5 14.4 5 10a7 7 0 0 1 14 0c0 4.4-3.6 8.5-6.3 10.9-.2.2-.4.3-.7.3z"/><circle cx="12" cy="10" r="2.5"/></svg>`],
+// measurement colours: GNSS measurements and map measurements (saved, on the map, cards, bubbles); the running
+// GNSS measurement is orange; MM_PT = the numbered points of the map measuring tool
+var MG_COL="#e879f9",MM_COL="#e879f9",MM_PT="#c026d3",MA_COL="#f97316";   // var: drawMap may run before this line
+function msCol(M){return M===measActive?MA_COL:M&&M.kind==="map"?MM_COL:MG_COL}
+const SV_KIND={gnss:["GNSS mérés",MG_COL,`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><g transform="rotate(-45 12 12)"><rect x="2" y="8.25" width="20" height="7.5" rx="2"/><path d="M6.5 8.25v3M10 8.25v2M13.5 8.25v3M17 8.25v2"/></g></svg>`],map:["Térképi mérés",MM_COL,`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21.2c-.3 0-.5-.1-.7-.3C8.6 18.5 5 14.4 5 10a7 7 0 0 1 14 0c0 4.4-3.6 8.5-6.3 10.9-.2.2-.4.3-.7.3z"/><circle cx="12" cy="10" r="2.5"/></svg>`],
   cpt:["Koordináta",SC_COL,SC_ICON],csec:["Koord. szakasz",SC_COL,`<svg viewBox="0 0 24 24"><rect x="2.5" y="9" width="19" height="6" rx="3" fill="currentColor"/></svg>`],
   pt:["Pont","#22d3ee",`<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="5.5" fill="currentColor"/></svg>`],sec:["Szakasz","#22d3ee",`<svg viewBox="0 0 24 24"><rect x="2.5" y="9" width="19" height="6" rx="3" fill="currentColor"/></svg>`]};
 const MS={el:"measList",pre:"mrn_",ph:"Mérés neve",get open(){return measOpen},set open(v){measOpen=v},get ren(){return measRename},set ren(v){measRename=v},
@@ -2704,7 +2789,7 @@ function measCSV(){
   }
   return csvRows(rows);
 }
-// shared CSV export (mentett mérések, mentett keresések): copy to the clipboard / save as a file
+// shared CSV export (saved measurements, saved searches): copy to the clipboard / save as a file
 const csvRows=(rows)=>{const q=(x)=>{x=x==null?"":String(x);return /[;"\n]/.test(x)?'"'+x.replace(/"/g,'""')+'"':x};return "\ufeff"+rows.map(r=>r.map(q).join(";")).join("\r\n")};
 const csvDc=(x)=>x==null?"":String(x).replace(".",",");
 async function csvCopy(text,msg){
@@ -2767,7 +2852,7 @@ function drawMeasTrack(M,col,marks){
   (M.pts||[]).forEach((p,i)=>mark(p,"#334155","P"+(i+1)));
   mark(M.start,"#16a34a","K");
   if(M!==measActive){mark(M.end,"#dc2626","V");
-    if(M.start){const m=eovToM(M.start.E,M.start.N);mapChip(m2sx(m.x,m.y),m2sy(m.x,m.y),`${M.name} · ${fmtDist(measLen(M))}`,15,"#e879f9",M===mapMeas,{meas:M})}}
+    if(M.start){const m=eovToM(M.start.E,M.start.N);mapChip(m2sx(m.x,m.y),m2sy(m.x,m.y),`${M.name} · ${fmtDist(measLen(M))}`,15,msCol(M),M===mapMeas,{meas:M})}}
 }
 // the length shown for a saved measurement: along the road (GNSS / route), or the straight line when no route was found
 const measLen=(r)=>r.kind==="map"&&!r.pairs.some(q=>q.len!=null)?r.air:r.dist;
@@ -2786,7 +2871,7 @@ function showMeasOnMap(r){
   mapItemShow({meas:r});
 }
 measTicker();
-/* ---------- Mérés a térképen: points on the map, straight line + along-road route + length by chainage ---------- */
+/* ---------- Mérés a térképen (measuring on the map): points on the map, straight line + along-road route + length by chainage ---------- */
 // road graph (built once, on first use): nodes = segment ends (merged within 3 m), T-junctions attached to the
 // segment they touch; edges = pieces of segments between those points. Bike paths are left out.
 let RG=null;
@@ -2965,7 +3050,7 @@ function drawMM(){
   for(const q of mmPairs){if(!q.route)continue;const L=q.route.line;
     if(!q.route.scr||q.route.scr.length!==L.length){q.route.scr=[];for(let k=0;k<L.length;k+=2){const m=eovToM(L[k],L[k+1]);q.route.scr.push(m.x,m.y)}}
     const M=q.route.scr;ctx.beginPath();for(let k=0;k<M.length;k+=2){const x=m2sx(M[k],M[k+1]),y=m2sy(M[k],M[k+1]);k?ctx.lineTo(x,y):ctx.moveTo(x,y)}
-    ctx.strokeStyle="#000b";ctx.lineWidth=8;ctx.stroke();ctx.strokeStyle="#e879f9";ctx.lineWidth=5;ctx.stroke()}
+    ctx.strokeStyle="#000b";ctx.lineWidth=8;ctx.stroke();ctx.strokeStyle=MM_COL;ctx.lineWidth=5;ctx.stroke()}
   // straight lines
   ctx.setLineDash([8,6]);ctx.lineWidth=2.5;
   for(let i=0;i+1<mmPts.length;i++){const [x1,y1]=P(mmPts[i].E,mmPts[i].N),[x2,y2]=P(mmPts[i+1].E,mmPts[i+1].N);
@@ -2977,7 +3062,7 @@ function drawMM(){
     ctx.fillStyle="#000c";ctx.fillRect(mx-w/2,my-9,w,18);ctx.fillStyle="#fff";ctx.textAlign="center";ctx.textBaseline="middle";ctx.fillText(t,mx,my+0.5);ctx.setLineDash([8,6])}
   ctx.setLineDash([]);
   // numbered points
-  mmPts.forEach((Q,i)=>{const [x,y]=P(Q.E,Q.N);ctx.beginPath();ctx.arc(x,y,11,0,7);ctx.fillStyle=Q.res.off?"#64748b":"#c026d3";ctx.fill();ctx.lineWidth=2.5;ctx.strokeStyle="#fff";ctx.stroke();
+  mmPts.forEach((Q,i)=>{const [x,y]=P(Q.E,Q.N);ctx.beginPath();ctx.arc(x,y,11,0,7);ctx.fillStyle=Q.res.off?"#64748b":MM_PT;ctx.fill();ctx.lineWidth=2.5;ctx.strokeStyle="#fff";ctx.stroke();
     ctx.fillStyle="#fff";ctx.font=`bold 12px ${APPF}`;ctx.textAlign="center";ctx.textBaseline="middle";ctx.fillText(String(i+1),x,y+0.5)});
 }
 
@@ -3453,7 +3538,9 @@ document.querySelectorAll("#phResSeg button,#camResSeg button").forEach(b=>b.onc
 // floating bar: slides away while scrolling down, comes back on scroll up
 (function(){const m=$("main"),n=$("navBar");let y0=0;m.addEventListener("scroll",()=>{const y=m.scrollTop;
   const f=$("navFade");if(S.navHide&&y>y0+8&&y>80){n.classList.add("hide");f.classList.add("hide")}else if(y<y0-8||y<24){n.classList.remove("hide");f.classList.remove("hide")}y0=y},{passive:true})})();
-/* ---------- Keresés: útszám + km+m → pont, vagy kezdő- és záró szelvény → szakasz; mentett keresések a térképen ---------- */
+/* ---------- Keresés (search): road number + km+m → point, or start and end chainage → section; by coordinates
+   (lime): WGS84 / EOV → nearest road place, two coordinates → section (several roads: route along the network);
+   saved searches on the map ---------- */
 // a saved search keeps only the road number and the chainage values (cval: km*10000+m), the geometry is rebuilt from the data
 let srchList=[];                // saved searches, newest first: {id,kind:"pt"|"sec",name,road,a,b,t,show}
 let srchCur=null,srchCurOn=false; // the last (unsaved) search and whether it is shown on the map
@@ -3859,8 +3946,8 @@ function mapChipAt(px,py){
   for(let i=mapChips.length-1;i>=0;i--){const c=mapChips[i];if(px>=c.x-6&&px<=c.x+c.w+6&&py>=c.y-8&&py<=c.y+c.h+8)return c}
   return null;
 }
-function drawSrch(marks){
-  const L=srchOnMap();if(!L.length)return;
+function drawSrch(marks,only){
+  const L=only||srchOnMap();if(!L.length)return;
   ctx.lineCap="round";ctx.lineJoin="round";const vb=viewBoxM(30);
   for(const it of L){
     const R=srchEval(it);if(R.err)continue;const foc=it===srchFocus||it===srchCur&&srchCurOn;
@@ -4140,7 +4227,7 @@ document.querySelectorAll("#phFolderList button").forEach(b=>b.onclick=async()=>
 });
 phFolderUI();
 
-/* ---------- HUD mód: mirrored, high-contrast picture for the windshield ---------- */
+/* ---------- HUD mode: mirrored, high-contrast picture for the windshield ---------- */
 // The phone lies on the dashboard; the windshield reflects the screen, so the picture is mirrored
 // (S.hudFlip x / y / off). Black = see-through in the reflection, so only the numbers light up.
 // Landscape / portrait does not depend on the phone's rotation (a flat phone rotates at random,
