@@ -8,7 +8,7 @@ a kisebb javítások közvetlenül a `main`-re kerültek.
 Első stabil kiadás.
 - **Indítási tájékoztató:** az első indításkor egy ablak jelenik meg (az adatok tájékoztató jellegűek, nem hitelesek; vezetés közben ne kezeld; helyadat-használat; GPL-3.0, garancia nélkül). A GNSS csak az „Elfogadom” után indul, így a helyengedély kérése a magyarázat után jön. A Névjegyben az „Indítási tájékoztató” gombbal újra megnézhető.
 - **Adatvédelem:** új szakasz a Névjegyben és a README-ben: mi marad a készüléken, és mit látnak a térképszolgáltatók.
-- **Térkép:** a műholdkép forrásmegjelölése „Powered by Esri · © Esri, Maxar, Earthstar Geographics, GIS User Community” (az Esri előírása szerint); az OpenStreetMap felirat a szerzői jogi oldalra mutat. Az Android alkalmazás a térképcsempék kérésekor azonosítja magát (`UtSzelveny/1.0` a projekt címével), ahogy az OpenStreetMap csempeszabályzata előírja.
+- **Térkép:** a műholdkép forrásmegjelölése „Powered by Esri · © Esri, Maxar, Earthstar Geographics, GIS User Community” (az Esri előírása szerint). Az Android alkalmazás a térképcsempék kérésekor azonosítja magát (`UtSzelveny/1.0` a projekt címével), ahogy az OpenStreetMap csempeszabályzata előírja.
 - **Android:** az APK a V1.0-tól saját, titkos kulccsal aláírt kiadási (release) változat; a nyilvános debug kulcs kikerült a tárolóból. **A béta APK-t a V1.0 telepítése előtt el kell távolítani**, ezzel a mentett mérések és keresések is törlődnek, ezért előtte érdemes CSV-be menteni őket.
 - **Kiadás:** egy `v*` címke (pl. `v1.0`) stabil GitHub kiadást készít az APK-val; a README letöltési linkje (`releases/latest`) erre mutat. Az `apk-latest` továbbra is a `main` ág legfrissebb állapota.
 - Verzió mindenhol V1.0 (a „Beta” jelzés megszűnt), versionCode 100.
