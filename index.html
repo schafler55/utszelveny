@@ -561,6 +561,7 @@ input[type=text]:focus{outline:2px solid var(--pri);outline-offset:-1px;border-c
 @keyframes spkFlip{0%{transform:translateY(8px);opacity:0}100%{transform:none;opacity:1}}
 .sroad{display:flex;align-items:center;gap:12px;min-height:40px}
 .sroad:empty{display:none}
+.sr-ms{font-size:1.1rem;flex-wrap:wrap}
 /* coordinate search (lime): one field per point, WGS84 or EOV recognised by the numbers; "Saját" fills in the GNSS position */
 .sco input{text-align:left;font-size:1.15rem!important}
 .sco input::placeholder{font-family:var(--font);font-weight:400;font-size:1rem}
@@ -3492,8 +3493,8 @@ function parseCoord(t){
   const p=EOV.fwd(lat,lon);return {sys:"wgs",E:p.E,N:p.N,lat,lon};
 }
 // nearest national road place to an EOV point; on = only that road (bike paths left out when hidden on the map)
-function nearRoad(E,N,on){
-  const noBike=S.mapBike===false;
+function nearRoad(E,N,on,nb){
+  const noBike=nb||S.mapBike===false;
   for(const R of on!=null?[150,600]:[60,250,1000,3000]){
     const c=candidates(E,N,R).filter(c=>!(noBike&&segKut[c.s]===10)&&(on==null||segRoad[c.s]===on));
     if(!c.length)continue;
@@ -3571,17 +3572,26 @@ function srchSection(r,va,vb,pk){
 }
 // evaluated search (cached per item): {err} or the point / section result
 const srchCache=new WeakMap();
+// a coordinate section over several roads: the stored route (legs, line, lengths) of the search
+function srchMulti(it){
+  const L=it.rt.legs,P=(x)=>{const ll=EOV.inv(x.E,x.N);return {hits:[{E:x.E,N:x.N,lat:ll.lat,lon:ll.lon,pk:x.pk}],x}};
+  let roads=[];for(const l of L)if(![8,9,11].includes(l.kut)&&!roads.includes(l.road))roads.push(l.road);   // ramps / rest areas left out of the list
+  if(!roads.length)roads=[...new Set(L.map(l=>l.road))];
+  return {multi:true,legs:L,parts:[{pts:it.rt.line}],len:it.rt.len,ch:it.rt.ch,A:P(L[0].from),B:P(L[L.length-1].to),roads};
+}
+const multiRoads=(R)=>R.roads.length>6?R.roads.slice(0,6).join(", ")+", …":R.roads.join(", ");
 function srchEval(it){
   let R=srchCache.get(it);if(R)return R;
-  const r=roadFind(it.road);
-  if(r<0)R={err:"Ez az útszám nem szerepel az adatokban."};
+  const r=it.multi?0:roadFind(it.road);
+  if(it.multi)R=it.rt&&it.rt.legs&&it.rt.legs.length?srchMulti(it):{err:"Hiányzó útvonal."};
+  else if(r<0)R={err:"Ez az útszám nem szerepel az adatokban."};
   else{const I=roadInfo(r),X=it.kind==="sec"?srchSection(r,it.a,it.b,it.pk):srchPoint(r,it.a,it.pk);
     R=X?Object.assign({r,num:ROADS[r].num,name:ROADS[r].name,kut:I.kut,I},X):{err:"Ezen a szakaszon nincs útadat."}}
   if(!R.err&&it.src==="c"&&it.c){const P=it.kind==="sec"?[R.A,R.B]:[R];
     R.cd=it.c.map((c,i)=>{const X=P[i];if(!X)return null;let d=Infinity,h0=null;for(const h of X.hits){const x=Math.hypot(h.E-c.E,h.N-c.N);if(x<d){d=x;h0=h}}return {d,h:h0}})}
   srchCache.set(it,R);return R;
 }
-const srchAutoName=(it)=>(it.kind==="sec"?`${it.road} · ${vfmt(it.a)} – ${vfmt(it.b)}`:`${it.road} · ${vfmt(it.a)}`)+(it.pk?` (${it.pk===2?"bal":"jobb"})`:"");
+const srchAutoName=(it)=>it.multi&&it.rt?(f=>(l=>`${f.road} · ${f.ch} → ${l.road} · ${l.ch}`)(it.rt.legs[it.rt.legs.length-1].to))(it.rt.legs[0].from):(it.kind==="sec"?`${it.road} · ${vfmt(it.a)} – ${vfmt(it.b)}`:`${it.road} · ${vfmt(it.a)}`)+(it.pk?` (${it.pk===2?"bal":"jobb"})`:"");
 // "12+345", "12 345", "12,345" / "12.345" (km) or two fields: km and m
 function parseCh(k,m){
   k=String(k||"").trim();m=String(m||"").trim();if(!k&&!m)return null;
@@ -3601,6 +3611,12 @@ function srchDetailHTML(it,R){
   const dd=(x,na)=>x?`<dd>${esc(x)}</dd>`:`<dd class="na">${na||"–"}</dd>`;
   const co=it.src==="c"&&it.c&&R.cd;
   const cdd=(i)=>`<dd class="na">${cBoth(it.c[i])}${R.cd[i]?`<br>${fmtDist(R.cd[i].d)} az úttól`:""}</dd>`;
+  if(R.multi)return `<div class="sr-top"><div style="min-width:0"><div class="msum sv sr-ms">${svSum(R.A.x,R.B.x,"→")}</div><div class="sr-n">Több úton: ${esc(multiRoads(R))}</div></div></div>
+    <div class="mplaces" style="margin-top:0">${placeHTML("KEZDETE",R.A.x)}${placeHTML("VÉGE",R.B.x)}</div>
+    ${legsHTML({kind:"map",legs:R.legs})}
+    <dl class="kv skv"><dt>Hossz (úton)</dt><dd>${fmtDist(R.len)}</dd><dt>Szelvény szerint</dt><dd>${fmtDist(R.ch)} <span class="na">(utanként összeadva)</span></dd>
+      ${co?`<dt>Megadott kezdőpont</dt>${cdd(0)}<dt>Megadott végpont</dt>${cdd(1)}`:""}
+      <dt>Kezdőpont az úton</dt><dd class="na">${coordFmt(R.A.hits[0])}</dd><dt>Végpont az úton</dt><dd class="na">${coordFmt(R.B.hits[0])}</dd></dl>`;
   if(it.kind!=="sec"){
     const h=R.hits[0];
     return `<div class="sr-top">${shieldSVG(R.num,R.kut)}<div style="min-width:0"><div class="sr-ch">${fmtCh(R.ch)} ${pkChip(R.hits.length===1?R.hits[0].pk:0)}</div><div class="sr-n">${esc(nameTxt(R.name))}</div></div></div>
@@ -3707,14 +3723,24 @@ function srchRunCoord(){
   if(pt){const h=near[0];it={id:0,kind:"pt",src:"c",road:ROADS[h.r].num,a:cval(h.ch),c:[cRec(C[0])],t};if(h.pk)it.pk=h.pk}
   else{
     let [A,B]=near;
-    // the two ends on different roads: the other end on the same road, if that road passes near it (the smaller detour)
-    if(A.r!==B.r){const b2=nearRoad(C[1].E,C[1].N,A.r),a2=nearRoad(C[0].E,C[0].N,B.r),o1=b2?A.d+b2.d:Infinity,o2=a2?a2.d+B.d:Infinity;
-      if(o1===Infinity&&o2===Infinity)return err(`A két pont nem ugyanazon az országos közúton van (${ROADS[A.r].num} és ${ROADS[B.r].num}). Szakasz csak egy úton kereshető.`);
-      if(o1<=o2)B=b2;else A=a2}
-    let a=cval(A.ch),b=cval(B.ch),c=[cRec(C[0]),cRec(C[1])];
-    if(a===b)return err("A két pont ugyanarra a szelvényre esik – egy pont kereséséhez válaszd a Pont módot.");
-    if(a>b){[a,b]=[b,a];c.reverse()}
-    it={id:0,kind:"sec",src:"c",road:ROADS[A.r].num,a,b,c,t};const pk=A.pk||B.pk;if(pk)it.pk=pk;
+    // the two ends on different roads: the shortest route along the network, like the map measurement
+    // (road by road with from – to chainage and length); bike paths are not in the road graph
+    if(A.r!==B.r&&(segKut[A.s]===10||segKut[B.s]===10)){
+      if(segKut[A.s]===10)A=nearRoad(C[0].E,C[0].N,null,true);if(segKut[B.s]===10)B=nearRoad(C[1].E,C[1].N,null,true);
+      if(!A||!B)return err("Az egyik ponttól 3 km-en belül nincs országos közút.")}
+    if(A.r!==B.r){
+      if(!RG)buildRoadGraph();
+      const r=roadRoute({s:A.s,a:A.along},{s:B.s,a:B.along}),legs=r?routeLegs(r.pieces):[];
+      if(!legs.length)return err("A két pont között nincs összeköttetés az országos közúthálózaton.");
+      const f=legs[0].from,l=legs[legs.length-1].to;
+      it={id:0,kind:"sec",src:"c",multi:1,road:f.road,a:f.v,b:l.v,c:[cRec(C[0]),cRec(C[1])],
+        rt:{legs,line:routeLine(r.pieces),len:Math.round(r.len),ch:legs.reduce((t,x)=>t+x.ch,0)},t};
+    }else{
+      let a=cval(A.ch),b=cval(B.ch),c=[cRec(C[0]),cRec(C[1])];
+      if(a===b)return err("A két pont ugyanarra a szelvényre esik – egy pont kereséséhez válaszd a Pont módot.");
+      if(a>b){[a,b]=[b,a];c.reverse()}
+      it={id:0,kind:"sec",src:"c",road:ROADS[A.r].num,a,b,c,t};const pk=A.pk||B.pk;if(pk)it.pk=pk;
+    }
   }
   it.name=srchAutoName(it);
   document.activeElement&&document.activeElement.blur&&document.activeElement.blur();
@@ -3777,9 +3803,9 @@ function renderSrch(){
 function srchCardData(it){
   const R=srchEval(it),open=SS.open===it.id,sec=it.kind==="sec";
   // the automatic name already says road + chainage: the second line only shows up after a rename
-  const sh=R.err?"":shieldSVG(R.num,R.kut,true).replace('class="shield','class="shield mini');
+  const sh=R.err?"":R.multi?svSum(R.A.x,R.B.x,"→"):shieldSVG(R.num,R.kut,true).replace('class="shield','class="shield mini');
   const auto=it.name===srchAutoName(it),pkt=it.pk?" "+pkChip(it.pk):"";
-  const chs=R.err?"":sec?`<b>${R.A?fmtCh(R.A.ch):vfmt(R.va)}</b><span class="ar">–</span><b>${R.B?fmtCh(R.B.ch):vfmt(R.vb)}</b>`:`<b>${fmtCh(R.ch)}</b>`;
+  const chs=R.err?"":R.multi?"":sec?`<b>${R.A?fmtCh(R.A.ch):vfmt(R.va)}</b><span class="ar">–</span><b>${R.B?fmtCh(R.B.ch):vfmt(R.vb)}</b>`:`<b>${fmtCh(R.ch)}</b>`;
   const sum=R.err||auto?"":`${sh}${chs}`;
   const meta=`${sec&&!R.err?`<b>${fmtDist(R.len)}</b> · `:""}${fmtTime(it.t)}${R.err?` · <span class="warnt">${esc(R.err)}</span>`:""}`;
   return {id:it.id,name:it.name,nameHTML:auto&&!R.err?`<span class="msum sv">${sh}${chs}${pkt}</span>`:"",kind:srKind(it),sum,meta,canMap:!R.err,show:it.show,
@@ -3802,6 +3828,9 @@ function srchCSV(){
     if(it.src==="c"&&it.c)coN.push([rows.length,"megadott koordináta: "+it.c.map(cTxt).join(" – ")]);   // goes into Megjegyzés
     const R=srchEval(it),sec=it.kind==="sec";
     if(R.err){rows.push([it.name,sec?"szakasz":"pont",fmtTime(it.t),it.road,"",vfmt(it.a),sec?vfmt(it.b):"","","","","","","","","","","","","",R.err]);continue}
+    if(R.multi){const A=R.A.hits[0],B=R.B.hits[0];
+      rows.push([it.name,"szakasz (több úton)",fmtTime(it.t),R.roads.join(" → "),"",`${R.A.x.road} ${R.A.x.ch}`,`${R.B.x.road} ${R.B.x.ch}`,Math.round(R.len),Math.round(R.ch),...co(A),...co(B),"","",
+        "útvonal: "+R.legs.map(l=>`${l.road} ${l.from.ch}–${l.to.ch}`).join(", ")]);continue}
     if(!sec){const h=R.hits[0];
       rows.push([it.name,"pont",fmtTime(it.t),R.num,pkTxt(R),fmtCh(R.ch),"","","",...co(h),"","","","",COUNTIES[segCty[h.s]]||"",KEZ[segKez[h.s]]||"",R.exact?"":`nem létező szelvény (${vfmt(it.a)}) helyett a legközelebbi`]);continue}
     const A=R.A&&R.A.hits[0],B=R.B&&R.B.hits[0];
@@ -3865,7 +3894,7 @@ function drawSrch(marks){
         ctx.beginPath();ctx.arc(x,y,10,0,7);ctx.fillStyle=fill;ctx.fill();ctx.lineWidth=2.5;ctx.strokeStyle=col;ctx.stroke();
         ctx.fillStyle="#fff";ctx.font=`bold 11px ${APPF}`;ctx.textAlign="center";ctx.textBaseline="middle";ctx.fillText(t,x,y+0.5);return {x,y}};
       const a=mark(R.A,"#16a34a","K");mark(R.B,"#dc2626","V");
-      if(a)lbl(a.x,a.y,`${R.num} · ${R.A?fmtCh(R.A.ch):""} – ${R.B?fmtCh(R.B.ch):""}`,14);
+      if(a)lbl(a.x,a.y,R.multi?`${R.A.x.road} · ${R.A.x.ch} → ${R.B.x.road} · ${R.B.x.ch}`:`${R.num} · ${R.A?fmtCh(R.A.ch):""} – ${R.B?fmtCh(R.B.ch):""}`,14);
     }
   }
 }
@@ -3915,10 +3944,10 @@ function mapItemHTML(sel){
   }else{
     const it=sel.srch,R=srchEval(it);if(R.err)return "";
     K=SV_KIND[srKind(it)];
-    const sh=shieldSVG(R.num,R.kut,true);
-    sum=it.kind==="sec"?`${sh}<b>${R.A?fmtCh(R.A.ch):vfmt(R.va)}</b><span class="ar">–</span><b>${R.B?fmtCh(R.B.ch):vfmt(R.vb)}</b>`:`${sh}<b>${fmtCh(R.ch)}</b>`;
+    const sh=R.multi?"":shieldSVG(R.num,R.kut,true);
+    sum=R.multi?svSum(R.A.x,R.B.x,"→"):it.kind==="sec"?`${sh}<b>${R.A?fmtCh(R.A.ch):vfmt(R.va)}</b><span class="ar">–</span><b>${R.B?fmtCh(R.B.ch):vfmt(R.vb)}</b>`:`${sh}<b>${fmtCh(R.ch)}</b>`;
     if(it.pk)sum+=pkChip(it.pk);
-    line=esc(nameTxt(R.name))
+    line=(R.multi?"Több úton: "+esc(multiRoads(R)):esc(nameTxt(R.name)))
       +(it.kind==="pt"&&!R.exact?`<br><span class="warnt">legközelebbi létező szelvény (${esc(vfmt(it.a))} helyett)</span>`:"")
       +(it.src==="c"&&it.c&&R.cd?"<br>"+(it.kind==="pt"?`${it.c[0].sys==="eov"?cpE(it.c[0].E,it.c[0].N):cpW(it.c[0].lat,it.c[0].lon)} · ${R.cd[0]?fmtDist(R.cd[0].d):"–"} az úttól`
         :`megadott pontok ${R.cd.map(x=>x?fmtDist(x.d):"–").join(" és ")} az úttól`):"");
