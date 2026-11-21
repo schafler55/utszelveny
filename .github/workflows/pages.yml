@@ -1,0 +1,98 @@
+name: Web app (GitHub Pages)
+
+# Publishes the website straight to GitHub Pages (Settings → Pages → Source: GitHub Actions);
+# nothing is committed to the repository.
+#   https://schafler55.github.io/utszelveny/                 = web/ of main
+#   https://schafler55.github.io/utszelveny/teszt/<branch>/  = test page of every other branch
+# The whole site is rebuilt from the current branches each time, so a deleted branch's test page disappears.
+# Only main may deploy to Pages, so a push to a test branch asks main to rebuild (workflow_dispatch),
+# and a branch delete runs on main by itself.
+
+on:
+  push:
+    branches: ['**']
+  delete:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  request:
+    if: github.event_name == 'push' && github.ref != 'refs/heads/main'
+    runs-on: ubuntu-latest
+    permissions:
+      actions: write
+    steps:
+      - name: Ask main to rebuild the site
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh workflow run pages.yml --ref main -R "$GITHUB_REPOSITORY"
+
+  build:
+    if: github.event_name != 'push' || github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          path: src
+
+      - name: Build the site
+        working-directory: src
+        run: |
+          set -e
+          OUT="$GITHUB_WORKSPACE/_site"
+          mkdir -p "$OUT"
+
+          # the real app: everything in web/ of main
+          cp -r web/. "$OUT/"
+          grep -q 'id="texts"' "$OUT/index.html"
+
+          # test pages: one per branch except main.
+          # Own settings (kszt_* keys), no service worker (it would clear the real app's offline cache),
+          # and a small TESZT label. Older branches still have the app in the repository root.
+          git ls-remote --heads origin | sed 's#.*refs/heads/##' | while read -r B; do
+            [ "$B" = "main" ] && continue
+            git fetch -q --depth 1 origin "refs/heads/$B:refs/remotes/origin/$B" || { echo "skip $B"; continue; }
+            R="origin/$B"
+            if git cat-file -e "$R:web/index.html" 2>/dev/null; then P="web/"
+            elif git cat-file -e "$R:index.html" 2>/dev/null; then P=""
+            else echo "skip $B (no index.html)"; continue; fi
+            D="$OUT/teszt/$B"
+            mkdir -p "$D"
+            git show "$R:${P}index.html" | sed \
+              -e 's/"ksz_/"kszt_/g' \
+              -e 's|navigator.serviceWorker.register("sw.js")|Promise.reject()|' \
+              -e "s#<title>\(.*\)</title>#<title>\1 – TESZT ($B)</title>#" \
+              -e "s|</body>|<div style=\"position:fixed;top:4px;left:50%;transform:translateX(-50%);z-index:50;background:#dc2626;color:#fff;font:700 11px/1 Arial,sans-serif;padding:3px 8px;border-radius:6px;pointer-events:none\">TESZT · $B</div></body>|" \
+              > "$D/index.html"
+            grep -q 'TESZT' "$D/index.html"
+            for f in icon-192.png icon-512.png szovegek.html; do
+              git show "$R:$P$f" > "$D/$f" 2>/dev/null || rm -f "$D/$f"
+            done
+            echo "test page: teszt/$B/"
+          done
+
+          echo "Site files:"; (cd "$OUT" && find . -type f | sort)
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+
+  deploy:
+    needs: build
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    concurrency:
+      group: pages
+      cancel-in-progress: false
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

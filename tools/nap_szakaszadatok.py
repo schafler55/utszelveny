@@ -11,7 +11,7 @@ The geometry is not used (the app already has it): the road number (kszam), the 
 1 jobb / 2 bal) and the chainage (kszelv / vszelv, km*10000+m) join the records to the roads. Touching pieces with the
 same value are merged.
 
-Usage:  python3 tools/nap_szakaszadatok.py <folder with the .json files> [index.html]
+Usage:  python3 tools/nap_szakaszadatok.py <folder with the .json files> [web/index.html]
 The files are recognised by the start of their names (Összes_gépjármű_forgalmi_sávok_száma…, Burkolat_típusa…,
 Éves_keresztmetszeti_forgalmi…).
 """
@@ -56,7 +56,7 @@ def ranges(props, RI, val):
 
 def main():
     folder = sys.argv[1]
-    html = sys.argv[2] if len(sys.argv) > 2 else os.path.join(os.path.dirname(__file__), "..", "index.html")
+    html = sys.argv[2] if len(sys.argv) > 2 else os.path.join(os.path.dirname(__file__), "..", "web", "index.html")
     s = open(html, encoding="utf-8", newline="").read()
     tag = '<script type="application/json" id="roaddata">'
     i = s.index(tag) + len(tag); j = s.index("</script>", i)

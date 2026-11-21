@@ -1,4 +1,4 @@
-<p align="center"><img src="icon-512.png" alt="ÚtSzelvény ikon" width="140"></p>
+<p align="center"><img src="web/icon-512.png" alt="ÚtSzelvény ikon" width="140"></p>
 
 <h1 align="center">ÚtSzelvény</h1>
 
@@ -88,21 +88,23 @@ A térkép északkal felfelé vagy menetirány szerint elforgatva is használhat
 
 | Fájl / mappa | Tartalom |
 |---|---|
-| `index.html` | A teljes alkalmazás (kód + beépített úthálózati adatok), egyetlen fájl |
-| `sw.js`, `manifest.webmanifest`, `icon-*.png` | Telepíthető webalkalmazás (PWA) offline gyorsítótárral |
-| `android/` | Android keret (WebView), amely az `index.html`-t futtatja |
-| `.github/workflows/android.yml` | Megépíti az APK-t: a `main` ágból a fenti letöltési linkre, a többi ágból teszt APK-t és teszt weboldalt (`teszt/<ág>/`) |
+| `web/` | A webalkalmazás; ez kerül ki a https://schafler55.github.io/utszelveny/ címre |
+| `web/index.html` | A teljes alkalmazás (kód + beépített úthálózati adatok), egyetlen fájl |
+| `web/sw.js`, `web/manifest.webmanifest`, `web/icon-*.png` | Telepíthető webalkalmazás (PWA) offline gyorsítótárral |
+| `android/` | Android keret (WebView), amely a `web/index.html`-t futtatja |
+| `.github/workflows/android.yml` | Megépíti az APK-t: a `main` ágból a fenti letöltési linkre, a többi ágból teszt APK-t |
+| `.github/workflows/pages.yml` | Kiteszi a weboldalt a GitHub Pagesre: a `main` ág `web/` mappáját, és minden másik ágból egy teszt oldalt (`teszt/<ág>/`); a törölt ág teszt oldala eltűnik |
 | `CHANGELOG.md` | Változásnapló: mi változott az egyes verziókban |
-| `szovegek.html` | Az alkalmazás összes szövege képernyőnként (kereshető, szerkeszthető): https://schafler55.github.io/utszelveny/szovegek.html |
-| `tools/szovegek.py` | Ellenőrzi az `index.html` szövegblokkját (érvényes JSON, minden kulcs megvan); a build is futtatja |
-| `tools/nap_szakaszadatok.py` | A NAP sáv-, burkolat- és forgalmi adatait (WFS GeoJSON) az `index.html` beépített adatai közé írja |
+| `web/szovegek.html` | Az alkalmazás összes szövege képernyőnként (kereshető, szerkeszthető): https://schafler55.github.io/utszelveny/szovegek.html |
+| `tools/szovegek.py` | Ellenőrzi a `web/index.html` szövegblokkját (érvényes JSON, minden kulcs megvan); a build is futtatja |
+| `tools/nap_szakaszadatok.py` | A NAP sáv-, burkolat- és forgalmi adatait (WFS GeoJSON) a `web/index.html` beépített adatai közé írja |
 | `screenshots/` | A README képei |
 
-Az APK mindig a repó gyökerében lévő `index.html`-ből épül, ezért új verzióhoz elég az `index.html`-t cserélni.
+A webalkalmazás és az APK is ugyanabból a `web/index.html`-ből épül, ezért új verzióhoz elég azt cserélni.
 
 ## Szövegek
 
-Az alkalmazás minden felirata, magyarázata és gombszövege egy helyen van: az `index.html` elején, a `<script type="application/json" id="texts">` blokkban, képernyők szerint csoportosítva (pl. `position`, `search`, `settings`). A kód csak a kulcsokra hivatkozik (`TX("search.title")`, `data-tx="search.title"`).
+Az alkalmazás minden felirata, magyarázata és gombszövege egy helyen van: a `web/index.html` elején, a `<script type="application/json" id="texts">` blokkban, képernyők szerint csoportosítva (pl. `position`, `search`, `settings`). A kód csak a kulcsokra hivatkozik (`TX("search.title")`, `data-tx="search.title"`).
 
 Áttekintés és szerkesztés: **[szovegek.html](https://schafler55.github.io/utszelveny/szovegek.html)** – kereshető lista; a módosítások a böngészőben maradnak, a „Copy changes” rövid listát másol, a „Download index.html” a módosított teljes fájlt adja, ami GitHubon feltölthető. A `{kapcsos}` helyőrzőket (útszám, távolság…) és a HTML-jelöléseket (`<b>`, `<br>`) meg kell hagyni.
 

@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Check the texts block of index.html (id="texts"): valid JSON, every key the app asks for exists.
 
-Usage: python3 tools/szovegek.py [index.html]
+Usage: python3 tools/szovegek.py [web/index.html]
 Exit code 1 (and a GitHub Actions error line) when the block is broken or a key is missing;
 unused texts are only listed as warnings.
 """
@@ -9,7 +9,7 @@ import json
 import re
 import sys
 
-path = sys.argv[1] if len(sys.argv) > 1 else "index.html"
+path = sys.argv[1] if len(sys.argv) > 1 else "web/index.html"
 html = open(path, encoding="utf-8").read()
 m = re.search(r'<script type="application/json" id="texts">(.*?)</script>', html, re.S)
 if not m:
