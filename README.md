@@ -125,10 +125,8 @@ Az alkalmazás Claude Opus 5.5 segítségével készült.
 
 ## Adatvédelem
 
-Az alkalmazás nem gyűjt és nem küld el személyes adatot: nincs fiók, reklám vagy statisztika.
-A helyadat, a mérések, a keresések és a beállítások csak a készüléken tárolódnak, a fotók a készülékre mentődnek.
-A térkép alapréteg csempéi az OpenStreetMap és az Esri szervereiről töltődnek le, így ezek a szolgáltatók – mint bármely weboldal esetén –
-látják az IP-címet és a megnézett térképrészletet. A Utcakép gomb a Google Térképet nyitja meg.
+<b>Az alkalmazás nem gyűjt és nem továbbít személyes adatokat:</b> nincs fiók, reklám vagy analitika. A helyadataid, méréseid, kereséseid és beállításaid csak helyben tárolódnak, a fotók pedig közvetlenül a készülékedre mentődnek.
+Az alaptérkép az OpenStreetMap és az Esri szervereiről töltődik le, így ezek a szolgáltatók – mint bármely weboldal esetében – látják az IP-címedet és a betöltött térképrészletet. Az Utcakép gomb a Google Térképet nyitja meg.
 
 ## Közreműködés
 
