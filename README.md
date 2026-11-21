@@ -109,8 +109,8 @@ Az alkalmazás minden felirata, magyarázata és gombszövege egy helyen van: az
   (adatállapot: 2026. november): Országos közúthálózat, Közút neve/kategóriája/kezelője, Szelvényjelek,
   Sebességkorlátozás, Lakott területi szakaszok, Hídhasználati feltételek, Tehergépjárművekre vonatkozó
   korlátozások, Összes gépjármű forgalmi sávok száma, Burkolat típusa és szélessége, Éves keresztmetszeti
-  forgalmi adatok (2025), Közúti azonosítópontok. Az adatokra a NAP felhasználási
-  feltételei vonatkoznak, nem a GPL-3.0 licenc.
+  forgalmi adatok (2025), Közúti azonosítópontok. **Az adatokra a NAP felhasználási
+  feltételei vonatkoznak, nem a GPL-3.0 licenc.**
 - Térkép alapréteg: © OpenStreetMap közreműködők. Műholdkép: © Esri, Maxar, Earthstar Geographics (Esri World Imagery).
 - Az adatok tájékoztató jellegűek, nem hitelesek – a helyszíni jelzések és a KRESZ az irányadók.
   Vezetés közben ne kezeld az alkalmazást.
