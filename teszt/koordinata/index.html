@@ -440,7 +440,7 @@ input[type=text]:focus{outline:2px solid var(--pri);outline-offset:-1px;border-c
 .mmp-v small{display:block;font-size:.7rem;color:var(--onv)}.mmp-v b{font-family:var(--cond);font-size:1.3rem;white-space:nowrap}
 .mmp-p{font-size:.8rem;color:var(--onv);white-space:nowrap;overflow-x:auto}
 .mmn.k{background:#16a34a}.mmn.v{background:#dc2626}.mmn.p{background:#334155;width:auto;min-width:17px;padding:0 4px;border-radius:9px}
-.mmn{display:inline-grid;place-items:center;width:17px;height:17px;border-radius:50%;background:var(--mm-pt,#c026d3);color:#fff;font-size:.7rem;font-weight:700;margin-right:4px;vertical-align:1px}
+.mmn{display:inline-grid;place-items:center;width:17px;height:17px;border-radius:50%;background:var(--mm-pt,#7c3aed);color:#fff;font-size:.7rem;font-weight:700;margin-right:4px;vertical-align:1px}
 .mmp-b{display:flex;gap:8px}.mmp-b .btn{flex:1;padding:9px 6px;font-size:.875rem}
 .warnt{color:var(--warn)}
 .mmapbtn{align-self:center;margin-top:10px;display:inline-flex;align-items:center;gap:8px;padding-left:16px}
@@ -2514,7 +2514,7 @@ let measRename=null;            // id being renamed
 const SC_COL="#a3e635",SC_ICON=`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="1.8" fill="currentColor" stroke="none"/><path d="M12 2.5v3.2M12 18.3v3.2M2.5 12h3.2M18.3 12h3.2"/></svg>`;
 // measurement colours: GNSS measurements and map measurements (saved, on the map, cards, bubbles); the running
 // GNSS measurement is orange; MM_PT = the numbered points of the map measuring tool
-var MG_COL="#e879f9",MM_COL="#e879f9",MM_PT="#c026d3",MA_COL="#f97316";   // var: drawMap may run before this line
+var MG_COL="#f472b6",MM_COL="#a78bfa",MM_PT="#7c3aed",MA_COL="#f97316";   // user's pick A: GNSS pink, map violet   // var: drawMap may run before this line
 function msCol(M){return M===measActive?MA_COL:M&&M.kind==="map"?MM_COL:MG_COL}
 const SV_KIND={gnss:["GNSS mérés",MG_COL,`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><g transform="rotate(-45 12 12)"><rect x="2" y="8.25" width="20" height="7.5" rx="2"/><path d="M6.5 8.25v3M10 8.25v2M13.5 8.25v3M17 8.25v2"/></g></svg>`],map:["Térképi mérés",MM_COL,`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21.2c-.3 0-.5-.1-.7-.3C8.6 18.5 5 14.4 5 10a7 7 0 0 1 14 0c0 4.4-3.6 8.5-6.3 10.9-.2.2-.4.3-.7.3z"/><circle cx="12" cy="10" r="2.5"/></svg>`],
   cpt:["Koordináta",SC_COL,SC_ICON],csec:["Koord. szakasz",SC_COL,`<svg viewBox="0 0 24 24"><rect x="2.5" y="9" width="19" height="6" rx="3" fill="currentColor"/></svg>`],
