@@ -63,7 +63,7 @@ textarea:focus{outline:none;border-color:var(--pri)}
     Every text the app shows, by screen. Type in a box to change a text; your changes stay in this browser.
     <b>Copy changes</b> gives a short list you can send to Claude, who puts them into the app.
     <b>Download index.html</b> gives the whole app file with your changes in it, which you can upload to GitHub
-    (Add file → Upload files) to replace index.html.<br>
+    (open the web folder → Add file → Upload files) to replace web/index.html.<br>
     Keep the <span style="color:var(--ph)">{placeholders}</span> – the app fills them in (road number, distance…).
     HTML tags such as &lt;b&gt;…&lt;/b&gt; or &lt;br&gt; stay as they are. Units (km, m, km/h), version numbers and
     road / county names from the data are not in this list.
@@ -234,7 +234,7 @@ $("bDl").onclick=async()=>{
   try{
     // the file in the repository is the source (the published test page copy is changed for testing)
     let html=null;
-    try{const r=await fetch(`https://raw.githubusercontent.com/${REPO}/${branch}/index.html?t=${Date.now()}`,{cache:"no-store"});if(r.ok){const h=await r.text();if(h.includes('id="texts"'))html=h}}catch(e){}
+    for(const f of ["web/index.html","index.html"]){if(html!==null)break;try{const r=await fetch(`https://raw.githubusercontent.com/${REPO}/${branch}/${f}?t=${Date.now()}`,{cache:"no-store"});if(r.ok){const h=await r.text();if(h.includes('id="texts"'))html=h}}catch(e){}}
     if(html===null){
       if(branch!=="main")throw new Error("could not load the branch file from GitHub");
       const r=await fetch("index.html?fresh="+Date.now(),{cache:"no-store"});html=await r.text();
@@ -247,7 +247,7 @@ $("bDl").onclick=async()=>{
     extract(out);   // the new block must still parse
     const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([out],{type:"text/html"}));a.download="index.html";
     document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},2000);
-    toast(`index.html with ${n} change${n>1?"s":""} – upload it to the ${branch} branch on GitHub`);
+    toast(`index.html with ${n} change${n>1?"s":""} – upload it to the web folder of the ${branch} branch on GitHub`);
   }catch(e){toast("Download failed: "+(e&&e.message||e))}
   b.textContent="Download index.html";count();
 };

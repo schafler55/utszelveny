@@ -10,7 +10,7 @@ Reads the "Közti azonosító pontok" GeoJSON downloaded from the NAP WFS (nap_b
 One identification point can have several positions in the MultiPoint (e.g. on both sides of a divided road);
 repeated positions within 1 m are merged.
 
-Usage:  python3 tools/nap_azonositopontok.py <folder with the .json file> [index.html]
+Usage:  python3 tools/nap_azonositopontok.py <folder with the .json file> [web/index.html]
 The file is recognised by the start of its name (Közti_azonosító_pontok… or K_z_ti_azonos_t_pontok…).
 """
 import json, sys, os, unicodedata
@@ -27,7 +27,7 @@ def find(folder):
 
 def main():
     folder = sys.argv[1]
-    html = sys.argv[2] if len(sys.argv) > 2 else os.path.join(os.path.dirname(__file__), "..", "index.html")
+    html = sys.argv[2] if len(sys.argv) > 2 else os.path.join(os.path.dirname(__file__), "..", "web", "index.html")
     s = open(html, encoding="utf-8", newline="").read()
     tag = '<script type="application/json" id="roaddata">'
     i = s.index(tag) + len(tag); j = s.index("</script>", i)
