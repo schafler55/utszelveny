@@ -112,7 +112,7 @@ Az alkalmazás minden felirata, magyarázata és gombszövege egy helyen van: az
   forgalmi adatok (2025), Közúti azonosítópontok. **Az adatokra a NAP felhasználási
   feltételei vonatkoznak, nem a GPL-3.0 licenc.**
 - Térkép alapréteg: © OpenStreetMap közreműködők. Műholdkép: © Esri, Maxar, Earthstar Geographics (Esri World Imagery).
-- Az adatok tájékoztató jellegűek, nem hitelesek – a helyszíni jelzések és a KRESZ az irányadók.
+- Az adatok tájékoztató jellegűek, nem hitelesek. A helyszíni jelzések és a KRESZ az irányadók.
   Vezetés közben ne kezeld az alkalmazást.
 
 Az alkalmazás Claude Opus 5.5 segítségével készült.
