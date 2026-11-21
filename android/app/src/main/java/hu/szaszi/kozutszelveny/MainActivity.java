@@ -2,6 +2,8 @@ package hu.szaszi.kozutszelveny;
 
 import android.Manifest;
 import android.app.Activity;
+import android.content.ClipData;
+import android.content.ClipboardManager;
 import android.content.ActivityNotFoundException;
 import android.content.ContentResolver;
 import android.content.ContentValues;
@@ -190,7 +192,7 @@ public class MainActivity extends Activity {
         s.setMediaPlaybackRequiresUserGesture(false);
         s.setAllowFileAccess(false);
         s.setAllowContentAccess(false);
-        s.setUserAgentString(s.getUserAgentString() + " UtSzelveny/0.23.6");
+        s.setUserAgentString(s.getUserAgentString() + " UtSzelveny/0.24");
 
         web.addJavascriptInterface(new Bridge(), "AndroidBridge");
 
@@ -385,6 +387,19 @@ public class MainActivity extends Activity {
                 hudOn = on;
                 hudMax = max;
                 applyHud();
+            });
+        }
+
+        /** Long press on a coordinate: copies the text to the system clipboard (label = "WGS84" / "EOV"). */
+        @JavascriptInterface
+        public void copyText(final String label, final String text) {
+            // on the UI thread: the clipboard service may create a Handler, which needs a Looper
+            runOnUiThread(() -> {
+                try {
+                    ClipboardManager cm = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
+                    if (cm != null) cm.setPrimaryClip(ClipData.newPlainText(label, text));
+                } catch (Exception ignored) {
+                }
             });
         }
 

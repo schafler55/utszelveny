@@ -4,6 +4,13 @@ Az ÚtSzelvény változásai, a legújabb elöl. A dátumok UTC szerint értend�
 A nagyobb funkciók saját ágon (branch) készültek teszt oldallal és teszt APK-val, és pull requestként (#) kerültek a `main` ágba;
 a kisebb javítások közvetlenül a `main`-re kerültek.
 
+## [0.24] – 2026-11-21 (ág: `koordinata`)
+- Keresés: új választó a Pont / Szakasz fölött: **Útszám / Koordináta**. Koordináta módban WGS84 („47.13285 19.41772”, vesszővel, É/K-val, fokkal, fok-perc(-mp) alakban is) vagy EOV („EOV 678089 198812”, „Y 678 089 X 198 812”) koordináta adható meg; a mező alatt látszik, mit ismert fel (a másik rendszerben is) és a legközelebbi út szelvénye a távolsággal. A „Saját” gomb a GNSS-pozíciót írja be. Szakasznál két koordináta; ha a két pont más-más úthoz esne közelebb, a közös utat keresi meg, ha az a ponthoz közel halad.
+- A koordinátás keresések **limezöld** színűek a térképen (szakasz vonal, gombostű, a megadott pont célkereszttel és szaggatott vonallal az út pontjához), a mentett kártyán („Koordináta” / „Koord. szakasz”) és a buborékban; a részletekben a megadott koordináta és a távolság az úttól. CSV-ben a Megjegyzés oszlopban.
+- Minden koordináta (GNSS kártya, térképi buborék, Adatok → Helyzet, utolsó ismert pozíció, mérések és keresések részletei) **hosszú nyomással vágólapra másolható**; értesítés: „WGS84 koordináta másolva” / „EOV koordináta másolva”. Csak a számok kerülnek a vágólapra (pl. „47.13285 19.41772”, „678089 198812”). Android: natív vágólap (`copyText`).
+- Térkép: a kilométerszelvény nemcsak pont az úton, hanem egy rövid vonalka is az út mellé, a végén a km-számmal. Osztott pályán mindkét pálya kifelé mutat (egymástól el), osztatlan úton jobbra, kivéve ha 30 m-en belül egy másik út fut azon az oldalon.
+- Beállítások → Térkép: „Kilométerszelvények a térképen” kapcsoló és „Kilométerszelvények ettől a nagyítástól” csúszka (11–18, alapból 14, mint eddig); a km-szám egy szinttel nagyobb nagyítástól.
+
 ## [0.23.6] – 2026-11-20
 - Tehergépjármű- és súlykorlátozások kártya (Pozíció oldal és Adatok) a hídkártyával azonos elrendezésben: balra a táblák (új, fehér szegélyes, keskeny számú kivitel, mint a sebességkártyán) és alattuk a távolság („120 m”, „itt”), jobbra korlátozásonként félkövér piros felirat az értékkel piros chipben (pl. „Össztömeg-korlátozás [7,5 t]”), alatta a kivétel, majd a szelvénytartomány („még 400 m”, ha benne vagy).
 - A tehergépkocsi össztömeg-korlátozása röviden „Össztömeg-korlátozás” (a tábla mutatja, hogy tehergépkocsira vonatkozik).
