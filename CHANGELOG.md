@@ -4,6 +4,9 @@ Az ÚtSzelvény változásai, a legújabb elöl. A dátumok UTC szerint értend�
 A nagyobb funkciók saját ágon (branch) készültek teszt oldallal és teszt APK-val, és pull requestként (#) kerültek a `main` ágba;
 a kisebb javítások közvetlenül a `main`-re kerültek.
 
+## [1.0.1] – 2026-11-21
+- Térkép: a kilométerszelvények és a km-számok ugyanattól a nagyítástól jelennek meg és tűnnek el. A Beállítások → Térkép oldalon a „Km-számok ettől a nagyítástól” csúszka megszűnt, a „Kilométerszelvények ettől a nagyítástól” csúszka állítja mindkettőt.
+
 ## [1.0] – 2026-11-21
 Első stabil kiadás.
 - **Indítási tájékoztató:** az első indításkor egy ablak jelenik meg (az adatok tájékoztató jellegűek, nem hitelesek; vezetés közben ne kezeld; helyadat-használat; GPL-3.0, garancia nélkül). A GNSS csak az „Elfogadom” után indul, így a helyengedély kérése a magyarázat után jön. A Névjegyben az „Indítási tájékoztató” gombbal újra megnézhető.
