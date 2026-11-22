@@ -522,6 +522,9 @@
     "pos_sec_trucks": "Tehergépjármű- és súlykorlátozások",
     "pos_sec_gnss": "GNSS és koordináták",
     "pos_sec_info": "Kezelő, megye, mérnökség",
+    "grp_speed": "Sebességkorlát",
+    "speed_warn": "Túllépés jelzése színnel",
+    "speed_warn_note": "A kártya 5 km/h túllépéstől narancssárga, 10 km/h-tól piros",
     "grp_base": "Alaptérkép",
     "map_base_grey": "Világos",
     "map_base_dark": "Sötét",
@@ -858,9 +861,9 @@ main{flex:1;overflow:auto;padding:4px 12px calc(12px + var(--navh));display:flex
 
 /* ---------- cards ---------- */
 .card{background:var(--sc);border-radius:24px;padding:14px 16px}
-#spdCard{transition:background-color .35s,box-shadow .35s}
-#spdCard.over5{background:var(--spd5-c);box-shadow:inset 0 0 0 2px var(--spd5)}
-#spdCard.over10{background:var(--err-c);box-shadow:inset 0 0 0 2px var(--err)}
+#spdCard{transition:background-color .35s}
+#spdCard.over5{background:var(--spd5-c)}
+#spdCard.over10{background:var(--err-c)}
 #spdCard.over5>.sec-t{color:var(--spd5)}#spdCard.over10>.sec-t{color:var(--err)}
 .sec-t{font-size:.78rem;font-weight:500;letter-spacing:.025em;color:var(--onv);margin-bottom:8px}
 
@@ -1696,6 +1699,9 @@ html[data-theme=light] .mapinfo .bh{color:color-mix(in srgb,var(--k) 55%,#000)}
         <div class="opt"><div><span data-tx="settings.pos_sec_gnss"></span></div><button class="sw on" id="swGps"></button></div>
         <div class="opt"><div><span data-tx="settings.pos_sec_info"></span></div><button class="sw on" id="swKez"></button></div>
       </div></div>
+      <div class="sgrp"><div class="sgrp-h" data-tx="settings.grp_speed"></div><div class="sgrp-c">
+        <div class="opt"><div><span data-tx="settings.speed_warn"></span><small data-tx="settings.speed_warn_note"></small></div><button class="sw on" id="swSpdWarn"></button></div>
+      </div></div>
     </div>
     <div class="spane" data-p="map"><div id="mapSetSheet">
     <div id="mapSet">
@@ -1826,7 +1832,7 @@ const KUT=TXA("road_type",12);
 const PKOD=TXA("carriageway",3);
 
 /* ---------- settings ---------- */
-const S={theme:"auto",wake:true,bike:true,navHide:true,updCheck:true,name:true,coord:"wgs",base:"grey",rot:"north",measCoord:"both",measCsv:true,srchCsv:true,lineW:1.5,hl:"off",smooth:true,secSpd:true,secBr:true,secTr:true,secGps:true,secKez:true,phName:true,phAcc:true,phCoord:"both",phRes:"fast",phAuto:true,phExif:true,phDir:true,phVol:true,phFolder:"pictures",hudFlip:"x",hudOri:"land",hudCol:"white",hudBr:"max",hudDir:true,hudSpd:true,hudLim:true,hudName:false};
+const S={theme:"auto",wake:true,bike:true,navHide:true,updCheck:true,name:true,coord:"wgs",base:"grey",rot:"north",measCoord:"both",measCsv:true,srchCsv:true,lineW:1.5,hl:"off",smooth:true,secSpd:true,spdWarn:true,secBr:true,secTr:true,secGps:true,secKez:true,phName:true,phAcc:true,phCoord:"both",phRes:"fast",phAuto:true,phExif:true,phDir:true,phVol:true,phFolder:"pictures",hudFlip:"x",hudOri:"land",hudCol:"white",hudBr:"max",hudDir:true,hudSpd:true,hudLim:true,hudName:false};
 try{Object.assign(S,JSON.parse(localStorage.getItem("ksz_settings")||"{}"))}catch(e){}
 function saveS(){try{localStorage.setItem("ksz_settings",JSON.stringify(S))}catch(e){}}
 /* ---------- theme: Sötét / Világos / Rendszer (dark / light / system) ---------- */
@@ -2464,7 +2470,7 @@ function renderSpeed(show){
   // (two limits) only above both; conditional limits (⚠ lines) are not counted
   const kmh=cur.pos.src==="gps"&&cur.pos.spd!=null&&Date.now()-lastFixT<10000?cur.pos.spd*3.6:null;
   const lim=sp.lim==null?null:sp.both?Math.max(sp.both.inc,sp.both.dec):sp.lim;
-  const over=kmh==null||lim==null?0:kmh-lim;
+  const over=!S.spdWarn||kmh==null||lim==null?0:kmh-lim;   // off in Pozíció settings → never coloured
   card.classList.toggle("over10",over>=10);card.classList.toggle("over5",over>=5&&over<10);
   let signs;
   if(sp.lim==null)signs=`<div class="sgn">${spdSignSVG("–",76)}</div>`;
@@ -5079,7 +5085,7 @@ zoomSlider("brZ",brZoom,(z)=>S.brZ=z);
 zoomSlider("kmZ",kmZoom,(z)=>S.kmZ=z);
 $("swMapKm").classList.toggle("on",S.mapKm!==false);$("kmZBox").style.display=S.mapKm===false?"none":"";
 $("swMapKm").onclick=()=>{S.mapKm=S.mapKm===false;saveS();$("swMapKm").classList.toggle("on",S.mapKm);$("kmZBox").style.display=S.mapKm?"":"none";drawMap()};
-bindSw("swSpd","secSpd");bindSw("swBr","secBr");bindSw("swTr","secTr");bindSw("swGps","secGps");bindSw("swKez","secKez");
+bindSw("swSpd","secSpd");bindSw("swSpdWarn","spdWarn");bindSw("swBr","secBr");bindSw("swTr","secTr");bindSw("swGps","secGps");bindSw("swKez","secKez");
 bindSw("swPhName","phName");bindSw("swPhAcc","phAcc");bindSw("swPhAuto","phAuto");bindSw("swPhExif","phExif");bindSw("swPhDir","phDir",()=>{S.phDir&&camOn?cmpStart():cmpStop()});bindSw("swPhVol","phVol",volSync);
 $("phVolNote").textContent=NB&&NB.setVolShutter?TX("settings.photo_vol_app"):TX("settings.photo_vol_browser");
 $("manualGo").onclick=()=>{
