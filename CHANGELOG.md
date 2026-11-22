@@ -10,8 +10,8 @@ változások a „kiadatlan” szakaszba kerülnek, és a következő stabil kia
 saját verziószámot kapott, ezért a régebbi bejegyzések aprók; a ténylegesen kiadott változatokat
 „Stabil kiadás” jelöli.
 
-## [1.2.0] – kiadatlan (a `main` ágon)
-Az 1.1.5–1.2.0 változásai együtt.
+## [1.2.0] – 2026-11-22
+Stabil kiadás; az 1.1.5–1.2.0 változásai együtt.
 - **Névjegy:** az ÚtSzelvény logó a név, a © és a forráskód sora mellett, balra.
 - **Firefox:** nem támogatott. Androidon a Firefox csak ritkán frissíti a helyadatot, ezért a szelvény nem követi folyamatosan a haladást; Firefoxban a Pozíció oldal tetején megjegyzés jelzi ezt, és a Chrome-ot vagy az Android alkalmazást javasolja (Androidon egy gombbal Chrome-ban nyitható meg).
 - **Pozíció, műholdkeresés:** új műhold ikon, a jel a műhold testéből indul (eddig a napelemtábla végéről); a keresést jelző kör egyenletesen forog (eddig másodpercenként újraindult és ugrált), a forgó ív lekerekített végű, és forgás közben nő, majd rövidül.
