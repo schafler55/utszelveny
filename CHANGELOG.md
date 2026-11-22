@@ -4,6 +4,12 @@ Az ÚtSzelvény változásai, a legújabb elöl. A dátumok UTC szerint értend�
 A nagyobb funkciók saját ágon (branch) készültek teszt oldallal és teszt APK-val, és pull requestként (#) kerültek a `main` ágba;
 a kisebb javítások közvetlenül a `main`-re kerültek.
 
+## [1.1.2] – 2026-11-22
+- **Sebességkorlát kártya:** a GNSS szerinti sebesség a kártya jobb felső sarkába került, buborékban, mint a fő kártyán a jelerősség (a szám félkövér, a „km/h” nem). Túllépésnél a kártya címével együtt narancssárga, illetve piros lesz. A GNSS kártya alsó sorában csak a frissítés ideje maradt.
+- **Térkép:** új kapcsoló a 0 km-es szelvények elrejtésére (Beállítások → Térkép → Rétegek, a kilométerszelvények nagyítás-csúszkája alatt; alapból kikapcsolva, tehát a 0 km látszik).
+- **GNSS mérés:** a mérés ideje a bal felső sarokból a megtett út fölé került, középre.
+- Névjegy → Támogatás: kis szövegmódosítás („a munkámat és a további fejlesztést”, az ÚtSzelvény név félkövér).
+
 ## [1.1.1] – 2026-11-22
 - **Névjegy:** új „Támogatás” csoport rövid szöveggel és egy „Támogatás Revoluttal” gombbal (revolut.me/schafler55). A támogatás önkéntes, nem jár érte extra funkció. Az Adatvédelem szöveg megemlíti, hogy a gomb a Revolut oldalát nyitja meg.
 - README: „Támogatás” szakasz; a GitHub oldalon „Sponsor” gomb (`.github/FUNDING.yml`).
