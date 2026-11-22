@@ -806,7 +806,7 @@ function applyTexts(root){
   --sec-c:#374B3D; --on-sec-c:#D2E8D6;
   --ter:#A3CDDC; --ter-c:#214D5A; --on-ter-c:#BFE9F9;
   --err:#FFB4AB; --on-err:#690005; --err-c:#5C1F1C; --on-err-c:#FFDAD6; --err-line:#6B2D28; --rec:#FF6B5E; --ng-c:#4D1D1A; --ng-sub:#F2B8B2; --ng-ico:#6E2A25; --ng-icofg:#FFB4AB; --ng-line:rgba(255,218,214,.18); --sr-c:#4F2D0C; --on-sr-c:#FFDCC2; --sr-sub:#F5BF95; --sr-ico:#6E4119; --sr-icofg:#FFB77C; --sr-line:rgba(255,220,194,.18);
-  --warn:#F2C46D; --warn-c:#4A3A10; --on-warn-c:#FFE6B0;
+  --warn:#F2C46D; --warn-c:#4A3A10; --on-warn-c:#FFE6B0; --spd5:#FFB06A; --spd5-c:#4A2A0C;
   --ok:#6BE28F; --fab:#005230; --on-fab:#A9F2BE;
   --inv-s:#DEE4DD; --inv-on:#2B322D; --inv-pri:#2B6A46;
   --scrim:rgba(0,0,0,.42); --map-bg:#141A16; --shadow:0 1px 3px rgba(0,0,0,.4);
@@ -825,7 +825,7 @@ html[data-theme=light]{
   --sec-c:#A3DBB4; --on-sec-c:#00210F;
   --ter:#1F5466; --ter-c:#BFE9F9; --on-ter-c:#001F28;
   --err:#BA1A1A; --on-err:#FFFFFF; --err-c:#FFDAD6; --on-err-c:#410002; --err-line:#E8B4AE; --rec:#D93025; --ng-c:#FFDAD6; --ng-sub:#73302B; --ng-ico:#FFB4AB; --ng-icofg:#93000A; --ng-line:rgba(65,0,2,.14); --sr-c:#FFDCC2; --on-sr-c:#2E1500; --sr-sub:#6E3D10; --sr-ico:#FFB77C; --sr-icofg:#8A4500; --sr-line:rgba(46,21,0,.14);
-  --warn:#7A5300; --warn-c:#FFDEA6; --on-warn-c:#271900;
+  --warn:#7A5300; --warn-c:#FFDEA6; --on-warn-c:#271900; --spd5:#A04A00; --spd5-c:#FFDCC4;
   --ok:#0B7A3A; --fab:#B0F1C3; --on-fab:#002111;
   --inv-s:#2B322D; --inv-on:#ECF2EB; --inv-pri:#8ED5A3;
   --scrim:rgba(0,0,0,.32); --map-bg:#E5EBE4; --shadow:0 1px 3px rgba(0,0,0,.22);
@@ -858,6 +858,10 @@ main{flex:1;overflow:auto;padding:4px 12px calc(12px + var(--navh));display:flex
 
 /* ---------- cards ---------- */
 .card{background:var(--sc);border-radius:24px;padding:14px 16px}
+#spdCard{transition:background-color .35s,box-shadow .35s}
+#spdCard.over5{background:var(--spd5-c);box-shadow:inset 0 0 0 2px var(--spd5)}
+#spdCard.over10{background:var(--err-c);box-shadow:inset 0 0 0 2px var(--err)}
+#spdCard.over5>.sec-t{color:var(--spd5)}#spdCard.over10>.sec-t{color:var(--err)}
 .sec-t{font-size:.78rem;font-weight:500;letter-spacing:.025em;color:var(--onv);margin-bottom:8px}
 
 /* hero: road + chainage */
@@ -1319,8 +1323,8 @@ input[type=text]:focus{outline:2px solid var(--pri);outline-offset:-1px;border-c
 .cv-img{position:relative;flex:1;min-height:0;overflow:hidden;touch-action:none}
 .cv-track{position:absolute;inset:0;will-change:transform}
 .cv-track img{pointer-events:none;-webkit-user-drag:none;user-select:none}
-#cvImgP{transform:translateX(calc(-100% - 16px))}
-#cvImgN{transform:translateX(calc(100% + 16px))}
+.cv-track img.cvp{transform:translateX(calc(-100% - 16px))}
+.cv-track img.cvn{transform:translateX(calc(100% + 16px))}
 .cv-uns{color:#FF5A4F;font-weight:700}
 .cv-img img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain}
 .cv-nav{position:absolute;top:50%;transform:translateY(-50%);width:44px;height:64px;border-radius:16px;background:#0008;font-size:2rem;color:#fff}
@@ -1643,7 +1647,7 @@ html[data-theme=light] .mapinfo .bh{color:color-mix(in srgb,var(--k) 55%,#000)}
 
 <div class="camviewer" id="camViewer">
   <div class="cv-top"><span id="cvCnt"></span><button class="iconbtn" id="cvClose" data-tx-aria-label="common.close_aria"><svg width="24" height="24" width="2.4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11"/></svg></button></div>
-  <div class="cv-img" id="cvBox"><div class="cv-track" id="cvTrack"><img id="cvImgP" alt=""><img id="cvImg" alt=""><img id="cvImgN" alt=""></div><button class="cv-nav l" id="cvPrev" data-tx-aria-label="photo.viewer_prev">‹</button><button class="cv-nav r" id="cvNext" data-tx-aria-label="photo.viewer_next">›</button></div>
+  <div class="cv-img" id="cvBox"><div class="cv-track" id="cvTrack"><img class="cvp" alt="" decoding="async"><img class="cvc" alt="" decoding="async"><img class="cvn" alt="" decoding="async"></div><button class="cv-nav l" id="cvPrev" data-tx-aria-label="photo.viewer_prev">‹</button><button class="cv-nav r" id="cvNext" data-tx-aria-label="photo.viewer_next">›</button></div>
   <div class="cv-name" id="cvName"></div>
   <div class="cv-btns"><button class="btn pri" id="cvSave" data-tx="common.save"></button><button class="btn" id="cvShare" data-tx="photo.viewer_share"></button><button class="btn" id="cvDel" data-tx="photo.viewer_remove"></button></div>
 </div>
@@ -2456,6 +2460,12 @@ function renderSpeed(show){
   card.style.display="";
   const r=cur.res,s=r.best.s,road=segRoad[s],pk=segPk[s],kut=segKut[s],v=cval(r.ch),dir=travelDir(s,r.best.dirInc);
   const sp=speedAt(road,pk,kut,v,dir);
+  // over the limit (GNSS speed, fresh fix only): orange from +5 km/h, red from +10 km/h. With the direction unknown
+  // (two limits) only above both; conditional limits (⚠ lines) are not counted
+  const kmh=cur.pos.src==="gps"&&cur.pos.spd!=null&&Date.now()-lastFixT<10000?cur.pos.spd*3.6:null;
+  const lim=sp.lim==null?null:sp.both?Math.max(sp.both.inc,sp.both.dec):sp.lim;
+  const over=kmh==null||lim==null?0:kmh-lim;
+  card.classList.toggle("over10",over>=10);card.classList.toggle("over5",over>=5&&over<10);
   let signs;
   if(sp.lim==null)signs=`<div class="sgn">${spdSignSVG("–",76)}</div>`;
   else if(sp.both)signs=`<div class="sgn">${spdSignSVG(String(sp.both.inc),64)}<small>↑ ${TX("common.dir_inc")}</small></div><div class="sgn">${spdSignSVG(String(sp.both.dec),64)}<small>↓ ${TX("common.dir_dec")}</small></div>`;
@@ -4350,7 +4360,7 @@ function cvUI(){
   if(camIdx<0||!$("camViewer").classList.contains("on"))return;
   if(!camShots.length){cvClose();return}
   camIdx=Math.max(0,Math.min(camIdx,camShots.length-1));const sh=camShots[camIdx];
-  $("cvImg").src=sh.url;cvNb();
+  cvNb();
   $("cvCnt").innerHTML=`${camIdx+1} / ${camShots.length} · `+(sh.saved?esc(TX("photo.viewer_saved")):`<span class="cv-uns">${esc(TX("photo.viewer_not_saved"))}</span>`);
   $("cvName").textContent=sh.name;
   $("cvPrev").disabled=camIdx===0;$("cvNext").disabled=camIdx===camShots.length-1;
@@ -4364,16 +4374,30 @@ $("cvClose").onclick=cvClose;
 $("cvPrev").onclick=()=>cvGo(-1);$("cvNext").onclick=()=>cvGo(1);
 // swipe between the photos like a gallery: the photo follows the finger and the neighbours slide in beside it
 const CV_GAP=16;let cvDrag=null,cvAnim=false;
-function cvNb(){
-  for(const [id,sh] of [["cvImgP",camShots[camIdx-1]],["cvImgN",camShots[camIdx+1]]]){const im=$(id);if(sh)im.src=sh.url;else im.removeAttribute("src");im.style.visibility=sh?"":"hidden"}
+// three slots [previous, current, next]. After a swipe they rotate, so the photo already on screen is not loaded
+// again; only the new neighbour gets a file, decoded in the background first (a full-size JPEG decoded while the
+// strip redraws had held the screen, and the buttons' reaction, for about a second on the phone)
+const cvEl=[...document.querySelectorAll("#cvTrack img")];
+function cvSet(im,sh,now){
+  const u=sh?sh.url:"";if(im._u===u)return;im._u=u;
+  if(!sh){im.removeAttribute("src");im.style.visibility="hidden";return}
+  if(now){im.src=u;im.style.visibility="";return}
+  im.style.visibility="hidden";                                 // until the new picture is ready (not the old one)
+  const pre=new Image();pre.decoding="async";pre.src=u;
+  (pre.decode?pre.decode():Promise.resolve()).catch(()=>{}).then(()=>{if(im._u===u){im.src=u;im.style.visibility=""}});
+}
+function cvNb(){cvSet(cvEl[1],camShots[camIdx],true);cvSet(cvEl[0],camShots[camIdx-1]);cvSet(cvEl[2],camShots[camIdx+1])}
+function cvRot(d){   // d=1: next becomes current, the old previous slot becomes the new next one (and the other way)
+  if(d>0)cvEl.push(cvEl.shift());else cvEl.unshift(cvEl.pop());
+  cvEl.forEach((im,i)=>im.className=["cvp","cvc","cvn"][i]);
 }
 function cvMove(x,ms){const T=$("cvTrack");T.style.transition=ms?`transform ${ms}ms cubic-bezier(.2,.8,.2,1)`:"none";T.style.transform=x?`translateX(${x}px)`:""}
 function cvGo(d){
   if(cvAnim)return;const to=camIdx+d;
   if(to<0||to>=camShots.length){cvMove(0,200);return}
-  if(svReduce()){cvMove(0,0);camIdx=to;cvUI();return}
+  if(svReduce()){cvMove(0,0);cvRot(d);camIdx=to;cvUI();return}
   cvAnim=true;cvMove(-d*($("cvBox").clientWidth+CV_GAP),240);
-  setTimeout(()=>{camIdx=to;cvMove(0,0);cvUI();cvAnim=false},250);
+  setTimeout(()=>{cvMove(0,0);cvRot(d);camIdx=to;cvUI();cvAnim=false},250);
 }
 {const box=$("cvBox");
   box.addEventListener("pointerdown",(e)=>{if(cvAnim||e.target.closest(".cv-nav")||!camShots.length)return;cvDrag={x:e.clientX,y:e.clientY,t:performance.now(),dx:0,on:false,id:e.pointerId}});
