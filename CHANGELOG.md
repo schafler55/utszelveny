@@ -4,6 +4,15 @@ Az ÚtSzelvény változásai, a legújabb elöl. A dátumok UTC szerint értend�
 A nagyobb funkciók saját ágon (branch) készültek teszt oldallal és teszt APK-val, és pull requestként (#) kerültek a `main` ágba;
 a kisebb javítások közvetlenül a `main`-re kerültek.
 
+## [1.0.4] – 2026-11-22
+- **Frissítések:** indításkor az alkalmazás megnézi, megjelent-e új stabil verzió, és ha igen, egyszer megkérdezi: Frissítés / Később (Android: Kihagyom ezt a verziót is). A webalkalmazás a „Frissítés” gombra azonnal betölti az új verziót, a „Később” után a következő indításkor. Az Android alkalmazás megnyitja az új APK letöltését, amely a meglévőre telepíthető. A mentett adatok és a beállítások megmaradnak. Kapcsoló: Beállítások → Általános → Frissítések; kézi ellenőrzés és állapot a Névjegyben. Frissítés után egy rövid üzenet jelzi az új verziót.
+- **Weboldal:** a https://schafler55.github.io/utszelveny/ cím mostantól a legutóbbi stabil kiadást mutatja (az APK-val azonos verzió), és egy új kiadás közzétételekor frissül. A `main` ág fejlesztői állapota a https://schafler55.github.io/utszelveny/dev/ címen érhető el, saját mentett adatokkal; a szövegek áttekintője is ide került (`dev/szovegek.html`).
+- **Adatvédelem:** a Névjegy és a README megemlíti, hogy a frissítések keresésekor a GitHub látja az IP-címet.
+- **Beállítások:** új elrendezés – minden fül csoportokba rendezve, zöld csoportcímekkel és kártyákkal; a „Kerékpárutak a térképen” a Térkép → Rétegek csoportba került; a fejlécben a logó, a név és a verzió a Névjegyet nyitja meg; egyforma csúszka-értékek; az „Indítási tájékoztató” gomb megszűnt (az első indításkor továbbra is megjelenik).
+- **Új alapértékek:** téma Rendszer, aktuális út kiemelése Nincs, vonalvastagság ×1,5, kilométerszelvények a 15-ös nagyítástól, fotó koordináták Mindkettő, fotó minőség Gyors.
+- **Fotó néző és törlés:** a fotók lapozhatók, mint egy galériában; a mentetlen fotó piros „nincs mentve” jelzést kap. Törlés mindenhol egyformán: az első érintés pirosra váltja a gombot, a második 3 másodpercen belül töröl.
+- Szövegek: „Hidak / Kilométerszelvények megjelenítése a térképen”; a műholdkép rövidebb forrásmegjelölése a térképen (a Névjegyben marad a „Powered by Esri”).
+
 ## [1.0.3] – 2026-11-21
 - Android: a CSV-exportok közvetlenül a Letöltések mappába kerülnek (nem a Letöltések / ÚtSzelvény almappába).
 - Fotó beállítások: a „DCIM / Camera” mappa megszűnt; aki ezt választotta, annak a fotói ismét a Képek / ÚtSzelvény mappába kerülnek.

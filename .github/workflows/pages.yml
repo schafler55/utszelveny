@@ -2,15 +2,20 @@ name: Web app (GitHub Pages)
 
 # Publishes the website straight to GitHub Pages (Settings → Pages → Source: GitHub Actions);
 # nothing is committed to the repository.
-#   https://schafler55.github.io/utszelveny/                 = web/ of main
+#   https://schafler55.github.io/utszelveny/                 = web/ of the latest stable release (v* tag), the real app
+#   https://schafler55.github.io/utszelveny/dev/             = web/ of main (development, not yet released)
 #   https://schafler55.github.io/utszelveny/teszt/<branch>/  = test page of every other branch
-# The whole site is rebuilt from the current branches each time, so a deleted branch's test page disappears.
-# Only main may deploy to Pages, so a push to a test branch asks main to rebuild (workflow_dispatch),
-# and a branch delete runs on main by itself.
+# The whole site is rebuilt each time, so a deleted branch's test page disappears.
+# Only main may deploy to Pages, so a push to a test branch or a published release asks main to rebuild
+# (workflow_dispatch), and a branch delete runs on main by itself.
+# The dev and test pages have their own saved data (kszd_* / kszt_* keys), no service worker (it would clear the
+# real app's offline cache) and a small label; the app sees the renamed keys and does no update check there.
 
 on:
   push:
     branches: ['**']
+  release:
+    types: [published]
   delete:
   workflow_dispatch:
 
@@ -19,7 +24,7 @@ permissions:
 
 jobs:
   request:
-    if: github.event_name == 'push' && github.ref != 'refs/heads/main'
+    if: (github.event_name == 'push' && github.ref != 'refs/heads/main') || github.event_name == 'release'
     runs-on: ubuntu-latest
     permissions:
       actions: write
@@ -30,7 +35,7 @@ jobs:
         run: gh workflow run pages.yml --ref main -R "$GITHUB_REPOSITORY"
 
   build:
-    if: github.event_name != 'push' || github.ref == 'refs/heads/main'
+    if: (github.event_name == 'push' && github.ref == 'refs/heads/main') || github.event_name == 'workflow_dispatch' || github.event_name == 'delete'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -40,14 +45,45 @@ jobs:
 
       - name: Build the site
         working-directory: src
+        env:
+          GH_TOKEN: ${{ github.token }}
         run: |
           set -e
           OUT="$GITHUB_WORKSPACE/_site"
           mkdir -p "$OUT"
 
-          # the real app: everything in web/ of main
-          cp -r web/. "$OUT/"
-          grep -q 'id="texts"' "$OUT/index.html"
+          # the real app: web/ of the latest stable release (main until there is one)
+          TAG=$(gh api "repos/$GITHUB_REPOSITORY/releases/latest" --jq .tag_name 2>/dev/null || true)
+          if [ -n "$TAG" ] && git fetch -q --depth 1 origin "refs/tags/$TAG:refs/tags/$TAG"; then
+            if git cat-file -e "$TAG:web/index.html" 2>/dev/null; then
+              git archive "$TAG" web | tar -x -C "$RUNNER_TEMP" && cp -r "$RUNNER_TEMP/web/." "$OUT/"
+            else   # V1.0 still had the app in the repository root
+              for f in index.html sw.js manifest.webmanifest icon-192.png icon-512.png icon-maskable-512.png szovegek.html; do
+                git show "$TAG:$f" > "$OUT/$f" 2>/dev/null || rm -f "$OUT/$f"
+              done
+            fi
+            echo "real app: release $TAG"
+          else
+            echo "::warning::no stable release found, the real app is main"
+            cp -r web/. "$OUT/"
+          fi
+          test -s "$OUT/index.html"
+          # the texts overview belongs to the development version: the real app's address forwards there
+          printf '%s\n' '<!DOCTYPE html><meta charset="utf-8"><meta http-equiv="refresh" content="0;url=dev/szovegek.html"><title>ÚtSzelvény – szövegek</title><a href="dev/szovegek.html">dev/szovegek.html</a>' > "$OUT/szovegek.html"
+
+          # dev page: main as it is now (same changes as the test pages, DEV label)
+          grep -q 'id="texts"' web/index.html
+          VER=$(sed -n 's#.*<title>\(.*\)</title>.*#\1#p' web/index.html | head -1 | sed 's/^ÚtSzelvény //')
+          mkdir -p "$OUT/dev"
+          sed \
+            -e 's/"ksz_/"kszd_/g' \
+            -e 's|navigator.serviceWorker.register("sw.js")|Promise.reject()|' \
+            -e "s#<title>\(.*\)</title>#<title>\1 – DEV</title>#" \
+            -e "s|</body>|<div style=\"position:fixed;top:4px;left:50%;transform:translateX(-50%);z-index:50;background:#7c3aed;color:#fff;font:700 11px/1 Arial,sans-serif;padding:3px 8px;border-radius:6px;pointer-events:none\">DEV · $VER</div></body>|" \
+            web/index.html > "$OUT/dev/index.html"
+          grep -q 'DEV · ' "$OUT/dev/index.html"
+          cp web/icon-192.png web/icon-512.png web/szovegek.html "$OUT/dev/"
+          echo "dev page: dev/ ($VER)"
 
           # test pages: one per branch except main.
           # Own settings (kszt_* keys), no service worker (it would clear the real app's offline cache),

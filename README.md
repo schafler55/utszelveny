@@ -14,7 +14,7 @@ Fotóidra ráírja a helyet és az időt, a méréseidet pedig elnevezheted és 
 Böngészőben és Android-alkalmazásként is fut. Az úthálózati adatok a készüléken vannak, így a szelvényezés internet
 nélkül is működik. Csak a térkép alapréteghez kell internetkapcsolat.
 
-**Verzió:** V1.0.3 · [Változásnapló](CHANGELOG.md) · © 2026 Szászi Dániel · Licenc: GPL-3.0
+**Verzió:** V1.0.4 · [Változásnapló](CHANGELOG.md) · © 2026 Szászi Dániel · Licenc: GPL-3.0
 
 ## Funkciók
 
@@ -73,13 +73,18 @@ Koordináták: WGS84 (alapértelmezett) vagy EOV.
 
 ## Használat
 
-- **Webalkalmazás (telepítés nélkül):** https://schafler55.github.io/utszelveny/
+- **Webalkalmazás (telepítés nélkül):** https://schafler55.github.io/utszelveny/ – a legutóbbi stabil kiadás.
   Böngészőben megnyitva az első betöltés után internet nélkül is működik, könyvjelzőként menthető az asztalra.
+  A `main` ág legfrissebb, még nem kiadott állapota (fejlesztői oldal, saját mentett adatokkal): https://schafler55.github.io/utszelveny/dev/
 - **Android APK (telepítve):** https://github.com/schafler55/utszelveny/releases/latest – a legutóbbi stabil kiadás (pl. `UtSzelveny-V1.0.apk`).
   Letöltés után engedélyezni kell az ismeretlen forrásból történő telepítést.
   A `main` ág legfrissebb, még nem kiadott állapota: [apk-latest](https://github.com/schafler55/utszelveny/releases/tag/apk-latest).
 - **Frissítés a béta változatokról (V0.x) a V1.0-ra:** a V1.0-tól az APK új aláírókulccsal készül, ezért a béta APK-t előbb el kell távolítani.
   Ezzel a mentett mérések és keresések is törlődnek, ezért előtte érdemes CSV-be menteni őket.
+- **Frissítések:** indításkor az alkalmazás megnézi, megjelent-e új stabil verzió (Beállítások → Általános → Frissítések, kikapcsolható; kézzel: Névjegy → Frissítések → Ellenőrzés).
+  A webalkalmazás a „Frissítés” gombra azonnal, a „Később” után a következő indításkor tölti be az új verziót.
+  Az Android alkalmazás a „Frissítés” gombra megnyitja az új APK letöltését; a letöltött fájlt megnyitva az Android a meglévő alkalmazásra telepíti. Egy verzió ki is hagyható.
+  A mentett mérések, keresések és beállítások frissítéskor megmaradnak.
 
 A térkép alapréteg (OpenStreetMap vagy Esri műholdkép) internetkapcsolatot igényel; minden más adat az alkalmazásba van építve.
 A térkép északkal felfelé vagy menetirány szerint elforgatva is használható.
@@ -88,14 +93,14 @@ A térkép északkal felfelé vagy menetirány szerint elforgatva is használhat
 
 | Fájl / mappa | Tartalom |
 |---|---|
-| `web/` | A webalkalmazás; ez kerül ki a https://schafler55.github.io/utszelveny/ címre |
+| `web/` | A webalkalmazás; a legutóbbi stabil kiadásé a https://schafler55.github.io/utszelveny/, a `main` ágé a https://schafler55.github.io/utszelveny/dev/ címre kerül |
 | `web/index.html` | A teljes alkalmazás (kód + beépített úthálózati adatok), egyetlen fájl |
 | `web/sw.js`, `web/manifest.webmanifest`, `web/icon-*.png` | Telepíthető webalkalmazás (PWA) offline gyorsítótárral |
 | `android/` | Android keret (WebView), amely a `web/index.html`-t futtatja |
 | `.github/workflows/android.yml` | Megépíti az APK-t: a `main` ágból a fenti letöltési linkre, a többi ágból teszt APK-t |
-| `.github/workflows/pages.yml` | Kiteszi a weboldalt a GitHub Pagesre: a `main` ág `web/` mappáját, és minden másik ágból egy teszt oldalt (`teszt/<ág>/`); a törölt ág teszt oldala eltűnik |
+| `.github/workflows/pages.yml` | Kiteszi a weboldalt a GitHub Pagesre: a legutóbbi stabil kiadás `web/` mappáját, a `main` ágat a `dev/` alá, és minden másik ágból egy teszt oldalt (`teszt/<ág>/`); a törölt ág teszt oldala eltűnik. Új stabil kiadás közzétételekor magától frissül |
 | `CHANGELOG.md` | Változásnapló: mi változott az egyes verziókban |
-| `web/szovegek.html` | Az alkalmazás összes szövege képernyőnként (kereshető, szerkeszthető): https://schafler55.github.io/utszelveny/szovegek.html |
+| `web/szovegek.html` | Az alkalmazás összes szövege képernyőnként (kereshető, szerkeszthető), a `main` ág szerint: https://schafler55.github.io/utszelveny/dev/szovegek.html |
 | `tools/szovegek.py` | Ellenőrzi a `web/index.html` szövegblokkját (érvényes JSON, minden kulcs megvan); a build is futtatja |
 | `tools/nap_szakaszadatok.py` | A NAP sáv-, burkolat- és forgalmi adatait (WFS GeoJSON) a `web/index.html` beépített adatai közé írja |
 | `screenshots/` | A README képei |
@@ -106,7 +111,7 @@ A webalkalmazás és az APK is ugyanabból a `web/index.html`-ből épül, ezér
 
 Az alkalmazás minden felirata, magyarázata és gombszövege egy helyen van: a `web/index.html` elején, a `<script type="application/json" id="texts">` blokkban, képernyők szerint csoportosítva (pl. `position`, `search`, `settings`). A kód csak a kulcsokra hivatkozik (`TX("search.title")`, `data-tx="search.title"`).
 
-Áttekintés és szerkesztés: **[szovegek.html](https://schafler55.github.io/utszelveny/szovegek.html)** – kereshető lista; a módosítások a böngészőben maradnak, a „Copy changes” rövid listát másol, a „Download index.html” a módosított teljes fájlt adja, ami GitHubon feltölthető. A `{kapcsos}` helyőrzőket (útszám, távolság…) és a HTML-jelöléseket (`<b>`, `<br>`) meg kell hagyni.
+Áttekintés és szerkesztés: **[szovegek.html](https://schafler55.github.io/utszelveny/dev/szovegek.html)** – kereshető lista; a módosítások a böngészőben maradnak, a „Copy changes” rövid listát másol, a „Download index.html” a módosított teljes fájlt adja, ami GitHubon feltölthető. A `{kapcsos}` helyőrzőket (útszám, távolság…) és a HTML-jelöléseket (`<b>`, `<br>`) meg kell hagyni.
 
 ## Adatforrás és felelősség
 
@@ -127,6 +132,7 @@ Az alkalmazás Claude Opus 5.5 segítségével készült.
 
 <b>Az alkalmazás nem gyűjt és nem továbbít személyes adatokat:</b> nincs fiók, reklám vagy analitika. A helyadataid, méréseid, kereséseid és beállításaid csak helyben tárolódnak, a fotók pedig közvetlenül a készülékedre mentődnek.
 Az alaptérkép az OpenStreetMap és az Esri szervereiről töltődik le, így ezek a szolgáltatók – mint bármely weboldal esetében – látják az IP-címedet és a betöltött térképrészletet. Az Utcakép gomb a Google Térképet nyitja meg.
+A frissítések keresése (Beállítások → Általános, kikapcsolható) a GitHub szerveréről kérdezi le a legújabb verzió számát, így a GitHub látja az IP-címedet.
 
 ## Közreműködés
 

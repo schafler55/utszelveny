@@ -102,6 +102,7 @@ const GROUPS={
   settings:"Beállítások – in screen order: header and tab names, then each tab with its green group headings and the settings under them",
   about:"Névjegy – texts in the cards (the Alkalmazás and Fontos headings are in settings)",
   start:"First-start statement (shown once on the first start, before GNSS starts)",
+  update:"Update dialog (a new stable version is out) and the short note after an update",
   common:"Words used on several screens (changing one changes it everywhere)",
   road_type:"Road types (lookup list by NAP code)",
   carriageway:"Carriageway names (0 osztatlan, 1 jobb, 2 bal)",
@@ -154,7 +155,7 @@ async function load(){
   for(const m of rest.matchAll(/(?<!data-tx-aria-label=|data-tx-placeholder=)["']([a-z_]+\.[a-z0-9_]+)["']/g))USE.vis.add(m[1]);
   const ver=(html.match(/<title>([^<]*)<\/title>/)||[])[1]||"";
   let n=0;for(const g in ORIG)n+=Object.keys(ORIG[g]).length;
-  $("sub").textContent=`${n} texts · ${ver}${branch!=="main"?" · branch "+branch:""}`;
+  $("sub").textContent=`${n} texts · ${ver}${branch!=="main"?" · branch "+branch:location.pathname.includes("/dev/")?" · dev (main)":""}`;
   for(const k of Object.keys(draft)){const [g,key]=split(k);if(!ORIG[g]||!(key in ORIG[g]))delete draft[k]}
   render();
 }
