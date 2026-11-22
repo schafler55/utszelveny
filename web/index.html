@@ -654,13 +654,13 @@
     "attr_bp": "Budapest határa, településnevek: © OpenStreetMap közreműködők, ODbL",
     "warn_info": "Az adatok tájékoztató jellegűek, nem hitelesek.",
     "warn_signs": "A helyszíni jelzések és a KRESZ az irányadók.",
-    "warn_driving": "Vezetés közben ne kezeld az alkalmazást!",
+    "warn_driving": "<b>Vezetés közben ne kezeld az alkalmazást!</b>",
     "privacy_title": "Adatvédelem",
-    "privacy": "Az alkalmazás nem gyűjt és nem küld el személyes adatot: nincs fiók, reklám vagy statisztika. A helyadat, a mérések, a keresések és a beállítások csak a készüléken tárolódnak, a fotók a készülékre mentődnek.",
+    "privacy": "Az alkalmazás nem gyűjt és nem küld el személyes adatot: nincs fiók, reklám vagy analitika. A helyadat, a mérések, a keresések és a beállítások csak a készüléken tárolódnak, a fotók a készülékre mentődnek.",
     "privacy_net": "A térkép alapréteg csempéi az OpenStreetMap és az Esri szervereiről töltődnek le, így ezek a szolgáltatók – mint bármely weboldal esetén – látják az IP-címedet és a megnézett térképrészletet. A Street View gomb a Google Térképet nyitja meg.",
     "privacy_update": "A frissítések keresése (Általános beállítások, kikapcsolható) a GitHub szerveréről kérdezi le a legújabb verzió számát, így a GitHub látja az IP-címedet.",
     "privacy_backup": "Androidon a rendszer biztonsági mentése a beállításaid szerint az alkalmazás adatait is mentheti a Google-fiókodba.",
-    "license": "A program a GPL-3.0 licenc alapján, mindenféle garancia nélkül használható.",
+    "license": "Az alkalmazás GPL-3.0 licenc alapján, csak saját felelősséggel használható!",
     "manual_title": "Haladó: teszt / kézi pozíció",
     "manual_ph": "pl. 47.13285 19.41772  vagy  EOV 678089 198812",
     "manual_go": "Lekérdezés",
@@ -671,8 +671,8 @@
     "title": "Mielőtt elkezded",
     "info": "Az <b>ÚtSzelvény</b> adatai tájékoztató jellegűek, nem hitelesek. A helyszíni jelzések és a KRESZ az irányadók.",
     "driving": "<b>Vezetés közben ne kezeld az alkalmazást!</b>",
-    "location": "Az ÚtSzelvény nem gyűjt adatot, és semmit nem küld el. A helyadatod, a méréseid, a kereséseid, a fotóid és a beállításaid a telefonodon maradnak. Internetre csak a térkép alapréteghez van szükség, amely az OpenStreetMap és az Esri szervereiről töltődik le.",
-    "license": "A program a GPL-3.0 licenc alapján, mindenféle garancia nélkül használható.",
+    "location": "Az alkalmazás nem gyűjt és nem küld el személyes adatot: nincs fiók, reklám vagy analitika. A helyadat, a mérések, a keresések és a beállítások csak a készüléken tárolódnak, a fotók a készülékre mentődnek. Internetre csak a térkép alapréteghez van szükség, amely az OpenStreetMap és az Esri szervereiről töltődik le.",
+    "license": "Az alkalmazás GPL-3.0 licenc alapján, csak saját felelősséggel használható!",
     "accept": "Elfogadom",
     "close": "Bezárás"
   },
@@ -5275,7 +5275,7 @@ if(!NB){
 
 /* ---------- first-start statement ---------- */
 // shown once; raise START_V when the statement text changes so everyone sees (and accepts) it again
-const START_V="1";
+const START_V="2";
 function startAccepted(){try{return localStorage.getItem("ksz_start")===START_V}catch(e){return false}}
 function showStart(onAccept){
   const d=$("firstRun"),ok=$("frOk"),again=startAccepted();
