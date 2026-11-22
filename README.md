@@ -136,9 +136,9 @@ A frissítések keresése (Beállítások → Általános, kikapcsolható) a Git
 
 ## Támogatás
 
-Az ÚtSzelvény ingyenes, és az is marad: nincs benne reklám, előfizetés vagy fizetős funkció. A fejlesztést a szabadidőmben végzem.
-Ha hasznosnak találod, egy kávé árával támogathatod a munkát: **[revolut.me/schafler55](https://revolut.me/schafler55)**.
-A támogatás önkéntes, és nem jár érte extra funkció. A visszajelzés és az ötletek is sokat segítenek!
+Az ÚtSzelvény ingyenes: nincs benne reklám, előfizetés vagy fizetős funkció. A fejlesztést a szabadidőmben végzem.
+Ha hasznosnak találod, egy kávé árával támogathatod a munkámat és a további fejlesztést: **[IDE KATTINTVA](https://revolut.me/schafler55)**.
+A támogatás önkéntes, és nem jár érte extra funkció. <b>A visszajelzés és az ötletek is sokat segítenek!</b>
 
 *ÚtSzelvény is free and will stay free – no ads, subscriptions or paid features. If you find it useful, you can support the work via [Revolut](https://revolut.me/schafler55). Donations are voluntary and unlock nothing.*
 
