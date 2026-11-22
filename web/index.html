@@ -456,8 +456,8 @@
     "download_started": "Letöltés elindítva",
     "share_failed": "A megosztás nem sikerült{reason}",
     "share_unsupported": "Ez a böngésző nem tud fájlt megosztani. Használd a Mentés gombot!",
-    "viewer_saved": "mentve",
-    "viewer_not_saved": "nincs mentve",
+    "viewer_saved": "Mentve telefonra",
+    "viewer_not_saved": "Nincs még mentve",
     "viewer_saved_btn": "Mentve",
     "viewer_discard": "Elvetés",
     "viewer_discard_confirm": "Biztos?",
@@ -1327,7 +1327,10 @@ input[type=text]:focus{outline:2px solid var(--pri);outline-offset:-1px;border-c
 .cv-track img{pointer-events:none;-webkit-user-drag:none;user-select:none}
 .cv-track img.cvp{transform:translateX(calc(-100% - 16px))}
 .cv-track img.cvn{transform:translateX(calc(100% + 16px))}
-.cv-uns{color:#FF5A4F;font-weight:700}
+.cv-st{display:flex;justify-content:center;padding:10px 14px 0}
+.cv-st span{display:inline-flex;align-items:center;gap:6px;padding:6px 14px 6px 10px;border-radius:16px;font-size:.875rem;font-weight:700;color:#fff;background:#B3261E;transition:background-color .2s}
+.cv-st span.ok{background:#1E7A46}
+.cv-st svg{flex:none}
 .cv-img img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain}
 .cv-nav{position:absolute;top:50%;transform:translateY(-50%);width:44px;height:64px;border-radius:16px;background:#0008;font-size:2rem;color:#fff}
 .cv-nav.l{left:6px}.cv-nav.r{right:6px}
@@ -1651,6 +1654,7 @@ html[data-theme=light] .mapinfo .bh{color:color-mix(in srgb,var(--k) 55%,#000)}
   <div class="cv-top"><span id="cvCnt"></span><button class="iconbtn" id="cvClose" data-tx-aria-label="common.close_aria"><svg width="24" height="24" width="2.4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11"/></svg></button></div>
   <div class="cv-img" id="cvBox"><div class="cv-track" id="cvTrack"><img class="cvp" alt="" decoding="async"><img class="cvc" alt="" decoding="async"><img class="cvn" alt="" decoding="async"></div><button class="cv-nav l" id="cvPrev" data-tx-aria-label="photo.viewer_prev">‹</button><button class="cv-nav r" id="cvNext" data-tx-aria-label="photo.viewer_next">›</button></div>
   <div class="cv-name" id="cvName"></div>
+  <div class="cv-st" id="cvSt" role="status" aria-live="polite"></div>
   <div class="cv-btns"><button class="btn pri" id="cvSave" data-tx="common.save"></button><button class="btn" id="cvShare" data-tx="photo.viewer_share"></button><button class="btn" id="cvDel" data-tx="photo.viewer_remove"></button></div>
 </div>
 <div class="hud" id="hud" data-tx-aria-label="hud.aria">
@@ -4366,7 +4370,10 @@ function cvUI(){
   if(!camShots.length){cvClose();return}
   camIdx=Math.max(0,Math.min(camIdx,camShots.length-1));const sh=camShots[camIdx];
   cvNb();
-  $("cvCnt").innerHTML=`${camIdx+1} / ${camShots.length} · `+(sh.saved?esc(TX("photo.viewer_saved")):`<span class="cv-uns">${esc(TX("photo.viewer_not_saved"))}</span>`);
+  $("cvCnt").textContent=`${camIdx+1} / ${camShots.length}`;
+  // saved state as a coloured bubble above the buttons: green = on the phone, red = not saved yet
+  $("cvSt").innerHTML=sh.saved?`<span class="ok"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>${esc(TX("photo.viewer_saved"))}</span>`
+    :`<span><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 7.5v5.5M12 16.6v.1"/></svg>${esc(TX("photo.viewer_not_saved"))}</span>`;
   $("cvName").textContent=sh.name;
   $("cvPrev").disabled=camIdx===0;$("cvNext").disabled=camIdx===camShots.length-1;
   const s=$("cvSave");s.textContent=sh.saved?TX("photo.viewer_saved_btn"):TX("common.save");s.disabled=sh.saved;
