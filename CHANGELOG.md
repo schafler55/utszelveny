@@ -4,6 +4,9 @@ Az ÚtSzelvény változásai, a legújabb elöl. A dátumok UTC szerint értend�
 A nagyobb funkciók saját ágon (branch) készültek teszt oldallal és teszt APK-val, és pull requestként (#) kerültek a `main` ágba;
 a kisebb javítások közvetlenül a `main`-re kerültek.
 
+## [1.1.6] – 2026-11-22
+- **Pozíció, műholdkeresés:** új műhold ikon; a jel a műhold testéből indul (eddig a napelemtábla végéről).
+
 ## [1.1.5] – 2026-11-22
 - **Pozíció, műholdkeresés:** a keresést jelző kör egyenletesen forog (eddig másodpercenként újraindult és ugrált), a forgó ív lekerekített végű, és forgás közben nő, majd rövidül.
 - **Indítókép:** éles logó (eddig a kis fejléc-logó felnagyítva, ezért homályos volt); a töltést jelző csík feljebb, a név alá került, alatta „Betöltés…” felirattal.
