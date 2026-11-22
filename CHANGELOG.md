@@ -5,17 +5,13 @@ A nagyobb funkciók saját ágon (branch) készültek teszt oldallal és teszt A
 a kisebb javítások közvetlenül a `main`-re kerültek.
 
 ## [1.1.4] – 2026-11-22
-- Indítási tájékoztató, világos téma: a „Kilépés” gomb visszafogottabb – halvány piros háttér, piros keret és felirat.
-
-## [1.1.3] – 2026-11-22
-- **Indítási tájékoztató:** új piros „Kilépés” gomb bal oldalt (a zöld „Elfogadom” jobb oldalt marad), ha valaki nem fogadja el a használat feltételeit. Az Android alkalmazás bezárul; a weboldal bezárja a lapot, ha a böngésző engedi, különben jelzi, hogy a lap bezárható. Semmi nem mentődik, a GNSS nem indul el, és a tájékoztató a következő indításkor újra megjelenik.
-- **Térkép:** a 0 km-es szelvények alapból rejtve vannak (Beállítások → Térkép → Rétegek → „0 km-es szelvények elrejtése”).
-
-## [1.1.2] – 2026-11-22
+Stabil kiadás; az 1.1.2–1.1.4 változásai együtt.
 - **Sebességkorlát kártya:** a GNSS szerinti sebesség a kártya jobb felső sarkába került, buborékban, mint a fő kártyán a jelerősség (a szám félkövér, a „km/h” nem). Túllépésnél a kártya címével együtt narancssárga, illetve piros lesz. A GNSS kártya alsó sorában csak a frissítés ideje maradt.
-- **Térkép:** új kapcsoló a 0 km-es szelvények elrejtésére (Beállítások → Térkép → Rétegek, a kilométerszelvények nagyítás-csúszkája alatt; alapból kikapcsolva, tehát a 0 km látszik).
+- **Térkép:** új kapcsoló a 0 km-es szelvényekhez (Beállítások → Térkép → Rétegek → „0 km-es szelvények elrejtése”, a kilométerszelvények nagyítás-csúszkája alatt); alapból rejtve vannak.
 - **GNSS mérés:** a mérés ideje a bal felső sarokból a megtett út fölé került, középre.
+- **Indítási tájékoztató:** új „Kilépés” gomb bal oldalt (a zöld „Elfogadom” jobb oldalt marad), ha valaki nem fogadja el a használat feltételeit; világos témában halvány piros háttérrel és piros kerettel. Az Android alkalmazás bezárul; a weboldal bezárja a lapot, ha a böngésző engedi, különben jelzi, hogy a lap bezárható. Semmi nem mentődik, a GNSS nem indul el, és a tájékoztató a következő indításkor újra megjelenik.
 - Névjegy → Támogatás: kis szövegmódosítás („a munkámat és a további fejlesztést”, az ÚtSzelvény név félkövér).
+- README: új Pozíció kép – 42 Báránd, M0 kézi útválasztással több út közül, 2514 Emőd híd- és tehergépjármű-korlátozással.
 
 ## [1.1.1] – 2026-11-22
 - **Névjegy:** új „Támogatás” csoport rövid szöveggel és egy „Támogatás Revoluttal” gombbal (revolut.me/schafler55). A támogatás önkéntes, nem jár érte extra funkció. Az Adatvédelem szöveg megemlíti, hogy a gomb a Revolut oldalát nyitja meg.
