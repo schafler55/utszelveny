@@ -13,7 +13,7 @@ a kisebb javítások közvetlenül a `main`-re kerültek.
 - **Fotó néző és törlés:** a fotók lapozhatók, mint egy galériában; a mentetlen fotó piros „nincs mentve” jelzést kap. Törlés mindenhol egyformán: az első érintés pirosra váltja a gombot, a második 3 másodpercen belül töröl.
 - **Sebességkorlát kártya:** ha a GNSS szerinti sebesség legalább 5 km/h-val a korlát fölött van, a kártya narancssárga, legalább 10 km/h-val fölötte piros lesz (ismeretlen haladási iránynál a két korlát közül a nagyobbhoz mérve)). Kapcsoló: Beállítások → Pozíció → Sebességkorlát → Túllépés jelzése színnel (alapból be).
 - **Fotó néző:** lapozás után a gombok azonnal reagálnak: a már látott kép nem töltődik be újra, a következő kép a háttérben készül elő.
-- **Indítási tájékoztató és Névjegy:** új licencmondat („Az alkalmazás GPL-3.0 licenc alapján, csak saját felelősséggel használható!”), egységes adatvédelmi szöveg (a tájékoztató a frissítések keresését is említi; az Android biztonsági mentésről szóló mondat kikerült), a vezetési figyelmeztetés a Névjegyben is félkövér. Mivel a tájékoztató szövege változott, frissítés után mindenkinek egyszer újra megjelenik.
+- **Indítási tájékoztató és Névjegy:** új licencmondat („Az alkalmazás GPL-3.0 licenc alapján, csak saját felelősségre használható!”, a második fele félkövér), egységes adatvédelmi szöveg (a tájékoztató a frissítések keresését is említi; az Android biztonsági mentésről szóló mondat kikerült), a vezetési figyelmeztetés a Névjegyben is félkövér. Mivel a tájékoztató szövege változott, frissítés után mindenkinek egyszer újra megjelenik.
 - Szövegek: „Hidak / Kilométerszelvények megjelenítése a térképen”; a műholdkép rövidebb forrásmegjelölése a térképen (a Névjegyben marad a „Powered by Esri”).
 
 ## [1.0.3] – 2026-11-21
