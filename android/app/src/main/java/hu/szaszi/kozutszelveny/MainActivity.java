@@ -194,7 +194,7 @@ public class MainActivity extends Activity {
         s.setAllowFileAccess(false);
         s.setAllowContentAccess(false);
         // OpenStreetMap tile usage policy: an app must identify itself (name/version + project URL)
-        s.setUserAgentString(s.getUserAgentString() + " UtSzelveny/1.1.2 (+https://github.com/schafler55/utszelveny)");
+        s.setUserAgentString(s.getUserAgentString() + " UtSzelveny/1.1.3 (+https://github.com/schafler55/utszelveny)");
 
         web.addJavascriptInterface(new Bridge(), "AndroidBridge");
 
@@ -376,6 +376,12 @@ public class MainActivity extends Activity {
     }
 
     private class Bridge {
+        /** First-start notice → Kilépés: closes the app (and removes it from the recent apps list). */
+        @JavascriptInterface
+        public void exitApp() {
+            runOnUiThread(() -> finishAndRemoveTask());
+        }
+
         /** Fotó page: camera live and the option on → the volume keys take the photo. */
         @JavascriptInterface
         public void setVolShutter(final boolean on) {
