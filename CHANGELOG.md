@@ -4,6 +4,10 @@ Az ÚtSzelvény változásai, a legújabb elöl. A dátumok UTC szerint értend�
 A nagyobb funkciók saját ágon (branch) készültek teszt oldallal és teszt APK-val, és pull requestként (#) kerültek a `main` ágba;
 a kisebb javítások közvetlenül a `main`-re kerültek.
 
+## [1.1.7] – 2026-11-22
+- **Firefox:** nem támogatott. Androidon a Firefox csak ritkán frissíti a helyadatot, ezért a szelvény nem követi folyamatosan a haladást; Firefoxban a Pozíció oldal tetején megjegyzés jelzi ezt, és a Chrome-ot vagy az Android alkalmazást javasolja (Androidon egy gombbal Chrome-ban nyitható meg).
+- README: ajánlott böngészők.
+
 ## [1.1.6] – 2026-11-22
 - **Pozíció, műholdkeresés:** új műhold ikon; a jel a műhold testéből indul (eddig a napelemtábla végéről).
 
