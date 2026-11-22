@@ -4,6 +4,9 @@ Az ÚtSzelvény változásai, a legújabb elöl. A dátumok UTC szerint értend�
 A nagyobb funkciók saját ágon (branch) készültek teszt oldallal és teszt APK-val, és pull requestként (#) kerültek a `main` ágba;
 a kisebb javítások közvetlenül a `main`-re kerültek.
 
+## [1.1.4] – 2026-11-22
+- Indítási tájékoztató, világos téma: a „Kilépés” gomb visszafogottabb – halvány piros háttér, piros keret és felirat.
+
 ## [1.1.3] – 2026-11-22
 - **Indítási tájékoztató:** új piros „Kilépés” gomb bal oldalt (a zöld „Elfogadom” jobb oldalt marad), ha valaki nem fogadja el a használat feltételeit. Az Android alkalmazás bezárul; a weboldal bezárja a lapot, ha a böngésző engedi, különben jelzi, hogy a lap bezárható. Semmi nem mentődik, a GNSS nem indul el, és a tájékoztató a következő indításkor újra megjelenik.
 - **Térkép:** a 0 km-es szelvények alapból rejtve vannak (Beállítások → Térkép → Rétegek → „0 km-es szelvények elrejtése”).

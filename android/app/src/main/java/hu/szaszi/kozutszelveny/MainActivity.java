@@ -194,7 +194,7 @@ public class MainActivity extends Activity {
         s.setAllowFileAccess(false);
         s.setAllowContentAccess(false);
         // OpenStreetMap tile usage policy: an app must identify itself (name/version + project URL)
-        s.setUserAgentString(s.getUserAgentString() + " UtSzelveny/1.1.3 (+https://github.com/schafler55/utszelveny)");
+        s.setUserAgentString(s.getUserAgentString() + " UtSzelveny/1.1.4 (+https://github.com/schafler55/utszelveny)");
 
         web.addJavascriptInterface(new Bridge(), "AndroidBridge");
 
