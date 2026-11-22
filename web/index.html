@@ -456,10 +456,11 @@
     "download_started": "Letöltés elindítva",
     "share_failed": "A megosztás nem sikerült{reason}",
     "share_unsupported": "Ez a böngésző nem tud fájlt megosztani. Használd a Mentés gombot!",
-    "viewer_saved": " · mentve ✓",
-    "viewer_not_saved": " · nincs mentve",
+    "viewer_saved": "mentve",
+    "viewer_not_saved": "nincs mentve",
+    "viewer_saved_btn": "Mentve",
     "viewer_discard": "Elvetés",
-    "viewer_discard_confirm": "Biztos? Elvész",
+    "viewer_discard_confirm": "Biztos?",
     "viewer_removed": "Eltávolítva a listáról. A mentett kép megmaradt."
   },
   "hud": {
@@ -552,12 +553,9 @@
     "srch_csv": "CSV-gombok a mentett kereséseknél",
     "srch_csv_note": "Másolás és letöltés a Keresés oldalon, a lista alatt",
     "srch_none": "Nincs mentett keresés.",
-    "srch_del_ask": "Biztosan törlöd mind a {n} mentett keresést?",
-    "srch_del_note": "Ez nem vonható vissza.",
     "srch_del_both": "Pontok és szakaszok együtt. A legutóbbi, el nem mentett keresést ez nem érinti.",
     "srch_deleted": "Minden mentett keresés törölve.",
     "del_all": "Összes törlése",
-    "del_all_yes": "Igen, mindet törlöm",
     "grp_meas": "Mérések",
     "meas_coord": "Koordináták a mérésekben",
     "meas_coord_note": "A mentett mérések pontjainál és a térképi mérés pontjainál (a CSV-exportban mindig mindkettő szerepel)",
@@ -565,8 +563,6 @@
     "meas_csv": "CSV-gombok a mentett méréseknél",
     "meas_csv_note": "Másolás és letöltés a Mérés oldalon, a lista alatt",
     "meas_none": "Nincs mentett mérés.",
-    "meas_del_ask": "Biztosan törlöd mind a {n} mentett mérést?",
-    "meas_del_note": "Ez nem vonható vissza. Előtte a Mérés oldalon kimásolhatod őket (CSV).",
     "meas_del_running": "A folyamatban lévő mérést ez nem érinti.",
     "meas_del_both": "GNSS és térképi mérések együtt.",
     "meas_deleted": "Minden mentett mérés törölve.",
@@ -698,8 +694,7 @@
     "coord_copied": "{sys} koordináta másolva",
     "copy_failed": "A másolás nem sikerült",
     "chip_left": "BAL",
-    "chip_right": "JOBB",
-    "cancel": "Mégse"
+    "chip_right": "JOBB"
   },
   "road_type": {
     "1": "autópálya",
@@ -1272,7 +1267,7 @@ input[type=text]:focus{outline:2px solid var(--pri);outline-offset:-1px;border-c
 .camshut.busy i{background:var(--outline);transform:scale(.86)}
 .camthumb{width:52px;height:52px;border-radius:16px;border:2px solid var(--on);background:var(--sc-high) center/cover no-repeat;position:relative}
 .camthumb b{position:absolute;top:-8px;right:-8px;min-width:22px;height:22px;border-radius:11px;background:var(--pri);color:var(--on-pri);font-size:.75rem;display:grid;place-items:center;padding:0 5px}
-.camthumb b.uns{background:var(--warn);color:var(--bg)}
+.camthumb b.uns{background:#E53935;color:#fff}
 /* photo still being processed / saved: spinning ring on the thumbnail */
 .camthumb.proc::before{content:"";position:absolute;inset:0;border-radius:14px;background:rgba(0,0,0,.45)}
 .camthumb.proc::after{content:"";position:absolute;left:50%;top:50%;width:22px;height:22px;margin:-11px 0 0 -11px;border-radius:50%;border:3px solid rgba(255,255,255,.3);border-top-color:#fff;box-sizing:border-box;animation:camSpin .8s linear infinite}
@@ -1290,7 +1285,12 @@ input[type=text]:focus{outline:2px solid var(--pri);outline-offset:-1px;border-c
 .camviewer.on{display:flex}
 .cv-top{display:flex;align-items:center;justify-content:space-between;padding:calc(6px + env(safe-area-inset-top)) 4px 4px 18px;font-size:1rem;color:#BFC9C0}
 .cv-top .iconbtn{color:#DEE4DD}
-.cv-img{position:relative;flex:1;min-height:0}
+.cv-img{position:relative;flex:1;min-height:0;overflow:hidden;touch-action:none}
+.cv-track{position:absolute;inset:0;will-change:transform}
+.cv-track img{pointer-events:none;-webkit-user-drag:none;user-select:none}
+#cvImgP{transform:translateX(calc(-100% - 16px))}
+#cvImgN{transform:translateX(calc(100% + 16px))}
+.cv-uns{color:#FF5A4F;font-weight:700}
 .cv-img img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain}
 .cv-nav{position:absolute;top:50%;transform:translateY(-50%);width:44px;height:64px;border-radius:16px;background:#0008;font-size:2rem;color:#fff}
 .cv-nav.l{left:6px}.cv-nav.r{right:6px}
@@ -1612,7 +1612,7 @@ html[data-theme=light] .mapinfo .bh{color:color-mix(in srgb,var(--k) 55%,#000)}
 
 <div class="camviewer" id="camViewer">
   <div class="cv-top"><span id="cvCnt"></span><button class="iconbtn" id="cvClose" data-tx-aria-label="common.close_aria"><svg width="24" height="24" width="2.4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11"/></svg></button></div>
-  <div class="cv-img"><img id="cvImg" alt=""><button class="cv-nav l" id="cvPrev" data-tx-aria-label="photo.viewer_prev">‹</button><button class="cv-nav r" id="cvNext" data-tx-aria-label="photo.viewer_next">›</button></div>
+  <div class="cv-img" id="cvBox"><div class="cv-track" id="cvTrack"><img id="cvImgP" alt=""><img id="cvImg" alt=""><img id="cvImgN" alt=""></div><button class="cv-nav l" id="cvPrev" data-tx-aria-label="photo.viewer_prev">‹</button><button class="cv-nav r" id="cvNext" data-tx-aria-label="photo.viewer_next">›</button></div>
   <div class="cv-name" id="cvName"></div>
   <div class="cv-btns"><button class="btn pri" id="cvSave" data-tx="common.save"></button><button class="btn" id="cvShare" data-tx="photo.viewer_share"></button><button class="btn" id="cvDel" data-tx="photo.viewer_remove"></button></div>
 </div>
@@ -3162,7 +3162,7 @@ function setFollow(f){follow=f;$("follow").classList.toggle("on",f)}
 // map card when nothing is selected: current road and chainage + hint
 let miIdle=true,miLast="";
 function mapIdle(){
-  if(mmOn)return;miIdle=true;miItem=null;miDelAsk=false;
+  if(mmOn)return;miIdle=true;miItem=null;
   const hint=TX("map.tap_hint");
   let h=`<div class="mi-t">${hint}</div>`;
   if(cur&&!cur.res.off){const s=cur.res.best.s;h=`${shieldSVG(ROADS[segRoad[s]].num,segKut[s])}<div class="mi-b"><div class="mi-ch">${fmtCh(cur.res.ch)}</div><div class="mi-t">${hint}</div></div>`}
@@ -3327,13 +3327,20 @@ const MS={el:"measList",pre:"mrn_",ph:TX("measure.name_ph"),get open(){return me
   get del(){return measDel},set del(v){measDel=v},get nw(){return measLast},set nw(v){measLast=v},get hl(){return measHl},set hl(v){measHl=v}};
 const SS={el:"srchList",pre:"srn_",ph:TX("search.name_ph"),get open(){return srchOpen},set open(v){srchOpen=v},get ren(){return srchRename},set ren(v){srchRename=v},
   get del(){return srchDel},set del(v){srchDel=v},get nw(){return srchNew},set nw(v){srchNew=v},get hl(){return srchHl},set hl(v){srchHl=v}};
+// every delete button works the same way: the first tap turns it red ("Törlöd?"); a second tap within 3 s deletes,
+// otherwise it turns back into the normal button. k = what would be deleted (an id string or the object itself)
+const DEL_MS=3000;let delK=null,delT=0;
+function delAsk(k,redraw){clearTimeout(delT);if(delK===k){delK=null;return true}
+  delK=k;delT=setTimeout(()=>{if(delK===k){delK=null;redraw()}},DEL_MS);redraw();return false}
+const delOn=k=>delK===k;
+function delBtn(k,attrs,label,ask){return `<button class="btn${delOn(k)?" red":""}" ${attrs}>${delOn(k)?(ask||TX("common.delete_confirm")):(label||TX("common.delete"))}</button>`}
 // o: {id,name,kind,sum,meta,canMap,show,det}
 function svCard(st,o){
-  const open=st.open===o.id,ren=st.ren===o.id,del=st.del===o.id,nw=st.nw===o.id,K=SV_KIND[o.kind];
+  const open=st.open===o.id,ren=st.ren===o.id,nw=st.nw===o.id,K=SV_KIND[o.kind];
   const head=ren?`<div class="mren"><input type="text" id="${st.pre}${o.id}" value="${esc(o.name)}" maxlength="80" placeholder="${st.ph}"><button class="btn pri" data-a="save" data-id="${o.id}">${TX("common.save")}</button></div>`
     :`<div class="mname">${o.nameHTML||esc(o.name)}</div>`;
   const sw=o.canMap?`<button class="sw${o.show?" on":""}" data-a="show" data-id="${o.id}" role="switch" aria-checked="${!!o.show}" aria-label="${TX("saved.show_on_map")}"></button>`:"";
-  const btns=`<div class="mbtns sv"><button class="btn pri" data-a="map" data-id="${o.id}" ${o.canMap?"":"disabled"}>${TX("common.on_map")}</button><button class="btn" data-a="ren" data-id="${o.id}" ${ren?"disabled":""}>${TX("common.rename")}</button>${del?`<button class="btn red" data-a="delok" data-id="${o.id}">${TX("common.delete_confirm")}</button>`:`<button class="btn" data-a="del" data-id="${o.id}">${TX("common.delete")}</button>`}</div>`;
+  const btns=`<div class="mbtns sv"><button class="btn pri" data-a="map" data-id="${o.id}" ${o.canMap?"":"disabled"}>${TX("common.on_map")}</button><button class="btn" data-a="ren" data-id="${o.id}" ${ren?"disabled":""}>${TX("common.rename")}</button>${delBtn(st.pre+o.id,`data-a="del" data-id="${o.id}"`)}</div>`;
   return `<div class="mitem${open?" open":""}${nw?" new":""}${st.hl===o.id?" hl":""}" data-id="${o.id}" style="--k:${K[1]}">${nw&&!ren?`<div class="mnew">${TX("saved.saved_new")} · <button class="lnk" data-a="ren" data-id="${o.id}">${TX("common.rename")}</button></div>`:""}<div class="shead">${head}${sw}</div>`
     +`<div data-a="tog" data-id="${o.id}" class="mtog">${o.sum?`<div class="msum sv">${o.sum}</div>`:""}<div class="mmeta sv"><span class="kchip" style="--k:${K[1]}">${K[2]}${K[0]}</span> ${o.meta}</div></div>`
     +`${open?`<div class="mdet">${o.det}${btns}</div>`:""}</div>`;
@@ -3373,8 +3380,7 @@ function svAction(st,a,id,it,h){
     return}
   else if(a==="ren"){st.ren=id;setTimeout(()=>{const i=document.getElementById(st.pre+id);if(i){i.focus();i.select()}},30)}
   else if(a==="save"){const i=document.getElementById(st.pre+id),v=(i&&i.value||"").trim();if(v)it.name=v;st.ren=null;st.nw=null;h.save()}
-  else if(a==="del")st.del=id;
-  else if(a==="delok"){st.del=null;st.open=null;st.nw=null;if(st.ren===id)st.ren=null;h.del(it)}
+  else if(a==="del"){if(!delAsk(st.pre+id,h.render))return;st.open=null;st.nw=null;if(st.ren===id)st.ren=null;h.del(it)}
   else if(a==="show"){it.show=!it.show;h.save();h.show(it)}
   else if(a==="map"){h.map(it);return}
   h.render();
@@ -3816,10 +3822,10 @@ function mmPanel(){
     `<div class="mmp-v"><div><small>${TX("measure.air")}</small><b>${fmtDist(T.air)}</b></div><div><small>${TX("measure.mm_road")}</small><b>${T.n&&mmPairs.some(q=>q.route)?fmtDist(T.len):"–"}</b></div><div><small>${TX("common.by_ch")}</small><b>${mmPairs.some(q=>q.route)?fmtDist(T.ch):"–"}</b></div></div>
      ${T.ok?"":`<div class="mi-t warnt">${TX("measure.mm_gap")}</div>`}`}
     ${n?`<div class="mmp-p">${mmPts.map(lbl).join(" → ")}</div>`:""}
-    <div class="mmp-b"><button class="btn" id="mmUndo" ${n?"":"disabled"}>${TX("measure.mm_undo")}</button><button class="btn" id="mmClear" ${n?"":"disabled"}>${TX("common.delete")}</button><button class="btn pri" id="mmSave" ${n>=2&&!mmSaved?"":"disabled"}>${mmSaved?TX("common.saved_check"):TX("common.save")}</button></div>
+    <div class="mmp-b"><button class="btn" id="mmUndo" ${n?"":"disabled"}>${TX("measure.mm_undo")}</button>${delBtn("mm",`id="mmClear" ${n?"":"disabled"}`)}<button class="btn pri" id="mmSave" ${n>=2&&!mmSaved?"":"disabled"}>${mmSaved?TX("common.saved_check"):TX("common.save")}</button></div>
   </div>`;
   $("mmUndo").onclick=()=>{mmPts.pop();mmPairs.length=Math.max(0,mmPts.length-1);mmSaved=null;mmPanel();drawMap()};
-  $("mmClear").onclick=()=>{mmPts=[];mmPairs=[];mmSaved=null;mmPanel();drawMap()};
+  $("mmClear").onclick=()=>{if(!delAsk("mm",mmPanel))return;mmPts=[];mmPairs=[];mmSaved=null;mmPanel();drawMap()};
   $("mmSave").onclick=mmSave;
 }
 function mmSave(){
@@ -3839,7 +3845,7 @@ function mmSave(){
   mmPts=[];mmPairs=[];mmSaved=null;setMM(false);renderMeas();mapItemShow({meas:rec});
 }
 function setMM(on){
-  if(on){miItem=null;miDelAsk=false}
+  if(on){miItem=null}
   mmOn=on;$("mmBtn").classList.toggle("on",on);tapPt=null;
   if(on){if(!RG)setTimeout(()=>{buildRoadGraph()},50);mmPanel()}
   else{miLast="";mapIdle()}
@@ -4295,31 +4301,55 @@ async function shotShare(sh){
   }else camToast(TX("photo.share_unsupported"),true);
 }
 /* ---- viewer of this session's photos ---- */
-function cvOpen(i){if(!camShots.length)return;camIdx=i==null?camShots.length-1:i;animOpen($("camViewer"));cvUI()}
+function cvOpen(i){if(!camShots.length)return;camIdx=i==null?camShots.length-1:i;cvMove(0,0);animOpen($("camViewer"));cvUI()}
 function cvClose(){animClose($("camViewer"),()=>{camIdx=-1})}
 function cvUI(){
   if(camIdx<0||!$("camViewer").classList.contains("on"))return;
   if(!camShots.length){cvClose();return}
   camIdx=Math.max(0,Math.min(camIdx,camShots.length-1));const sh=camShots[camIdx];
-  $("cvImg").src=sh.url;$("cvCnt").textContent=`${camIdx+1} / ${camShots.length}${sh.saved?TX("photo.viewer_saved"):TX("photo.viewer_not_saved")}`;
+  $("cvImg").src=sh.url;cvNb();
+  $("cvCnt").innerHTML=`${camIdx+1} / ${camShots.length} · `+(sh.saved?esc(TX("photo.viewer_saved")):`<span class="cv-uns">${esc(TX("photo.viewer_not_saved"))}</span>`);
   $("cvName").textContent=sh.name;
   $("cvPrev").disabled=camIdx===0;$("cvNext").disabled=camIdx===camShots.length-1;
-  const s=$("cvSave");s.textContent=sh.saved?TX("common.saved_check"):TX("common.save");s.disabled=sh.saved;
-  const d=$("cvDel");d.textContent=sh.saved?TX("photo.viewer_remove"):TX("photo.viewer_discard");
+  const s=$("cvSave");s.textContent=sh.saved?TX("photo.viewer_saved_btn"):TX("common.save");s.disabled=sh.saved;
+  const d=$("cvDel");d.classList.toggle("red",!sh.saved&&delOn(sh));d.textContent=sh.saved?TX("photo.viewer_remove"):delOn(sh)?TX("photo.viewer_discard_confirm"):TX("photo.viewer_discard");
 }
 $("camShut").onclick=camShoot;
 $("camThumb").onclick=()=>cvOpen();
 $("camFlip").onclick=()=>{camFacing=camFacing==="user"?"environment":"user";camStop();camStart()};
 $("cvClose").onclick=cvClose;
-$("cvPrev").onclick=()=>{camIdx--;cvUI()};$("cvNext").onclick=()=>{camIdx++;cvUI()};
+$("cvPrev").onclick=()=>cvGo(-1);$("cvNext").onclick=()=>cvGo(1);
+// swipe between the photos like a gallery: the photo follows the finger and the neighbours slide in beside it
+const CV_GAP=16;let cvDrag=null,cvAnim=false;
+function cvNb(){
+  for(const [id,sh] of [["cvImgP",camShots[camIdx-1]],["cvImgN",camShots[camIdx+1]]]){const im=$(id);if(sh)im.src=sh.url;else im.removeAttribute("src");im.style.visibility=sh?"":"hidden"}
+}
+function cvMove(x,ms){const T=$("cvTrack");T.style.transition=ms?`transform ${ms}ms cubic-bezier(.2,.8,.2,1)`:"none";T.style.transform=x?`translateX(${x}px)`:""}
+function cvGo(d){
+  if(cvAnim)return;const to=camIdx+d;
+  if(to<0||to>=camShots.length){cvMove(0,200);return}
+  if(svReduce()){cvMove(0,0);camIdx=to;cvUI();return}
+  cvAnim=true;cvMove(-d*($("cvBox").clientWidth+CV_GAP),240);
+  setTimeout(()=>{camIdx=to;cvMove(0,0);cvUI();cvAnim=false},250);
+}
+{const box=$("cvBox");
+  box.addEventListener("pointerdown",(e)=>{if(cvAnim||e.target.closest(".cv-nav")||!camShots.length)return;cvDrag={x:e.clientX,y:e.clientY,t:performance.now(),dx:0,on:false,id:e.pointerId}});
+  box.addEventListener("pointermove",(e)=>{const D=cvDrag;if(!D||e.pointerId!==D.id)return;
+    const dx=e.clientX-D.x,dy=e.clientY-D.y;
+    if(!D.on){if(Math.abs(dx)<8)return;if(Math.abs(dy)>Math.abs(dx)){cvDrag=null;return}D.on=true;try{box.setPointerCapture(D.id)}catch(_){}}
+    const edge=(dx>0&&camIdx===0)||(dx<0&&camIdx===camShots.length-1);D.dx=edge?dx*.3:dx;cvMove(D.dx,0)});
+  const up=()=>{const D=cvDrag;cvDrag=null;if(!D||!D.on)return;
+    const W=box.clientWidth,v=Math.abs(D.dx)/Math.max(1,performance.now()-D.t);
+    if(Math.abs(D.dx)>W*.22||(v>.45&&Math.abs(D.dx)>30))cvGo(D.dx<0?1:-1);else cvMove(0,200)};
+  box.addEventListener("pointerup",up);box.addEventListener("pointercancel",up);
+}
 $("cvSave").onclick=()=>{const sh=camShots[camIdx];if(sh)shotSave(sh)};
 $("cvShare").onclick=()=>{const sh=camShots[camIdx];if(sh)shotShare(sh)};
-// remove from this session's list (a saved copy stays on the phone); unsaved: tap twice
-let cvDelArm=null;
+// remove from this session's list (a saved copy stays on the phone); an unsaved photo asks first, like every delete button
 $("cvDel").onclick=()=>{
   const sh=camShots[camIdx];if(!sh)return;
-  if(!sh.saved&&cvDelArm!==sh.id){cvDelArm=sh.id;$("cvDel").textContent=TX("photo.viewer_discard_confirm");setTimeout(()=>{if(cvDelArm===sh.id){cvDelArm=null;cvUI()}},3000);return}
-  cvDelArm=null;camShots.splice(camIdx,1);URL.revokeObjectURL(sh.url);camThumbUI();
+  if(!sh.saved&&!delAsk(sh,cvUI))return;
+  camShots.splice(camIdx,1);URL.revokeObjectURL(sh.url);camThumbUI();
   if(sh.saved)camToast(TX("photo.viewer_removed"));
   cvUI();
 };
@@ -4812,7 +4842,7 @@ function srchShowOnMap(it){
 // info box over the map for the shown search
 // ---- map bubble of a shown search or measurement: name in its colour, road + chainage, road name,
 // length + date; Elrejtés / Törlés (asks first) / Részletek. The unsaved search: Törlés / Mentés.
-var miItem=null,miDelAsk=false;        // {srch:it} | {meas:r} shown in the bubble
+var miItem=null;        // {srch:it} | {meas:r} shown in the bubble
 // JOBB / BAL of a measurement: only when it is all on one road and on the same carriageway (else 0)
 function measPk(r){
   const P=[r.start,r.end,...(r.legs||[])].filter(x=>x&&!x.off);if(!P.length)return 0;
@@ -4847,15 +4877,15 @@ function mapItemHTML(sel){
     name=srchList.includes(it)?it.name:TX("map.bubble_unsaved");
   }
   const unsaved=sel.srch&&!srchList.includes(sel.srch);
-  btns=unsaved?`<button class="btn" data-b="drop">${TX("common.delete")}</button><button class="btn pri" data-b="save">${TX("common.save")}</button>`
-    :miDelAsk?`<button class="btn" data-b="nodel">${TX("common.cancel")}</button><button class="btn red" data-b="delok">${TX("common.delete_confirm")}</button>`
-    :`<button class="btn" data-b="hide">${TX("map.bubble_hide")}</button><button class="btn" data-b="del">${TX("common.delete")}</button><button class="btn pri" data-b="det">${TX("map.bubble_details")}</button>`;
+  const dk=sel.srch||sel.meas;
+  btns=unsaved?`${delBtn(dk,'data-b="drop"')}<button class="btn pri" data-b="save">${TX("common.save")}</button>`
+    :`<button class="btn" data-b="hide">${TX("map.bubble_hide")}</button>${delBtn(dk,'data-b="del"')}<button class="btn pri" data-b="det">${TX("map.bubble_details")}</button>`;
   return `<div class="mmp" style="--k:${K[1]}"><div class="bh"><span class="kic">${K[2]}</span><span class="nm">${esc(name)}</span></div>
     <div class="bsum">${sum}</div><div class="mi-t">${line}<br>${meta}</div><div class="mmp-b">${btns}</div></div>`;
 }
 // show the bubble for a search / measurement (the map view stays where it is)
 function mapItemShow(sel){
-  miItem=sel;miDelAsk=false;miIdle=false;miLast="";
+  miItem=sel;miIdle=false;miLast="";
   if(sel.meas){mapMeas=sel.meas;srchFocus=null}else{srchFocus=sel.srch;mapMeas=null}
   miRefresh(true);if(mapOn)drawMap();
 }
@@ -4871,17 +4901,17 @@ function miRefresh(force){
 function miClose(){
   if(miItem&&miItem.meas&&mapMeas===miItem.meas)mapMeas=null;
   if(miItem&&miItem.srch&&srchFocus===miItem.srch)srchFocus=null;
-  miItem=null;miDelAsk=false;miLast="";mapIdle();if(mapOn)drawMap();
+  miItem=null;miLast="";mapIdle();if(mapOn)drawMap();
 }
 $("mapInfo").addEventListener("click",(e)=>{
   const b=e.target.closest("button[data-b]");if(!b||!miItem)return;
   const a=b.dataset.b,it=miItem.srch,r=miItem.meas;
   if(a==="det"){r?measOpenCard(r):srchOpenCard(it);return}
-  if(a==="del"||a==="nodel"){miDelAsk=a==="del";miRefresh(true);return}
+  if((a==="del"||a==="drop")&&!delAsk(it||r,()=>miRefresh(true)))return;
   if(a==="hide"){
     if(r){r.show=false;measSaveList();renderMeas()}else{it.show=false;srchSave();renderSrch()}
     miClose();return}
-  if(a==="delok"){
+  if(a==="del"){
     if(r){measList=measList.filter(x=>x!==r);measSaveList();if(measOpen===r.id)measOpen=null;renderMeas();renderMeasSet()}
     else{srchList=srchList.filter(x=>x!==it);srchSave();if(srchOpen===it.id)srchOpen=null;renderSrch();renderSrchSet()}
     miClose();return}
@@ -4936,40 +4966,31 @@ function openAbout(){closeMapPanel();showSetTab("info");animOpen($("sheet"))}
 $("brandBtn").onclick=openAbout;
 $("brandBtn").onkeydown=(e)=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();openAbout()}};
 // Mérés settings
-let measDelAll=false;
 function renderMeasSet(){
   document.querySelectorAll("#measCoordSeg button").forEach(b=>b.classList.toggle("on",b.dataset.v===(S.measCoord||"both")));
   const n=measList.length,box=$("measDelBox");
-  if(!n){box.innerHTML=`<p class="note">${TX("settings.meas_none")}</p>`;measDelAll=false;return}
-  box.innerHTML=measDelAll?`<div class="opt" style="border:0"><div><span style="color:var(--err)">${TX("settings.meas_del_ask",{n})}</span><small>${TX("settings.meas_del_note")}</small></div></div>
-      <div class="mdelc"><button class="btn red" id="mDelAllOk">${TX("settings.del_all_yes")}</button><button class="btn" id="mDelAllNo">${TX("common.cancel")}</button></div>`
-    :`<div class="opt" style="border:0"><div><span>${TX("measure.saved_count",{n})}</span><small>${measActive?TX("settings.meas_del_running"):TX("settings.meas_del_both")}</small></div><button class="btn red" id="mDelAll">${TX("settings.del_all")}</button></div>`;
-  if(measDelAll){$("mDelAllOk").onclick=()=>{measList=[];measSaveList();try{localStorage.setItem("ksz_meas_n","0")}catch(e){}
-      mapMeas=null;measOpen=measDel=measRename=measLast=null;measDelAll=false;miRefresh();renderMeas();renderMeasSet();if(mapOn)drawMap();
-      $("measDelBox").insertAdjacentHTML("beforeend",`<p class="note" style="color:var(--pri)">${TX("settings.meas_deleted")}</p>`)};
-    $("mDelAllNo").onclick=()=>{measDelAll=false;renderMeasSet()}}
-  else $("mDelAll").onclick=()=>{measDelAll=true;renderMeasSet()};
+  if(!n){box.innerHTML=`<p class="note">${TX("settings.meas_none")}</p>`;return}
+  box.innerHTML=`<div class="opt" style="border:0"><div><span>${TX("measure.saved_count",{n})}</span><small>${measActive?TX("settings.meas_del_running"):TX("settings.meas_del_both")}</small></div>${delBtn("mAll",'id="mDelAll"',TX("settings.del_all"))}</div>`;
+  $("mDelAll").onclick=()=>{if(!delAsk("mAll",renderMeasSet))return;
+    measList=[];measSaveList();try{localStorage.setItem("ksz_meas_n","0")}catch(e){}
+    mapMeas=null;measOpen=measDel=measRename=measLast=null;miRefresh();renderMeas();renderMeasSet();if(mapOn)drawMap();
+    $("measDelBox").insertAdjacentHTML("beforeend",`<p class="note" style="color:var(--pri)">${TX("settings.meas_deleted")}</p>`)};
 }
 document.querySelectorAll("#measCoordSeg button").forEach(b=>b.onclick=()=>{S.measCoord=b.dataset.v;saveS();renderMeasSet();renderMeas()});
 // Keresés settings: delete all saved searches
-let srchDelAll=false;
 function renderSrchSet(){
   const n=srchList.length,box=$("srchDelBox");
-  if(!n){box.innerHTML=`<p class="note">${TX("settings.srch_none")}</p>`;srchDelAll=false;return}
-  box.innerHTML=srchDelAll?`<div class="opt" style="border:0"><div><span style="color:var(--err)">${TX("settings.srch_del_ask",{n})}</span><small>${TX("settings.srch_del_note")}</small></div></div>
-      <div class="mdelc"><button class="btn red" id="sDelAllOk">${TX("settings.del_all_yes")}</button><button class="btn" id="sDelAllNo">${TX("common.cancel")}</button></div>`
-    :`<div class="opt" style="border:0"><div><span>${TX("search.saved_count",{n})}</span><small>${TX("settings.srch_del_both")}</small></div><button class="btn red" id="sDelAll">${TX("settings.del_all")}</button></div>`;
-  if(srchDelAll){$("sDelAllOk").onclick=()=>{
-      if(srchFocus&&srchList.includes(srchFocus))srchFocus=null;
-      if(srchCur&&srchList.includes(srchCur))srchCur=null;
-      srchList=[];srchSave();srchOpen=srchDel=srchRename=srchNew=null;srchDelAll=false;
-      renderSrchRes();renderSrch();miRefresh();renderSrchSet();if(mapOn)drawMap();
-      $("srchDelBox").insertAdjacentHTML("beforeend",`<p class="note" style="color:var(--pri)">${TX("settings.srch_deleted")}</p>`)};
-    $("sDelAllNo").onclick=()=>{srchDelAll=false;renderSrchSet()}}
-  else $("sDelAll").onclick=()=>{srchDelAll=true;renderSrchSet()};
+  if(!n){box.innerHTML=`<p class="note">${TX("settings.srch_none")}</p>`;return}
+  box.innerHTML=`<div class="opt" style="border:0"><div><span>${TX("search.saved_count",{n})}</span><small>${TX("settings.srch_del_both")}</small></div>${delBtn("sAll",'id="sDelAll"',TX("settings.del_all"))}</div>`;
+  $("sDelAll").onclick=()=>{if(!delAsk("sAll",renderSrchSet))return;
+    if(srchFocus&&srchList.includes(srchFocus))srchFocus=null;
+    if(srchCur&&srchList.includes(srchCur))srchCur=null;
+    srchList=[];srchSave();srchOpen=srchDel=srchRename=srchNew=null;
+    renderSrchRes();renderSrch();miRefresh();renderSrchSet();if(mapOn)drawMap();
+    $("srchDelBox").insertAdjacentHTML("beforeend",`<p class="note" style="color:var(--pri)">${TX("settings.srch_deleted")}</p>`)};
 }
 function sheetClose(){animClose($("sheet"))}
-$("closeSheet").onclick=()=>{sheetClose();measDelAll=false;srchDelAll=false};
+$("closeSheet").onclick=()=>{sheetClose()};
 $("sheet").addEventListener("click",(e)=>{if(e.target.id==="sheet")sheetClose()});
 $("gpsToggle").onclick=()=>{watchId===null?startGPS():stopGPS()};
 function bindSw(id,key,after){const b=$(id);b.classList.toggle("on",!!S[key]);b.onclick=()=>{S[key]=!S[key];b.classList.toggle("on",S[key]);saveS();after&&after();render()}}
