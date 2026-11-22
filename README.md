@@ -14,7 +14,7 @@ Fotóidra ráírja a helyet és az időt, a méréseidet pedig elnevezheted és 
 Böngészőben és Android-alkalmazásként is fut. Az úthálózati adatok a készüléken vannak, így a szelvényezés internet
 nélkül is működik. Csak a térkép alapréteghez kell internetkapcsolat.
 
-**Verzió:** V1.1.0 · [Változásnapló](CHANGELOG.md) · © 2026 Szászi Dániel · Licenc: GPL-3.0
+**Verzió:** V1.1.1 · [Változásnapló](CHANGELOG.md) · © 2026 Szászi Dániel · Licenc: GPL-3.0
 
 ## Funkciók
 
@@ -131,8 +131,16 @@ Az alkalmazás Claude Opus 5.5 segítségével készült.
 ## Adatvédelem
 
 <b>Az alkalmazás nem gyűjt és nem továbbít személyes adatokat:</b> nincs fiók, reklám vagy analitika. A helyadataid, méréseid, kereséseid és beállításaid csak helyben tárolódnak, a fotók pedig közvetlenül a készülékedre mentődnek.
-Az alaptérkép az OpenStreetMap és az Esri szervereiről töltődik le, így ezek a szolgáltatók – mint bármely weboldal esetében – látják az IP-címedet és a betöltött térképrészletet. Az Utcakép gomb a Google Térképet nyitja meg.
+Az alaptérkép az OpenStreetMap és az Esri szervereiről töltődik le, így ezek a szolgáltatók – mint bármely weboldal esetében – látják az IP-címedet és a betöltött térképrészletet. Az Utcakép gomb a Google Térképet, a Névjegy Támogatás gombja a Revolut fizetési oldalát nyitja meg.
 A frissítések keresése (Beállítások → Általános, kikapcsolható) a GitHub szerveréről kérdezi le a legújabb verzió számát, így a GitHub látja az IP-címedet.
+
+## Támogatás
+
+Az ÚtSzelvény ingyenes, és az is marad: nincs benne reklám, előfizetés vagy fizetős funkció. A fejlesztést a szabadidőmben végzem.
+Ha hasznosnak találod, egy kávé árával támogathatod a munkát: **[revolut.me/schafler55](https://revolut.me/schafler55)**.
+A támogatás önkéntes, és nem jár érte extra funkció. A visszajelzés és az ötletek is sokat segítenek!
+
+*ÚtSzelvény is free and will stay free – no ads, subscriptions or paid features. If you find it useful, you can support the work via [Revolut](https://revolut.me/schafler55). Donations are voluntary and unlock nothing.*
 
 ## Közreműködés
 

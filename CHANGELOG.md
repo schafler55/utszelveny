@@ -4,6 +4,10 @@ Az ÚtSzelvény változásai, a legújabb elöl. A dátumok UTC szerint értend�
 A nagyobb funkciók saját ágon (branch) készültek teszt oldallal és teszt APK-val, és pull requestként (#) kerültek a `main` ágba;
 a kisebb javítások közvetlenül a `main`-re kerültek.
 
+## [1.1.1] – 2026-11-22
+- **Névjegy:** új „Támogatás” csoport rövid szöveggel és egy „Támogatás Revoluttal” gombbal (revolut.me/schafler55). A támogatás önkéntes, nem jár érte extra funkció. Az Adatvédelem szöveg megemlíti, hogy a gomb a Revolut oldalát nyitja meg.
+- README: „Támogatás” szakasz; a GitHub oldalon „Sponsor” gomb (`.github/FUNDING.yml`).
+
 ## [1.1.0] – 2026-11-22
 - **Frissítések:** indításkor az alkalmazás megnézi, megjelent-e új stabil verzió, és ha igen, egyszer megkérdezi: Frissítés / Később (Android: Kihagyom ezt a verziót is). A webalkalmazás a „Frissítés” gombra azonnal betölti az új verziót, a „Később” után a következő indításkor. Az Android alkalmazás megnyitja az új APK letöltését, amely a meglévőre telepíthető. A mentett adatok és a beállítások megmaradnak. Kapcsoló: Beállítások → Általános → Frissítések; kézi ellenőrzés és állapot a Névjegyben. Frissítés után egy rövid üzenet jelzi az új verziót.
 - **Weboldal:** a https://schafler55.github.io/utszelveny/ cím mostantól a legutóbbi stabil kiadást mutatja (az APK-val azonos verzió), és egy új kiadás közzétételekor frissül. A `main` ág fejlesztői állapota a https://schafler55.github.io/utszelveny/dev/ címen érhető el, saját mentett adatokkal; a szövegek áttekintője is ide került (`dev/szovegek.html`).
