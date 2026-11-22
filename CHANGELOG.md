@@ -4,6 +4,10 @@ Az ÚtSzelvény változásai, a legújabb elöl. A dátumok UTC szerint értend�
 A nagyobb funkciók saját ágon (branch) készültek teszt oldallal és teszt APK-val, és pull requestként (#) kerültek a `main` ágba;
 a kisebb javítások közvetlenül a `main`-re kerültek.
 
+## [1.1.5] – 2026-11-22
+- **Pozíció, műholdkeresés:** a keresést jelző kör egyenletesen forog (eddig másodpercenként újraindult és ugrált), a forgó ív lekerekített végű, és forgás közben nő, majd rövidül.
+- **Indítókép:** éles logó (eddig a kis fejléc-logó felnagyítva, ezért homályos volt); a töltést jelző csík feljebb, a név alá került, alatta „Betöltés…” felirattal.
+
 ## [1.1.4] – 2026-11-22
 Stabil kiadás; az 1.1.2–1.1.4 változásai együtt.
 - **Sebességkorlát kártya:** a GNSS szerinti sebesség a kártya jobb felső sarkába került, buborékban, mint a fő kártyán a jelerősség (a szám félkövér, a „km/h” nem). Túllépésnél a kártya címével együtt narancssárga, illetve piros lesz. A GNSS kártya alsó sorában csak a frissítés ideje maradt.
