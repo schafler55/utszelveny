@@ -1,19 +1,21 @@
 # Változásnapló
 
 Az ÚtSzelvény változásai, a legújabb elöl. A dátumok UTC szerint értendők.
-A nagyobb funkciók saját ágon (branch) készültek teszt oldallal és teszt APK-val, és pull requestként (#) kerültek a `main` ágba;
-a kisebb javítások közvetlenül a `main`-re kerültek.
+A nagyobb funkciók saját ágon (branch) készülnek teszt oldallal és teszt APK-val, és pull requestként (#) kerülnek a `main` ágba;
+a kisebb javítások közvetlenül a `main`-re kerülnek.
 
-## [1.1.7] – 2026-11-22
+**Verziószámok:** a V1.1.7-től a verziószám csak stabil kiadáskor nő. A legutóbbi kiadás óta a `main` ágra került
+változások a „kiadatlan” szakaszba kerülnek, és a következő stabil kiadás ezeket együtt tartalmazza
+(apró javítás: harmadik szám, pl. 1.1.8; új funkció: második szám, pl. 1.2.0). Korábban szinte minden módosítás
+saját verziószámot kapott, ezért a régebbi bejegyzések aprók; a ténylegesen kiadott változatokat
+„Stabil kiadás” jelöli.
+
+## [1.1.7] – kiadatlan (a `main` ágon)
+Az 1.1.5–1.1.7 változásai együtt.
 - **Firefox:** nem támogatott. Androidon a Firefox csak ritkán frissíti a helyadatot, ezért a szelvény nem követi folyamatosan a haladást; Firefoxban a Pozíció oldal tetején megjegyzés jelzi ezt, és a Chrome-ot vagy az Android alkalmazást javasolja (Androidon egy gombbal Chrome-ban nyitható meg).
-- README: ajánlott böngészők.
-
-## [1.1.6] – 2026-11-22
-- **Pozíció, műholdkeresés:** új műhold ikon; a jel a műhold testéből indul (eddig a napelemtábla végéről).
-
-## [1.1.5] – 2026-11-22
-- **Pozíció, műholdkeresés:** a keresést jelző kör egyenletesen forog (eddig másodpercenként újraindult és ugrált), a forgó ív lekerekített végű, és forgás közben nő, majd rövidül.
+- **Pozíció, műholdkeresés:** új műhold ikon, a jel a műhold testéből indul (eddig a napelemtábla végéről); a keresést jelző kör egyenletesen forog (eddig másodpercenként újraindult és ugrált), a forgó ív lekerekített végű, és forgás közben nő, majd rövidül.
 - **Indítókép:** éles logó (eddig a kis fejléc-logó felnagyítva, ezért homályos volt); a töltést jelző csík feljebb, a név alá került, alatta „Betöltés…” felirattal.
+- README: ajánlott böngészők.
 
 ## [1.1.4] – 2026-11-22
 Stabil kiadás; az 1.1.2–1.1.4 változásai együtt.
@@ -25,10 +27,12 @@ Stabil kiadás; az 1.1.2–1.1.4 változásai együtt.
 - README: új Pozíció kép – 42 Báránd, M0 kézi útválasztással több út közül, 2514 Emőd híd- és tehergépjármű-korlátozással.
 
 ## [1.1.1] – 2026-11-22
+Stabil kiadás.
 - **Névjegy:** új „Támogatás” csoport rövid szöveggel és egy „Támogatás Revoluttal” gombbal (revolut.me/schafler55). A támogatás önkéntes, nem jár érte extra funkció. Az Adatvédelem szöveg megemlíti, hogy a gomb a Revolut oldalát nyitja meg.
 - README: „Támogatás” szakasz; a GitHub oldalon „Sponsor” gomb (`.github/FUNDING.yml`).
 
-## [1.1.0] – 2026-11-22
+## [1.1.0] – 2026-11-22 · [#20](https://github.com/schafler55/utszelveny/pull/20)
+Stabil kiadás.
 - **Frissítések:** indításkor az alkalmazás megnézi, megjelent-e új stabil verzió, és ha igen, egyszer megkérdezi: Frissítés / Később (Android: Kihagyom ezt a verziót is). A webalkalmazás a „Frissítés” gombra azonnal betölti az új verziót, a „Később” után a következő indításkor. Az Android alkalmazás megnyitja az új APK letöltését, amely a meglévőre telepíthető. A mentett adatok és a beállítások megmaradnak. Kapcsoló: Beállítások → Általános → Frissítések; kézi ellenőrzés és állapot a Névjegyben. Frissítés után egy rövid üzenet jelzi az új verziót.
 - **Weboldal:** a https://schafler55.github.io/utszelveny/ cím mostantól a legutóbbi stabil kiadást mutatja (az APK-val azonos verzió), és egy új kiadás közzétételekor frissül. A `main` ág fejlesztői állapota a https://schafler55.github.io/utszelveny/dev/ címen érhető el, saját mentett adatokkal; a szövegek áttekintője is ide került (`dev/szovegek.html`).
 - **Adatvédelem:** a Névjegy és a README megemlíti, hogy a frissítések keresésekor a GitHub látja az IP-címet.
@@ -49,9 +53,10 @@ Stabil kiadás; az 1.1.2–1.1.4 változásai együtt.
 - Pozíció, GNSS kártya: a rendszer neve és a műholdszám között szóköz van („GPS 2/6”, „Galileo 8/9”).
 
 ## [1.0.1] – 2026-11-21
+Stabil kiadás.
 - Térkép: a kilométerszelvények és a km-számok ugyanattól a nagyítástól jelennek meg és tűnnek el. A Beállítások → Térkép oldalon a „Km-számok ettől a nagyítástól” csúszka megszűnt, a „Kilométerszelvények ettől a nagyítástól” csúszka állítja mindkettőt.
 
-## [1.0] – 2026-11-21
+## [1.0] – 2026-11-21 · [#18](https://github.com/schafler55/utszelveny/pull/18)
 Első stabil kiadás.
 - **Indítási tájékoztató:** az első indításkor egy ablak jelenik meg (az adatok tájékoztató jellegűek, nem hitelesek; vezetés közben ne kezeld; helyadat-használat; GPL-3.0, garancia nélkül). A GNSS csak az „Elfogadom” után indul, így a helyengedély kérése a magyarázat után jön. A Névjegyben az „Indítási tájékoztató” gombbal újra megnézhető.
 - **Adatvédelem:** új szakasz a Névjegyben és a README-ben: mi marad a készüléken, és mit látnak a térképszolgáltatók.
