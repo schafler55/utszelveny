@@ -123,7 +123,7 @@ const SUB={
 };
 const LS="utszelveny_texts_draft";
 const $=id=>document.getElementById(id);
-const branch=(location.pathname.match(/\/teszt\/([^/]+)\//)||[])[1]||"main";
+const branch=(location.pathname.match(/\/(?:test|teszt)\/([^/]+)\//)||[])[1]||"main";
 let ORIG=null, draft={}, USE={aria:new Set(),ph:new Set(),vis:new Set(),head:new Set()};
 try{draft=JSON.parse(localStorage.getItem(LS)||"{}")}catch(e){draft={}}
 

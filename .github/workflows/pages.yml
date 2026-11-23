@@ -6,7 +6,7 @@ name: Web app (GitHub Pages)
 #   https://utszelveny.hu/app/             = web/ of the latest stable release (v* tag), the real app
 #                                            (without site/ on main the real app stays at the root)
 #   https://utszelveny.hu/dev/             = web/ of main (development, not yet released)
-#   https://utszelveny.hu/teszt/<branch>/  = test page of every other branch; a branch with a site/
+#   https://utszelveny.hu/test/<branch>/   = test page of every other branch; a branch with a site/
 #                                            folder gets its landing page there and its app in app/
 # (custom domain set in Settings → Pages; the old https://schafler55.github.io/utszelveny/ address forwards here)
 # The whole site is rebuilt each time, so a deleted branch's test page disappears.
@@ -110,8 +110,8 @@ jobs:
             if git cat-file -e "$R:web/index.html" 2>/dev/null; then P="web/"
             elif git cat-file -e "$R:index.html" 2>/dev/null; then P=""
             else echo "skip $B (no index.html)"; continue; fi
-            D="$OUT/teszt/$B"
-            # a branch with a landing page (site/): landing page in teszt/<branch>/, its app in teszt/<branch>/app/
+            D="$OUT/test/$B"
+            # a branch with a landing page (site/): landing page in test/<branch>/, its app in test/<branch>/app/
             if git cat-file -e "$R:site/index.html" 2>/dev/null; then A="$D/app"; else A="$D"; fi
             mkdir -p "$A"
             git show "$R:${P}index.html" | sed \
@@ -131,9 +131,9 @@ jobs:
               rm -f "$D/sw.js"   # only the real site root had the app's service worker
               cp "$A/icon-192.png" "$A/icon-512.png" "$D/" 2>/dev/null || true
               sed -i "s|</body>|<div style=\"position:fixed;top:4px;left:50%;transform:translateX(-50%);z-index:50;background:#dc2626;color:#fff;font:700 11px/1 Arial,sans-serif;padding:3px 8px;border-radius:6px;pointer-events:none\">TESZT · $B</div></body>|" "$D/index.html"
-              echo "test page: teszt/$B/ (landing page), teszt/$B/app/ (app)"
+              echo "test page: test/$B/ (landing page), test/$B/app/ (app)"
             else
-              echo "test page: teszt/$B/"
+              echo "test page: test/$B/"
             fi
           done
 

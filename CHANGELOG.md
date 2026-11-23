@@ -11,6 +11,7 @@ saját verziószámot kapott, ezért a régebbi bejegyzések aprók; a ténylege
 „Stabil kiadás” jelöli.
 
 ## Kiadatlan
+- **Teszt oldalak és teszt APK-k:** angol útvonal, `utszelveny.hu/test/<ág>/` (eddig `teszt/<ág>/`), a teszt APK-k kiadása `apk-test-<ág>`, a fájlnév `UtSzelveny-test-…apk`.
 - **Saját domain:** a weboldal új címe https://utszelveny.hu (a régi https://schafler55.github.io/utszelveny/ cím ide irányít át).
 - **Kezdőlap:** új bemutató oldal a weboldal címén, nagy „ÚtSzelvény indítása” gombbal; a webalkalmazás az `app/` alá költözik.
   Az oldal háttere egy kitalált úthálózat (hidak, kereszteződések, kilométerszelvények, mint a térképen), görgetéskor lassabban mozog, mint az oldal.

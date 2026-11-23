@@ -71,7 +71,7 @@ jobs:
         run: gradle assembleRelease --no-daemon --stacktrace
 
       # File name carries the version (main, version tags) or the branch name + build number (test branches),
-      # e.g. UtSzelveny-V1.0.apk and UtSzelveny-teszt-auto-V1.1-b123.apk
+      # e.g. UtSzelveny-V1.0.apk and UtSzelveny-test-auto-V1.1-b123.apk
       - name: Name the APK
         id: apk
         env:
@@ -83,7 +83,7 @@ jobs:
             name="UtSzelveny-$ver.apk"
           else
             br=$(echo "$B" | sed -E 's/[^A-Za-z0-9._-]+/-/g')
-            name="UtSzelveny-teszt-$br-$ver-b${{ github.run_number }}.apk"
+            name="UtSzelveny-test-$br-$ver-b${{ github.run_number }}.apk"
           fi
           cp "${{ steps.proj.outputs.dir }}/app/build/outputs/apk/release/app-release.apk" "$name"
           echo "name=$name" >> "$GITHUB_OUTPUT"
@@ -96,13 +96,13 @@ jobs:
           name: UtSzelveny-apk-${{ github.ref_name }}
           path: ${{ steps.apk.outputs.name }}
 
-      # Test builds from other branches: own pre-release "apk-teszt-<branch>",
+      # Test builds from other branches: own pre-release "apk-test-<branch>",
       # the public "apk-latest" stays untouched until the branch is merged into main.
-      - name: Publish to the "apk-teszt-<branch>" release
+      - name: Publish to the "apk-test-<branch>" release
         if: github.ref_type == 'branch' && github.ref != 'refs/heads/main'
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: apk-teszt-${{ github.ref_name }}
+          tag_name: apk-test-${{ github.ref_name }}
           target_commitish: ${{ github.sha }}
           name: ÚtSzelvény – TESZT APK (${{ github.ref_name }} ág)
           prerelease: true
@@ -144,7 +144,7 @@ jobs:
         if: github.ref_type == 'branch'
         env:
           GH_TOKEN: ${{ github.token }}
-          TAG: ${{ github.ref == 'refs/heads/main' && 'apk-latest' || format('apk-teszt-{0}', github.ref_name) }}
+          TAG: ${{ github.ref == 'refs/heads/main' && 'apk-latest' || format('apk-test-{0}', github.ref_name) }}
           KEEP: ${{ steps.apk.outputs.name }}
         run: |
           gh release view "$TAG" -R "$GITHUB_REPOSITORY" --json assets -q '.assets[].name' | while read -r a; do

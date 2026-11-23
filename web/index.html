@@ -5372,7 +5372,7 @@ function showStart(onAccept){
 // start, once every ÚtSzelvény tab is closed). Saved data (localStorage) is never touched by an update.
 // Android app: the latest stable GitHub Release (tag v1.0.4 with UtSzelveny-V1.0.4.apk attached). "Frissítés" opens
 // the APK download in the browser; Android installs it over this app (same key and package id, so the data stays).
-// "Kihagyom ezt a verziót" (app only) never asks again for that version. The test (teszt/<branch>/) and dev pages
+// "Kihagyom ezt a verziót" (app only) never asks again for that version. The test (test/<branch>/) and dev pages
 // rename the "ksz_ storage keys, which is how they are recognised: no update check there.
 const UPD_KEY="ksz_";
 const UPD_OFF=UPD_KEY!=="ksz"+"_"||(!NB&&!/^https?:$/.test(location.protocol));
