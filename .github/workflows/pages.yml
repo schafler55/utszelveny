@@ -2,12 +2,13 @@ name: Web app (GitHub Pages)
 
 # Publishes the website straight to GitHub Pages (Settings → Pages → Source: GitHub Actions);
 # nothing is committed to the repository.
-#   https://schafler55.github.io/utszelveny/                 = landing page (site/ of main), once main has a site/ folder
-#   https://schafler55.github.io/utszelveny/app/             = web/ of the latest stable release (v* tag), the real app
-#                                                              (without site/ on main the real app stays at the root)
-#   https://schafler55.github.io/utszelveny/dev/             = web/ of main (development, not yet released)
-#   https://schafler55.github.io/utszelveny/teszt/<branch>/  = test page of every other branch; a branch with a site/
-#                                                              folder gets its landing page there and its app in app/
+#   https://utszelveny.hu/                 = landing page (site/ of main), once main has a site/ folder
+#   https://utszelveny.hu/app/             = web/ of the latest stable release (v* tag), the real app
+#                                            (without site/ on main the real app stays at the root)
+#   https://utszelveny.hu/dev/             = web/ of main (development, not yet released)
+#   https://utszelveny.hu/teszt/<branch>/  = test page of every other branch; a branch with a site/
+#                                            folder gets its landing page there and its app in app/
+# (custom domain set in Settings → Pages; the old https://schafler55.github.io/utszelveny/ address forwards here)
 # The whole site is rebuilt each time, so a deleted branch's test page disappears.
 # Only main may deploy to Pages, so a push to a test branch or a published release asks main to rebuild
 # (workflow_dispatch), and a branch delete runs on main by itself.

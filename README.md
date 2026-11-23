@@ -73,11 +73,11 @@ Koordináták: WGS84 (alapértelmezett) vagy EOV.
 
 ## Használat
 
-- **Kezdőlap:** https://schafler55.github.io/utszelveny/ – rövid bemutató, az „ÚtSzelvény indítása” gombbal.
-- **Webalkalmazás (telepítés nélkül):** https://schafler55.github.io/utszelveny/app/ – a legutóbbi stabil kiadás.
+- **Kezdőlap:** https://utszelveny.hu/ – rövid bemutató, az „ÚtSzelvény indítása” gombbal.
+- **Webalkalmazás (telepítés nélkül):** https://utszelveny.hu/app/ – a legutóbbi stabil kiadás.
   Böngészőben megnyitva az első betöltés után internet nélkül is működik, könyvjelzőként menthető az asztalra.
   Ajánlott böngésző: Chrome (Androidon) vagy Safari (iPhone-on). A Firefox Androidon nem támogatott, mert csak ritkán frissíti a helyadatot.
-  A `main` ág legfrissebb, még nem kiadott állapota (fejlesztői oldal, saját mentett adatokkal): https://schafler55.github.io/utszelveny/dev/
+  A `main` ág legfrissebb, még nem kiadott állapota (fejlesztői oldal, saját mentett adatokkal): https://utszelveny.hu/dev/
 - **Android APK (telepítve):** https://github.com/schafler55/utszelveny/releases/latest – a legutóbbi stabil kiadás (pl. `UtSzelveny-V1.0.apk`).
   Letöltés után engedélyezni kell az ismeretlen forrásból történő telepítést.
   A `main` ág legfrissebb, még nem kiadott állapota: [apk-latest](https://github.com/schafler55/utszelveny/releases/tag/apk-latest).
@@ -95,15 +95,15 @@ A térkép északkal felfelé vagy menetirány szerint elforgatva is használhat
 
 | Fájl / mappa | Tartalom |
 |---|---|
-| `site/` | A kezdőlap (`index.html`, a háttér `hatter.svg`, képek a `kepek/` mappában); a `main` ágé a https://schafler55.github.io/utszelveny/ címre kerül |
-| `web/` | A webalkalmazás; a legutóbbi stabil kiadásé a https://schafler55.github.io/utszelveny/app/, a `main` ágé a https://schafler55.github.io/utszelveny/dev/ címre kerül |
+| `site/` | A kezdőlap (`index.html`, a háttér `hatter.svg`, képek a `kepek/` mappában); a `main` ágé a https://utszelveny.hu/ címre kerül |
+| `web/` | A webalkalmazás; a legutóbbi stabil kiadásé a https://utszelveny.hu/app/, a `main` ágé a https://utszelveny.hu/dev/ címre kerül |
 | `web/index.html` | A teljes alkalmazás (kód + beépített úthálózati adatok), egyetlen fájl |
 | `web/sw.js`, `web/manifest.webmanifest`, `web/icon-*.png` | Telepíthető webalkalmazás (PWA) offline gyorsítótárral |
 | `android/` | Android keret (WebView), amely a `web/index.html`-t futtatja |
 | `.github/workflows/android.yml` | Megépíti az APK-t: a `main` ágból a fenti letöltési linkre, a többi ágból teszt APK-t |
 | `.github/workflows/pages.yml` | Kiteszi a weboldalt a GitHub Pagesre: a kezdőlapot (`site/`), a legutóbbi stabil kiadás `web/` mappáját az `app/` alá, a `main` ágat a `dev/` alá, és minden másik ágból egy teszt oldalt (`teszt/<ág>/`); a törölt ág teszt oldala eltűnik. Új stabil kiadás közzétételekor magától frissül |
 | `CHANGELOG.md` | Változásnapló: mi változott az egyes verziókban |
-| `web/szovegek.html` | Az alkalmazás összes szövege képernyőnként (kereshető, szerkeszthető), a `main` ág szerint: https://schafler55.github.io/utszelveny/dev/szovegek.html |
+| `web/szovegek.html` | Az alkalmazás összes szövege képernyőnként (kereshető, szerkeszthető), a `main` ág szerint: https://utszelveny.hu/dev/szovegek.html |
 | `tools/szovegek.py` | Ellenőrzi a `web/index.html` szövegblokkját (érvényes JSON, minden kulcs megvan); a build is futtatja |
 | `tools/nap_szakaszadatok.py` | A NAP sáv-, burkolat- és forgalmi adatait (WFS GeoJSON) a `web/index.html` beépített adatai közé írja |
 | `tools/kezdolap_hatter.py` | Megrajzolja a kezdőlap úthálózat-hátterét (`site/hatter.svg`) |
@@ -115,7 +115,7 @@ A webalkalmazás és az APK is ugyanabból a `web/index.html`-ből épül, ezér
 
 Az alkalmazás minden felirata, magyarázata és gombszövege egy helyen van: a `web/index.html` elején, a `<script type="application/json" id="texts">` blokkban, képernyők szerint csoportosítva (pl. `position`, `search`, `settings`). A kód csak a kulcsokra hivatkozik (`TX("search.title")`, `data-tx="search.title"`).
 
-Áttekintés és szerkesztés: **[szovegek.html](https://schafler55.github.io/utszelveny/dev/szovegek.html)** – kereshető lista; a módosítások a böngészőben maradnak, a „Copy changes” rövid listát másol, a „Download index.html” a módosított teljes fájlt adja, ami GitHubon feltölthető. A `{kapcsos}` helyőrzőket (útszám, távolság…) és a HTML-jelöléseket (`<b>`, `<br>`) meg kell hagyni.
+Áttekintés és szerkesztés: **[szovegek.html](https://utszelveny.hu/dev/szovegek.html)** – kereshető lista; a módosítások a böngészőben maradnak, a „Copy changes” rövid listát másol, a „Download index.html” a módosított teljes fájlt adja, ami GitHubon feltölthető. A `{kapcsos}` helyőrzőket (útszám, távolság…) és a HTML-jelöléseket (`<b>`, `<br>`) meg kell hagyni.
 
 ## Adatforrás és felelősség
 
