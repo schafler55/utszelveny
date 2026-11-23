@@ -82,6 +82,7 @@
   .card { background: var(--card); border-radius: 22px; padding: 26px; display: flex; flex-direction: column; gap: 10px; }
   .card .ic { width: 48px; height: 48px; border-radius: 14px; background: var(--pri-c); color: var(--on-pri-c); display: flex; align-items: center; justify-content: center; }
   .card .ic svg { width: 26px; height: 26px; }
+  .card .ch { display: flex; align-items: center; gap: 14px; }
   .card h3 { margin: 0; font-size: 20px; }
   .card p { margin: 0; font-size: 16px; color: var(--onv); }
 
@@ -100,6 +101,8 @@
   .oss { background: var(--card); border-radius: 28px; padding: 44px 36px; display: flex; flex-direction: column; align-items: center; text-align: center; gap: 16px; }
   .oss h2 { font-size: 30px; }
   .oss p { margin: 0; font-size: 17px; color: var(--onv); max-width: 40em; }
+  .oss .apk { margin-top: 6px; font-size: 15px; color: var(--dim); }
+  .oss .apk a { font-weight: 500; }
   .btns { display: flex; flex-wrap: wrap; gap: 12px; justify-content: center; }
   .btn { display: inline-flex; align-items: center; gap: 10px; text-decoration: none; font-size: 16px; font-weight: 500; padding: 14px 22px; border-radius: 999px; }
   .btn svg { width: 20px; height: 20px; }
@@ -108,7 +111,7 @@
   .btn.pc { background: var(--pri-c); color: var(--on-pri-c); }
   .btn.pc:hover { background: #95DDAB; color: var(--on-pri-c); }
 
-  footer { padding-top: 48px; padding-bottom: 48px; display: flex; flex-direction: column; align-items: center; gap: 6px; text-align: center; font-size: 14px; color: var(--dim); }
+  footer.wrap { padding-top: 40px; padding-bottom: 44px; display: flex; flex-direction: column; align-items: center; gap: 6px; text-align: center; font-size: 14px; color: var(--dim); }
 
   @media (max-width: 900px) {
     .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
@@ -140,12 +143,12 @@
       <img class="logo" src="icon-512.png" alt="ÚtSzelvény ikon" width="112" height="112">
       <h1>ÚtSzelvény</h1>
       <p class="tagline">Kilométerkő minden méteren – a zsebedben.</p>
-      <p class="lead">Melyik országos közúton, melyik kilométerszelvényben állsz?<br>Az <b>ÚtSzelvény</b>b megmutatja internet nélkül is, ingyen, reklám nélkül.</p>
+      <p class="lead">Melyik országos közúton, melyik kilométerszelvényben állsz?<br>Az <b>ÚtSzelvény</b> megmutatja internet nélkül is, ingyen, reklám nélkül.</p>
       <a class="start" href="app/">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
         ÚtSzelvény indítása
       </a>
-      <p class="sub">Böngészőben fut, telepítés nélkül!<br>Támogatott büngészők: Androidon <b>Chrome</b>b> vagy iOS-en <b>Safari</b>b></p>
+      <p class="sub">Böngészőben fut, telepítés nélkül!<br>Támogatott böngészők: Androidon <b>Chrome</b> vagy iOS-en <b>Safari</b></p>
     </section>
 
     <div class="phones wrap">
@@ -158,33 +161,27 @@
       <h2 class="center">Mit tud?</h2>
       <div class="grid">
         <div class="card">
-          <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-6-5.6-6-11a6 6 0 0 1 12 0c0 5.4-6 11-6 11z"/><circle cx="12" cy="10" r="2.2"/></svg></div>
-          <h3>Pozíció</h3>
+          <div class="ch"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-6-5.6-6-11a6 6 0 0 1 12 0c0 5.4-6 11-6 11z"/><circle cx="12" cy="10" r="2.2"/></svg></div><h3>Pozíció</h3></div>
           <p>Útszám, szelvény, útpálya, sebességkorlát a település nevével, hidak és tehergépjármű-korlátozások a következő 3 km-en.</p>
         </div>
         <div class="card">
-          <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 4 3 6v14l6-2 6 2 6-2V4l-6 2-6-2z"/><path d="M9 4v14M15 6v14"/></svg></div>
-          <h3>Térkép</h3>
+          <div class="ch"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 4 3 6v14l6-2 6 2 6-2V4l-6 2-6-2z"/><path d="M9 4v14M15 6v14"/></svg></div><h3>Térkép</h3></div>
           <p>Az országos közúthálózat útszámokkal. Koppintásra a pont szelvénye és a szakasz adatai: sávok, burkolat, forgalom.</p>
         </div>
         <div class="card">
-          <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="m20 20-4.2-4.2"/></svg></div>
-          <h3>Keresés</h3>
+          <div class="ch"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="m20 20-4.2-4.2"/></svg></div><h3>Keresés</h3></div>
           <p>Pont vagy szakasz útszám és szelvény alapján, vagy koordinátából a legközelebbi szelvény.</p>
         </div>
         <div class="card">
-          <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 16 16 4l4 4L8 20z"/><path d="M8 12l2 2M11 9l2 2M14 6l2 2"/></svg></div>
-          <h3>Mérés</h3>
+          <div class="ch"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 16 16 4l4 4L8 20z"/><path d="M8 12l2 2M11 9l2 2M14 6l2 2"/></svg></div><h3>Mérés</h3></div>
           <p>Szelvénytől szelvényig GPS-szel vagy a térképen, akár több úton át. Elnevezhető, CSV-be menthető.</p>
         </div>
         <div class="card">
-          <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 8h3l2-2.5h6L17 8h3v11H4z"/><circle cx="12" cy="13" r="3.5"/></svg></div>
-          <h3>Fotó</h3>
+          <div class="ch"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 8h3l2-2.5h6L17 8h3v11H4z"/><circle cx="12" cy="13" r="3.5"/></svg></div><h3>Fotó</h3></div>
           <p>Útszám, szelvény, dátum és idő a kép tetején. Jelzi a belterületeket is.</p>
         </div>
         <div class="card">
-          <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 17a8 8 0 1 1 16 0"/><path d="M12 17l4-5"/></svg></div>
-          <h3>HUD mód</h3>
+          <div class="ch"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 17a8 8 0 1 1 16 0"/><path d="M12 17l4-5"/></svg></div><h3>HUD mód</h3></div>
           <p>A műszerfalra tett telefon tükrözött képe a szélvédőn, így egy pillanatra sem kell lepillantanod az útról.</p>
         </div>
       </div>
@@ -217,7 +214,7 @@
     <section class="block wrap">
       <div class="oss">
         <h2>Ingyenes és nyílt forráskódú</h2>
-        <p>GPL-3.0 licenc · nincs fiók, reklám vagy analitika. Ha hasznosnak találod, egy kávéval támogathatod a fejlesztést.</p>
+        <p>GPL-3.0 licenc · Nincs fiók, reklám vagy analitika. Ha hasznosnak találod, egy kávé árával támogathatod a fejlesztést.</p>
         <div class="btns">
           <a class="btn ton" href="https://github.com/schafler55/utszelveny">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m8 8-4 4 4 4M16 8l4 4-4 4"/></svg>
@@ -228,16 +225,15 @@
             Támogatás
           </a>
         </div>
+        <p class="apk">Androidra alkalmazásként is telepíthető: <a href="https://github.com/schafler55/utszelveny/releases/latest">Android alkalmazás (APK) letöltése</a></p>
       </div>
     </section>
   </main>
 
   <footer class="wrap">
-    <br>
     <span>Úthálózati adatok: NAP · Térkép: © OpenStreetMap közreműködők · Műholdkép: Powered by Esri</span>
     <span>Az adatok tájékoztató jellegűek, csak saját felelősségre használható.</span>
     <span>© 2026 Szászi Dániel · GPL-3.0</span>
-    <br>
   </footer>
 </div>
 <script>

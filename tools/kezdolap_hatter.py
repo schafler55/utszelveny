@@ -3,7 +3,7 @@
 
 A made-up piece of road network in the app's map style, as a tile that repeats
 downwards without a seam: main roads with km markers (dot + short line to the
-side, with the km number) and road number signs, a motorway, secondary and
+side, with the km number, going up by one; none on bridges), a motorway, secondary and
 minor roads, a railway, bridges where one road goes over another (deck +
 parapet lines with flared ends, like the app's map bridge symbol) and
 at-grade crossings. Solid colours blended to the page background (#E5EBE4),
@@ -153,10 +153,12 @@ for kind in ("rail", "street", "minor", "secondary", "main", "motorway"):
         if r["kind"] == kind:
             road(r)
 
+BRIDGE_AT = []   # bridge centres: no km markers there
 for up, lo in BRIDGES:
     U, L = ROADS[up], ROADS[lo]
     for s in crossings(U["poly"], L["poly"]):
         (px, py), (tx, ty) = at(U["poly"], s)
+        BRIDGE_AT.append((px, py))
         # the deck spans the lower road plus a margin, wider when the roads cross at a sharp angle
         (_, _), (lx, ly) = at(L["poly"], [x for x in crossings(L["poly"], U["poly"]) if math.dist(at(L["poly"], x)[0], (px, py)) < 6][0])
         sin = abs(tx * ly - ty * lx) or 0.3
@@ -172,7 +174,8 @@ for up, lo in BRIDGES:
             out.append(f'<path d="M{fa[0]:.1f} {fa[1]:.1f} L{a[0]:.1f} {a[1]:.1f} L{b[0]:.1f} {b[1]:.1f} L{fb[0]:.1f} {fb[1]:.1f}" stroke="{MARK}" stroke-width="2.4"/>')
 out.append('</g>')
 
-# km markers: a dot and a short line to the side, with the km number (main roads and the motorway)
+# km markers: a dot and a short line to the side, with the km number (main roads and the motorway);
+# the numbers go up by one along each road, and there is none on a bridge
 out.append(f'<g font-family="Roboto, Arial, sans-serif" font-weight="700" font-size="13" fill="{LABEL}">')
 for r in ROADS.values():
     if "km0" not in r:
@@ -182,7 +185,8 @@ for r in ROADS.values():
     s, km = 90.0, r["km0"]
     while s < L - 40:
         (px, py), (tx, ty) = at(poly, s)
-        if -10 < px < W + 10 and 30 < py < H - 30:
+        near_bridge = any(math.dist((px, py), b) < 48 for b in BRIDGE_AT)
+        if -10 < px < W + 10 and 30 < py < H - 30 and not near_bridge:
             nx, ny = -ty * r["side"], tx * r["side"]
             a = r["w"] / 2 + 3
             b = a + 11
@@ -197,27 +201,7 @@ for r in ROADS.values():
         km += 1
 out.append('</g>')
 
-# road number signs on the roads: shield for main roads / motorway, plate for secondary roads
-out.append('<g font-family="Roboto, Arial, sans-serif" font-weight="700" text-anchor="middle">')
-for r in ROADS.values():
-    if "num" not in r:
-        continue
-    poly, L = r["poly"], length(r["poly"])
-    for s in frange(L * 0.22, L * 0.78, L * 0.28):
-        (px, py), _ = at(poly, s)
-        if not (40 < px < W - 40 and 60 < py < H - 60):
-            continue
-        if r["kind"] == "secondary":
-            w = 12 + 8 * len(r["num"])
-            out.append(f'<rect x="{px - w / 2:.1f}" y="{py - 10:.1f}" width="{w}" height="20" rx="4" fill="{BG}" stroke="{MARK}" stroke-width="2"/>')
-            out.append(f'<text x="{px:.1f}" y="{py + 4.5:.1f}" font-size="13" fill="{LABEL}">{r["num"]}</text>')
-        else:
-            w = 30 if len(r["num"]) < 3 else 38
-            h = 26
-            x0, y0 = px - w / 2, py - h / 2
-            out.append(f'<path d="M{x0:.1f} {y0:.1f} h{w} v{h * 0.62:.1f} l{-w / 2:.1f} {h * 0.38:.1f} l{-w / 2:.1f} {-h * 0.38:.1f} z" fill="{MARK}" stroke="{BG}" stroke-width="2.5" stroke-linejoin="round"/>')
-            out.append(f'<text x="{px:.1f}" y="{py + 2:.1f}" font-size="14" fill="{BG}">{r["num"]}</text>')
-out.append('</g></svg>')
+out.append('</svg>')
 
 dst = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "site", "hatter.svg")
 if len(sys.argv) > 1:
