@@ -24,6 +24,8 @@
   :root {
     --bg: #E5EBE4; --card: #FFFFFF; --on: #0F140F; --onv: #2E352F; --dim: #4A524B;
     --pri: #2B6A46; --pri-c: #B0F1C3; --on-pri-c: #002111;
+    --shot-shadow: drop-shadow(0 4px 8px rgba(15,20,15,.18)) drop-shadow(0 18px 36px rgba(15,20,15,.22));
+    --tile-shadow: 0 1px 3px rgba(15,20,15,.08), 0 8px 24px rgba(15,20,15,.10);
     --font: Roboto, "Roboto Flex", system-ui, -apple-system, "Segoe UI", sans-serif;
   }
   * { box-sizing: border-box; }
@@ -40,12 +42,7 @@
     background: url("hatter.svg") center top / 1440px auto repeat-y;
     will-change: transform;
   }
-  .page > :not(.bg):not(.glow) { position: relative; z-index: 1; }
-  .glow {
-    position: absolute; left: 50%; top: 380px; width: 1100px; height: 760px; transform: translateX(-50%);
-    background: radial-gradient(closest-side, rgba(176,241,195,.55), rgba(176,241,195,0));
-    z-index: 0; pointer-events: none;
-  }
+  .page > :not(.bg) { position: relative; z-index: 1; }
 
   .wrap { max-width: 1160px; margin: 0 auto; padding: 0 24px; }
   header.top { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding-top: 20px; padding-bottom: 20px; }
@@ -71,15 +68,15 @@
   .sub a { font-weight: 500; }
 
   .phones { display: flex; justify-content: center; align-items: flex-end; gap: 2%; padding-top: 56px; padding-bottom: 24px; }
-  .phones img { filter: drop-shadow(0 14px 30px rgba(0,0,0,.22)); }
+  .phones img, .shots img { filter: var(--shot-shadow); }
   .phones .side { width: 28%; max-width: 270px; margin-bottom: 40px; }
-  .phones .mid { width: 33%; max-width: 320px; filter: drop-shadow(0 20px 40px rgba(0,0,0,.28)); }
+  .phones .mid { width: 33%; max-width: 320px; }
 
   section.block { padding-top: 88px; }
   h2 { margin: 0; font-size: 36px; line-height: 1.2; }
   .center { text-align: center; }
   .grid { margin-top: 32px; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 18px; }
-  .card { background: var(--card); border-radius: 22px; padding: 26px; display: flex; flex-direction: column; gap: 10px; }
+  .card { background: var(--card); box-shadow: var(--tile-shadow); border-radius: 22px; padding: 26px; display: flex; flex-direction: column; gap: 10px; }
   .card .ic { width: 48px; height: 48px; border-radius: 14px; background: var(--pri-c); color: var(--on-pri-c); display: flex; align-items: center; justify-content: center; }
   .card .ic svg { width: 26px; height: 26px; }
   .card .ch { display: flex; align-items: center; gap: 14px; }
@@ -94,11 +91,10 @@
   .step h3 { margin: 0; font-size: 19px; }
   .step p { margin: 2px 0 0; font-size: 16px; color: var(--onv); }
   .shots { display: flex; justify-content: center; align-items: center; gap: 16px; }
-  .shots img { filter: drop-shadow(0 14px 30px rgba(0,0,0,.22)); }
   .shots .p { width: 46%; max-width: 230px; }
   .shots .f { width: 50%; max-width: 260px; }
 
-  .oss { background: var(--card); border-radius: 28px; padding: 44px 36px; display: flex; flex-direction: column; align-items: center; text-align: center; gap: 16px; }
+  .oss { background: var(--card); box-shadow: var(--tile-shadow); border-radius: 28px; padding: 44px 36px; display: flex; flex-direction: column; align-items: center; text-align: center; gap: 16px; }
   .oss h2 { font-size: 30px; }
   .oss p { margin: 0; font-size: 17px; color: var(--onv); max-width: 40em; }
   .oss .apk { margin-top: 6px; font-size: 15px; color: var(--dim); }
@@ -131,7 +127,6 @@
 <body>
 <div class="page">
   <div class="bg" id="bg" aria-hidden="true"></div>
-  <div class="glow" aria-hidden="true"></div>
 
   <header class="top wrap">
     <a class="brand" href="./"><img src="icon-192.png" alt="" width="34" height="34">ÚtSzelvény</a>
