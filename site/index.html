@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ÚtSzelvény – Kilométerkő minden méteren</title>
+<meta name="description" content="Melyik országos közúton, melyik kilométerszelvényben állsz? Útszám, km+m, sebességkorlát, hidak és korlátozások – internet nélkül is. Ingyenes, nyílt forráskódú.">
+<meta name="theme-color" content="#E5EBE4">
+<link rel="icon" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-192.png">
+<meta property="og:type" content="website">
+<meta property="og:title" content="ÚtSzelvény – Kilométerkő minden méteren, a zsebedben">
+<meta property="og:description" content="Útszám, km+m szelvény, sebességkorlát, hidak és korlátozások az országos közúthálózaton – internet nélkül is. Ingyenes, nyílt forráskódú.">
+<meta property="og:url" content="https://utszelveny.hu/">
+<meta property="og:image" content="https://utszelveny.hu/kepek/og.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<script>
+  // opened from a home-screen icon saved before the app moved to app/: go straight to the app
+  if (matchMedia("(display-mode: standalone)").matches) location.replace("app/");
+</script>
+<style>
+  :root {
+    --bg: #E5EBE4; --card: #FFFFFF; --on: #0F140F; --onv: #2E352F; --dim: #4A524B;
+    --pri: #2B6A46; --pri-c: #B0F1C3; --on-pri-c: #002111;
+    --font: Roboto, "Roboto Flex", system-ui, -apple-system, "Segoe UI", sans-serif;
+  }
+  * { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; scroll-behavior: smooth; }
+  body { margin: 0; background: var(--bg); color: var(--on); font-family: var(--font); line-height: 1.5; }
+  a { color: var(--pri); }
+  a:hover { color: #12452B; }
+  img { max-width: 100%; height: auto; }
+
+  /* road network background: repeats downwards, moves slower than the page (parallax) */
+  .page { position: relative; overflow: hidden; min-height: 100vh; }
+  .bg {
+    position: absolute; top: 0; left: 0; right: 0; height: 100%; z-index: 0; pointer-events: none;
+    background: url("hatter.svg") center top / 1440px auto repeat-y;
+    will-change: transform;
+  }
+  .page > :not(.bg):not(.glow) { position: relative; z-index: 1; }
+  .glow {
+    position: absolute; left: 50%; top: 380px; width: 1100px; height: 760px; transform: translateX(-50%);
+    background: radial-gradient(closest-side, rgba(176,241,195,.55), rgba(176,241,195,0));
+    z-index: 0; pointer-events: none;
+  }
+
+  .wrap { max-width: 1160px; margin: 0 auto; padding: 0 24px; }
+  header.top { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding-top: 20px; padding-bottom: 20px; }
+  .brand { display: flex; align-items: center; gap: 10px; font-size: 20px; font-weight: 500; color: var(--on); text-decoration: none; }
+  .brand img { width: 34px; height: 34px; }
+  .toplink { font-size: 15px; color: var(--onv); text-decoration: none; }
+
+  .hero { max-width: 900px; margin: 0 auto; padding: 32px 24px 0; display: flex; flex-direction: column; align-items: center; text-align: center; gap: 20px; }
+  .hero .logo { width: 112px; height: 112px; }
+  h1 { margin: 0; font-size: clamp(44px, 9vw, 72px); line-height: 1; font-weight: 700; letter-spacing: -0.015em; }
+  .tagline { margin: 0; font-size: clamp(20px, 4.4vw, 26px); font-weight: 500; color: var(--pri); }
+  .lead { margin: 0; font-size: 18px; color: var(--onv); max-width: 36em; }
+  .start {
+    margin-top: 8px; display: inline-flex; align-items: center; justify-content: center; gap: 14px;
+    background: var(--pri); color: #FFFFFF; text-decoration: none; font-size: 24px; font-weight: 700;
+    padding: 22px 48px; border-radius: 999px; box-shadow: 0 10px 30px rgba(43,106,70,.3);
+    min-width: min(100%, 360px); transition: transform .15s, box-shadow .15s;
+  }
+  .start:hover { color: #FFFFFF; transform: translateY(-2px); box-shadow: 0 14px 34px rgba(43,106,70,.36); }
+  .start:focus-visible { outline: 3px solid #12452B; outline-offset: 4px; }
+  .start svg { width: 28px; height: 28px; }
+  .sub { margin: 0; font-size: 15px; color: var(--dim); }
+  .sub a { font-weight: 500; }
+
+  .phones { display: flex; justify-content: center; align-items: flex-end; gap: 2%; padding-top: 56px; padding-bottom: 24px; }
+  .phones img { filter: drop-shadow(0 14px 30px rgba(0,0,0,.22)); }
+  .phones .side { width: 28%; max-width: 270px; margin-bottom: 40px; }
+  .phones .mid { width: 33%; max-width: 320px; filter: drop-shadow(0 20px 40px rgba(0,0,0,.28)); }
+
+  section.block { padding-top: 88px; }
+  h2 { margin: 0; font-size: 36px; line-height: 1.2; }
+  .center { text-align: center; }
+  .grid { margin-top: 32px; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 18px; }
+  .card { background: var(--card); border-radius: 22px; padding: 26px; display: flex; flex-direction: column; gap: 10px; }
+  .card .ic { width: 48px; height: 48px; border-radius: 14px; background: var(--pri-c); color: var(--on-pri-c); display: flex; align-items: center; justify-content: center; }
+  .card .ic svg { width: 26px; height: 26px; }
+  .card h3 { margin: 0; font-size: 20px; }
+  .card p { margin: 0; font-size: 16px; color: var(--onv); }
+
+  .steps { display: flex; flex-wrap: wrap; align-items: center; gap: 48px; }
+  .steps > div { flex: 1 1 400px; min-width: 0; }
+  .steplist { display: flex; flex-direction: column; gap: 22px; }
+  .step { display: flex; gap: 16px; align-items: flex-start; }
+  .step .n { flex: 0 0 auto; width: 40px; height: 40px; border-radius: 999px; background: var(--pri); color: #FFFFFF; font-weight: 700; display: flex; align-items: center; justify-content: center; }
+  .step h3 { margin: 0; font-size: 19px; }
+  .step p { margin: 2px 0 0; font-size: 16px; color: var(--onv); }
+  .shots { display: flex; justify-content: center; align-items: center; gap: 16px; }
+  .shots img { filter: drop-shadow(0 14px 30px rgba(0,0,0,.22)); }
+  .shots .p { width: 46%; max-width: 230px; }
+  .shots .f { width: 50%; max-width: 260px; }
+
+  .oss { background: var(--card); border-radius: 28px; padding: 44px 36px; display: flex; flex-direction: column; align-items: center; text-align: center; gap: 16px; }
+  .oss h2 { font-size: 30px; }
+  .oss p { margin: 0; font-size: 17px; color: var(--onv); max-width: 40em; }
+  .btns { display: flex; flex-wrap: wrap; gap: 12px; justify-content: center; }
+  .btn { display: inline-flex; align-items: center; gap: 10px; text-decoration: none; font-size: 16px; font-weight: 500; padding: 14px 22px; border-radius: 999px; }
+  .btn svg { width: 20px; height: 20px; }
+  .btn.ton { background: var(--bg); color: var(--on); }
+  .btn.ton:hover { background: #D9E1D8; color: var(--on); }
+  .btn.pc { background: var(--pri-c); color: var(--on-pri-c); }
+  .btn.pc:hover { background: #95DDAB; color: var(--on-pri-c); }
+
+  footer { padding-top: 48px; padding-bottom: 48px; display: flex; flex-direction: column; align-items: center; gap: 6px; text-align: center; font-size: 14px; color: var(--dim); }
+
+  @media (max-width: 900px) {
+    .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  }
+  @media (max-width: 620px) {
+    .bg { background-size: 1000px auto; }
+    .grid { grid-template-columns: minmax(0, 1fr); }
+    .start { font-size: 21px; padding: 20px 28px; width: 100%; }
+    .phones { padding-top: 40px; }
+    .phones .side { margin-bottom: 24px; }
+    section.block { padding-top: 64px; }
+    h2 { font-size: 30px; }
+    .oss { padding: 32px 22px; }
+  }
+</style>
+</head>
+<body>
+<div class="page">
+  <div class="bg" id="bg" aria-hidden="true"></div>
+  <div class="glow" aria-hidden="true"></div>
+
+  <header class="top wrap">
+    <a class="brand" href="./"><img src="icon-192.png" alt="" width="34" height="34">ÚtSzelvény</a>
+    <a class="toplink" href="https://github.com/schafler55/utszelveny">GitHub</a>
+  </header>
+
+  <main>
+    <section class="hero">
+      <img class="logo" src="icon-512.png" alt="ÚtSzelvény ikon" width="112" height="112">
+      <h1>ÚtSzelvény</h1>
+      <p class="tagline">Kilométerkő minden méteren – a zsebedben.</p>
+      <p class="lead">Melyik országos közúton, melyik kilométerszelvényben állsz? Az ÚtSzelvény megmutatja – internet nélkül is, ingyen, reklám nélkül.</p>
+      <a class="start" href="app/">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+        ÚtSzelvény indítása
+      </a>
+      <p class="sub">Böngészőben fut, telepítés nélkül · vagy <a href="https://github.com/schafler55/utszelveny/releases/latest">töltsd le Androidra (APK)</a></p>
+    </section>
+
+    <div class="phones wrap">
+      <img class="side" src="kepek/terkep.webp" alt="Térkép: a 42-es főút Bárándon, sötét alapréteggel" width="540" height="1170">
+      <img class="mid" src="kepek/pozicio.webp" alt="Pozíció: 42-es főút, 13+002, Báránd, 50 km/h" width="540" height="1170">
+      <img class="side" src="kepek/meres.webp" alt="Mérés folyamatban: 8,505 km" width="540" height="1170">
+    </div>
+
+    <section class="block wrap" id="funkciok">
+      <h2 class="center">Mit tud?</h2>
+      <div class="grid">
+        <div class="card">
+          <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-6-5.6-6-11a6 6 0 0 1 12 0c0 5.4-6 11-6 11z"/><circle cx="12" cy="10" r="2.2"/></svg></div>
+          <h3>Pozíció</h3>
+          <p>Útszám, km+m, szelvényirány, sebességkorlát a település nevével, hidak és tehergépjármű-korlátozások a következő 3 km-en.</p>
+        </div>
+        <div class="card">
+          <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 4 3 6v14l6-2 6 2 6-2V4l-6 2-6-2z"/><path d="M9 4v14M15 6v14"/></svg></div>
+          <h3>Térkép</h3>
+          <p>Az országos közúthálózat útszám-táblákkal. Koppintásra a pont szelvénye és a szakasz adatai: sávok, burkolat, forgalom.</p>
+        </div>
+        <div class="card">
+          <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="m20 20-4.2-4.2"/></svg></div>
+          <h3>Keresés</h3>
+          <p>Pont vagy szakasz útszám és km+m alapján, WGS84 vagy EOV koordinátából a legközelebbi szelvény.</p>
+        </div>
+        <div class="card">
+          <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 16 16 4l4 4L8 20z"/><path d="M8 12l2 2M11 9l2 2M14 6l2 2"/></svg></div>
+          <h3>Mérés</h3>
+          <p>Szelvénytől szelvényig GNSS-szel vagy a térképen, akár több úton át. Elnevezhető, CSV-be menthető.</p>
+        </div>
+        <div class="card">
+          <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 8h3l2-2.5h6L17 8h3v11H4z"/><circle cx="12" cy="13" r="3.5"/></svg></div>
+          <h3>Fotó</h3>
+          <p>Útszám, szelvény, dátum és idő a kép tetején. Androidon a hangerőgombbal is exponálhatsz.</p>
+        </div>
+        <div class="card">
+          <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 17a8 8 0 1 1 16 0"/><path d="M12 17l4-5"/></svg></div>
+          <h3>HUD mód</h3>
+          <p>A műszerfalra tett telefon tükrözött képe a szélvédőn: nagy útszám, szelvény és sebesség.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="block wrap">
+      <div class="steps">
+        <div class="steplist">
+          <h2>Három lépés</h2>
+          <div class="step">
+            <span class="n">1</span>
+            <div><h3>Nyisd meg</h3><p>Androidon Chrome-ban, iPhone-on Safariban. Az első betöltés után internet nélkül is működik.</p></div>
+          </div>
+          <div class="step">
+            <span class="n">2</span>
+            <div><h3>Engedélyezd a helyadatot</h3><p>A pozíció csak a telefonodon marad – az alkalmazás nem gyűjt és nem küld adatot.</p></div>
+          </div>
+          <div class="step">
+            <span class="n">3</span>
+            <div><h3>Tedd ki a kezdőképernyőre</h3><p>A böngésző menüjében „Hozzáadás a kezdőképernyőhöz” – így egy koppintással indul, mint egy alkalmazás.</p></div>
+          </div>
+        </div>
+        <div class="shots">
+          <img class="p" src="kepek/terkep-muhold.webp" alt="Térkép műholdképpel, a koppintott pont szelvénye" width="540" height="1170" loading="lazy">
+          <img class="f" src="kepek/foto.webp" alt="Valódi fotó a 4-es főúton, 165+989 szelvénybélyegzővel" width="700" height="933" loading="lazy">
+        </div>
+      </div>
+    </section>
+
+    <section class="block wrap">
+      <div class="oss">
+        <h2>Ingyenes és nyílt forráskódú</h2>
+        <p>GPL-3.0 licenc · nincs fiók, reklám vagy analitika. Ha hasznosnak találod, egy kávéval támogathatod a fejlesztést.</p>
+        <div class="btns">
+          <a class="btn ton" href="https://github.com/schafler55/utszelveny">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m8 8-4 4 4 4M16 8l4 4-4 4"/></svg>
+            Forráskód a GitHubon
+          </a>
+          <a class="btn pc" href="https://revolut.me/schafler55">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10z"/></svg>
+            Támogatás Revoluttal
+          </a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="wrap">
+    <span>Úthálózati adatok: NAP · Térkép: © OpenStreetMap közreműködők · Műholdkép: Powered by Esri</span>
+    <span>Az adatok tájékoztató jellegűek, csak saját felelősségre használható.</span>
+    <span>© 2026 Szászi Dániel · GPL-3.0</span>
+  </footer>
+</div>
+<script>
+  // parallax: the road network moves at 60 % of the scroll speed (it lags behind the page)
+  (() => {
+    const bg = document.getElementById("bg");
+    if (!bg || matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    let busy = false;
+    const move = () => { bg.style.transform = `translate3d(0, ${(scrollY * 0.4).toFixed(1)}px, 0)`; busy = false; };
+    addEventListener("scroll", () => { if (!busy) { busy = true; requestAnimationFrame(move); } }, {passive: true});
+    move();
+  })();
+</script>
+</body>
+</html>

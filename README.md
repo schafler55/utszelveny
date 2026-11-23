@@ -73,7 +73,8 @@ Koordináták: WGS84 (alapértelmezett) vagy EOV.
 
 ## Használat
 
-- **Webalkalmazás (telepítés nélkül):** https://schafler55.github.io/utszelveny/ – a legutóbbi stabil kiadás.
+- **Kezdőlap:** https://schafler55.github.io/utszelveny/ – rövid bemutató, az „ÚtSzelvény indítása” gombbal.
+- **Webalkalmazás (telepítés nélkül):** https://schafler55.github.io/utszelveny/app/ – a legutóbbi stabil kiadás.
   Böngészőben megnyitva az első betöltés után internet nélkül is működik, könyvjelzőként menthető az asztalra.
   Ajánlott böngésző: Chrome (Androidon) vagy Safari (iPhone-on). A Firefox Androidon nem támogatott, mert csak ritkán frissíti a helyadatot.
   A `main` ág legfrissebb, még nem kiadott állapota (fejlesztői oldal, saját mentett adatokkal): https://schafler55.github.io/utszelveny/dev/
@@ -94,16 +95,18 @@ A térkép északkal felfelé vagy menetirány szerint elforgatva is használhat
 
 | Fájl / mappa | Tartalom |
 |---|---|
-| `web/` | A webalkalmazás; a legutóbbi stabil kiadásé a https://schafler55.github.io/utszelveny/, a `main` ágé a https://schafler55.github.io/utszelveny/dev/ címre kerül |
+| `site/` | A kezdőlap (`index.html`, a háttér `hatter.svg`, képek a `kepek/` mappában); a `main` ágé a https://schafler55.github.io/utszelveny/ címre kerül |
+| `web/` | A webalkalmazás; a legutóbbi stabil kiadásé a https://schafler55.github.io/utszelveny/app/, a `main` ágé a https://schafler55.github.io/utszelveny/dev/ címre kerül |
 | `web/index.html` | A teljes alkalmazás (kód + beépített úthálózati adatok), egyetlen fájl |
 | `web/sw.js`, `web/manifest.webmanifest`, `web/icon-*.png` | Telepíthető webalkalmazás (PWA) offline gyorsítótárral |
 | `android/` | Android keret (WebView), amely a `web/index.html`-t futtatja |
 | `.github/workflows/android.yml` | Megépíti az APK-t: a `main` ágból a fenti letöltési linkre, a többi ágból teszt APK-t |
-| `.github/workflows/pages.yml` | Kiteszi a weboldalt a GitHub Pagesre: a legutóbbi stabil kiadás `web/` mappáját, a `main` ágat a `dev/` alá, és minden másik ágból egy teszt oldalt (`teszt/<ág>/`); a törölt ág teszt oldala eltűnik. Új stabil kiadás közzétételekor magától frissül |
+| `.github/workflows/pages.yml` | Kiteszi a weboldalt a GitHub Pagesre: a kezdőlapot (`site/`), a legutóbbi stabil kiadás `web/` mappáját az `app/` alá, a `main` ágat a `dev/` alá, és minden másik ágból egy teszt oldalt (`teszt/<ág>/`); a törölt ág teszt oldala eltűnik. Új stabil kiadás közzétételekor magától frissül |
 | `CHANGELOG.md` | Változásnapló: mi változott az egyes verziókban |
 | `web/szovegek.html` | Az alkalmazás összes szövege képernyőnként (kereshető, szerkeszthető), a `main` ág szerint: https://schafler55.github.io/utszelveny/dev/szovegek.html |
 | `tools/szovegek.py` | Ellenőrzi a `web/index.html` szövegblokkját (érvényes JSON, minden kulcs megvan); a build is futtatja |
 | `tools/nap_szakaszadatok.py` | A NAP sáv-, burkolat- és forgalmi adatait (WFS GeoJSON) a `web/index.html` beépített adatai közé írja |
+| `tools/kezdolap_hatter.py` | Megrajzolja a kezdőlap úthálózat-hátterét (`site/hatter.svg`) |
 | `screenshots/` | A README képei |
 
 A webalkalmazás és az APK is ugyanabból a `web/index.html`-ből épül, ezért új verzióhoz elég azt cserélni.

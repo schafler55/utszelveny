@@ -10,6 +10,11 @@ változások a „kiadatlan” szakaszba kerülnek, és a következő stabil kia
 saját verziószámot kapott, ezért a régebbi bejegyzések aprók; a ténylegesen kiadott változatokat
 „Stabil kiadás” jelöli.
 
+## Kiadatlan
+- **Kezdőlap:** új bemutató oldal a weboldal címén, nagy „ÚtSzelvény indítása” gombbal; a webalkalmazás az `app/` alá költözik.
+  Az oldal háttere egy kitalált úthálózat (hidak, kereszteződések, kilométerszelvények, mint a térképen), görgetéskor lassabban mozog, mint az oldal.
+  A régi címen telepített (kezdőképernyőre tett) webalkalmazás egyenesen az `app/` oldalt nyitja meg.
+
 ## [1.2.0] – 2026-11-22
 Stabil kiadás; az 1.1.5–1.2.0 változásai együtt.
 - **Névjegy:** az ÚtSzelvény logó a név, a © és a forráskód sora mellett, balra.
