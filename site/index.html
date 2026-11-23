@@ -3,19 +3,70 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>ÚtSzelvény – Kilométerkő minden méteren</title>
-<meta name="description" content="Melyik országos közúton, melyik kilométerszelvényben állsz? Útszám, km+m, sebességkorlát, hidak és korlátozások – internet nélkül is. Ingyenes, nyílt forráskódú.">
+<title>ÚtSzelvény – útszám és kilométerszelvény a telefonodon</title>
+<meta name="description" content="Melyik országos közúton, melyik kilométerszelvényben állsz? Útszám, km+m szelvény, sebességkorlát, hidak és korlátozások – internet nélkül is. Ingyenes webalkalmazás.">
+<link rel="canonical" href="https://utszelveny.hu/">
+<meta name="robots" content="index, follow, max-image-preview:large">
+<meta name="author" content="Szászi Dániel">
 <meta name="theme-color" content="#E5EBE4">
 <link rel="icon" href="icon-192.png">
 <link rel="apple-touch-icon" href="icon-192.png">
+<link rel="sitemap" type="application/xml" href="sitemap.xml">
+
+<!-- link previews (Facebook, Messenger, WhatsApp, Viber, Telegram, Slack, X …) -->
 <meta property="og:type" content="website">
+<meta property="og:site_name" content="ÚtSzelvény">
+<meta property="og:locale" content="hu_HU">
+<meta property="og:url" content="https://utszelveny.hu/">
 <meta property="og:title" content="ÚtSzelvény – Kilométerkő minden méteren, a zsebedben">
 <meta property="og:description" content="Útszám, km+m szelvény, sebességkorlát, hidak és korlátozások az országos közúthálózaton – internet nélkül is. Ingyenes, nyílt forráskódú.">
-<meta property="og:url" content="https://utszelveny.hu/">
 <meta property="og:image" content="https://utszelveny.hu/kepek/og.jpg">
+<meta property="og:image:secure_url" content="https://utszelveny.hu/kepek/og.jpg">
+<meta property="og:image:type" content="image/jpeg">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Az ÚtSzelvény három képernyője: térkép, a 42-es főút 13+002 szelvénye és egy mérés">
 <meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="ÚtSzelvény – Kilométerkő minden méteren, a zsebedben">
+<meta name="twitter:description" content="Útszám, km+m szelvény, sebességkorlát, hidak és korlátozások az országos közúthálózaton – internet nélkül is.">
+<meta name="twitter:image" content="https://utszelveny.hu/kepek/og.jpg">
+<meta name="twitter:image:alt" content="Az ÚtSzelvény három képernyője: térkép, a 42-es főút 13+002 szelvénye és egy mérés">
+
+<!-- structured data for search engines -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebSite",
+      "@id": "https://utszelveny.hu/#website",
+      "name": "ÚtSzelvény",
+      "alternateName": "Utszelveny",
+      "url": "https://utszelveny.hu/",
+      "inLanguage": "hu"
+    },
+    {
+      "@type": "WebApplication",
+      "@id": "https://utszelveny.hu/#app",
+      "name": "ÚtSzelvény",
+      "url": "https://utszelveny.hu/app/",
+      "description": "Megmutatja, melyik országos közúton és melyik kilométerszelvényben (km+m) állsz, internet nélkül is: útszám, sebességkorlát, hidak, tehergépjármű-korlátozások, térkép, keresés útszám és szelvény alapján, mérés, szelvénybélyegzős fotó.",
+      "inLanguage": "hu",
+      "applicationCategory": "TravelApplication",
+      "operatingSystem": "Android, iOS (böngészőben), Android alkalmazás",
+      "browserRequirements": "Androidon Chrome, iOS-en Safari",
+      "isAccessibleForFree": true,
+      "offers": { "@type": "Offer", "price": "0", "priceCurrency": "HUF" },
+      "license": "https://www.gnu.org/licenses/gpl-3.0.html",
+      "image": "https://utszelveny.hu/icon-512.png",
+      "screenshot": "https://utszelveny.hu/kepek/og.jpg",
+      "author": { "@type": "Person", "name": "Szászi Dániel" },
+      "sameAs": ["https://github.com/schafler55/utszelveny"],
+      "isPartOf": { "@id": "https://utszelveny.hu/#website" }
+    }
+  ]
+}
+</script>
 <script>
   // opened from a home-screen icon saved before the app moved to app/: go straight to the app
   if (matchMedia("(display-mode: standalone)").matches) location.replace("app/");

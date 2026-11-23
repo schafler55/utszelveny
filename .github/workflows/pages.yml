@@ -12,6 +12,7 @@ name: Web app (GitHub Pages)
 # The whole site is rebuilt each time, so a deleted branch's test page disappears.
 # Only main may deploy to Pages, so a push to a test branch or a published release asks main to rebuild
 # (workflow_dispatch), and a branch delete runs on main by itself.
+# The dev and test pages are kept out of search results (noindex, and robots.txt of the landing page).
 # The dev and test pages have their own saved data (kszd_* / kszt_* keys), no service worker (it would clear the
 # real app's offline cache) and a small label; the app sees the renamed keys and does no update check there.
 
@@ -94,6 +95,7 @@ jobs:
             -e 's/"ksz_/"kszd_/g' \
             -e 's|navigator.serviceWorker.register("sw.js")|Promise.reject()|' \
             -e "s#<title>\(.*\)</title>#<title>\1 – DEV</title>#" \
+            -e 's|</head>|<meta name="robots" content="noindex"></head>|' \
             -e "s|</body>|<div style=\"position:fixed;top:4px;left:50%;transform:translateX(-50%);z-index:50;background:#7c3aed;color:#fff;font:700 11px/1 Arial,sans-serif;padding:3px 8px;border-radius:6px;pointer-events:none\">DEV · $VER</div></body>|" \
             web/index.html > "$OUT/dev/index.html"
           grep -q 'DEV · ' "$OUT/dev/index.html"
@@ -118,6 +120,7 @@ jobs:
               -e 's/"ksz_/"kszt_/g' \
               -e 's|navigator.serviceWorker.register("sw.js")|Promise.reject()|' \
               -e "s#<title>\(.*\)</title>#<title>\1 – TESZT ($B)</title>#" \
+              -e 's|</head>|<meta name="robots" content="noindex"></head>|' \
               -e "s|</body>|<div style=\"position:fixed;top:4px;left:50%;transform:translateX(-50%);z-index:50;background:#dc2626;color:#fff;font:700 11px/1 Arial,sans-serif;padding:3px 8px;border-radius:6px;pointer-events:none\">TESZT · $B</div></body>|" \
               > "$A/index.html"
             grep -q 'TESZT' "$A/index.html"
@@ -130,6 +133,7 @@ jobs:
               cp -r "$RUNNER_TEMP/site/." "$D/"
               rm -f "$D/sw.js"   # only the real site root had the app's service worker
               cp "$A/icon-192.png" "$A/icon-512.png" "$D/" 2>/dev/null || true
+              sed -i 's|<meta name="robots" content="[^"]*">|<meta name="robots" content="noindex">|' "$D/index.html"
               sed -i "s|</body>|<div style=\"position:fixed;top:4px;left:50%;transform:translateX(-50%);z-index:50;background:#dc2626;color:#fff;font:700 11px/1 Arial,sans-serif;padding:3px 8px;border-radius:6px;pointer-events:none\">TESZT · $B</div></body>|" "$D/index.html"
               echo "test page: test/$B/ (landing page), test/$B/app/ (app)"
             else

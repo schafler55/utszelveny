@@ -1,0 +1,7 @@
+User-agent: *
+Allow: /
+# development and test copies of the app: not for search results
+Disallow: /dev/
+Disallow: /test/
+
+Sitemap: https://utszelveny.hu/sitemap.xml
