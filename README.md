@@ -107,6 +107,7 @@ A térkép északkal felfelé vagy menetirány szerint elforgatva is használhat
 | `tools/szovegek.py` | Ellenőrzi a `web/index.html` szövegblokkját (érvényes JSON, minden kulcs megvan); a build is futtatja |
 | `tools/nap_szakaszadatok.py` | A NAP sáv-, burkolat- és forgalmi adatait (WFS GeoJSON) a `web/index.html` beépített adatai közé írja |
 | `tools/kezdolap_hatter.py` | Megrajzolja a kezdőlap úthálózat-hátterét (`site/hatter.svg`) |
+| `tools/kezdolap_og.py` | Elkészíti a link-előnézet képét (`site/kepek/og.jpg`): logó, név, szlogen, három képernyő |
 | `screenshots/` | A README képei |
 
 A webalkalmazás és az APK is ugyanabból a `web/index.html`-ből épül, ezért új verzióhoz elég azt cserélni.
