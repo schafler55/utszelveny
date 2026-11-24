@@ -11,6 +11,7 @@ saját verziószámot kapott, ezért a régebbi bejegyzések aprók; a ténylege
 „Stabil kiadás” jelöli.
 
 ## Kiadatlan
+- **Visszajelzés:** a Névjegy → Támogatás csoportban „kapcsolat” link a visszajelzes@utszelveny.hu címre (a levelezőalkalmazást nyitja meg); a kezdőlapon „Hibajelentés” gomb ugyanide.
 - **Térkép:** menet közben (kb. 7 km/h felett, GNSS szerint) a térkép bal alsó sarkában kis sebességkorlát-tábla, átkelési szakaszon mellette a helységnévtábla; megálláskor 8 másodperc után eltűnik. Kapcsoló: Beállítások → Térkép → Nézet → „Sebességkorlát és helységnévtábla” (alapból be).
 - **Térkép, címkék:** a kijelölt keresés vagy mérés címkéje feltűnőbb (nagyobb, a saját színével kitöltve, fehér kerettel), a szakasz vagy a nyomvonal vastagabb; a térkép más pontjára koppintva a kijelölés megszűnik (eddig megmaradt).
 - **Címke a térképen:** új beállítás a Keresés és a Mérés fülön: a mentett keresések és mérések címkéje a térképen a nevük, vagy az útszám és a km+m (alapból: keresésnél útszám, mérésnél név, mint eddig).
