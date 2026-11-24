@@ -3123,6 +3123,17 @@ const busZoom=()=>S.busZ>=10&&S.busZ<=19?S.busZ:16;   // bus stops are shown fro
 // "útközepén" stops and stops whose road place cannot be found stay at the NAP point. Where two would overlap
 // only the first is drawn. Returns the plates' boxes so road signs keep off them.
 const BUS_OFF=17;            // px from the road centre line to the plate centre
+const BUS_SIDES_Z=15;        // from this zoom level the two sides of a stop are separate plates beside the road;
+                             // below it a stop with the same name on both sides (within 300 m) is one plate on the road
+let BMMERGED=null;
+function busMerged(){
+  if(BMMERGED)return BMMERGED;BMMERGED=[];let g=null;
+  for(const o of bmLoad()){
+    if(g&&o.name&&g.name===o.name&&g.r===o.r&&Math.abs(vdist(g.v,o.v))<=300){g.n++;g.E+=o.E;g.N+=o.N;continue}
+    g={r:o.r,v:o.v,name:o.name,n:1,E:o.E,N:o.N};BMMERGED.push(g)}
+  for(const g of BMMERGED){g.E/=g.n;g.N/=g.n;g.m=null}
+  return BMMERGED;
+}
 function busGeo(o){
   if(o.g!==undefined)return o.g;o.g=null;
   const p=srchPoint(o.r,o.v,o.pk);if(!p)return null;
@@ -3135,13 +3146,14 @@ function busGeo(o){
   return o.g;
 }
 function drawBusStops(W,H){
-  const L=bmLoad(),boxes=[],z=18,h=z/2,mg=40;if(!L||!L.length)return boxes;
+  if(!bmLoad()||!BM.length)return [];
+  const sides=mapZoom()>=BUS_SIDES_Z,L=sides?BM:busMerged(),boxes=[],z=18,h=z/2,mg=40;
   ctx.save();
   for(const o of L){
     if(!o.m)o.m=eovToM(o.E,o.N);
     let x=m2sx(o.m.x,o.m.y),y=m2sy(o.m.x,o.m.y);
     if(x<-mg||y<-mg||x>W+mg||y>H+mg)continue;
-    const g=o.side<2?busGeo(o):null;
+    const g=sides&&o.side<2?busGeo(o):null;
     if(g){
       const ax=m2sx(g.m.x,g.m.y),ay=m2sy(g.m.x,g.m.y);
       let dx=m2sx(g.m2.x,g.m2.y)-m2sx(g.m1.x,g.m1.y),dy=m2sy(g.m2.x,g.m2.y)-m2sy(g.m1.x,g.m1.y);const l=Math.hypot(dx,dy)||1;dx/=l;dy/=l;
