@@ -209,9 +209,10 @@ public class MainActivity extends Activity {
                 Uri uri = request.getUrl();
                 if (HOST.equals(uri.getHost())) return false;
                 // any other link (e.g. OpenStreetMap copyright, Google Street View) → the browser / the app that handles it
+                // every failure is caught (no app for it, a file:// link that Android refuses, …): the app stays open
                 try {
                     startActivity(new Intent(Intent.ACTION_VIEW, uri));
-                } catch (ActivityNotFoundException ignored) {
+                } catch (Exception ignored) {
                 }
                 return true;
             }
@@ -220,6 +221,12 @@ public class MainActivity extends Activity {
         web.setWebChromeClient(new WebChromeClient() {
             @Override
             public void onGeolocationPermissionsShowPrompt(String origin, GeolocationPermissions.Callback callback) {
+                // the location only for our own page, like the camera (security audit L4)
+                Uri o = origin == null ? null : Uri.parse(origin);
+                if (o == null || !"https".equals(o.getScheme()) || !HOST.equals(o.getHost())) {
+                    callback.invoke(origin, false, false);
+                    return;
+                }
                 if (hasLocationPermission()) {
                     callback.invoke(origin, true, false);
                 } else {

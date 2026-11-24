@@ -49,6 +49,11 @@
 <html lang="hu">
 <head>
 <meta charset="UTF-8">
+<!-- Content Security Policy (security audit L3): the page may only load and talk to its own address, the two map
+     tile servers and GitHub's API (update check). Inline code and styles stay allowed: the whole app is inline.
+     Links that open another app (Utcakép, Támogatás, Kapcsolat, APK download) are navigations, not affected.
+     A new outside server (another map layer, an API) has to be added here, or the browser blocks it. -->
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https://tile.openstreetmap.org https://server.arcgisonline.com; connect-src 'self' https://api.github.com https://tile.openstreetmap.org; object-src 'none'; base-uri 'none'; form-action 'none'; frame-src 'none'">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#0F1511">
 <meta name="mobile-web-app-capable" content="yes">
@@ -3914,7 +3919,10 @@ function measCSV(){
   return csvRows(rows);
 }
 // shared CSV export (saved measurements, saved searches): copy to the clipboard / save as a file
-const csvRows=(rows)=>{const q=(x)=>{x=x==null?"":String(x);return /[;"\n]/.test(x)?'"'+x.replace(/"/g,'""')+'"':x};return "\ufeff"+rows.map(r=>r.map(q).join(";")).join("\r\n")};
+// a text cell starting with = + - @ (or a tab / CR) would run as a formula in Excel: an apostrophe in front keeps it
+// text (security audit I1); plain numbers such as "-12" or "-3,5" stay numbers
+const csvSafe=(x)=>typeof x==="string"&&/^[=+\-@\t\r]/.test(x)&&!/^[+-]?\d+([.,]\d+)?$/.test(x)?"'"+x:x;
+const csvRows=(rows)=>{const q=(x)=>{x=x==null?"":String(csvSafe(x));return /[;"\n]/.test(x)?'"'+x.replace(/"/g,'""')+'"':x};return "\ufeff"+rows.map(r=>r.map(q).join(";")).join("\r\n")};
 const csvDc=(x)=>x==null?"":String(x).replace(".",",");
 async function csvCopy(text,msg){
   let ok=false;
@@ -5603,6 +5611,8 @@ const UPD_KEY="ksz_";
 const UPD_OFF=UPD_KEY!=="ksz"+"_"||(!NB&&!/^https?:$/.test(location.protocol));
 const UPD_API="https://api.github.com/repos/schafler55/utszelveny/releases/latest";
 const UPD_PAGE="https://github.com/schafler55/utszelveny/releases/latest";
+// links from the GitHub answer are used only when they point into this repository (security audit L7)
+const updOk=u=>typeof u==="string"&&u.startsWith("https://github.com/schafler55/utszelveny/");
 const UPD_DAY=20*3600e3;                                       // automatic GitHub check at most about once a day
 const verNum=s=>{const m=String(s||"").match(/(\d+(?:\.\d+)*)\s*$/);return m?m[1]:""};   // "UtSzelveny V1.0.3" → "1.0.3"
 function verCmp(a,b){const x=a.split(".").map(Number),y=b.split(".").map(Number);
@@ -5617,8 +5627,8 @@ async function updLatest(){
     const r=await fetch(UPD_API,{headers:{Accept:"application/vnd.github+json"},cache:"no-store"});
     if(!r.ok)throw new Error("HTTP "+r.status);
     const j=await r.json(),a=(j.assets||[]).find(x=>/\.apk$/i.test(x.name||""));
-    if(j.draft||j.prerelease||!a)return null;                   // CI attaches the APK a few minutes after the release
-    return {v:verNum(j.tag_name),url:a.browser_download_url,notes:j.html_url||UPD_PAGE};
+    if(j.draft||j.prerelease||!a||!updOk(a.browser_download_url))return null;   // CI attaches the APK a few minutes after the release
+    return {v:verNum(j.tag_name),url:a.browser_download_url,notes:updOk(j.html_url)?j.html_url:UPD_PAGE};
   }
   const r=await fetch("sw.js?fresh="+Date.now(),{cache:"no-store"});   // ?fresh: past this app's own cache
   if(!r.ok)throw new Error("HTTP "+r.status);
@@ -5662,7 +5672,7 @@ function updShow(L){
   const g=$("updGo");
   $("updBody").innerHTML=TX("update.body",{ver:verTxt(L.v),cur:verTxt(CUR_VER)});
   $("updHint").textContent=TX(NB?"update.hint_app":"update.hint_web");
-  $("updNotes").href=L.notes||UPD_PAGE;
+  $("updNotes").href=updOk(L.notes)?L.notes:UPD_PAGE;
   $("updSkip").style.display=NB?"":"none";
   g.disabled=false;g.textContent=TX("update.update");g.onclick=()=>updGo(L);
   $("updLater").onclick=()=>{updSet("later",{v:L.v,t:Date.now()});updHide()};
@@ -5671,7 +5681,7 @@ function updShow(L){
 }
 function updHide(){$("updDlg").classList.remove("on")}
 async function updGo(L){
-  if(NB){updHide();location.href=L.url;return}                 // the app hands the link to the browser (download)
+  if(NB){updHide();location.href=updOk(L.url)?L.url:UPD_PAGE;return}   // the app hands the link to the browser (download)
   const g=$("updGo");g.disabled=true;g.textContent=TX("update.loading");
   let reg=null;try{reg="serviceWorker" in navigator?await navigator.serviceWorker.getRegistration():null}catch(e){}
   if(!reg){location.reload();return}                           // no offline cache: a reload loads the new version

@@ -235,13 +235,16 @@ $("bReset").onclick=()=>{if(!confirmReset())return;draft={};save();render()};
 let resetArm=0;
 function confirmReset(){if(Date.now()-resetArm<3000)return true;resetArm=Date.now();toast("Tap again to undo all changes");return false}
 
+// one JSON value for the block: a text containing a closing script tag (or an HTML comment opener) would end the
+// block early and break the app, so its "<" becomes \u003c – still valid JSON, the app reads the same text (audit I3)
+const jsonVal=x=>JSON.stringify(x).replace(/<(?=\/script|!--)/gi,"\\u003c");
 // texts block in the same layout as index.html: one key per line, groups in the same order
 function blockText(T,nl){
   const L=['<script type="application/json" id="texts">',"{"],G=Object.keys(T);
   G.forEach((g,gi)=>{
-    L.push(`  ${JSON.stringify(g)}: {`);
+    L.push(`  ${jsonVal(g)}: {`);
     const E=Object.entries(T[g]);
-    E.forEach(([k,v],i)=>L.push(`    ${JSON.stringify(k)}: ${isArr(v)?"["+v.map(x=>JSON.stringify(x)).join(", ")+"]":JSON.stringify(v)}${i<E.length-1?",":""}`));
+    E.forEach(([k,v],i)=>L.push(`    ${jsonVal(k)}: ${isArr(v)?"["+v.map(jsonVal).join(", ")+"]":jsonVal(v)}${i<E.length-1?",":""}`));
     L.push("  }"+(gi<G.length-1?",":""));
   });
   L.push("}","<\/script>");
