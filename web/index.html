@@ -2161,7 +2161,7 @@ const EGY=new Map();
 // 1 = one-way in the direction of the chainage, 2 = against it, 0 = no one-way range here
 function onewayAt(r,pk,v){for(const x of EGY.get(rkey(r,pk))||[])if(v>=x.f&&v<=x.t)return x.d;return 0}
 let BMD=null,BM=null;const BMR=new Map();
-const BM_NEAR=500;          // Szakasz adatai: bus stops within this many metres (chainage) of the tapped place
+const BM_NEAR=100;          // Szakasz adatai: bus stops within this many metres (chainage) of the tapped place
 function bmLoad(){
   if(BM||!BMD)return BM;BM=[];const a=BMD.a;let E=0,N=0;
   for(let i=0;i<a.length;i+=8){E+=a[i+3];N+=a[i+4];
@@ -3551,16 +3551,16 @@ function cspSectionHTML(t){
   return `<dl class="kv"><dt>${TX("details.point_code")}</dt><dd>${esc(q.c.k)}</dd><dt>${TX("details.point_dist")}</dt><dd>${d<=15?TX("common.here"):d+" m"}</dd></dl>
     <div class="sm" style="margin-top:10px">${n>1?TX("details.point_roads",{n}):TX("details.point_road")}</div><div class="brlist" style="margin-top:8px">${rows}</div>`;
 }
-// "Autóbusz-megállóhelyek" section: the stops within BM_NEAR m of the tapped place on this road; "" if none
-const BUSICON=()=>`<div class="bicon"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="2.6" width="14" height="15.4" rx="2.6"/><path d="M5 10.6h14M7.6 18v2.6M16.4 18v2.6"/><path class="ya" d="M9.6 5.6h4.8"/><g class="ya" fill="currentColor" stroke="none"><circle cx="8.6" cy="14.3" r="1.2"/><circle cx="15.4" cy="14.3" r="1.2"/></g></svg></div>`;
+// "Autóbusz-megállóhelyek" section: the stops within BM_NEAR m of the tapped place on this road (no icon, the
+// distance or ITT at the end of the name line); "" if none
 function busListHTML(r,pk,v){
   const G=busNear(r,pk,v,BM_NEAR).slice(0,6);if(!G.length)return "";
   const side=(o)=>TXA("bus_side",3)[o.side]||"";
   return `<div class="sm" style="margin-top:0">${TX("details.bus_near",{m:BM_NEAR})}</div><div class="brlist" style="margin-top:10px">`+G.map(g=>{
     const pos=g.d<=25?TX("common.here"):g.d<1000?Math.round(g.d/10)*10+" m":hu1(g.d/1000)+" km";
     const rows=g.list.map(o=>`<div class="sm" style="margin-top:2px"><b>${esc(side(o))}</b> · ${vfmt(o.v)}${o.kind?" · "+esc(o.kind.replace(/,\s*vagy/," vagy")):""}</div>`).join("");
-    return `<div class="br"><div class="brico">${BUSICON()}<div class="brpos${g.d<=25?" here":""}">${pos}</div></div><div class="brtx">
-      <div class="brname">${g.name?esc(g.name):`<span class="na">${TX("details.bus_noname")}</span>`}</div>${rows}</div></div>`}).join("")+`</div>`;
+    return `<div class="br"><div class="brtx">
+      <div class="brname" style="display:flex;align-items:baseline;gap:10px"><span style="flex:1;min-width:0">${g.name?esc(g.name):`<span class="na">${TX("details.bus_noname")}</span>`}</span><span class="brpos${g.d<=25?" here":""}">${pos}</span></div>${rows}</div></div>`}).join("")+`</div>`;
 }
 // full page like Beállítások; Back / Esc / the arrow close it
 function infoOpen(t){$("ipBody").innerHTML=sectionInfoHTML(t);$("ipBody").scrollTop=0;animOpen($("infoPage"))}
