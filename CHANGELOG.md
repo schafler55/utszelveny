@@ -4,13 +4,16 @@ Az ÚtSzelvény változásai, a legújabb elöl. A dátumok UTC szerint értend�
 A nagyobb funkciók saját ágon (branch) készülnek teszt oldallal és teszt APK-val, és pull requestként (#) kerülnek a `main` ágba;
 a kisebb javítások közvetlenül a `main`-re kerülnek.
 
-**Verziószámok:** a V1.1.7-től a verziószám csak stabil kiadáskor nő. A legutóbbi kiadás óta a `main` ágra került
-változások a „kiadatlan” szakaszba kerülnek, és a következő stabil kiadás ezeket együtt tartalmazza
-(apró javítás: harmadik szám, pl. 1.1.8; új funkció: második szám, pl. 1.2.0). Korábban szinte minden módosítás
+**Verziószámok:** a V1.1.7-től nem kap minden módosítás saját verziószámot. A legutóbbi stabil kiadás óta
+a `main` ágra került változások a következő verzió „kiadatlan” szakaszába kerülnek; a `main` ágon az alkalmazás
+már ezt a verziószámot mutatja (pl. V1.2.1), és a következő stabil kiadás ezeket együtt tartalmazza
+(apró javítás: harmadik szám, pl. 1.2.1; új funkció: második szám, pl. 1.3.0). Korábban szinte minden módosítás
 saját verziószámot kapott, ezért a régebbi bejegyzések aprók; a ténylegesen kiadott változatokat
 „Stabil kiadás” jelöli.
 
-## Kiadatlan
+## [1.2.1] – kiadatlan (a `main` ágon)
+Az 1.2.0 óta a `main` ágra került változások; még nem stabil kiadás.
+- **Névjegy:** „Kapcsolat” nagy kezdőbetűvel. **Térkép beállítások:** a buszmegállók kapcsolója és csúszkája a Rétegek csoport végére került.
 - **Kezdőlap, APK letöltés:** az „Android alkalmazás (APK) letöltése” link közvetlenül a legutóbbi stabil kiadás APK fájlját tölti le (eddig a kiadások oldalára vitt); minden új stabil kiadásnál magától frissül.
 - **Térkép, nagyítási szint:** a bal felső méretarány buborékban a lépték előtt a nagyítási szint is látszik (pl. „Z16 | 50 m”); ugyanez a szám, amihez a hidak, a kilométerszelvények és a buszmegállók csúszkája viszonyít.
 - **Buszmegállók a térképen az út mellett:** 15-ös nagyítástól a jel az út azon oldalán áll, ahol a megálló van (jobb / bal oldal a szelvényezés irányában), mint az OpenStreetMapen; az útközépi megállók az úton maradnak. 15 alatt az azonos nevű megálló két oldala egy jel az úton, 14 alatt pedig csak egy kis kék pont fehér alapon.
