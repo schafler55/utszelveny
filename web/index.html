@@ -3688,7 +3688,9 @@ function svAction(st,a,id,it,h){
     if(!closing&&!svReduce()){const d=svDet(st,id);if(d)svGrow(d,true)}
     return}
   else if(a==="ren"){st.ren=id;setTimeout(()=>{const i=document.getElementById(st.pre+id);if(i){i.focus();i.select()}},30)}
-  else if(a==="save"){const i=document.getElementById(st.pre+id),v=(i&&i.value||"").trim();if(v)it.name=v;st.ren=null;st.nw=null;h.save()}
+  // an empty name gives back the automatic one: road number + chainage (a measurement off the network keeps its name)
+  else if(a==="save"){const i=document.getElementById(st.pre+id),v=(i&&i.value||"").trim();
+    if(v)it.name=v;else{const d=st===SS?srchAutoName(it):measAutoName(it);if(d)it.name=d}st.ren=null;st.nw=null;h.save()}
   else if(a==="del"){if(!delAsk(st.pre+id,h.render))return;st.open=null;st.nw=null;if(st.ren===id)st.ren=null;h.del(it)}
   else if(a==="show"){it.show=!it.show;h.save();h.show(it)}
   else if(a==="map"){h.map(it);return}
@@ -3978,9 +3980,13 @@ function drawMeasTrack(M,col,marks){
     if(M.start){const m=eovToM(M.start.E,M.start.N);mapChip(m2sx(m.x,m.y),m2sy(m.x,m.y),measChipTxt(M),15,msCol(M),M===mapMeas,{meas:M})}}
 }
 // map label of a saved measurement (Beállítások → Mérés): name + length (default), or road number + km+m of start → end
+// automatic measurement name from its start and end: "42 · 13+002 – 15+200" (or "→" across roads); null off the network
+function measAutoName(M){
+  const a=M.start,b=M.end;if(!a||a.off||!b||b.off)return null;
+  return a.road===b.road?(a.ch===b.ch?`${a.road} · ${a.ch}`:`${a.road} · ${a.ch} – ${b.ch}`):`${a.road} · ${a.ch} → ${b.road} · ${b.ch}`;
+}
 function measChipTxt(M){
-  const a=M.start,b=M.end;
-  if(S.measLbl==="road"&&a&&!a.off&&b&&!b.off)return a.road===b.road?(a.ch===b.ch?`${a.road} · ${a.ch}`:`${a.road} · ${a.ch} – ${b.ch}`):`${a.road} · ${a.ch} → ${b.road} · ${b.ch}`;
+  const auto=measAutoName(M);if(S.measLbl==="road"&&auto)return auto;
   return `${M.name} · ${fmtDist(measLen(M))}`;
 }
 // the length shown for a saved measurement: along the road (GNSS / route), or the straight line when no route was found

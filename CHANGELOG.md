@@ -14,6 +14,7 @@ saját verziószámot kapott, ezért a régebbi bejegyzések aprók; a ténylege
 ## [1.2.1] – kiadatlan (a `main` ágon)
 Az 1.2.0 óta a `main` ágra került változások; még nem stabil kiadás.
 - **Keresés / Mérés beállítások:** a térképes felirat választójában „Útszám, szelvény” (eddig „Útszám, km+m”), a magyarázó szövegek is.
+- **Átnevezés:** ha a mentett keresés vagy mérés új nevét üresen hagyod, visszakapja az alapértelmezett nevet: útszám és szelvény (pl. „6 · 162+030”, mérésnél „42 · 13+002 – 15+200”); az úthálózaton kívüli mérés megtartja a nevét.
 - **Névjegy:** „Kapcsolat” nagy kezdőbetűvel. **Térkép beállítások:** a buszmegállók kapcsolója és csúszkája a Rétegek csoport végére került.
 - **Kezdőlap, APK letöltés:** az „Android alkalmazás (APK) letöltése” link közvetlenül a legutóbbi stabil kiadás APK fájlját tölti le (eddig a kiadások oldalára vitt); minden új stabil kiadásnál magától frissül.
 - **Térkép, nagyítási szint:** a bal felső méretarány buborékban a lépték előtt a nagyítási szint is látszik (pl. „Z16 | 50 m”); ugyanez a szám, amihez a hidak, a kilométerszelvények és a buszmegállók csúszkája viszonyít.
