@@ -11,6 +11,7 @@ saját verziószámot kapott, ezért a régebbi bejegyzések aprók; a ténylege
 „Stabil kiadás” jelöli.
 
 ## Kiadatlan
+- **Térkép, széles képernyő:** böngészőben (760 px szélesség felett) a Térkép oldal kitölti az ablak teljes szélességét; a többi oldal továbbra is középen, telefonszélességben marad. Az alsó buborék és a térkép panelje középen, telefonszélességben marad.
 - **Visszajelzés:** a Névjegy → Támogatás csoportban „kapcsolat” link a visszajelzes@utszelveny.hu címre (a levelezőalkalmazást nyitja meg); a kezdőlapon „Hibajelentés” gomb ugyanide.
 - **Térkép:** menet közben (kb. 7 km/h felett, GNSS szerint) a térkép bal alsó sarkában kis sebességkorlát-tábla, átkelési szakaszon mellette a helységnévtábla; megálláskor 8 másodperc után eltűnik. Kapcsoló: Beállítások → Térkép → Nézet → „Sebességkorlát és helységnévtábla” (alapból be).
 - **Térkép, címkék:** a kijelölt keresés vagy mérés címkéje feltűnőbb (nagyobb, a saját színével kitöltve, fehér kerettel), a szakasz vagy a nyomvonal vastagabb; a térkép más pontjára koppintva a kijelölés megszűnik (eddig megmaradt).
