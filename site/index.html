@@ -102,8 +102,9 @@
   .toplink { font-size: 15px; color: var(--onv); text-decoration: none; }
 
   .hero { max-width: 900px; margin: 0 auto; padding: 32px 24px 0; display: flex; flex-direction: column; align-items: center; text-align: center; gap: 20px; }
-  .hero .logo { width: 112px; height: 112px; }
-  h1 { margin: 0; font-size: clamp(44px, 9vw, 72px); line-height: 1; font-weight: 700; letter-spacing: -0.015em; }
+  .title { display: flex; align-items: center; justify-content: center; gap: clamp(12px, 2.6vw, 22px); }
+  .hero .logo { width: clamp(56px, 13vw, 104px); height: auto; flex: none; }
+  h1 { margin: 0; font-size: clamp(38px, 9vw, 72px); line-height: 1; font-weight: 700; letter-spacing: -0.015em; }
   .tagline { margin: 0; font-size: clamp(20px, 4.4vw, 26px); font-weight: 500; color: var(--pri); }
   .lead { margin: 0; font-size: 18px; color: var(--onv); max-width: 36em; }
   .start {
@@ -186,8 +187,10 @@
 
   <main>
     <section class="hero">
-      <img class="logo" src="icon-512.png" alt="ÚtSzelvény ikon" width="112" height="112">
-      <h1>ÚtSzelvény</h1>
+      <div class="title">
+        <img class="logo" src="icon-512.png" alt="ÚtSzelvény ikon" width="104" height="104">
+        <h1>ÚtSzelvény</h1>
+      </div>
       <p class="tagline">Kilométerkő minden méteren – a zsebedben.</p>
       <p class="lead">Melyik országos közúton, melyik kilométerszelvényben állsz?<br>Az <b>ÚtSzelvény</b> megmutatja internet nélkül is, ingyen, reklám nélkül.</p>
       <a class="start" href="app/">
