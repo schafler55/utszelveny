@@ -81,7 +81,7 @@ Koordináták: WGS84 (alapértelmezett) vagy EOV.
 - **Android APK (telepítve):** https://github.com/schafler55/utszelveny/releases/latest – a legutóbbi stabil kiadás (pl. `UtSzelveny-V1.0.apk`).
   Letöltés után engedélyezni kell az ismeretlen forrásból történő telepítést.
   A `main` ág legfrissebb, még nem kiadott állapota: [apk-latest](https://github.com/schafler55/utszelveny/releases/tag/apk-latest) –
-  külön „ÚtSzelvény DEV” alkalmazásként települ a rendes mellé, saját mentett adatokkal.
+  külön „ÚtSzelvény DEV” alkalmazásként települ a rendes mellé, saját mentett adatokkal és saját ikonnal (piros keret, „DEV” felirat).
 - **Frissítés a béta változatokról (V0.x) a V1.0-ra:** a V1.0-tól az APK új aláírókulccsal készül, ezért a béta APK-t előbb el kell távolítani.
   Ezzel a mentett mérések és keresések is törlődnek, ezért előtte érdemes CSV-be menteni őket.
 - **Frissítések:** indításkor az alkalmazás megnézi, megjelent-e új stabil verzió (Beállítások → Általános → Frissítések, kikapcsolható; kézzel: Névjegy → Frissítések → Ellenőrzés).

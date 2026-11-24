@@ -34,6 +34,13 @@ android {
         }
     }
 
+    // DEV builds get their own launcher icon (red ring, "DEV" sign): every file in src/dev/res replaces the file
+    // with the same name in src/main/res (now only the adaptive icon's foreground layer, ic_launcher_foreground.png
+    // in five sizes). Stable releases never read src/dev/res.
+    if (devBuild) {
+        sourceSets.release.res.srcDirs = ['src/dev/res']
+    }
+
     // same as the earlier debug builds: lint does not stop the release build
     lint {
         checkReleaseBuilds false
