@@ -3125,6 +3125,7 @@ const busZoom=()=>S.busZ>=10&&S.busZ<=19?S.busZ:16;   // bus stops are shown fro
 const BUS_OFF=17;            // px from the road centre line to the plate centre
 const BUS_SIDES_Z=15;        // from this zoom level the two sides of a stop are separate plates beside the road;
                              // below it a stop with the same name on both sides (within 300 m) is one plate on the road
+const BUS_DOT_Z=14;          // below this zoom level a stop is only a small blue dot on a white disc (half size)
 let BMMERGED=null;
 function busMerged(){
   if(BMMERGED)return BMMERGED;BMMERGED=[];let g=null;
@@ -3147,7 +3148,7 @@ function busGeo(o){
 }
 function drawBusStops(W,H){
   if(!bmLoad()||!BM.length)return [];
-  const sides=mapZoom()>=BUS_SIDES_Z,L=sides?BM:busMerged(),boxes=[],z=18,h=z/2,mg=40;
+  const zl=mapZoom(),sides=zl>=BUS_SIDES_Z,dot=zl<BUS_DOT_Z,L=sides?BM:busMerged(),boxes=[],z=dot?9:18,h=z/2,mg=40;
   ctx.save();
   for(const o of L){
     if(!o.m)o.m=eovToM(o.E,o.N);
@@ -3163,6 +3164,12 @@ function drawBusStops(W,H){
     x=Math.round(x);y=Math.round(y);
     if(x<-z||y<-z||x>W+z||y>H+z)continue;
     if(boxes.some(b=>Math.abs(b.x-x)<z+2&&Math.abs(b.y-y)<z+2))continue;
+    if(dot){                                                              // zoomed out: white disc, blue dot
+      ctx.shadowColor="rgba(0,0,0,.35)";ctx.shadowBlur=2;ctx.shadowOffsetY=1;
+      ctx.fillStyle="#ffffff";ctx.beginPath();ctx.arc(x,y,4.5,0,7);ctx.fill();ctx.shadowColor="transparent";
+      ctx.fillStyle="#1d4ed8";ctx.beginPath();ctx.arc(x,y,2.6,0,7);ctx.fill();
+      boxes.push({x,y,w:z+2,h:z+2});continue;
+    }
     ctx.shadowColor="rgba(0,0,0,.35)";ctx.shadowBlur=3;ctx.shadowOffsetY=1;
     ctx.fillStyle="#ffffff";ctx.beginPath();ctx.roundRect(x-h,y-h,z,z,5);ctx.fill();
     ctx.shadowColor="transparent";ctx.strokeStyle="rgba(15,23,42,.45)";ctx.lineWidth=1;ctx.stroke();
