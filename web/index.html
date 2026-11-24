@@ -735,7 +735,7 @@
     "no_data": "nincs adat",
     "range_ahead": "a következő 3 km-en",
     "range_around": "1,5 km-en belül",
-    "here": "itt",
+    "here": "ITT",
     "min_ago": "{n} perce",
     "h_ago": "{n} órája",
     "on_map": "Térképen",
@@ -1112,7 +1112,7 @@ input[type=text]:focus{outline:2px solid var(--pri);outline-offset:-1px;border-c
 .brtx{flex:1;min-width:0}
 .brico{display:flex;flex-direction:column;align-items:center;gap:6px;flex-shrink:0;width:52px}
 .brpos{font-size:.8rem;font-weight:600;color:var(--on);white-space:nowrap;font-variant-numeric:tabular-nums}
-.brpos.here{color:var(--warn)}
+.brpos.here{color:var(--warn);font-weight:800}
 .brsigns{display:flex;gap:6px;flex-shrink:0;min-width:52px}
 .brlim{margin-top:2px;color:var(--err);font-weight:700}
 .rchip{--pk:var(--err);font-size:.75rem;padding:4px 6px;background:color-mix(in srgb,var(--err) 12%,transparent)}
@@ -3116,14 +3116,37 @@ const mapZoom=()=>Math.log2(mS*WORLD/256);            // the map's zoom level (i
 const brZoom=()=>S.brZ>=10&&S.brZ<=19?S.brZ:14;       // bridges are shown from this zoom level (slider in Térkép settings)
 const kmZoom=()=>S.kmZ>=10&&S.kmZ<=19?S.kmZ:15;       // km posts and their km numbers from this zoom level (slider in Térkép settings)
 const busZoom=()=>S.busZ>=10&&S.busZ<=19?S.busZ:16;   // bus stops are shown from this zoom level (slider in Térkép settings)
-// bus stops on the map: a small white plate with a blue bus at the stop's own place (beside the road);
-// where two would overlap only the first is drawn. Returns the plates' boxes so road signs keep off them.
+// bus stops on the map: a small white plate with a blue bus beside the road, on the side the stop is on
+// (jobb / bal oldal as seen in the direction of the chainage, like OpenStreetMap puts the stop beside the street);
+// "útközepén" stops and stops whose road place cannot be found stay at the NAP point. Where two would overlap
+// only the first is drawn. Returns the plates' boxes so road signs keep off them.
+const BUS_OFF=17;            // px from the road centre line to the plate centre
+function busGeo(o){
+  if(o.g!==undefined)return o.g;o.g=null;
+  const p=srchPoint(o.r,o.v,o.pk);if(!p)return null;
+  let h=null,dd=1e9;for(const x of p.hits){const d=Math.hypot(x.E-o.E,x.N-o.N);if(d<dd){dd=d;h=x}}
+  if(!h||dd>80)return null;                                  // the NAP point is on the road centre line
+  const L=segLen(h.s),a1=Math.max(0,h.along-6),a2=Math.min(L,h.along+6);
+  let P1=pointAt(h.s,a1),P2=pointAt(h.s,a2);
+  if(cval(chainage(h.s,a2))<cval(chainage(h.s,a1))){const t=P1;P1=P2;P2=t}   // P1 → P2 = direction of the chainage
+  o.g={m:eovToM(h.E,h.N),m1:eovToM(P1.E,P1.N),m2:eovToM(P2.E,P2.N)};
+  return o.g;
+}
 function drawBusStops(W,H){
-  const L=bmLoad(),boxes=[],z=18,h=z/2;if(!L||!L.length)return boxes;
+  const L=bmLoad(),boxes=[],z=18,h=z/2,mg=40;if(!L||!L.length)return boxes;
   ctx.save();
   for(const o of L){
     if(!o.m)o.m=eovToM(o.E,o.N);
-    const x=Math.round(m2sx(o.m.x,o.m.y)),y=Math.round(m2sy(o.m.x,o.m.y));
+    let x=m2sx(o.m.x,o.m.y),y=m2sy(o.m.x,o.m.y);
+    if(x<-mg||y<-mg||x>W+mg||y>H+mg)continue;
+    const g=o.side<2?busGeo(o):null;
+    if(g){
+      const ax=m2sx(g.m.x,g.m.y),ay=m2sy(g.m.x,g.m.y);
+      let dx=m2sx(g.m2.x,g.m2.y)-m2sx(g.m1.x,g.m1.y),dy=m2sy(g.m2.x,g.m2.y)-m2sy(g.m1.x,g.m1.y);const l=Math.hypot(dx,dy)||1;dx/=l;dy/=l;
+      const sg=o.side===0?1:-1;                              // right of the chainage direction: (-dy, dx) on the screen (y down)
+      x=ax-dy*BUS_OFF*sg;y=ay+dx*BUS_OFF*sg;
+    }
+    x=Math.round(x);y=Math.round(y);
     if(x<-z||y<-z||x>W+z||y>H+z)continue;
     if(boxes.some(b=>Math.abs(b.x-x)<z+2&&Math.abs(b.y-y)<z+2))continue;
     ctx.shadowColor="rgba(0,0,0,.35)";ctx.shadowBlur=3;ctx.shadowOffsetY=1;

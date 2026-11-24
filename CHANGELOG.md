@@ -11,6 +11,8 @@ saját verziószámot kapott, ezért a régebbi bejegyzések aprók; a ténylege
 „Stabil kiadás” jelöli.
 
 ## Kiadatlan
+- **Buszmegállók a térképen az út mellett:** a jel az út azon oldalán áll, ahol a megálló van (jobb / bal oldal a szelvényezés irányában), mint az OpenStreetMapen; az útközépi megállók az úton maradnak.
+- **„ITT” felirat:** a hidak, a tehergépjármű-korlátozások, a buszmegállók és az azonosítópont távolságánál az „itt” helyett nagybetűs, félkövér „ITT”.
 - **Új NAP adatok: egyirányú útpályák és autóbusz-megállóhelyek** (`tools/nap_egyiranyu_megallok.py`). A Szakasz adatai oldalon az Út részben új sor: „Forgalmi irány” (egyirányú a szelvényezés irányában / azzal szemben, vagy kétirányú); új „Autóbusz-megállóhelyek” rész az út 500 m-en belüli megállóival (név, oldal, szelvény, kiépítés; az azonos nevű megállók egy sorban). A térképen kis buszmegálló jelek; kapcsoló és nagyítási csúszka: Beállítások → Térkép → Rétegek (alapból be, 16-os nagyítástól).
 - **Térkép, széles képernyő:** böngészőben (760 px szélesség felett) a Térkép oldal kitölti az ablak teljes szélességét; a többi oldal továbbra is középen, telefonszélességben marad. Az alsó buborék és a térkép panelje középen, telefonszélességben marad.
 - **Visszajelzés:** a Névjegy → Támogatás csoportban „kapcsolat” link a visszajelzes@utszelveny.hu címre (a levelezőalkalmazást nyitja meg); a kezdőlapon „Hibajelentés” gomb ugyanide.
