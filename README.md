@@ -80,7 +80,8 @@ Koordináták: WGS84 (alapértelmezett) vagy EOV.
   A `main` ág legfrissebb, még nem kiadott állapota (fejlesztői oldal, saját mentett adatokkal): https://utszelveny.hu/dev/
 - **Android APK (telepítve):** https://github.com/schafler55/utszelveny/releases/latest – a legutóbbi stabil kiadás (pl. `UtSzelveny-V1.0.apk`).
   Letöltés után engedélyezni kell az ismeretlen forrásból történő telepítést.
-  A `main` ág legfrissebb, még nem kiadott állapota: [apk-latest](https://github.com/schafler55/utszelveny/releases/tag/apk-latest).
+  A `main` ág legfrissebb, még nem kiadott állapota: [apk-latest](https://github.com/schafler55/utszelveny/releases/tag/apk-latest) –
+  külön „ÚtSzelvény DEV” alkalmazásként települ a rendes mellé, saját mentett adatokkal.
 - **Frissítés a béta változatokról (V0.x) a V1.0-ra:** a V1.0-tól az APK új aláírókulccsal készül, ezért a béta APK-t előbb el kell távolítani.
   Ezzel a mentett mérések és keresések is törlődnek, ezért előtte érdemes CSV-be menteni őket.
 - **Frissítések:** indításkor az alkalmazás megnézi, megjelent-e új stabil verzió (Beállítások → Általános → Frissítések, kikapcsolható; kézzel: Névjegy → Frissítések → Ellenőrzés).
@@ -100,7 +101,9 @@ A térkép északkal felfelé vagy menetirány szerint elforgatva is használhat
 | `web/index.html` | A teljes alkalmazás (kód + beépített úthálózati adatok), egyetlen fájl |
 | `web/sw.js`, `web/manifest.webmanifest`, `web/icon-*.png` | Telepíthető webalkalmazás (PWA) offline gyorsítótárral |
 | `android/` | Android keret (WebView), amely a `web/index.html`-t futtatja |
-| `.github/workflows/android.yml` | Megépíti az APK-t: a `main` ágból a fenti letöltési linkre, a többi ágból teszt APK-t |
+| `.github/workflows/android.yml` | Megépíti az APK-t aláírás nélkül, majd külön lépésben aláírja: a stabil kiadást (`V*` címke) a kiadási kulccsal a védett `release` környezetből, a `main` ágat (`apk-latest`) és a teszt ágakat a fejlesztői kulccsal „ÚtSzelvény DEV” néven |
+| `.github/scripts/sign-apk.sh` | Az APK aláírása (zipalign + apksigner); a kulcsfájl csak az aláírás idejére jön létre |
+| `.github/dependabot.yml` | A GitHub Actions lépések commit SHA-ra rögzítettek; a Dependabot havonta javasolja a frissítésüket |
 | `.github/workflows/pages.yml` | Kiteszi a weboldalt a GitHub Pagesre: a kezdőlapot (`site/`), a legutóbbi stabil kiadás `web/` mappáját az `app/` alá, a `main` ágat a `dev/` alá, és minden másik ágból egy teszt oldalt (`test/<ág>/`); a törölt ág teszt oldala eltűnik. Új stabil kiadás közzétételekor magától frissül |
 | `CHANGELOG.md` | Változásnapló: mi változott az egyes verziókban |
 | `web/szovegek.html` | Az alkalmazás összes szövege képernyőnként (kereshető, szerkeszthető), a `main` ág szerint: https://utszelveny.hu/dev/szovegek.html |

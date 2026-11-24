@@ -31,7 +31,8 @@ permissions:
 
 jobs:
   request:
-    if: (github.event_name == 'push' && github.ref != 'refs/heads/main') || github.event_name == 'release'
+    # Dependabot's branches (updates of the pinned actions) get no test page
+    if: ((github.event_name == 'push' && github.ref != 'refs/heads/main') || github.event_name == 'release') && github.actor != 'dependabot[bot]'
     runs-on: ubuntu-latest
     permissions:
       actions: write
@@ -45,7 +46,7 @@ jobs:
     if: (github.event_name == 'push' && github.ref == 'refs/heads/main') || github.event_name == 'workflow_dispatch' || github.event_name == 'delete'
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
         with:
           ref: main
           path: src
@@ -119,6 +120,7 @@ jobs:
           # and a small TESZT label. Older branches still have the app in the repository root.
           git ls-remote --heads origin | sed 's#.*refs/heads/##' | while read -r B; do
             [ "$B" = "main" ] && continue
+            case "$B" in dependabot/*) continue;; esac   # Dependabot's update branches get no test page
             git fetch -q --depth 1 origin "refs/heads/$B:refs/remotes/origin/$B" || { echo "skip $B"; continue; }
             R="origin/$B"
             if git cat-file -e "$R:web/index.html" 2>/dev/null; then P="web/"
@@ -155,7 +157,7 @@ jobs:
 
           echo "Site files:"; (cd "$OUT" && find . -type f | sort)
 
-      - uses: actions/upload-pages-artifact@v3
+      - uses: actions/upload-pages-artifact@56afc609e74202658d3ffba0e8f6dda462b719fa # v3.0.1
         with:
           path: _site
 
@@ -174,4 +176,4 @@ jobs:
       cancel-in-progress: false
     steps:
       - id: deployment
-        uses: actions/deploy-pages@v4
+        uses: actions/deploy-pages@d6db90164ac5ed86f2b6aed7e0febac5b3c0c03e # v4.0.5

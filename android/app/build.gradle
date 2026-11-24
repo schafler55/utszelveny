@@ -14,27 +14,23 @@ android {
         // (each part must stay below 10)
         versionCode 1210
         versionName "1.2.1"
+        resValue 'string', 'app_name', 'ÚtSzelvény'
     }
 
-    // Release key: private, never in the repository. The GitHub workflow decodes it from the
-    // RELEASE_KEYSTORE_B64 secret into a file and passes its path and password in these variables.
-    // Always the same key, so a new APK installs over the previous one without uninstalling.
-    signingConfigs {
-        release {
-            def ks = System.getenv('RELEASE_KEYSTORE_FILE')
-            if (ks) {
-                storeFile file(ks)
-                storeType 'pkcs12'
-                storePassword System.getenv('RELEASE_KEYSTORE_PASSWORD')
-                keyAlias System.getenv('RELEASE_KEY_ALIAS')
-                keyPassword System.getenv('RELEASE_KEYSTORE_PASSWORD')
-            }
-        }
-    }
+    // Signing is not done here: GitHub Actions builds an unsigned APK and a separate job signs it
+    // (.github/scripts/sign-apk.sh), so the Gradle build never sees a key.
+    //   - stable releases (V* tags): the real app, signed with the release key (always the same key,
+    //     so a new APK installs over the previous one without uninstalling)
+    //   - every other build (UTSZ_BUILD=dev): "ÚtSzelvény DEV", own package id, so it installs next to
+    //     the real app with its own saved data; signed with the dev key
+    def devBuild = System.getenv('UTSZ_BUILD') == 'dev'
     buildTypes {
         release {
             minifyEnabled false
-            signingConfig signingConfigs.release
+            if (devBuild) {
+                applicationIdSuffix '.dev'
+                resValue 'string', 'app_name', 'ÚtSzelvény DEV'
+            }
         }
     }
 

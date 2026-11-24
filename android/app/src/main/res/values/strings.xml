@@ -1,4 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">ÚtSzelvény</string>
+    <!-- app_name comes from android/app/build.gradle (resValue): "ÚtSzelvény", or "ÚtSzelvény DEV" for dev builds -->
 </resources>
