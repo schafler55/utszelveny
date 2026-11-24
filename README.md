@@ -106,6 +106,7 @@ A térkép északkal felfelé vagy menetirány szerint elforgatva is használhat
 | `web/szovegek.html` | Az alkalmazás összes szövege képernyőnként (kereshető, szerkeszthető), a `main` ág szerint: https://utszelveny.hu/dev/szovegek.html |
 | `tools/szovegek.py` | Ellenőrzi a `web/index.html` szövegblokkját (érvényes JSON, minden kulcs megvan); a build is futtatja |
 | `tools/nap_szakaszadatok.py` | A NAP sáv-, burkolat- és forgalmi adatait (WFS GeoJSON) a `web/index.html` beépített adatai közé írja |
+| `tools/nap_egyiranyu_megallok.py` | A NAP egyirányú útpályáit és autóbusz-megállóhelyeit (WFS GeoJSON) a `web/index.html` beépített adatai közé írja |
 | `tools/kezdolap_hatter.py` | Megrajzolja a kezdőlap úthálózat-hátterét (`site/hatter.svg`) |
 | `tools/kezdolap_og.py` | Elkészíti a link-előnézet képét (`site/kepek/og.jpg`): logó, név, szlogen, három képernyő |
 | `screenshots/` | A README képei |
@@ -124,7 +125,7 @@ Az alkalmazás minden felirata, magyarázata és gombszövege egy helyen van: a 
   (adatállapot: 2026. november): Országos közúthálózat, Közút neve/kategóriája/kezelője, Szelvényjelek,
   Sebességkorlátozás, Lakott területi szakaszok, Hídhasználati feltételek, Tehergépjárművekre vonatkozó
   korlátozások, Összes gépjármű forgalmi sávok száma, Burkolat típusa és szélessége, Éves keresztmetszeti
-  forgalmi adatok (2025), Közúti azonosítópontok.<br>**Az adatokra a NAP felhasználási
+  forgalmi adatok (2025), Közúti azonosítópontok, Egyirányú útpályák, Autóbusz megállóhelyek.<br>**Az adatokra a NAP felhasználási
   feltételei vonatkoznak, nem a GPL-3.0 licenc.**
 - Térkép alapréteg: © OpenStreetMap közreműködők (ODbL).<br>
   Műholdkép: © Esri, Maxar, Earthstar Geographics, GIS User Community (Esri World Imagery).
