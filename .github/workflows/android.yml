@@ -7,22 +7,37 @@ on:
     tags: ['v*', 'V*']
   workflow_dispatch:
 
+# Every job gets only the access it needs (see the jobs below).
 permissions:
-  contents: write
-  actions: write     # a stable release asks the Pages workflow to rebuild (landing page APK link)
+  contents: read
+
+# Security layout (see the security audit, finding M1):
+#   build         – builds an UNSIGNED APK; no signing key here, so the Gradle build and the third-party
+#                   setup action never see one
+#   sign-dev      – every build except stable releases: signs with the dev key → "ÚtSzelvény DEV"
+#                   (package hu.szaszi.kozutszelveny.dev, installs next to the real app, own saved data)
+#   sign-release  – only version tags: signs with the release key from the protected "release" environment
+#                   (Settings → Environments; only V*/v* tags, waits for the owner's approval)
+#   publish       – puts the signed APK into the GitHub release; no signing key here either
+# All actions are pinned to a full commit SHA (the comment shows the version); Dependabot proposes updates.
 
 jobs:
   build:
     runs-on: ubuntu-latest
+    outputs:
+      name: ${{ steps.apk.outputs.name }}
+      ver: ${{ steps.apk.outputs.ver }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+        with:
+          persist-credentials: false
 
-      - uses: actions/setup-java@v4
+      - uses: actions/setup-java@cf277c60eb25467037889841efdb72551f06f6c3 # v4.9.1
         with:
           distribution: temurin
           java-version: '17'
 
-      - uses: gradle/actions/setup-gradle@v4
+      - uses: gradle/actions/setup-gradle@ed408507eac070d1f99cc633dbcf757c94c7933a # v4.4.3
         with:
           gradle-version: '8.9'
 
@@ -43,101 +58,186 @@ jobs:
       - name: Check the texts block
         run: python3 tools/szovegek.py web/index.html
 
-      - name: Copy the web app (web/index.html) into the APK
-        run: |
-          mkdir -p "${{ steps.proj.outputs.dir }}/app/src/main/assets"
-          cp web/index.html "${{ steps.proj.outputs.dir }}/app/src/main/assets/index.html"
-
-      # Release signing: the private key lives only in the repository secrets
-      # (RELEASE_KEYSTORE_B64 = the .p12 file in base64, RELEASE_KEYSTORE_PASSWORD, RELEASE_KEY_ALIAS).
-      - name: Decode the release key
-        env:
-          KS_B64: ${{ secrets.RELEASE_KEYSTORE_B64 }}
-          KS_PASS: ${{ secrets.RELEASE_KEYSTORE_PASSWORD }}
-          KS_ALIAS: ${{ secrets.RELEASE_KEY_ALIAS }}
-        run: |
-          if [ -z "$KS_B64" ] || [ -z "$KS_PASS" ] || [ -z "$KS_ALIAS" ]; then
-            echo "::error::Release key missing: add RELEASE_KEYSTORE_B64, RELEASE_KEYSTORE_PASSWORD and RELEASE_KEY_ALIAS under Settings → Secrets and variables → Actions"
-            exit 1
-          fi
-          f="$RUNNER_TEMP/release.p12"
-          echo "$KS_B64" | base64 -d > "$f"
-          echo "RELEASE_KEYSTORE_FILE=$f" >> "$GITHUB_ENV"
-
-      - name: Build APK
-        working-directory: ${{ steps.proj.outputs.dir }}
-        env:
-          RELEASE_KEYSTORE_PASSWORD: ${{ secrets.RELEASE_KEYSTORE_PASSWORD }}
-          RELEASE_KEY_ALIAS: ${{ secrets.RELEASE_KEY_ALIAS }}
-        run: gradle assembleRelease --no-daemon --stacktrace
-
-      # File name carries the version (main, version tags) or the branch name + build number (test branches),
-      # e.g. UtSzelveny-V1.0.apk and UtSzelveny-test-auto-V1.1-b123.apk
+      # File name carries the version (stable release, main) or the branch name + build number (test branches),
+      # e.g. UtSzelveny-V1.3.0.apk, UtSzelveny-DEV-V1.2.1.apk and UtSzelveny-test-auto-V1.2.1-b123.apk
       - name: Name the APK
         id: apk
         env:
           B: ${{ github.ref_name }}
+          D: ${{ steps.proj.outputs.dir }}
+          RUN: ${{ github.run_number }}
         run: |
-          vn=$(grep -m1 'versionName' "${{ steps.proj.outputs.dir }}/app/build.gradle" | sed -E 's/.*"([^"]+)".*/\1/')
+          vn=$(grep -m1 'versionName' "$D/app/build.gradle" | sed -E 's/.*"([^"]+)".*/\1/')
           ver="V$(echo "$vn" | sed -E 's/-beta$/-Beta/; s/-stable$/-Stable/')"
-          if [ "$GITHUB_REF" = "refs/heads/main" ] || [ "$GITHUB_REF_TYPE" = "tag" ]; then
-            name="UtSzelveny-$ver.apk"
+          br=$(echo "$B" | sed -E 's/[^A-Za-z0-9._-]+/-/g')
+          if [ "$GITHUB_REF_TYPE" = "tag" ]; then
+            name="UtSzelveny-$ver.apk"; label=""
+          elif [ "$GITHUB_REF" = "refs/heads/main" ]; then
+            name="UtSzelveny-DEV-$ver.apk"; label="DEV · $ver"; bg="#7c3aed"
           else
-            br=$(echo "$B" | sed -E 's/[^A-Za-z0-9._-]+/-/g')
-            name="UtSzelveny-test-$br-$ver-b${{ github.run_number }}.apk"
+            name="UtSzelveny-test-$br-$ver-b$RUN.apk"; label="TESZT · $br"; bg="#dc2626"
           fi
-          cp "${{ steps.proj.outputs.dir }}/app/build/outputs/apk/release/app-release.apk" "$name"
           echo "name=$name" >> "$GITHUB_OUTPUT"
           echo "ver=$ver" >> "$GITHUB_OUTPUT"
+          echo "label=$label" >> "$GITHUB_OUTPUT"
+          echo "bg=${bg:-}" >> "$GITHUB_OUTPUT"
           echo "APK: $name"
 
-      - name: Keep the APK as a build artifact
-        uses: actions/upload-artifact@v4
+      # Stable releases get web/index.html unchanged. The DEV app gets the same changes as the /dev/ web page:
+      # renamed saved-data keys (kszd_), which also switches the update check off (the DEV app must not offer
+      # the real app as its update), and a small DEV / TESZT label.
+      - name: Copy the web app (web/index.html) into the APK
+        env:
+          D: ${{ steps.proj.outputs.dir }}
+          LABEL: ${{ steps.apk.outputs.label }}
+          BG: ${{ steps.apk.outputs.bg }}
+        run: |
+          mkdir -p "$D/app/src/main/assets"
+          out="$D/app/src/main/assets/index.html"
+          if [ -z "$LABEL" ]; then
+            cp web/index.html "$out"
+          else
+            sed \
+              -e 's/"ksz_/"kszd_/g' \
+              -e "s|</body>|<div style=\"position:fixed;top:4px;left:50%;transform:translateX(-50%);z-index:50;background:$BG;color:#fff;font:700 11px/1 Arial,sans-serif;padding:3px 8px;border-radius:6px;pointer-events:none\">$LABEL</div></body>|" \
+              web/index.html > "$out"
+            grep -q "$LABEL" "$out"
+            grep -q 'UPD_KEY="kszd_"' "$out"
+          fi
+
+      - name: Build the unsigned APK
+        working-directory: ${{ steps.proj.outputs.dir }}
+        env:
+          UTSZ_BUILD: ${{ github.ref_type == 'tag' && 'release' || 'dev' }}
+        run: gradle assembleRelease --no-daemon --stacktrace
+
+      - name: Keep the unsigned APK for the signing job
+        env:
+          D: ${{ steps.proj.outputs.dir }}
+        run: cp "$D/app/build/outputs/apk/release/app-release-unsigned.apk" unsigned.apk
+
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
-          name: UtSzelveny-apk-${{ github.ref_name }}
-          path: ${{ steps.apk.outputs.name }}
+          name: unsigned-apk
+          path: unsigned.apk
+          retention-days: 1
+
+  # Dev key: repository secrets DEV_KEYSTORE_B64 / DEV_KEYSTORE_PASSWORD / DEV_KEY_ALIAS.
+  # Dependabot's runs get no repository secrets, so they stop after the build (which is what they test).
+  sign-dev:
+    needs: build
+    if: github.ref_type != 'tag' && github.actor != 'dependabot[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+        with:
+          persist-credentials: false
+
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
+        with:
+          name: unsigned-apk
+          path: unsigned
+
+      - name: Sign with the dev key
+        env:
+          KS_B64: ${{ secrets.DEV_KEYSTORE_B64 }}
+          KS_PASS: ${{ secrets.DEV_KEYSTORE_PASSWORD }}
+          KS_ALIAS: ${{ secrets.DEV_KEY_ALIAS }}
+          KEY_HINT: add DEV_KEYSTORE_B64, DEV_KEYSTORE_PASSWORD and DEV_KEY_ALIAS under Settings → Secrets and variables → Actions
+          APK: ${{ needs.build.outputs.name }}
+        run: bash .github/scripts/sign-apk.sh unsigned/unsigned.apk "$APK"
+
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: ${{ needs.build.outputs.name }}
+          path: ${{ needs.build.outputs.name }}
+
+  # Release key: only in the "release" environment (Settings → Environments → release), which only V*/v* tags
+  # may use and which waits for the owner's approval (Actions tab → the run → Review deployments).
+  # This job runs only GitHub's own actions and the signing script from this repository.
+  sign-release:
+    needs: build
+    if: github.ref_type == 'tag'
+    runs-on: ubuntu-latest
+    environment: release
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+        with:
+          persist-credentials: false
+
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
+        with:
+          name: unsigned-apk
+          path: unsigned
+
+      - name: Sign with the release key
+        env:
+          KS_B64: ${{ secrets.RELEASE_KEYSTORE_B64 }}
+          KS_PASS: ${{ secrets.RELEASE_KEYSTORE_PASSWORD }}
+          KS_ALIAS: ${{ secrets.RELEASE_KEY_ALIAS }}
+          KEY_HINT: add RELEASE_KEYSTORE_B64, RELEASE_KEYSTORE_PASSWORD and RELEASE_KEY_ALIAS under Settings → Environments → release → Environment secrets
+          APK: ${{ needs.build.outputs.name }}
+        run: bash .github/scripts/sign-apk.sh unsigned/unsigned.apk "$APK"
+
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: ${{ needs.build.outputs.name }}
+          path: ${{ needs.build.outputs.name }}
+
+  publish:
+    needs: [build, sign-dev, sign-release]
+    if: always() && needs.build.result == 'success' && (needs.sign-dev.result == 'success' || needs.sign-release.result == 'success')
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      actions: write     # a stable release asks the Pages workflow to rebuild (landing page APK link)
+    steps:
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
+        with:
+          name: ${{ needs.build.outputs.name }}
 
       # Test builds from other branches: own pre-release "apk-test-<branch>",
       # the public "apk-latest" stays untouched until the branch is merged into main.
       - name: Publish to the "apk-test-<branch>" release
         if: github.ref_type == 'branch' && github.ref != 'refs/heads/main'
-        uses: softprops/action-gh-release@v2
+        uses: softprops/action-gh-release@3bb12739c298aeb8a4eeaf626c5b8d85266b0e65 # v2.6.2
         with:
           tag_name: apk-test-${{ github.ref_name }}
           target_commitish: ${{ github.sha }}
           name: ÚtSzelvény – TESZT APK (${{ github.ref_name }} ág)
           prerelease: true
-          files: ${{ steps.apk.outputs.name }}
+          files: ${{ needs.build.outputs.name }}
           body: |
             TESZT változat a(z) ${{ github.ref_name }} ágból – nem a hivatalos kiadás.
-            A telepített alkalmazást felülírja (ugyanaz az app), a beállítások megmaradnak.
+            „ÚtSzelvény DEV” néven, a rendes alkalmazás mellé települ, saját mentett adatokkal; a korábbi DEV / TESZT telepítést felülírja.
 
-      - name: Publish to the "apk-latest" release (stable download link)
+      - name: Publish to the "apk-latest" release
         if: github.ref == 'refs/heads/main'
-        uses: softprops/action-gh-release@v2
+        uses: softprops/action-gh-release@3bb12739c298aeb8a4eeaf626c5b8d85266b0e65 # v2.6.2
         with:
           tag_name: apk-latest
-          name: ÚtSzelvény – legfrissebb APK
+          name: ÚtSzelvény – legfrissebb APK (DEV)
           prerelease: true
-          files: ${{ steps.apk.outputs.name }}
+          files: ${{ needs.build.outputs.name }}
           body: |
-            Automatikusan épített APK a main ág legutóbbi állapotából: ${{ steps.apk.outputs.name }}
+            Automatikusan épített APK a main ág legutóbbi állapotából: ${{ needs.build.outputs.name }}
+            „ÚtSzelvény DEV” néven, a rendes alkalmazás mellé települ, saját mentett adatokkal. A stabil kiadás: https://github.com/${{ github.repository }}/releases/latest
             Telepítés: töltsd le az APK fájlt a telefonon, és engedélyezd az ismeretlen forrásból történő telepítést.
 
       # Version tag (v1.0 …): a stable, non-pre-release GitHub Release; /releases/latest points to it.
       - name: Publish the stable release
         if: github.ref_type == 'tag'
-        uses: softprops/action-gh-release@v2
+        uses: softprops/action-gh-release@3bb12739c298aeb8a4eeaf626c5b8d85266b0e65 # v2.6.2
         with:
           tag_name: ${{ github.ref_name }}
-          name: ÚtSzelvény ${{ steps.apk.outputs.ver }}
+          name: ÚtSzelvény ${{ needs.build.outputs.ver }}
           prerelease: false
           make_latest: true
           # keep release notes written by hand on GitHub; the lines below are added after them
           append_body: true
-          files: ${{ steps.apk.outputs.name }}
+          files: ${{ needs.build.outputs.name }}
           body: |
-            ÚtSzelvény ${{ steps.apk.outputs.ver }} – stabil kiadás. Változások: [CHANGELOG.md](https://github.com/${{ github.repository }}/blob/${{ github.ref_name }}/CHANGELOG.md)
+            ÚtSzelvény ${{ needs.build.outputs.ver }} – stabil kiadás. Változások: [CHANGELOG.md](https://github.com/${{ github.repository }}/blob/${{ github.ref_name }}/CHANGELOG.md)
             Telepítés: töltsd le az APK fájlt a telefonon, és engedélyezd az ismeretlen forrásból történő telepítést.
 
       # The landing page links the stable release's APK file directly: rebuild the site now that it is attached.
@@ -153,7 +253,7 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
           TAG: ${{ github.ref == 'refs/heads/main' && 'apk-latest' || format('apk-test-{0}', github.ref_name) }}
-          KEEP: ${{ steps.apk.outputs.name }}
+          KEEP: ${{ needs.build.outputs.name }}
         run: |
           gh release view "$TAG" -R "$GITHUB_REPOSITORY" --json assets -q '.assets[].name' | while read -r a; do
             if [ -n "$a" ] && [ "$a" != "$KEEP" ]; then

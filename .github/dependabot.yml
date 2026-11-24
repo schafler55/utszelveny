@@ -1,0 +1,13 @@
+# Dependabot keeps the GitHub Actions in .github/workflows up to date.
+# The actions are pinned to a full commit SHA (security audit, finding M1); once a month Dependabot opens
+# one pull request that moves all of them to their newest version (the "# vX.Y.Z" comments are updated too).
+# Its pull requests come from a branch inside this repository, so the close-pull-requests workflow leaves them open.
+version: 2
+updates:
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: monthly
+    groups:
+      github-actions:
+        patterns: ['*']
