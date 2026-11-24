@@ -100,7 +100,7 @@ A térkép északkal felfelé vagy menetirány szerint elforgatva is használhat
 | `web/` | A webalkalmazás; a legutóbbi stabil kiadásé a https://utszelveny.hu/app/, a `main` ágé a https://utszelveny.hu/dev/ címre kerül |
 | `web/index.html` | A teljes alkalmazás (kód + beépített úthálózati adatok), egyetlen fájl |
 | `web/sw.js`, `web/manifest.webmanifest`, `web/icon-*.png` | Telepíthető webalkalmazás (PWA) offline gyorsítótárral |
-| `android/` | Android keret (WebView), amely a `web/index.html`-t futtatja |
+| `android/` | Android keret (WebView), amely a `web/index.html`-t futtatja; a mentett adatok nem kerülnek a telefon Google biztonsági mentésébe (`allowBackup="false"`, `res/xml/data_extraction_rules.xml`) |
 | `.github/workflows/android.yml` | Megépíti az APK-t aláírás nélkül, majd külön lépésben aláírja: a stabil kiadást (`V*` címke) a kiadási kulccsal a védett `release` környezetből, a `main` ágat (`apk-latest`) és a teszt ágakat a fejlesztői kulccsal „ÚtSzelvény DEV” néven |
 | `.github/scripts/sign-apk.sh` | Az APK aláírása (zipalign + apksigner); a kulcsfájl csak az aláírás idejére jön létre |
 | `.github/dependabot.yml` | A GitHub Actions lépések commit SHA-ra rögzítettek; a Dependabot havonta javasolja a frissítésüket |
