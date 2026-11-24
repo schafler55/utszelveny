@@ -388,6 +388,15 @@ public class MainActivity extends Activity {
             volShutter = on;
         }
 
+        /** Képernyő ébren tartása switch (and HUD mode): keep the screen on, on every page of the app. */
+        @JavascriptInterface
+        public void setKeepScreen(final boolean on) {
+            runOnUiThread(() -> {
+                if (on) getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+                else getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+            });
+        }
+
         /** HUD mode on / off; max = full screen brightness while it is on. */
         @JavascriptInterface
         public void setHud(final boolean on, final boolean max) {

@@ -375,6 +375,8 @@
     "by_gnss": "GNSS szerint",
     "started": "Kezdés",
     "duration": "Időtartam",
+    "worst_acc": "Legrosszabb pontosság",
+    "worst_acc_val": "±{m} m",
     "points": "Rögzített pontok",
     "from_start": "{d} a kezdettől",
     "meta_road": "<b>{d}</b> úton",
@@ -508,7 +510,7 @@
     "gnss_state_on": "Bekapcsolva",
     "gnss_stop": "Leállítás",
     "wake": "Képernyő ébren tartása",
-    "wake_note": "Nem kapcsol ki a kijelző",
+    "wake_note": "Amíg az alkalmazás nyitva van, nem kapcsol ki a kijelző, bármelyik oldalon",
     "bike": "Kerékpárutak kihagyása",
     "bike_note": "Út melletti kerékpárút ne „vegye át” a pozíciót",
     "grp_update": "Frissítések",
@@ -544,6 +546,8 @@
     "map_smooth_note": "Sima: a GNSS frissítések között is folyamatosan halad a térkép és a nyíl, frissítésenként: ugrásokkal, de kevesebbet fogyaszt",
     "map_smooth_on": "Sima",
     "map_smooth_off": "Frissítésenként",
+    "map_spd": "Sebességkorlát és helységnévtábla",
+    "map_spd_note": "Csak menet közben, a térkép bal alsó sarkában",
     "grp_roads": "Utak",
     "map_hl": "Aktuális út kiemelése",
     "map_hl_note": "Az út, amelyiken éppen vagy, mindig a saját színében látszik: kiemelve, vagy a többivel egyformán",
@@ -564,6 +568,10 @@
     "map_bike_note": "Kikapcsolva a kerékpárutak és hídjaik nem látszanak, és koppintással sem választhatók",
     "srch_csv": "CSV-gombok a mentett kereséseknél",
     "srch_csv_note": "Másolás és letöltés a Keresés oldalon, a lista alatt",
+    "srch_lbl": "Címke a térképen",
+    "srch_lbl_note": "A mentett keresések felirata a térképen: a keresés neve, vagy az útszám és a km+m",
+    "lbl_name": "Név",
+    "lbl_road": "Útszám, km+m",
     "srch_none": "Nincs mentett keresés.",
     "srch_del_both": "Pontok és szakaszok együtt.",
     "srch_deleted": "Minden mentett keresés törölve.",
@@ -574,6 +582,8 @@
     "coord_both": "Mindkettő",
     "meas_csv": "CSV-gombok a mentett méréseknél",
     "meas_csv_note": "Másolás és letöltés a Mérés oldalon, a lista alatt",
+    "meas_lbl": "Címke a térképen",
+    "meas_lbl_note": "A mentett mérések felirata a térképen: a mérés neve, vagy az útszám és a km+m",
     "meas_none": "Nincs mentett mérés.",
     "meas_del_running": "A folyamatban lévő mérést ez nem érinti.",
     "meas_del_both": "GNSS és térképi mérések együtt.",
@@ -654,6 +664,10 @@
     "update_new": "Új verzió érhető el: {ver}",
     "update_failed": "Nem sikerült ellenőrizni. Van internetkapcsolat?",
     "update_off_page": "Teszt- vagy fejlesztői oldal: itt nincs frissítéskeresés.",
+    "support_title": "Támogatás",
+    "support": "Az <b>ÚtSzelvény</b> ingyenes: nincs benne reklám, előfizetés vagy fizetős funkció. A fejlesztést a szabadidőmben végzem. Ha hasznosnak találod, egy kávé árával támogathatod a munkámat és a további fejlesztést. A támogatás önkéntes, és nem jár érte extra funkció.",
+    "support_feedback": "A visszajelzés és az ötletek is sokat segítenek!",
+    "support_btn": "Támogatás",
     "data_source": "Adatforrás: Magyar Közút Nonprofit Zrt. - Nemzeti Adathozzáférési Pont (NAP) statikus adatcsomagok (adatállapot: 2026. november)",
     "attr_osm": "Térkép alapréteg: © OpenStreetMap közreműködők",
     "attr_sat": "Műholdkép: Powered by Esri · © Esri, Maxar, Earthstar Geographics, GIS User Community",
@@ -663,18 +677,14 @@
     "warn_driving": "<b>Vezetés közben ne kezeld az alkalmazást!</b>",
     "privacy_title": "Adatvédelem",
     "privacy": "Az alkalmazás nem gyűjt és nem küld el személyes adatot: nincs fiók, reklám vagy analitika. A helyadat, a mérések, a keresések és a beállítások csak a készüléken tárolódnak, a fotók a készülékre mentődnek.",
-    "privacy_net": "A térkép alapréteg csempéi az OpenStreetMap és az Esri szervereiről töltődnek le, így ezek a szolgáltatók – mint bármely weboldal esetén – látják az IP-címedet és a megnézett térképrészletet. A Street View gomb a Google Térképet, a Támogatás gomb a Revolut fizetési oldalát nyitja meg.",
+    "privacy_net": "A térkép alapréteg az OpenStreetMap és az Esri szervereiről töltődik le, így ezek a szolgáltatók láthatják az IP-címedet és a megnézett térképrészletet. Az Utcakép gomb a Google Térképet, a Támogatás gomb a Revolut fizetési oldalát nyitja meg.",
     "privacy_update": "A frissítések keresése (kikapcsolható) a GitHub szerveréről kérdezi le a legújabb verzió számát, így a GitHub láthatja az IP-címedet.",
-    "support_title": "Támogatás",
-    "support": "Az <b>ÚtSzelvény</b> ingyenes: nincs benne reklám, előfizetés vagy fizetős funkció. A fejlesztést a szabadidőmben végzem. Ha hasznosnak találod, egy kávé árával támogathatod a munkámat és a további fejlesztést. A támogatás önkéntes, és nem jár érte extra funkció.",
-    "support_feedback": "A visszajelzés és az ötletek is sokat segítenek!",
-    "support_btn": "Támogatás Revoluttal",
     "license": "Az alkalmazás GPL-3.0 licenc alapján, <b>csak saját felelősségre használható!</b>",
     "manual_title": "Haladó: teszt / kézi pozíció",
     "manual_ph": "pl. 47.13285 19.41772  vagy  EOV 678089 198812",
     "manual_go": "Lekérdezés",
     "manual_note": "WGS84 (szélesség, hosszúság) vagy EOV (Y, X) koordináta. A kézi pozíciót a következő GNSS jel felülírja.",
-    "data_info": "{segs} útszakasz, {roads} út, {pts} töréspont · betöltés {ms} ms"
+    "data_info": "{segs} útszakasz, {roads} út, {pts} töréspont, {br} híd · betöltés {ms} ms"
   },
   "start": {
     "title": "Mielőtt elkezded",
@@ -876,7 +886,7 @@ main{flex:1;overflow:auto;padding:4px 12px calc(12px + var(--navh));display:flex
 .card{background:var(--sc);border-radius:24px;padding:14px 16px}
 #spdCard{position:relative;transition:background-color .35s}
 /* GNSS speed: same bubble as the signal indicator in the main tile's corner; orange / red like the title */
-.q.spdq{top:10px;right:12px;padding:0 12px;gap:4px;background:var(--sc-high);color:var(--on);font-weight:400;transition:background-color .35s,color .35s}
+.q.spdq{top:14px;right:14px;padding:0 12px;gap:4px;background:var(--sc-high);color:var(--on);font-weight:400;transition:background-color .35s,color .35s}
 .q.spdq b{font-weight:700;font-variant-numeric:tabular-nums}
 #spdCard.over5 .spdq{color:var(--spd5);background:color-mix(in srgb,var(--spd5) 16%,var(--spd5-c))}
 #spdCard.over10 .spdq{color:var(--err);background:color-mix(in srgb,var(--err) 16%,var(--err-c))}
@@ -1038,6 +1048,12 @@ nav button.on.rec::after{box-shadow:0 0 0 2px var(--pri)}
 .basetoast{position:absolute;left:50%;top:44px;transform:translate(-50%,-6px);z-index:3;background:var(--inv-s);color:var(--inv-on);font-size:.875rem;font-weight:500;padding:8px 16px;border-radius:18px;opacity:0;pointer-events:none;transition:opacity .2s,transform .2s;white-space:nowrap}
 .basetoast.on{opacity:1;transform:translate(-50%,0)}
 .scalebar{position:absolute;left:12px;top:12px;font-size:.72rem;font-weight:500;color:var(--on);background:var(--sc-high);padding:3px 10px 5px;border-radius:12px;opacity:.94}
+/* speed limit + town sign over the map while driving (bottom left, above the bubble; Beállítások → Térkép) */
+.mapspd{position:absolute;left:12px;bottom:calc(84px + var(--navh));display:none;align-items:center;gap:8px;max-width:calc(100% - 90px);pointer-events:none;filter:drop-shadow(0 1px 3px rgba(0,0,0,.35))}
+.mapspd.on{display:flex}
+.mapspd svg{flex:none;display:block}
+.mapspd .tsign{border-radius:8px;padding:2px;box-shadow:none;min-width:0}
+.mapspd .tsign>span{border-width:2.5px;border-radius:6px;padding:4px 10px 3px;font-size:1rem}
 .scalebar i{display:block;height:4px;border:2px solid var(--on);border-top:0;margin-top:2px}
 #rotNeedle{transition:transform .15s linear;transform-origin:12px 12px}
 
@@ -1328,12 +1344,13 @@ html[data-theme=light] #frExit{background:var(--err-c);color:var(--err);border:1
 .camfl.on{background:var(--warn-c);color:var(--on-warn-c);font-weight:600}
 .camopts .seg{min-height:36px;border-radius:18px;padding:3px}
 .camopts .seg button{min-height:30px;padding:4px 16px;border-radius:15px;font-size:.8125rem}
-.cambar{flex-shrink:0;display:grid;grid-template-columns:1fr auto 1fr;align-items:center;padding:12px 24px 14px;background:var(--bg)}
-/* gallery thumbnail close to the shutter, with a red NINCS MENTVE label under it while any photo is unsaved */
-.camtw{justify-self:end;margin-right:26px;position:relative;display:flex}
-.camuns{position:absolute;left:50%;top:calc(100% + 5px);transform:translateX(-50%);white-space:nowrap;font-size:.625rem;font-weight:800;letter-spacing:.04em;line-height:1;color:#fff;background:#E53935;padding:3px 6px;border-radius:6px;display:none;z-index:4}   /* above the fade behind the nav bar */
+.cambar{flex-shrink:0;display:grid;grid-template-columns:1fr auto 1fr;align-items:center;padding:12px 0 14px;background:var(--bg)}
+/* gallery thumbnail centred between the shutter and the screen edge (the flip button the same on the other side), with a
+   red NINCS MENTVE pill under it (pastel fill, red outline) while any photo is unsaved or still being processed */
+.camtw{justify-self:center;position:relative;display:flex}
+.camuns{position:absolute;left:50%;top:calc(100% + 6px);transform:translateX(-50%);white-space:nowrap;font-size:.625rem;font-weight:800;letter-spacing:.04em;line-height:1;color:var(--err);background:var(--err-c);border:1.5px solid var(--err);padding:3px 8px;border-radius:999px;display:none;z-index:4}   /* above the fade behind the nav bar */
 .camuns.on{display:block}
-.cambar .camflip{justify-self:start;margin-left:26px}
+.cambar .camflip{justify-self:center}
 .camshut{width:76px;height:76px;border-radius:50%;border:4px solid var(--on);display:grid;place-items:center}
 .camshut i{width:60px;height:60px;border-radius:50%;background:var(--pri);transition:transform .1s}
 .camshut:active i{transform:scale(.86)}
@@ -1650,6 +1667,7 @@ html[data-theme=light] .mapinfo .bh{color:color-mix(in srgb,var(--k) 55%,#000)}
     <div class="basetoast" id="baseToast"></div>
     <div class="mpback" id="mpBack"></div>
     <div class="mappanel" id="mapPanel"><div class="mp-head"><b data-tx="map.panel_title"></b><button class="iconbtn" id="mpClose" data-tx-aria-label="common.close_aria"><svg width="20" height="20" width="2.4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11"/></svg></button></div><div id="mapSetPanel"></div></div>
+    <div class="mapspd" id="mapSpd" aria-hidden="true"></div>
     <div class="mapbtns">
       <button id="rotBtn" data-tx-aria-label="map.btn_rotate"><svg width="26" height="26" viewBox="0 0 24 24"><g id="rotNeedle"><path d="M11.3 3.4c.2-.6 1.2-.6 1.4 0L15.4 12H8.6z" fill="#ef4444"/><path d="M12.7 20.6c-.2.6-1.2.6-1.4 0L8.6 12h6.8z" fill="currentColor"/><circle cx="12" cy="12" r="1.6" style="fill:var(--sc-highest)"/></g></svg></button>
       <button id="mmBtn" data-tx-aria-label="map.btn_measure"><svg width="24" height="24" width="2" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><g transform="rotate(-45 12 12)"><rect x="2" y="8.25" width="20" height="7.5" rx="2"/><path d="M6.5 8.25v3M10 8.25v2M13.5 8.25v3M17 8.25v2"/></g></svg></button>
@@ -1751,6 +1769,7 @@ html[data-theme=light] .mapinfo .bh{color:color-mix(in srgb,var(--k) 55%,#000)}
       <div class="sgrp"><div class="sgrp-h" data-tx="settings.grp_view"></div><div class="sgrp-c">
         <div class="opt col"><div><span data-tx="settings.map_rot"></span><small data-tx="settings.map_rot_note"></small></div><div class="seg wide" id="rotSeg"><button data-v="north" data-tx="settings.map_rot_north"></button><button data-v="heading" data-tx="settings.map_rot_heading"></button></div></div>
         <div class="opt col"><div><span data-tx="settings.map_smooth"></span><small data-tx="settings.map_smooth_note"></small></div><div class="seg wide" id="smSeg"><button data-v="on" data-tx="settings.map_smooth_on"></button><button data-v="off" data-tx="settings.map_smooth_off"></button></div></div>
+        <div class="opt"><div><span data-tx="settings.map_spd"></span><small data-tx="settings.map_spd_note"></small></div><button class="sw on" id="swMapSpd"></button></div>
       </div></div>
       <div class="sgrp"><div class="sgrp-h" data-tx="settings.grp_roads"></div><div class="sgrp-c">
         <div class="opt col"><div><span data-tx="settings.map_hl"></span><small data-tx="settings.map_hl_note"></small></div><div class="seg wide" id="hlSeg"><button data-v="bold" data-tx="settings.map_hl_bold"></button><button data-v="halo" data-tx="settings.map_hl_halo"></button><button data-v="off" data-tx="settings.map_hl_off"></button></div></div>
@@ -1769,6 +1788,7 @@ html[data-theme=light] .mapinfo .bh{color:color-mix(in srgb,var(--k) 55%,#000)}
       <div class="sgrp"><div class="sgrp-h" data-tx="search.saved_title"></div><div class="sgrp-c">
         <div id="srchDelBox"></div>
         <div class="opt"><div><span data-tx="settings.srch_csv"></span><small data-tx="settings.srch_csv_note"></small></div><button class="sw on" id="swSrchCsv"></button></div>
+        <div class="opt col"><div><span data-tx="settings.srch_lbl"></span><small data-tx="settings.srch_lbl_note"></small></div><div class="seg wide" id="srchLblSeg"><button data-v="name" data-tx="settings.lbl_name"></button><button data-v="road" data-tx="settings.lbl_road"></button></div></div>
       </div></div>
     </div>
     <div class="spane" data-p="meas">
@@ -1778,6 +1798,7 @@ html[data-theme=light] .mapinfo .bh{color:color-mix(in srgb,var(--k) 55%,#000)}
       <div class="sgrp"><div class="sgrp-h" data-tx="measure.saved_title"></div><div class="sgrp-c">
         <div id="measDelBox"></div>
         <div class="opt"><div><span data-tx="settings.meas_csv"></span><small data-tx="settings.meas_csv_note"></small></div><button class="sw on" id="swMeasCsv"></button></div>
+        <div class="opt col"><div><span data-tx="settings.meas_lbl"></span><small data-tx="settings.meas_lbl_note"></small></div><div class="seg wide" id="measLblSeg"><button data-v="name" data-tx="settings.lbl_name"></button><button data-v="road" data-tx="settings.lbl_road"></button></div></div>
       </div></div>
     </div>
     <div class="spane" data-p="foto">
@@ -1820,6 +1841,9 @@ html[data-theme=light] .mapinfo .bh{color:color-mix(in srgb,var(--k) 55%,#000)}
         <div class="sgrp-t about-head"><img class="about-logo" id="aboutLogo" alt=""><div><div class="about-t">ÚtSzelvény V1.2.0 (1200)</div><p data-tx="about.copyright"></p><p data-tx="about.source"></p></div></div>
         <div class="opt"><div><span data-tx="about.update_title"></span><small id="updState"></small></div><button class="btn" id="updBtn" data-tx="about.update_btn"></button></div>
       </div></div>
+      <div class="sgrp"><div class="sgrp-h" data-tx="about.support_title"></div><div class="sgrp-c">
+        <div class="sgrp-t"><p data-tx="about.support"></p><p data-tx="about.support_feedback"></p><div style="display:flex;gap:8px;margin-top:10px"><a class="btn pri" id="supportBtn" href="https://revolut.me/schafler55" target="_blank" rel="noopener" data-tx="about.support_btn"></a></div></div>
+      </div></div>
       <div class="sgrp"><div class="sgrp-h" data-tx="about.data_title"></div><div class="sgrp-c">
         <div class="sgrp-t"><p id="dataInfo"></p><p data-tx="about.data_source"></p></div>
         <div class="sgrp-t"><p data-tx="about.attr_osm"></p><p data-tx="about.attr_sat"></p><p data-tx="about.attr_bp"></p></div>
@@ -1829,9 +1853,6 @@ html[data-theme=light] .mapinfo .bh{color:color-mix(in srgb,var(--k) 55%,#000)}
       </div></div>
       <div class="sgrp"><div class="sgrp-h" data-tx="about.privacy_title"></div><div class="sgrp-c">
         <div class="sgrp-t"><p data-tx="about.privacy"></p><p data-tx="about.privacy_net"></p><p data-tx="about.privacy_update"></p></div>
-      </div></div>
-      <div class="sgrp"><div class="sgrp-h" data-tx="about.support_title"></div><div class="sgrp-c">
-        <div class="sgrp-t"><p data-tx="about.support"></p><p data-tx="about.support_feedback"></p><div style="display:flex;gap:8px;margin-top:10px"><a class="btn pri" id="supportBtn" href="https://revolut.me/schafler55" target="_blank" rel="noopener" data-tx="about.support_btn"></a></div></div>
       </div></div>
       <div class="sgrp"><div class="sgrp-h" data-tx="about.manual_title"></div><div class="sgrp-c">
         <div class="sgrp-t"><input type="text" id="manualIn" data-tx-placeholder="about.manual_ph" inputmode="decimal"><div style="display:flex;gap:8px;margin-top:8px"><button class="btn pri" id="manualGo" data-tx="about.manual_go"></button></div><p class="note" data-tx="about.manual_note"></p></div>
@@ -1880,7 +1901,7 @@ const KUT=TXA("road_type",12);
 const PKOD=TXA("carriageway",3);
 
 /* ---------- settings ---------- */
-const S={km0Hide:true,theme:"auto",wake:true,bike:true,navHide:true,updCheck:true,name:true,coord:"wgs",base:"grey",rot:"north",measCoord:"both",measCsv:true,srchCsv:true,lineW:1.5,hl:"off",smooth:true,secSpd:true,spdWarn:true,secBr:true,secTr:true,secGps:true,secKez:true,phName:true,phAcc:true,phCoord:"both",phRes:"fast",phAuto:true,phExif:true,phDir:true,phVol:true,phFolder:"pictures",hudFlip:"x",hudOri:"land",hudCol:"white",hudBr:"max",hudDir:true,hudSpd:true,hudLim:true,hudName:false};
+const S={km0Hide:true,theme:"auto",wake:true,bike:true,navHide:true,updCheck:true,name:true,coord:"wgs",base:"grey",rot:"north",measCoord:"both",measCsv:true,srchCsv:true,srchLbl:"road",measLbl:"name",mapSpd:true,lineW:1.5,hl:"off",smooth:true,secSpd:true,spdWarn:true,secBr:true,secTr:true,secGps:true,secKez:true,phName:true,phAcc:true,phCoord:"both",phRes:"fast",phAuto:true,phExif:true,phDir:true,phVol:true,phFolder:"pictures",hudFlip:"x",hudOri:"land",hudCol:"white",hudBr:"max",hudDir:true,hudSpd:true,hudLim:true,hudName:false};
 try{Object.assign(S,JSON.parse(localStorage.getItem("ksz_settings")||"{}"))}catch(e){}
 function saveS(){try{localStorage.setItem("ksz_settings",JSON.stringify(S))}catch(e){}}
 /* ---------- theme: Sötét / Világos / Rendszer (dark / light / system) ---------- */
@@ -1903,7 +1924,7 @@ const MERNOKSEG=[
 ];
 
 /* ---------- data decode ---------- */
-let NSEG=0,NV=0,ROADS=[],KEZ=[],LAB=[];
+let NSEG=0,NV=0,NBR=0,ROADS=[],KEZ=[],LAB=[];
 let segRoad,segPk,segKut,segCty,segKez,segLab,segScale,segV0,segV1,segAnc;
 let VE,VN,VC,VS; // vertex east, north, cumulative along, seg index
 let STR=[],TNEV=[];const SPD=new Map(),SZK=new Map(),TEL=new Map(),BR=new Map(),TR=new Map();
@@ -1951,6 +1972,7 @@ function loadData(){
       if(p&&p.sig===x.sig&&x.f>=p.f&&vdist(p.t,x.f)<=5){if(x.t>p.t)p.t=x.t}else out.push(Object.assign({},x))}
     TR.set(k,out);
   }
+  NBR=D.br.length;
   for(const b of D.br)mpush(BR,rkey(b[0],b[1]),{v:b[2],name:b[3],hnem:STR[b[4]],over:b[5],tb:STR[b[6]],rs:b[7],der:b[8]||0,upper:b[9]||""});
   buildGrid();
 }
@@ -2299,7 +2321,7 @@ function startGPS(){
   gpsErr=null;
   watchId=navigator.geolocation.watchPosition(onFix,onErr,{enableHighAccuracy:true,maximumAge:1000,timeout:20000});
   if(hasNativeGnss())try{window.AndroidBridge.gnssStart()}catch(e){}
-  if(S.wake)requestWake();
+  syncWake();
   try{localStorage.setItem("ksz_gps","1")}catch(e){}
   render();
 }
@@ -2307,7 +2329,7 @@ function stopGPS(){
   if(watchId!==null)navigator.geolocation.clearWatch(watchId);
   if(hasNativeGnss())try{window.AndroidBridge.gnssStop()}catch(e){}
   gnss=null;
-  watchId=null;releaseWake();
+  watchId=null;syncWake();
   // the last GNSS fix is no longer current: the main card says GNSS is off (with the last known position below)
   if(cur&&cur.pos.src==="gps"){cur=null;SM.on=false}
   try{localStorage.setItem("ksz_gps","0")}catch(e){}
@@ -2352,7 +2374,16 @@ async function requestWake(){
   try{wakeLock=await navigator.wakeLock.request("screen");wakeLock.addEventListener("release",()=>{wakeLock=null})}catch(e){}
 }
 function releaseWake(){if(wakeLock){wakeLock.release().catch(()=>{});wakeLock=null}}
-document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible"&&watchId!==null&&S.wake)requestWake()});
+// Képernyő ébren tartása: on every page while the app is open (and always in HUD mode), with or without GNSS.
+// Android app: the window flag follows the switch; browser: Screen Wake Lock, asked for again when the page
+// comes back to the front and on a tap if the system dropped it (e.g. battery saver)
+function syncWake(){
+  const want=!!S.wake||hudOn;
+  if(NB&&NB.setKeepScreen)try{NB.setKeepScreen(want)}catch(e){}
+  if(want){if(document.visibilityState==="visible")requestWake()}else releaseWake();
+}
+document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible")syncWake()});
+document.addEventListener("pointerdown",()=>{if((S.wake||hudOn)&&!wakeLock)requestWake()},{passive:true});
 setInterval(()=>{if(watchId!==null)render()},2000);
 // Firefox for Android (Gecko engine; Firefox on iOS is WebKit and not counted): watchPosition delivers positions only
 // now and then, so the chainage does not follow the drive – not supported, a note at the top of Pozíció says so
@@ -2519,6 +2550,31 @@ function render(){
   if(miIdle&&!mmOn)mapIdle();
   if(camOn)camOverlay();
   if(hudOn)renderHud();
+  renderMapSpd();
+}
+// speed limit + town sign over the map, only while driving: shown from ~7 km/h (GNSS speed, fresh fix), hidden after
+// 8 s below that, when the fix is lost or off the network. Same data as the Pozíció speed card; no sign outside
+// built-up areas and no crossed-out town sign (as on the card). Beállítások → Térkép → Nézet
+var MSPD=null;
+function renderMapSpd(){
+  const el=$("mapSpd");if(!el)return;
+  const m=MSPD||(MSPD={mov:false,slow:0,h:""}),now=Date.now(),p=cur&&cur.pos;
+  const fresh=!!p&&p.src==="gps"&&watchId!==null&&now-lastFixT<10000,v=fresh?p.spd:null;
+  if(!fresh){m.mov=false;m.slow=0}
+  else if(v!=null&&v>=2){m.mov=true;m.slow=0}
+  else if(m.mov){if(!m.slow)m.slow=now;else if(now-m.slow>8000){m.mov=false;m.slow=0}}
+  let h="";
+  if(S.mapSpd!==false&&mapOn&&!hudOn&&m.mov&&cur&&!cur.res.off){
+    const r=cur.res,s=r.best.s,road=segRoad[s],pk=segPk[s],kut=segKut[s],vv=cval(r.ch);
+    const sp=speedAt(road,pk,kut,vv,travelDir(s,r.best.dirInc));
+    if(sp.lim!=null)h=sp.both?spdSignSVG(String(sp.both.inc),40)+spdSignSVG(String(sp.both.dec),40):spdSignSVG(String(sp.lim),48);
+    const tel=sp.bu===1?telAt(road,pk,vv):null;
+    if(tel)h+=`<span class="tsign"><span>${esc(tel)}</span></span>`;
+  }
+  if(h===m.h)return;
+  m.h=h;el.innerHTML=h;el.classList.toggle("on",!!h);
+  const t=el.querySelector(".tsign>span");   // long names: smaller type until the name fits
+  if(t){let f=parseFloat(getComputedStyle(t).fontSize);while(t.scrollWidth>t.clientWidth+1&&f>10){f-=1;t.style.fontSize=f+"px"}}
 }
 function renderSpeed(show){
   const card=$("spdCard");if(!show){card.style.display="none";return}
@@ -2854,7 +2910,7 @@ function drawMap(){
   if(Math.abs(dr)<0.4||(SM.on&&follow&&Math.abs(dr)<25&&smActive()))rot=rotTarget;else{rot=angN(rot+dr*0.22);queueDraw()}
   if(!headingUp()&&Math.abs(rot)<0.4)rot=0;
   setView(W,H);compassUI();
-  {const b="calc("+Math.max(84,$("mapInfo").offsetHeight+24)+"px + var(--navh))",el=document.querySelector(".mapbtns");if(el.style.bottom!==b)el.style.bottom=b}
+  {const b="calc("+Math.max(84,$("mapInfo").offsetHeight+24)+"px + var(--navh))",el=document.querySelector(".mapbtns");if(el.style.bottom!==b){el.style.bottom=b;$("mapSpd").style.bottom=b}}
   drawTiles();
   const base=BASES[S.base]&&$("tiles").style.display!=="none"?S.base:"off";
   const light=base==="grey",sat=base==="sat";
@@ -2930,14 +2986,14 @@ function drawMap(){
   // pans (following your position, dragging) that picture is just moved; it is painted again when the zoom,
   // the rotation or what is shown changes, or when the view runs out of the margin
   const key=[base,curRoad,S.hl,S.lineW,minKut,S.mapBike===false?"nb":"b",kmOn?1:0,kmTxt?1:0,km0?1:0,measActive&&measActive.trk?measActive.trk.length:-1,
-    srchOnMap().map(it=>oid(it)+(it===srchFocus||it===srchCur&&srchCurOn?"f":"")).join(","),measShown().map(oid).join(",")].join("|");
+    srchOnMap().map(it=>oid(it)+(it===srchFocus?"f":"")).join(","),measShown().map(oid).join(","),mapMeas?oid(mapMeas):0].join("|");
   if(!layerBlit(W,H,key)){paintLayer(W,H,key,(CW,CH)=>paint(CW,CH,segsIn(0,0,CW,CH)));layerBlit(W,H,key)}
   const segs=segsIn(0,0,W,H);
   // road number signs: motorways/expressways blue, main roads green (Hungarian sign shape), other roads white
   ctx.textAlign="center";ctx.textBaseline="middle";
   // keep signs off the buttons, the info box and the top labels
   const placed=[],cr=cv.getBoundingClientRect();
-  for(const el of [$("mapInfo"),document.querySelector(".mapbtns"),$("attrib"),$("scalebar"),$("baseNote")]){
+  for(const el of [$("mapInfo"),document.querySelector(".mapbtns"),$("attrib"),$("scalebar"),$("baseNote"),$("mapSpd")]){
     const r=el.getBoundingClientRect();if(!r.width||!r.height)continue;
     placed.push({x:(r.left+r.right)/2-cr.left,y:(r.top+r.bottom)/2-cr.top,w:r.width+4,h:r.height+4})}
   brStrips=[];
@@ -3292,6 +3348,8 @@ function mapIdle(){
 let tapSel=null;   // the road place picked by the last map tap: {s, ch, E, N, lat, lon}
 function identify(m){
   const ll=fromM(m.x,m.y),p=EOV.fwd(ll.lat,ll.lon),E=p.E,N=p.N;
+  // tapping elsewhere on the map ends the highlight of the chip / item whose bubble was open
+  srchFocus=null;mapMeas=null;
   tapPt={m};miIdle=false;miLast="";miItem=null;tapSel=null;
   const gS=mS/Math.cos(ll.lat*Math.PI/180);
   const r=match(E,N,{acc:Math.max(8,12/gS),noBike:S.mapBike===false});
@@ -3573,6 +3631,7 @@ function measStart(){
 function measOnFix(pos,res){
   const M=measActive;if(!M||pos.src!=="gps")return;
   if(pos.acc!=null&&pos.acc>50)return;                       // too inaccurate
+  if(pos.acc!=null)M.accMax=Math.max(M.accMax||0,pos.acc);    // worst accuracy of the fixes used (shown in the details)
   const now=Date.now(),snap=measSnap(pos,res);
   if(!M.legs)M.legs=[];
   if(!M.start){M.start=snap;M.end=snap;M.last={E:pos.E,N:pos.N,t:now};M.trk.push(snap.E,snap.N);measLeg(M,snap,0);measSaveActive();return}
@@ -3603,6 +3662,7 @@ function measStop(){
   measFinishLegs(M);
   const legs=(M.legs||[]).map(l=>Object.assign(l,{dist:Math.round(l.dist)}));
   const rec={id:M.id,name:TX("measure.default_name",{n}),t0:M.t0,t1:Date.now(),start:M.start,end:M.end,dist:Math.round(M.dist),pts:M.pts,trk:M.trk,legs};
+  if(M.accMax!=null)rec.accMax=Math.max(1,Math.round(M.accMax));
   rec.show=!!(rec.trk&&rec.trk.length>=2);measList.unshift(rec);measSaveList();
   measActive=null;measSaveActive();measLast=rec.id;measOpen=rec.id;measTicker();render();
 }
@@ -3688,6 +3748,7 @@ function measCardData(r){
       <div class="mplaces">${placeHTML(TX("common.label_start"),r.start)}${placeHTML(TX("common.label_end"),r.end)}</div>
       <dl class="kv"><dt>${TX("measure.by_gnss")}</dt><dd>${fmtDist(r.dist)}</dd><dt>${TX("common.by_ch")}</dt><dd>${chSumHTML(r)}</dd>
       <dt>${TX("measure.started")}</dt><dd>${fmtTime(r.t0)}</dd><dt>${TX("measure.duration")}</dt><dd>${fmtDur(r.t1-r.t0)}</dd>
+      ${r.accMax!=null?`<dt>${TX("measure.worst_acc")}</dt><dd>${TX("measure.worst_acc_val",{m:r.accMax})}</dd>`:""}
       <dt>${TX("common.start_point")}</dt><dd class="na">${coordFmt(r.start)}</dd>
       <dt>${TX("common.end_point")}</dt><dd class="na">${coordFmt(r.end)}</dd></dl>
       ${legsHTML(r,false)}
@@ -3776,14 +3837,21 @@ function drawMeasTrack(M,col,marks){
   const c=trkMerc(M);if(!c.bb||c.bbN!==c.x.length){c.bb=bboxM(c.x,c.y);c.bbN=c.x.length}   // the active track grows
   ctx.lineCap="round";ctx.lineJoin="round";
   ctx.beginPath();if(!pathM(c.x,c.y,c.bb,viewBoxM(30)))return;
-  ctx.strokeStyle="#000b";ctx.lineWidth=7;ctx.stroke();ctx.strokeStyle=col;ctx.lineWidth=4;ctx.stroke();return}
+  const foc=M===mapMeas;   // its bubble is open: wider line
+  ctx.strokeStyle="#000b";ctx.lineWidth=foc?11:7;ctx.stroke();ctx.strokeStyle=col;ctx.lineWidth=foc?6.5:4;ctx.stroke();return}
   const mark=(p,fill,lbl)=>{if(!p)return;const m=eovToM(p.E,p.N),x=m2sx(m.x,m.y),y=m2sy(m.x,m.y);
     ctx.beginPath();ctx.arc(x,y,lbl.length>1?11:9,0,7);ctx.fillStyle=fill;ctx.fill();ctx.lineWidth=2;ctx.strokeStyle="#fff";ctx.stroke();
     ctx.fillStyle="#fff";ctx.font=`bold 11px ${APPF}`;ctx.textAlign="center";ctx.textBaseline="middle";ctx.fillText(lbl,x,y+0.5)};
   (M.pts||[]).forEach((p,i)=>mark(p,"#334155","P"+(i+1)));
   mark(M.start,"#16a34a","K");
   if(M!==measActive){mark(M.end,"#dc2626","V");
-    if(M.start){const m=eovToM(M.start.E,M.start.N);mapChip(m2sx(m.x,m.y),m2sy(m.x,m.y),`${M.name} · ${fmtDist(measLen(M))}`,15,msCol(M),M===mapMeas,{meas:M})}}
+    if(M.start){const m=eovToM(M.start.E,M.start.N);mapChip(m2sx(m.x,m.y),m2sy(m.x,m.y),measChipTxt(M),15,msCol(M),M===mapMeas,{meas:M})}}
+}
+// map label of a saved measurement (Beállítások → Mérés): name + length (default), or road number + km+m of start → end
+function measChipTxt(M){
+  const a=M.start,b=M.end;
+  if(S.measLbl==="road"&&a&&!a.off&&b&&!b.off)return a.road===b.road?(a.ch===b.ch?`${a.road} · ${a.ch}`:`${a.road} · ${a.ch} – ${b.ch}`):`${a.road} · ${a.ch} → ${b.road} · ${b.ch}`;
+  return `${M.name} · ${fmtDist(measLen(M))}`;
 }
 // the length shown for a saved measurement: along the road (GNSS / route), or the straight line when no route was found
 const measLen=(r)=>r.kind==="map"&&!r.pairs.some(q=>q.len!=null)?r.air:r.dist;
@@ -4209,7 +4277,8 @@ function camThumbUI(){
   b.innerHTML=camShots.length?`<b class="${uns?"uns":""}">${camShots.length}</b>`:"";
   b.classList.toggle("proc",camProc>0||camPend>0||camTaps.length>0);
   b.style.visibility=camShots.length||camProc?"visible":"hidden";
-  $("camUns").classList.toggle("on",uns>0);
+  // also while a photo is still being processed: it is not saved yet either
+  $("camUns").classList.toggle("on",uns>0||camShooting||camProc>0||camPend>0||camTaps.length>0);
 }
 async function camStart(){
   if(!camOn||camStream||camBusy)return;
@@ -4909,10 +4978,16 @@ const hitM=(h)=>{if(!h.m)h.m=toM(h.lat,h.lon);return h.m};
 // labels ("chips") of searches and measurements on the map; they are remembered so a tap on one opens its card
 let mapChips=[];
 function mapChip(mx,y,t,dx,col,foc,o){
-  ctx.font=`bold 12px ${APPF}`;ctx.textAlign="left";ctx.textBaseline="middle";const w=ctx.measureText(t).width+14;
+  // the focused one (its bubble is open) stands out: a bit bigger, filled with the item colour, dark text, white rim
+  const h=foc?24:20,pad=foc?9:7;
+  ctx.font=`bold ${foc?13:12}px ${APPF}`;ctx.textAlign="left";ctx.textBaseline="middle";const w=ctx.measureText(t).width+2*pad;
   let x=mx+dx;if(x+w>VW.W-76&&mx-dx-w>4)x=mx-dx-w;
-  const p=roundRect(x,y-10,w,20,10);ctx.fillStyle="#0b1220e6";ctx.fill(p);ctx.strokeStyle=col;ctx.lineWidth=foc?2.5:1.5;ctx.stroke(p);ctx.fillStyle="#fff";ctx.fillText(t,x+7,y+0.5);
-  if(o)mapChips.push(Object.assign({x,y:y-10,w,h:20},o));
+  const p=roundRect(x,y-h/2,w,h,h/2);
+  if(foc){ctx.save();ctx.shadowColor="rgba(0,0,0,.5)";ctx.shadowBlur=8;ctx.fillStyle=col;ctx.fill(p);ctx.restore();
+    ctx.strokeStyle="#fff";ctx.lineWidth=2;ctx.stroke(p);ctx.fillStyle="#0b1220"}
+  else{ctx.fillStyle="#0b1220e6";ctx.fill(p);ctx.strokeStyle=col;ctx.lineWidth=1.5;ctx.stroke(p);ctx.fillStyle="#fff"}
+  ctx.fillText(t,x+pad,y+0.5);
+  if(o)mapChips.push(Object.assign({x,y:y-h/2,w,h},o));
 }
 function mapChipAt(px,py){
   // the last drawn is on top; a few px of slack around the small chip for fingers
@@ -4923,16 +4998,17 @@ function drawSrch(marks,only){
   const L=only||srchOnMap();if(!L.length)return;
   ctx.lineCap="round";ctx.lineJoin="round";const vb=viewBoxM(30);
   for(const it of L){
-    const R=srchEval(it);if(R.err)continue;const foc=it===srchFocus||it===srchCur&&srchCurOn;
+    const R=srchEval(it);if(R.err)continue;const foc=it===srchFocus;   // highlighted while its bubble is open
     if(!marks){
       if(it.kind!=="sec")continue;
       // all parts of one search in one path: one casing + one colour stroke
       ctx.beginPath();let any=false;for(const p of R.parts){srchMerc(p);if(pathM(p.mx,p.my,p.bb,vb))any=true}
-      if(any){ctx.strokeStyle="#000b";ctx.lineWidth=foc?11:9;ctx.stroke();ctx.strokeStyle=srCol(it);ctx.lineWidth=foc?6:5;ctx.stroke()}
+      if(any){ctx.strokeStyle="#000b";ctx.lineWidth=foc?14:9;ctx.stroke();ctx.strokeStyle=srCol(it);ctx.lineWidth=foc?8:5;ctx.stroke()}
       continue;
     }
     const col=srCol(it);
     const lbl=(mx,y,t,dx)=>mapChip(mx,y,t,dx,col,foc,{srch:it});
+    const byName=S.srchLbl==="name"&&!!it.name;   // label: Beállítások → Keresés (default road + km+m)
     // coordinate search: the typed place as a lime target, joined to its road place with a dashed line
     if(it.src==="c"&&it.c&&R.cd)it.c.forEach((c,i)=>{const X=R.cd[i];if(!X)return;
       const m=cM(c),x=m2sx(m.x,m.y),y=m2sy(m.x,m.y),hm=hitM(X.h),hx=m2sx(hm.x,hm.y),hy=m2sy(hm.x,hm.y);
@@ -4948,13 +5024,13 @@ function drawSrch(marks,only){
         ctx.beginPath();ctx.moveTo(x,y);ctx.bezierCurveTo(x-2,y-6,x-11,y-12,x-11,y-22);ctx.arc(x,y-22,11,Math.PI,0);ctx.bezierCurveTo(x+11,y-12,x+2,y-6,x,y);ctx.closePath();
         ctx.fillStyle=col;ctx.fill();ctx.lineWidth=2;ctx.strokeStyle="#0b1220";ctx.stroke();
         ctx.beginPath();ctx.arc(x,y-22,4.2,0,7);ctx.fillStyle="#0b1220";ctx.fill();
-        lbl(x,y-22,`${R.num} · ${fmtCh(R.ch)}`,14)});
+        lbl(x,y-22,byName?it.name:`${R.num} · ${fmtCh(R.ch)}`,14)});
     }else{
       const mark=(P,fill,t)=>{if(!P)return;const m=hitM(P.hits[0]),x=m2sx(m.x,m.y),y=m2sy(m.x,m.y);
         ctx.beginPath();ctx.arc(x,y,10,0,7);ctx.fillStyle=fill;ctx.fill();ctx.lineWidth=2.5;ctx.strokeStyle=col;ctx.stroke();
         ctx.fillStyle="#fff";ctx.font=`bold 11px ${APPF}`;ctx.textAlign="center";ctx.textBaseline="middle";ctx.fillText(t,x,y+0.5);return {x,y}};
       const a=mark(R.A,"#16a34a","K");mark(R.B,"#dc2626","V");
-      if(a)lbl(a.x,a.y,R.multi?`${R.A.x.road} · ${R.A.x.ch} → ${R.B.x.road} · ${R.B.x.ch}`:`${R.num} · ${R.A?fmtCh(R.A.ch):""} – ${R.B?fmtCh(R.B.ch):""}`,14);
+      if(a)lbl(a.x,a.y,byName?it.name:R.multi?`${R.A.x.road} · ${R.A.x.ch} → ${R.B.x.road} · ${R.B.x.ch}`:`${R.num} · ${R.A?fmtCh(R.A.ch):""} – ${R.B?fmtCh(R.B.ch):""}`,14);
     }
   }
 }
@@ -5067,6 +5143,7 @@ function showView(v){
   $("navBar").classList.remove("hide");$("navFade").classList.remove("hide");
   mapOn=v==="map";
   for(const [id,nid,k] of [["posView","nPos","pos"],["mapView","nMap","map"],["measView","nMeas","meas"],["srchView","nSrch","srch"],["fotoView","nFoto","foto"]]){$(id).classList.toggle("on",v===k);$(nid).classList.toggle("on",v===k)}
+  renderMapSpd();
   if(mapOn){resizeMap();miRefresh();if(follow&&cur){const m=posToM(cur.pos);mX=m.x;mY=m.y}drawMap()}
   if(v==="meas")renderMeas();
   if(v==="srch"){renderSrch();renderSrchRes()}
@@ -5116,6 +5193,15 @@ function renderMeasSet(){
     $("measDelBox").insertAdjacentHTML("beforeend",`<p class="note" style="color:var(--pri)">${TX("settings.meas_deleted")}</p>`)};
 }
 document.querySelectorAll("#measCoordSeg button").forEach(b=>b.onclick=()=>{S.measCoord=b.dataset.v;saveS();renderMeasSet();renderMeas()});
+// map labels of saved searches / measurements (Keresés and Mérés tabs): name, or road number + km+m
+function renderLblSegs(){
+  document.querySelectorAll("#srchLblSeg button").forEach(b=>b.classList.toggle("on",b.dataset.v===(S.srchLbl||"road")));
+  document.querySelectorAll("#measLblSeg button").forEach(b=>b.classList.toggle("on",b.dataset.v===(S.measLbl||"name")));
+}
+for(const [id,key] of [["srchLblSeg","srchLbl"],["measLblSeg","measLbl"]])
+  document.querySelectorAll("#"+id+" button").forEach(b=>b.onclick=()=>{S[key]=b.dataset.v;saveS();renderLblSegs();if(mapOn)drawMap()});
+renderLblSegs();
+bindSw("swMapSpd","mapSpd");
 // Keresés settings: delete all saved searches
 function renderSrchSet(){
   const n=srchList.length,box=$("srchDelBox");
@@ -5133,7 +5219,7 @@ $("closeSheet").onclick=()=>{sheetClose()};
 $("sheet").addEventListener("click",(e)=>{if(e.target.id==="sheet")sheetClose()});
 $("gpsToggle").onclick=()=>{watchId===null?startGPS():stopGPS()};
 function bindSw(id,key,after){const b=$(id);b.classList.toggle("on",!!S[key]);b.onclick=()=>{S[key]=!S[key];b.classList.toggle("on",S[key]);saveS();after&&after();render()}}
-bindSw("swWake","wake",()=>{S.wake&&watchId!==null?requestWake():releaseWake()});
+bindSw("swWake","wake",syncWake);
 bindSw("swBike","bike");
 $("swMapBike").classList.toggle("on",S.mapBike!==false);
 $("swMapBike").onclick=()=>{S.mapBike=S.mapBike===false;saveS();$("swMapBike").classList.toggle("on",S.mapBike);drawMap()};
@@ -5220,7 +5306,7 @@ function hudOpen(){
   hudOn=true;hudFitKey="";
   $("hud").classList.add("on");
   if(watchId===null)startGPS();
-  requestWake();
+  syncWake();
   const m=document.querySelector('meta[name="theme-color"]');if(m)m.content="#000000";
   if(NB&&NB.setHud)hudApplyNative();
   else try{const d=document.documentElement;if(d.requestFullscreen&&!document.fullscreenElement)d.requestFullscreen({navigationUI:"hide"}).catch(()=>{})}catch(e){}
@@ -5232,7 +5318,7 @@ function hudClose(){
   $("hud").classList.remove("on");
   if(NB&&NB.setHud)hudApplyNative();
   else try{if(document.fullscreenElement&&document.exitFullscreen)document.exitFullscreen().catch(()=>{})}catch(e){}
-  if(!(S.wake&&watchId!==null))releaseWake();
+  syncWake();
   applyTheme();
 }
 function hudUi(show){
@@ -5401,7 +5487,7 @@ async function updLatest(){
   return m?{v:m[1],notes:UPD_PAGE}:null;
 }
 let updBusy=false;
-const updWhen=t=>new Date(t).toLocaleString("hu-HU",{month:"long",day:"numeric",hour:"2-digit",minute:"2-digit"});
+const updWhen=t=>new Date(t).toLocaleString("hu-HU",{year:"numeric",month:"long",day:"numeric",hour:"2-digit",minute:"2-digit"});
 // Névjegy → Frissítések line
 function updUI(st){
   const e=$("updState"),b=$("updBtn");if(!e)return;
@@ -5477,10 +5563,12 @@ window.addEventListener("load",()=>{
     const t0=performance.now();
     loadData();
     const ms=Math.round(performance.now()-t0);
-    $("dataInfo").textContent=TX("about.data_info",{segs:NSEG.toLocaleString("hu-HU"),roads:ROADS.length.toLocaleString("hu-HU"),pts:NV.toLocaleString("hu-HU"),ms});
+    // big numbers with a dot as thousands separator (22.341), like the Hungarian way of writing counts (user, 2026-11-24)
+    const n3=(n)=>String(n).replace(/\B(?=(\d{3})+(?!\d))/g,".");
+    $("dataInfo").textContent=TX("about.data_info",{segs:n3(NSEG),roads:n3(ROADS.length),pts:n3(NV),br:n3(NBR),ms});
     {const sp=$("boot"),wait=Math.max(0,2000-performance.now());   // splash: at least 2 s from start, then fade
      setTimeout(()=>{sp.classList.add("out");setTimeout(()=>sp.remove(),420)},wait)}
-    syncTabs();renderPhSet();
+    syncTabs();renderPhSet();syncWake();
     setTimeout(()=>{try{bridgeCrossings();if(cur)render();if(mapOn)drawMap()}catch(e){console.error(e)}},2500);
     if((location.protocol==="file:"||location.protocol==="content:")&&/Android/i.test(navigator.userAgent))showProtoAlert();
     else if(GECKO)showFirefoxAlert();

@@ -11,6 +11,14 @@ saját verziószámot kapott, ezért a régebbi bejegyzések aprók; a ténylege
 „Stabil kiadás” jelöli.
 
 ## Kiadatlan
+- **Térkép:** menet közben (kb. 7 km/h felett, GNSS szerint) a térkép bal alsó sarkában kis sebességkorlát-tábla, átkelési szakaszon mellette a helységnévtábla; megálláskor 8 másodperc után eltűnik. Kapcsoló: Beállítások → Térkép → Nézet → „Sebességkorlát és helységnévtábla” (alapból be).
+- **Térkép, címkék:** a kijelölt keresés vagy mérés címkéje feltűnőbb (nagyobb, a saját színével kitöltve, fehér kerettel), a szakasz vagy a nyomvonal vastagabb; a térkép más pontjára koppintva a kijelölés megszűnik (eddig megmaradt).
+- **Címke a térképen:** új beállítás a Keresés és a Mérés fülön: a mentett keresések és mérések címkéje a térképen a nevük, vagy az útszám és a km+m (alapból: keresésnél útszám, mérésnél név, mint eddig).
+- **GNSS mérés:** a mentett mérés részleteiben a „Legrosszabb pontosság” a mérésben felhasznált GNSS-pontok közül (az 50 m-nél pontatlanabb jeleket a mérés eddig is kihagyta).
+- **Képernyő ébren tartása:** minden oldalon működik, amíg az alkalmazás nyitva van, a GNSS állapotától függetlenül; az Android alkalmazásban a kapcsoló ki is kapcsolja (eddig mindig ébren tartotta a kijelzőt).
+- **Pozíció:** a sebességkorlát kártyán a sebesség buborék ugyanott áll, mint a fő kártyán a pontosság jelzése.
+- **Fotó:** a „NINCS MENTVE” felirat a kép feldolgozása alatt is látszik, és halvány piros kitöltésű, piros keretes, lekerekített címke lett; a galéria ikon (és a kameraváltó gomb) középre került az exponáló gomb és a képernyő széle között.
+- **Névjegy:** a Támogatás csoport az Alkalmazás alá került, a gomb felirata „Támogatás”; a frissítéseknél az ellenőrzés ideje évszámmal; az Adatok sorban a hidak száma is, a nagy számok ponttal tagolva (22.341 útszakasz); új adatvédelmi szöveg (Utcakép gomb).
 - **Teszt oldalak és teszt APK-k:** angol útvonal, `utszelveny.hu/test/<ág>/` (eddig `teszt/<ág>/`), a teszt APK-k kiadása `apk-test-<ág>`, a fájlnév `UtSzelveny-test-…apk`.
 - **Saját domain:** a weboldal új címe https://utszelveny.hu (a régi https://schafler55.github.io/utszelveny/ cím ide irányít át).
 - **Kezdőlap:** új bemutató oldal a weboldal címén, nagy „ÚtSzelvény indítása” gombbal; a webalkalmazás az `app/` alá költözik.
