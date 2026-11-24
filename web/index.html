@@ -1069,6 +1069,7 @@ nav button.on.rec::after{box-shadow:0 0 0 2px var(--pri)}
 .mapspd svg{flex:none;display:block}
 .mapspd .tsign{border-radius:8px;padding:2px;box-shadow:none;min-width:0}
 .mapspd .tsign>span{border-width:2.5px;border-radius:6px;padding:4px 10px 3px;font-size:1rem}
+.scalebar .zl{font-weight:700;margin-right:6px;padding-right:6px;border-right:1px solid var(--outline)}
 .scalebar i{display:block;height:4px;border:2px solid var(--on);border-top:0;margin-top:2px}
 #rotNeedle{transition:transform .15s linear;transform-origin:12px 12px}
 
@@ -3082,9 +3083,10 @@ function drawMap(){
     if(hd!=null)drawPosArrow(x,y,hd-rot);else drawPosDot(x,y);
   }
   if(tapPt)drawTapRing(mx(tapPt.m),my(tapPt.m),light);
-  // scale bar (ground metres)
+  // scale bar (ground metres) with the zoom level in front of it, "Z16 · 50 m"; the zoom shown is the whole level the
+  // layer sliders (bridges, km posts, bus stops) compare with, so "Z16" means everything set to 16 is on
   const target=W*0.25/gS,pow=Math.pow(10,Math.floor(Math.log10(target)));let len=pow;for(const k of[1,2,5])if(k*pow<=target)len=k*pow;
-  {const h=`${len>=1000?len/1000+" km":len+" m"}<i style="width:${Math.round(len*gS)}px"></i>`,el=$("scalebar");if(el._h!==h){el.innerHTML=h;el._h=h}}
+  {const h=`<span class="zl">Z${Math.floor(mapZoom()+1e-6)}</span>${len>=1000?len/1000+" km":len+" m"}<i style="width:${Math.round(len*gS)}px"></i>`,el=$("scalebar");if(el._h!==h){el.innerHTML=h;el._h=h}}
 }
 // km stones of a segment (anchors with m = 0) in Mercator coordinates, worked out once
 const KMP=new Map();

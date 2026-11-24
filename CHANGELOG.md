@@ -11,6 +11,7 @@ saját verziószámot kapott, ezért a régebbi bejegyzések aprók; a ténylege
 „Stabil kiadás” jelöli.
 
 ## Kiadatlan
+- **Térkép, nagyítási szint:** a bal felső méretarány buborékban a lépték előtt a nagyítási szint is látszik (pl. „Z16 | 50 m”); ugyanez a szám, amihez a hidak, a kilométerszelvények és a buszmegállók csúszkája viszonyít.
 - **Buszmegállók a térképen az út mellett:** a jel az út azon oldalán áll, ahol a megálló van (jobb / bal oldal a szelvényezés irányában), mint az OpenStreetMapen; az útközépi megállók az úton maradnak.
 - **„ITT” felirat:** a hidak, a tehergépjármű-korlátozások, a buszmegállók és az azonosítópont távolságánál az „itt” helyett nagybetűs, félkövér „ITT”.
 - **Új NAP adatok: egyirányú útpályák és autóbusz-megállóhelyek** (`tools/nap_egyiranyu_megallok.py`). A Szakasz adatai oldalon az Út részben új sor: „Forgalmi irány” (egyirányú a szelvényezés irányában / azzal szemben, vagy kétirányú); új „Autóbusz-megállóhelyek” rész az út 500 m-en belüli megállóival (név, oldal, szelvény, kiépítés; az azonos nevű megállók egy sorban). A térképen kis buszmegálló jelek; kapcsoló és nagyítási csúszka: Beállítások → Térkép → Rétegek (alapból be, 16-os nagyítástól).
