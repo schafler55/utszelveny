@@ -26,7 +26,9 @@ echo "build-tools: $bt"
 "$bt/apksigner" sign --ks "$ks" --ks-type PKCS12 --ks-key-alias "$KS_ALIAS" \
   --ks-pass env:KS_PASS --key-pass env:KS_PASS --out "$out" "$aligned"
 
-# shows which certificate signed it (public information); an APK only installs over the app
-# when this certificate is the same as the installed one's
-"$bt/apksigner" verify --print-certs "$out" | grep -E '^Signer #1 certificate (DN|SHA-256 digest):'
+# checks the signature (fails the job if it is not valid) and shows which certificate signed it (public
+# information); an APK only installs over the app when this certificate is the same as the installed one's.
+# The line format differs between build-tools versions ("Signer #1 …" / "Signer (minSdkVersion=…) …").
+certs=$("$bt/apksigner" verify --print-certs "$out" 2>/dev/null)
+echo "$certs" | grep -E 'certificate (DN|SHA-256 digest):' || echo "$certs"
 echo "signed: $out"
