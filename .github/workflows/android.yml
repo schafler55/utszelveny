@@ -9,6 +9,7 @@ on:
 
 permissions:
   contents: write
+  actions: write     # a stable release asks the Pages workflow to rebuild (landing page APK link)
 
 jobs:
   build:
@@ -138,6 +139,13 @@ jobs:
           body: |
             ÚtSzelvény ${{ steps.apk.outputs.ver }} – stabil kiadás. Változások: [CHANGELOG.md](https://github.com/${{ github.repository }}/blob/${{ github.ref_name }}/CHANGELOG.md)
             Telepítés: töltsd le az APK fájlt a telefonon, és engedélyezd az ismeretlen forrásból történő telepítést.
+
+      # The landing page links the stable release's APK file directly: rebuild the site now that it is attached.
+      - name: Update the landing page APK link
+        if: github.ref_type == 'tag'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh workflow run pages.yml --ref main -R "$GITHUB_REPOSITORY"
 
       # Only the newest APK stays in the release (older file names are removed).
       - name: Remove older APKs from the release

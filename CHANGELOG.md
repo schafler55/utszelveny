@@ -11,6 +11,7 @@ saját verziószámot kapott, ezért a régebbi bejegyzések aprók; a ténylege
 „Stabil kiadás” jelöli.
 
 ## Kiadatlan
+- **Kezdőlap, APK letöltés:** az „Android alkalmazás (APK) letöltése” link közvetlenül a legutóbbi stabil kiadás APK fájlját tölti le (eddig a kiadások oldalára vitt); minden új stabil kiadásnál magától frissül.
 - **Térkép, nagyítási szint:** a bal felső méretarány buborékban a lépték előtt a nagyítási szint is látszik (pl. „Z16 | 50 m”); ugyanez a szám, amihez a hidak, a kilométerszelvények és a buszmegállók csúszkája viszonyít.
 - **Buszmegállók a térképen az út mellett:** 15-ös nagyítástól a jel az út azon oldalán áll, ahol a megálló van (jobb / bal oldal a szelvényezés irányában), mint az OpenStreetMapen; az útközépi megállók az úton maradnak. 15 alatt az azonos nevű megálló két oldala egy jel az úton, 14 alatt pedig csak egy kis kék pont fehér alapon.
 - **„ITT” felirat:** a hidak, a tehergépjármű-korlátozások, a buszmegállók és az azonosítópont távolságánál az „itt” helyett nagybetűs, félkövér „ITT”.

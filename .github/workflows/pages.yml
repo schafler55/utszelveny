@@ -12,6 +12,8 @@ name: Web app (GitHub Pages)
 # The whole site is rebuilt each time, so a deleted branch's test page disappears.
 # Only main may deploy to Pages, so a push to a test branch or a published release asks main to rebuild
 # (workflow_dispatch), and a branch delete runs on main by itself.
+# The landing page's APK link is set to the latest stable release's APK file at every build; the Android
+# workflow asks for one more rebuild once it has attached the APK to a new stable release.
 # The dev and test pages are kept out of search results (noindex, and robots.txt of the landing page).
 # The dev and test pages have their own saved data (kszd_* / kszt_* keys), no service worker (it would clear the
 # real app's offline cache) and a small label; the app sees the renamed keys and does no update check there.
@@ -84,6 +86,16 @@ jobs:
             cp -r site/. "$OUT/"
             cp web/icon-192.png web/icon-512.png "$OUT/"
             test -s "$OUT/index.html"
+            # the APK link (id="apkLink") downloads the latest stable release's APK file directly;
+            # without one (e.g. the APK build is still running) it keeps pointing to the releases page
+            APK=$(gh api "repos/$GITHUB_REPOSITORY/releases/latest" --jq '[.assets[] | select(.name | endswith(".apk")) | .browser_download_url][0] // empty' 2>/dev/null || true)
+            if [ -n "$APK" ]; then
+              sed -i "s#<a id=\"apkLink\" href=\"[^\"]*\"#<a id=\"apkLink\" href=\"$APK\"#" "$OUT/index.html"
+              grep -q "href=\"$APK\"" "$OUT/index.html"
+              echo "landing page APK link: $APK"
+            else
+              echo "::warning::no APK in the latest stable release yet, the landing page links the releases page"
+            fi
             echo "landing page: / (site/ of main), real app: app/"
           fi
 
