@@ -54,6 +54,8 @@ import java.util.concurrent.TimeUnit;
  * asks for the location (GNSS) and camera permissions, passes the satellite status to the page, keeps the screen on,
  * and through the "AndroidBridge" JS bridge saves files (photo → the folder chosen in the Fotó settings, by default
  * DCIM/ÚtSzelvény; CSV → Download), shares them and copies text to the clipboard.
+ * Texts: this class shows no Hungarian text of its own. Failures go to the page as codes ("write", "scan:<path>"),
+ * whose texts are in the "native" group of the page's texts block; the share sheet title comes from the page.
  * HUD mode: full screen, maximum brightness and a locked orientation (setHud).
  * The page is loaded from https://appassets.androidplatform.net (a secure context), so geolocation and the camera
  * work, and OpenStreetMap gets a Referer header.
@@ -67,6 +69,7 @@ public class MainActivity extends Activity {
     private static final int REQ_CAMERA = 2;
     private static final int REQ_STORAGE = 3;
     private static final int REQ_TREE = 4;
+    private static final int REQ_PRECISE = 5;
 
     private WebView web;
     private GeolocationPermissions.Callback pendingCallback;
@@ -74,6 +77,7 @@ public class MainActivity extends Activity {
     private PermissionRequest pendingCamera;
     private Runnable pendingStorageJob;
     private Runnable pendingStorageFail;
+    private String pendingPreciseId;
 
     /* ---------- satellites (GnssStatus) → window.__gnss({v,u,c:[{k,v,u,cn}]}) ---------- */
     private LocationManager lm;
@@ -193,8 +197,14 @@ public class MainActivity extends Activity {
         s.setMediaPlaybackRequiresUserGesture(false);
         s.setAllowFileAccess(false);
         s.setAllowContentAccess(false);
-        // OpenStreetMap tile usage policy: an app must identify itself (name/version + project URL)
-        s.setUserAgentString(s.getUserAgentString() + " UtSzelveny/1.2.2 (+https://github.com/schafler55/utszelveny)");
+        // OpenStreetMap tile usage policy: an app must identify itself (name/version + project URL);
+        // the version is the app's own (versionName in build.gradle), so it is not one more place to update
+        String ver = "";
+        try {
+            ver = getPackageManager().getPackageInfo(getPackageName(), 0).versionName;
+        } catch (Exception ignored) {
+        }
+        s.setUserAgentString(s.getUserAgentString() + " UtSzelveny/" + ver + " (+https://github.com/schafler55/utszelveny)");
 
         web.addJavascriptInterface(new Bridge(), "AndroidBridge");
 
@@ -294,6 +304,12 @@ public class MainActivity extends Activity {
             if (granted) pendingCamera.grant(new String[]{PermissionRequest.RESOURCE_VIDEO_CAPTURE});
             else pendingCamera.deny();
             pendingCamera = null;
+        } else if (requestCode == REQ_PRECISE) {
+            String id = pendingPreciseId;
+            pendingPreciseId = null;
+            boolean fine = checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED;
+            if (fine) startGnss();
+            if (id != null) done(id, fine, "", "");
         } else if (requestCode == REQ_STORAGE) {
             Runnable job = granted ? pendingStorageJob : pendingStorageFail;
             pendingStorageJob = null;
@@ -442,7 +458,7 @@ public class MainActivity extends Activity {
                 try {
                     data = Base64.decode(b64, Base64.DEFAULT);
                 } catch (IllegalArgumentException e) {
-                    done(id, false, "hibás adat", "");
+                    done(id, false, "bad_data", "");
                     return;
                 }
                 try {
@@ -460,11 +476,11 @@ public class MainActivity extends Activity {
             // Android 8–9: storage permission needed for the public folders
             runOnUiThread(() -> {
                 if (pendingStorageJob != null) {
-                    done(id, false, "engedélykérés folyamatban", "");
+                    done(id, false, "perm_busy", "");
                     return;
                 }
                 pendingStorageJob = job;
-                pendingStorageFail = () -> done(id, false, "nincs tárhely-engedély", "");
+                pendingStorageFail = () -> done(id, false, "perm_storage", "");
                 requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQ_STORAGE);
             });
         }
@@ -475,11 +491,30 @@ public class MainActivity extends Activity {
             prefs().edit().putString("photoDir", key == null ? "dcim" : key).apply();
         }
 
-        /** Readable name of the picked folder, "" when none (or its permission is gone). */
+        /** Document id of the picked folder ("primary:DCIM/Munka"; the page makes the name), "" when none (or its permission is gone). */
         @JavascriptInterface
         public String photoDirLabel() {
             Uri t = photoTree();
-            return t == null ? "" : treeLabel(t);
+            return t == null ? "" : treeId(t);
+        }
+
+        /** False when location is allowed only as "approximate" (Android 12+); true when precise, or not allowed at all. */
+        @JavascriptInterface
+        public boolean preciseLocation() {
+            return checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
+                    || checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED;
+        }
+
+        /** Asks for precise location again (Android shows "change to precise location"); ok = precise now, via __nativeDone. */
+        @JavascriptInterface
+        public void requestPrecise(final String id) {
+            runOnUiThread(() -> {
+                if (pendingPreciseId != null) done(pendingPreciseId, false, "perm_busy", "");
+                pendingPreciseId = id;
+                requestPermissions(new String[]{
+                        Manifest.permission.ACCESS_FINE_LOCATION,
+                        Manifest.permission.ACCESS_COARSE_LOCATION}, REQ_PRECISE);
+            });
         }
 
         /** Opens the Android folder picker; the result comes back via __nativeDone (msg = folder name). */
@@ -487,7 +522,7 @@ public class MainActivity extends Activity {
         public void pickPhotoDir(final String id) {
             runOnUiThread(() -> {
                 if (pendingTreeId != null) {
-                    done(id, false, "a mappaválasztó már nyitva van", "");
+                    done(id, false, "picker_open", "");
                     return;
                 }
                 try {
@@ -498,7 +533,7 @@ public class MainActivity extends Activity {
                     startActivityForResult(i, REQ_TREE);
                 } catch (ActivityNotFoundException e) {
                     pendingTreeId = null;
-                    done(id, false, "nincs mappaválasztó a telefonon", "");
+                    done(id, false, "no_picker", "");
                 }
             });
         }
@@ -520,16 +555,16 @@ public class MainActivity extends Activity {
             });
         }
 
-        /** Opens the Android share sheet for a file saved before (content:// uri from saveFile). */
+        /** Opens the Android share sheet for a file saved before (content:// uri from saveFile); title from the page. */
         @JavascriptInterface
-        public void shareFile(final String uri, final String mime, final String id) {
+        public void shareFile(final String uri, final String mime, final String title, final String id) {
             runOnUiThread(() -> {
                 try {
                     Intent send = new Intent(Intent.ACTION_SEND);
                     send.setType(mime);
                     send.putExtra(Intent.EXTRA_STREAM, Uri.parse(uri));
                     send.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-                    Intent chooser = Intent.createChooser(send, "Megosztás");
+                    Intent chooser = Intent.createChooser(send, title == null || title.isEmpty() ? null : title);
                     chooser.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
                     startActivity(chooser);
                     done(id, true, "", uri);
@@ -558,19 +593,14 @@ public class MainActivity extends Activity {
         return null;
     }
 
-    /** "primary:DCIM/Munka" → "DCIM / Munka"; other volumes → "SD-kártya: …". */
-    private static String treeLabel(Uri tree) {
-        String d;
+    /** The folder's document id, e.g. "primary:DCIM/Munka" or "1234-5678:Fotók"; "*" when it cannot be read. */
+    private static String treeId(Uri tree) {
         try {
-            d = DocumentsContract.getTreeDocumentId(tree);
+            String d = DocumentsContract.getTreeDocumentId(tree);
+            return d == null || d.isEmpty() ? "*" : d;
         } catch (Exception e) {
-            return "választott mappa";
+            return "*";
         }
-        int c = d.indexOf(':');
-        String vol = c > 0 ? d.substring(0, c) : "";
-        String path = (c >= 0 ? d.substring(c + 1) : d).replace("/", " / ");
-        if ("primary".equals(vol)) return path.isEmpty() ? "Belső tárhely" : path;
-        return "SD-kártya" + (path.isEmpty() ? "" : ": " + path);
     }
 
     @Override
@@ -596,7 +626,7 @@ public class MainActivity extends Activity {
                 }
             }
             prefs().edit().putString("photoTree", tree.toString()).putString("photoDir", "custom").apply();
-            done(id, true, treeLabel(tree), tree.toString());
+            done(id, true, treeId(tree), tree.toString());
         } catch (Exception e) {
             done(id, false, String.valueOf(e.getMessage()), "");
         }
@@ -610,11 +640,11 @@ public class MainActivity extends Activity {
             Uri dir = DocumentsContract.buildDocumentUriUsingTree(tree, DocumentsContract.getTreeDocumentId(tree));
             doc = DocumentsContract.createDocument(cr, dir, mime, name);
         } catch (Exception e) {
-            throw new IOException("a választott mappa nem érhető el – válassz újat a Fotó beállításokban");
+            throw new IOException("tree_gone");
         }
-        if (doc == null) throw new IOException("a fájl nem hozható létre a választott mappában");
+        if (doc == null) throw new IOException("tree_create");
         try (OutputStream os = cr.openOutputStream(doc)) {
-            if (os == null) throw new IOException("a fájl nem írható");
+            if (os == null) throw new IOException("write");
             os.write(data);
         } catch (IOException e) {
             try {
@@ -655,9 +685,9 @@ public class MainActivity extends Activity {
             v.put(MediaStore.MediaColumns.RELATIVE_PATH, sub.isEmpty() ? base : base + "/" + sub);
             v.put(MediaStore.MediaColumns.IS_PENDING, 1);
             Uri uri = cr.insert(coll, v);
-            if (uri == null) throw new IOException("a fájl nem hozható létre");
+            if (uri == null) throw new IOException("create");
             try (OutputStream os = cr.openOutputStream(uri)) {
-                if (os == null) throw new IOException("a fájl nem írható");
+                if (os == null) throw new IOException("write");
                 os.write(data);
             } catch (IOException e) {
                 cr.delete(uri, null, null);
@@ -670,7 +700,7 @@ public class MainActivity extends Activity {
         }
         // Android 8–9: public folder + media scanner (gives a shareable content:// uri)
         File dir = sub.isEmpty() ? Environment.getExternalStoragePublicDirectory(base) : new File(Environment.getExternalStoragePublicDirectory(base), sub);
-        if (!dir.isDirectory() && !dir.mkdirs()) throw new IOException("a mappa nem hozható létre");
+        if (!dir.isDirectory() && !dir.mkdirs()) throw new IOException("mkdir");
         File f = new File(dir, name);
         int dot = name.lastIndexOf('.');
         for (int i = 1; f.exists(); i++) {
@@ -690,7 +720,7 @@ public class MainActivity extends Activity {
             latch.await(5, TimeUnit.SECONDS);
         } catch (InterruptedException ignored) {
         }
-        if (out[0] == null) throw new IOException("mentve, de a galéria nem látja: " + f.getAbsolutePath());
+        if (out[0] == null) throw new IOException("scan:" + f.getAbsolutePath());
         return out[0];
     }
 

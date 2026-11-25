@@ -109,6 +109,8 @@ A térkép északkal felfelé vagy menetirány szerint elforgatva is használhat
 | `SECURITY.md` | Biztonsági hiba zárt bejelentése (GitHub „Report a vulnerability” vagy e-mail), magyarul és angolul |
 | `web/szovegek.html` | Az alkalmazás összes szövege képernyőnként (kereshető, szerkeszthető), a `main` ág szerint: https://utszelveny.hu/dev/szovegek.html |
 | `tools/szovegek.py` | Ellenőrzi a `web/index.html` szövegblokkját (érvényes JSON, minden kulcs megvan); a build is futtatja |
+| `tools/verzio.py` | A verziószám: ellenőrzi, hogy minden helyen ugyanaz (oldal, Névjegy, `sw.js`, `build.gradle`), és egy paranccsal mindenhol átírja (`python3 tools/verzio.py 1.3.0`); a build és a stabil kiadás címkéje is ezzel ellenőrződik |
+| `tools/smoke_test.py`, `.github/workflows/checks.yml` | Minden feltöltéskor: szövegek, verziószámok és böngészős füstteszt (az alkalmazás végigkattintása fej nélküli Chrome-ban, ál-GNSS-szel és ál-kamerával; JavaScript-hibánál piros) |
 | `tools/adat/` | Az úthálózati adatok előállítása: a NAP-ból letöltött 13 WFS GeoJSON fájlból egy lépésben újraépíti a `web/index.html` beépített adatait, ellenőrzésekkel és összehasonlító jelentéssel (leírás: [tools/adat/README.md](tools/adat/README.md)) |
 | `tools/kezdolap_hatter.py` | Megrajzolja a kezdőlap úthálózat-hátterét (`site/hatter.svg`) |
 | `tools/kezdolap_og.py` | Elkészíti a link-előnézet képét (`site/kepek/og.jpg`): logó, név, szlogen, három képernyő |
@@ -175,11 +177,13 @@ Ha olyan hibát találsz, ami itt nem szerepel, jelezd [issue-ként](https://git
 - **GNSS:** a szelvény pontossága a telefon helymeghatározásán múlik: általában néhány méter, fák alatt, bevágásban, magas épületek mellett rosszabb, alagútban nincs jel. A kiírt km+m néhány méterrel eltérhet a helyszíni kilométerkövektől.
 - **Hiányzó kilométerjelek:** ahol a NAP-ban nincs kilométerjel (pl. egyes kerékpárutakon), az alkalmazás becsüli a szelvényt, ott akár több tíz méteres eltérés is lehet.
 - **Közeli utak:** párhuzamos utaknál, csomóponti ágaknál és elágazásokban az alkalmazás rövid ideig a szomszédos utat is választhatja. A közeli út egy koppintással kiválasztható.
+- **Mérés csak előtérben:** a GNSS-mérés csak akkor rögzít, ha az alkalmazás előtérben van és a képernyő be van kapcsolva (a „Képernyő ébren tartása” alapból be van kapcsolva). Ha közben másik alkalmazásra váltasz, a kimaradt szakaszt a mérés egyenes vonalként számolja.
 - **Álló helyzetben** az alkalmazás nem ismeri a haladási irányt, ezért az irányfüggő adatok (szelvényirány, irányonként eltérő sebességkorlát) csak elindulás után biztosak.
 - **EOV koordináták:** az átszámítás kb. 1 méter pontos: tájékozódásra jó, geodéziai felmérésre nem.
 
 **Böngészők és eszközök**
-- **Firefox Androidon nem támogatott:** egy-két helyadat után nem frissíti a pozíciót. Chrome ajánlott.
+- **Firefox Androidon nem támogatott:** egy-két helyadat után nem frissíti a pozíciót. Chrome ajánlott. (A figyelmeztetés a „Megértettem” gombbal bezárható.)
+- **Hozzávetőleges helyadat (Android 12-től):** ha az Android alkalmazás csak a hozzávetőleges helyet kapja meg, nem tudja megállapítani az utat; ilyenkor a Pozíció oldal tetején figyelmeztetés jelenik meg „Pontos hely engedélyezése” gombbal.
 - **Alkalmazásokba épített böngészők** (Facebook, Messenger stb.): gyakran nem adják át a helyadatot, ezért érdemes az oldalt Chrome-ban megnyitni.
 - **iPhone:** kevésbé tesztelt. A Safari alsó sávja eltakarja a térkép alját; a főképernyőre tett webalkalmazásban nincs böngészősáv.
 - **Csak az Android alkalmazásban:** a műholdak listája, az exponálás a hangerőgombokkal, a maximális fényerő HUD módban és a fotók mappájának választása.
@@ -188,7 +192,6 @@ Ha olyan hibát találsz, ami itt nem szerepel, jelezd [issue-ként](https://git
 
 ### Ismert hibák
 - **Lassú fotó az Android alkalmazásban:** „Gyors” minőségnél a kép néha csak 3–5 másodperc múlva jelenik meg (böngészőben gyors).
-- **Letiltott helyadat után kikapcsolva marad a GNSS:** ha egyszer letiltod a helyadatot (vagy a böngésző tiltja le), az alkalmazás a GNSS-t kikapcsoltnak jegyzi meg. A helyadat engedélyezése után a Pozíció oldalon a „GNSS indítása” gombbal kell újra elindítani.
 
 ## Tervek és ötletek
 

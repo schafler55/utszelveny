@@ -39,6 +39,8 @@ rest = html[:m.start()] + html[m.end():]
 asked = set(re.findall(r'data-tx(?:-[a-z-]+)?="([a-z_]+\.[a-z0-9_]+)"', rest)) | set(re.findall(r'TX\(\s*"([a-z_]+\.[a-z0-9_]+)"', rest))
 used = asked | (set(re.findall(r'["\']([a-z_]+\.[a-z0-9_]+)["\']', rest)) & have)
 groups = set(re.findall(r'TXA?\(\s*"([a-z_]+)"', rest))
+# a group whose keys the code picks at run time, TX("group." + code) (e.g. the codes of the Android side): all used
+groups |= set(re.findall(r'TXA?\(\s*"([a-z_]+)\."\s*\+', rest))
 for k in sorted(asked):
     if k not in have:
         errors.append(f"{k}: used by the app but missing from the texts block")
