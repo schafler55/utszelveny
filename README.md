@@ -50,8 +50,8 @@ A keresések elmenthetők és elnevezhetők, egyenként kapcsolóval jeleníthet
 
 ### Fotó
 Fénykép a helyszínről útszámmal, szelvénnyel, dátummal és idővel a kép tetején (koordináta és égtáj is kérhető),
-a pozíció a kép adatai közé (EXIF) is bekerül. Az Android alkalmazás alapból a Képek / ÚtSzelvény mappába ment;
-a beállításokban a DCIM / ÚtSzelvény vagy bármely választott mappa is megadható.
+a pozíció a kép adatai közé (EXIF) is bekerül. Az Android alkalmazás alapból a DCIM / ÚtSzelvény mappába ment (a kamera mappája mellett);
+a beállításokban a Képek / ÚtSzelvény vagy bármely választott mappa is megadható.
 Az Android alkalmazásban a hangerőgombokkal (vagy Bluetooth-os távkioldóval) is lehet exponálni.
 
 ![Fotó funkció – valódi fotók](screenshots/foto.jpg)

@@ -53,7 +53,7 @@ import java.util.concurrent.TimeUnit;
  * The whole app is assets/index.html (the same file as the web app); this class only shows it,
  * asks for the location (GNSS) and camera permissions, passes the satellite status to the page, keeps the screen on,
  * and through the "AndroidBridge" JS bridge saves files (photo → the folder chosen in the Fotó settings, by default
- * Pictures/ÚtSzelvény; CSV → Download), shares them and copies text to the clipboard.
+ * DCIM/ÚtSzelvény; CSV → Download), shares them and copies text to the clipboard.
  * HUD mode: full screen, maximum brightness and a locked orientation (setHud).
  * The page is loaded from https://appassets.androidplatform.net (a secure context), so geolocation and the camera
  * work, and OpenStreetMap gets a Referer header.
@@ -433,7 +433,7 @@ public class MainActivity extends Activity {
             runOnUiThread(() -> applyBars("light".equals(theme)));
         }
 
-        /** Saves a base64 file: image/* → Pictures/ÚtSzelvény (gallery), anything else → Download. */
+        /** Saves a base64 file: image/* → the photo folder (default DCIM/ÚtSzelvény, see setPhotoDir), anything else → Download. */
         @JavascriptInterface
         public void saveFile(final String b64, final String name, final String mime, final String id) {
             // returns at once: decoding and writing run on a worker thread (the page waits for this call otherwise)
@@ -469,10 +469,10 @@ public class MainActivity extends Activity {
             });
         }
 
-        /** Photo folder: pictures = Pictures/ÚtSzelvény, dcim = DCIM/ÚtSzelvény, custom = folder picked with pickPhotoDir. */
+        /** Photo folder: dcim = DCIM/ÚtSzelvény (default), pictures = Pictures/ÚtSzelvény, custom = folder picked with pickPhotoDir. */
         @JavascriptInterface
         public void setPhotoDir(String key) {
-            prefs().edit().putString("photoDir", key == null ? "pictures" : key).apply();
+            prefs().edit().putString("photoDir", key == null ? "dcim" : key).apply();
         }
 
         /** Readable name of the picked folder, "" when none (or its permission is gone). */
@@ -633,15 +633,16 @@ public class MainActivity extends Activity {
 
     private Uri writeFile(byte[] data, String name, String mime) throws IOException {
         boolean image = mime != null && mime.startsWith("image/");
-        // photos: folder chosen in the Fotó settings (an old "camera" choice falls back to Pictures); anything else (CSV): Download
-        String key = image ? prefs().getString("photoDir", "pictures") : "";
+        // photos: folder chosen in the Fotó settings (default and any other key, e.g. an old "camera" choice: DCIM/ÚtSzelvény);
+        // anything else (CSV): Download
+        String key = image ? prefs().getString("photoDir", "dcim") : "";
         if ("custom".equals(key)) {
             Uri tree = photoTree();
             if (tree != null) return writeTree(tree, data, name, mime);
-            key = "pictures";
+            key = "dcim";
         }
         String base = !image ? Environment.DIRECTORY_DOWNLOADS
-                : "dcim".equals(key) ? Environment.DIRECTORY_DCIM : Environment.DIRECTORY_PICTURES;
+                : "pictures".equals(key) ? Environment.DIRECTORY_PICTURES : Environment.DIRECTORY_DCIM;
         String sub = image ? FOLDER : "";
         if (Build.VERSION.SDK_INT >= 29) {
             ContentResolver cr = getContentResolver();

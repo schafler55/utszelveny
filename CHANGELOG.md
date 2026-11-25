@@ -13,6 +13,7 @@ saját verziószámot kapott, ezért a régebbi bejegyzések aprók; a ténylege
 
 ## [1.2.2] – kiadatlan (a `main` ágon)
 Az 1.2.0 óta a `main` ágra került változások; még nem stabil kiadás.
+- **Fotó, mentés helye (Android):** az alapértelmezett mappa mostantól a DCIM / ÚtSzelvény (a kamera mappája mellett), és ez áll a lista elején; a Képek / ÚtSzelvény a második, az egyéni mappa választása megmaradt. Aki már módosított valamit a beállításokban, annál a korábbi választás (Képek / ÚtSzelvény) marad, egy koppintással átállítható.
 - **Térkép → Részletek → Vissza:** ha a térképi buborék „Részletek” gombja nyitja meg a Mérés vagy a Keresés oldalt, a Vissza (Android vissza gomb, böngésző vissza, Esc) a térképre visz vissza, nyitva hagyott buborékkal, nem a Pozíció oldalra.
 - **Térkép, keresések:** kiválasztás nélkül a keresések csak a vonalukat (szakasz) vagy a tűjüket (pont) és a címkéjüket mutatják; a kezdő- és végpont (K, V), a másik pálya pontja, valamint a koordinátás keresés célkeresztje és szaggatott vonala az útig csak a kiválasztott keresésnél (a címkére koppintva, nyitott buborékkal) látszik.
 - **Térkép, mentett mérések:** a pontok (K, P1, P2…, V) csak a kiválasztott (megnyitott buborékú) mérésnél és a folyamatban lévő mérésnél látszanak; a többi mentett mérésnél csak a színes vonal és a címke.

@@ -620,10 +620,10 @@
     "photo_vol": "Fotózás a hangerőgombokkal",
     "grp_save": "Mentés",
     "photo_folder": "Fotók mentésének helye",
-    "photo_folder_pictures": "Képek / ÚtSzelvény",
-    "photo_folder_pictures_note": "alapértelmezett",
     "photo_folder_dcim": "DCIM / ÚtSzelvény",
-    "photo_folder_dcim_note": "a kamera mappája mellett, saját almappában",
+    "photo_folder_dcim_note": "alapértelmezett · a kamera mappája mellett, saját almappában",
+    "photo_folder_pictures": "Képek / ÚtSzelvény",
+    "photo_folder_pictures_note": "a Képek mappában, a kamera fotóitól külön",
     "photo_folder_custom_btn": "Egyéni mappa…",
     "photo_folder_pick": "Válassz mappát a telefonon",
     "photo_auto": "Automatikus mentés",
@@ -1852,7 +1852,7 @@ html[data-theme=light] .mapinfo .bh{color:color-mix(in srgb,var(--k) 55%,#000)}
         <div class="opt"><div><span data-tx="settings.photo_vol"></span><small id="phVolNote"></small></div><button class="sw on" id="swPhVol"></button></div>
       </div></div>
       <div class="sgrp"><div class="sgrp-h" data-tx="settings.grp_save"></div><div class="sgrp-c">
-        <div class="opt col" id="phFolderOpt"><div><span data-tx="settings.photo_folder"></span><small id="phFolderNote"></small></div><div class="radl" id="phFolderList"><button data-v="pictures"><i></i><span data-tx="settings.photo_folder_pictures"><small data-tx="settings.photo_folder_pictures_note"></small></span></button><button data-v="dcim"><i></i><span data-tx="settings.photo_folder_dcim"><small data-tx="settings.photo_folder_dcim_note"></small></span></button><button data-v="custom"><i></i><span data-tx="settings.photo_folder_custom_btn"><small id="phTreeLbl" data-tx="settings.photo_folder_pick"></small></span></button></div></div>
+        <div class="opt col" id="phFolderOpt"><div><span data-tx="settings.photo_folder"></span><small id="phFolderNote"></small></div><div class="radl" id="phFolderList"><button data-v="dcim"><i></i><span data-tx="settings.photo_folder_dcim"><small data-tx="settings.photo_folder_dcim_note"></small></span></button><button data-v="pictures"><i></i><span data-tx="settings.photo_folder_pictures"><small data-tx="settings.photo_folder_pictures_note"></small></span></button><button data-v="custom"><i></i><span data-tx="settings.photo_folder_custom_btn"><small id="phTreeLbl" data-tx="settings.photo_folder_pick"></small></span></button></div></div>
         <div class="opt"><div><span data-tx="settings.photo_auto"></span><small id="phAutoNote"></small></div><button class="sw on" id="swPhAuto"></button></div>
         <div class="opt"><div><span data-tx="settings.photo_exif"></span><small data-tx="settings.photo_exif_note"></small></div><button class="sw on" id="swPhExif"></button></div>
       </div></div>
@@ -1940,7 +1940,7 @@ const KUT=TXA("road_type",12);
 const PKOD=TXA("carriageway",3);
 
 /* ---------- settings ---------- */
-const S={km0Hide:true,mapBus:false,theme:"auto",wake:true,bike:true,navHide:true,updCheck:true,name:true,coord:"wgs",base:"grey",rot:"north",measCoord:"both",measCsv:true,srchCsv:true,srchLbl:"road",measLbl:"name",mapSpd:true,mapSnap:true,lineW:1.5,hl:"off",smooth:true,secSpd:true,spdWarn:true,secBr:true,secTr:true,secGps:true,secKez:true,phName:true,phAcc:true,phCoord:"both",phRes:"fast",phAuto:true,phExif:true,phDir:true,phVol:true,phFolder:"pictures",hudFlip:"x",hudOri:"land",hudCol:"white",hudBr:"max",hudDir:true,hudSpd:true,hudLim:true,hudName:false};
+const S={km0Hide:true,mapBus:false,theme:"auto",wake:true,bike:true,navHide:true,updCheck:true,name:true,coord:"wgs",base:"grey",rot:"north",measCoord:"both",measCsv:true,srchCsv:true,srchLbl:"road",measLbl:"name",mapSpd:true,mapSnap:true,lineW:1.5,hl:"off",smooth:true,secSpd:true,spdWarn:true,secBr:true,secTr:true,secGps:true,secKez:true,phName:true,phAcc:true,phCoord:"both",phRes:"fast",phAuto:true,phExif:true,phDir:true,phVol:true,phFolder:"dcim",hudFlip:"x",hudOri:"land",hudCol:"white",hudBr:"max",hudDir:true,hudSpd:true,hudLim:true,hudName:false};
 try{Object.assign(S,JSON.parse(localStorage.getItem("ksz_settings")||"{}"))}catch(e){}
 function saveS(){try{localStorage.setItem("ksz_settings",JSON.stringify(S))}catch(e){}}
 /* ---------- theme: Sötét / Világos / Rendszer (dark / light / system) ---------- */
@@ -5459,21 +5459,21 @@ $("manualGo").onclick=()=>{
 /* ---------- Fotó → Mentés helye (Android app; a browser always uses its download folder) ---------- */
 let phTree="";                    // label of the folder picked with the Android folder picker
 function phFolderLabel(){
-  const k=S.phFolder||"pictures";
-  return k==="dcim"?TX("settings.photo_folder_dcim"):k==="custom"?(phTree||TX("settings.photo_folder_custom")):TX("settings.photo_folder_pictures");
+  const k=S.phFolder||"dcim";
+  return k==="pictures"?TX("settings.photo_folder_pictures"):k==="custom"?(phTree||TX("settings.photo_folder_custom")):TX("settings.photo_folder_dcim");
 }
 function phFolderUI(){
   const app=!!(NB&&NB.setPhotoDir);
   $("phFolderList").style.display=app?"":"none";
   $("phFolderNote").textContent=app?TX("settings.photo_folder_app_note")
     :TX("settings.photo_folder_browser_note");
-  document.querySelectorAll("#phFolderList button").forEach(b=>b.classList.toggle("on",b.dataset.v===(S.phFolder||"pictures")));
+  document.querySelectorAll("#phFolderList button").forEach(b=>b.classList.toggle("on",b.dataset.v===(S.phFolder||"dcim")));
   $("phTreeLbl").textContent=phTree?TX("settings.photo_folder_change",{folder:phTree}):TX("settings.photo_folder_pick");
 }
 if(NB&&NB.setPhotoDir){
   try{phTree=NB.photoDirLabel()||""}catch(e){}
-  if(S.phFolder==="camera"||(S.phFolder==="custom"&&!phTree))S.phFolder="pictures";      // the picked folder is no longer available
-  try{NB.setPhotoDir(S.phFolder||"pictures")}catch(e){}
+  if(S.phFolder==="camera"||(S.phFolder==="custom"&&!phTree))S.phFolder="dcim";      // old DCIM/Camera choice, or the picked folder is gone → default
+  try{NB.setPhotoDir(S.phFolder||"dcim")}catch(e){}
 }
 document.querySelectorAll("#phFolderList button").forEach(b=>b.onclick=async()=>{
   const v=b.dataset.v;
