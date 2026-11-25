@@ -199,6 +199,7 @@ Időpont nélkül:
 - **Mérnökség és megyei igazgatóság:** amint a NAP közzéteszi őket, az alkalmazás is mutatja.
 - **Automatikus adatfrissítés:** a NAP adatainak havi ellenőrzése; ha változtak, az új adat a következő kiadással érkezik.
 - **Élő forgalmi információk (vizsgálat alatt):** a NAP Útinform adatai (útfelújítások, útlezárások, sávlezárások, ideiglenes korlátozások, balesetek) a Pozíció oldalon, a térképen és a Szakasz adatai oldalon, ahogy most a tehergépjármű-korlátozások. Csak internetkapcsolattal működne, és látszana, mikor frissült utoljára. Először a hosszabb ideig tartó útfelújítások és lezárások jönnének; a valós idejű forgalom (torlódás) később, ha egyáltalán.
+- **Mérnökségek és tengelysúlymérő állomások a térképen:** a Magyar Közút és a koncessziós cégek mérnökségeinek telephelyei, valamint a tengelysúlymérő (mérő)állomások ikonnal a térképen (külön kapcsolóval, mint a buszmegállók), koppintásra a nevükkel. Ehhez helyadat kell: a legjobb, ha a Magyar Közút ezeket is közzéteszi a NAP-on.
 
 ### Jelenleg nem tervezett
 - **iPhone alkalmazás:** a webalkalmazás iPhone-on is működik, a főképernyőre téve böngészősáv nélkül, teljes képernyőn fut. Egy App Store-os alkalmazáshoz éves díjas Apple fejlesztői tagság és App Store-jóváhagyás kellene, és külön kellene karbantartani.
