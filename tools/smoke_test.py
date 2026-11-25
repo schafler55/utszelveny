@@ -200,7 +200,9 @@ async def main_flow(b, url):
         await pg.click("#nFoto")
         await wait_js(pg, "!document.getElementById('camShut').disabled", 10000)
         await pg.click("#camShut")
-        await wait_js(pg, "getComputedStyle(document.getElementById('camThumb')).visibility==='visible'", 10000)
+        await wait_js(pg, "camShots.length===1", 10000)   # stamped, encoded and in the session list
+        await expect(await pg.evaluate("camShots[0].blob.size>20000&&camShots[0].tm.wk===true"),
+                     "the photo was not encoded by the worker (blocked by the Content Security Policy?)")
         await pg.click("#camThumb")
         await pg.wait_for_selector("#camViewer.on")
         await pg.click("#cvClose")

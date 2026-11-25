@@ -52,8 +52,10 @@
 <!-- Content Security Policy (security audit L3): the page may only load and talk to its own address, the two map
      tile servers and GitHub's API (update check). Inline code and styles stay allowed: the whole app is inline.
      Links that open another app (Utcakép, Támogatás, Kapcsolat, APK download) are navigations, not affected.
-     A new outside server (another map layer, an API) has to be added here, or the browser blocks it. -->
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https://tile.openstreetmap.org https://server.arcgisonline.com; connect-src 'self' https://api.github.com https://tile.openstreetmap.org; object-src 'none'; base-uri 'none'; form-action 'none'; frame-src 'none'">
+     A new outside server (another map layer, an API) has to be added here, or the browser blocks it.
+     worker-src 'self' blob: – the offline cache's service worker (sw.js, this address) and the photo encoder, a worker
+     made from a piece of this page's own code (camEncWorker); a worker cannot be loaded from anywhere else. -->
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https://tile.openstreetmap.org https://server.arcgisonline.com; connect-src 'self' https://api.github.com https://tile.openstreetmap.org; worker-src 'self' blob:; object-src 'none'; base-uri 'none'; form-action 'none'; frame-src 'none'">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#0F1511">
 <meta name="mobile-web-app-capable" content="yes">
@@ -4333,7 +4335,9 @@ const blobB64=(b)=>new Promise((res,rej)=>{const r=new FileReader();r.onload=()=
 
 var camOn=false;                 // Fotó page open (var: render() may run before this block)
 let camPC=null,camProc=0,camQ=Promise.resolve();   // photo capabilities (asked once per camera start); photos being processed
-const CAM_TIMING=false;          // true: stage timings in the save message (diagnosis)
+const CAM_TIMING=false;          // true: stage timings in the photo message (diagnosis); always shown on the dev / test builds
+const CAM_PREV=2048;             // long side of the screen-size copy shown in the viewer and on the thumbnail
+let camSaveQ=Promise.resolve();  // automatic saves, one after the other, apart from the processing queue
 const CAM_BUF=8;                 // photos tapped but not yet saved (each waits as the camera's own JPEG, a few MB)
 let camTaps=[],camSeq=0;                  // taps waiting for the camera: stamp data of the tap
 const CAM_FLIP=false;   // front / back camera switch: off for now, the code is kept
@@ -4526,7 +4530,7 @@ function camUI(){
 }
 function camThumbUI(){
   const b=$("camThumb"),L=camShots[camShots.length-1],uns=camShots.filter(x=>!x.saved).length;
-  b.style.backgroundImage=L?`url("${L.url}")`:"";
+  b.style.backgroundImage=L?`url("${L.purl||L.url}")`:"";
   b.innerHTML=camShots.length?`<b class="${uns?"uns":""}">${camShots.length}</b>`:"";
   b.classList.toggle("proc",camProc>0||camPend>0||camTaps.length>0);
   b.style.visibility=camShots.length||camProc?"visible":"hidden";
@@ -4695,6 +4699,47 @@ async function camCaptureLoop(){
   }
   camTaps.length=0;camShooting=false;camUI();
 }
+/* ---- JPEG encoding in a worker ----
+   canvas.toBlob() encodes the JPEG in the page's idle time, and when the page gets no idle time the browser waits
+   (up to seconds) before it gives up and encodes anyway. In the Android app idle time comes irregularly, so a photo
+   appeared at once or only seconds later, at random. A worker encodes right away (OffscreenCanvas.convertToBlob) and
+   does not hold the page; it also makes a screen-size copy of big photos. The worker is made from this text (one
+   index.html, no extra file). Without worker support, or if it fails once, toBlob is used as before. */
+let camEnc=null,camEncN=0;const camEncCB=new Map();   // camEnc: null = not tried yet, false = not available
+function camEncOff(){
+  const w=camEnc;camEnc=false;if(w&&w.terminate)try{w.terminate()}catch(e){}
+  for(const f of camEncCB.values())f.rej(new Error("worker"));camEncCB.clear();
+}
+function camEncWorker(){
+  if(camEnc!==null)return camEnc;
+  camEnc=false;
+  try{
+    if(typeof Worker==="undefined"||typeof OffscreenCanvas==="undefined"||typeof createImageBitmap==="undefined")return false;
+    const code=`self.onmessage=async(e)=>{const d=e.data,b=d.bmp;try{
+      const enc=(w,h,q)=>{const c=new OffscreenCanvas(w,h),x=c.getContext("2d");x.imageSmoothingQuality="high";x.drawImage(b,0,0,w,h);return c.convertToBlob({type:"image/jpeg",quality:q})};
+      const blob=await enc(b.width,b.height,d.q),k=d.prev/Math.max(b.width,b.height);
+      const prev=k<.8?await enc(Math.round(b.width*k),Math.round(b.height*k),.85):null;
+      b.close();self.postMessage({id:d.id,blob,prev})}catch(err){try{b.close()}catch(_){}self.postMessage({id:d.id,err:String(err&&err.message||err)})}};`;
+    const u=URL.createObjectURL(new Blob([code],{type:"text/javascript"})),w=new Worker(u);
+    w.onmessage=(e)=>{const f=camEncCB.get(e.data.id);if(!f)return;camEncCB.delete(e.data.id);e.data.err?f.rej(new Error(e.data.err)):f.res(e.data)};
+    w.onerror=(e)=>{e.preventDefault&&e.preventDefault();camEncOff()};
+    camEnc=w;
+  }catch(e){camEnc=false}
+  return camEnc;
+}
+// the stamped canvas → {blob: full-size JPEG, prev: screen-size JPEG or null, wk: made by the worker}
+async function camEncode(cv){
+  const w=camEncWorker();
+  if(w){
+    try{
+      const bmp=await createImageBitmap(cv);
+      const r=await timeout(new Promise((res,rej)=>{const id=++camEncN;camEncCB.set(id,{res,rej});w.postMessage({id,bmp,q:.9,prev:CAM_PREV},[bmp])}),20000);
+      if(r&&r.blob)return {blob:r.blob,prev:r.prev||null,wk:true};
+    }catch(e){}
+    camEncOff();      // failed or far too slow: the old way from now on
+  }
+  return {blob:await new Promise(r=>cv.toBlob(r,"image/jpeg",.9)),prev:null,wk:false};
+}
 async function camProcess(src,st,tCap){
   try{
     const t1=performance.now();
@@ -4703,26 +4748,33 @@ async function camProcess(src,st,tCap){
     const cv=document.createElement("canvas");cv.width=W;cv.height=H;const c=cv.getContext("2d");
     c.drawImage(src,0,0,W,H);src.close&&src.close();
     drawStamp(c,W,H,st);
-    let blob=await new Promise(r=>cv.toBlob(r,"image/jpeg",.9));
+    const t2=performance.now(),E=await camEncode(cv);let blob=E.blob;
     cv.width=cv.height=0;
     if(!blob)throw new Error(TX("photo.err_no_image"));
     blob=await addExif(blob,st,W,H);
     const t=new Date(st.t),tag=st.state==="on"?`_${st.road}_${st.ch}`:st.state==="off"?"_halozaton_kivul":"";
     const name=`UtSzelveny_${t.getFullYear()}${p2(t.getMonth()+1)}${p2(t.getDate())}_${p2(t.getHours())}${p2(t.getMinutes())}${p2(t.getSeconds())}${tag}`.replace(/[^\w+-]/g,"")+".jpg";
-    const shot={id:++camSeq,blob,url:URL.createObjectURL(blob),name,saved:false,uri:"",tm:{cap:tCap,proc:performance.now()-t1,w:W,h:H}};
+    // purl: what the viewer and the thumbnail show – the screen-size copy of a big photo (a 12 Mpx picture decoded
+    // for every swipe held the phone, and the buttons, for a moment), the photo itself when it is small
+    const url=URL.createObjectURL(blob);
+    const shot={id:++camSeq,blob,url,purl:E.prev?URL.createObjectURL(E.prev):url,name,saved:false,uri:"",tm:{cap:tCap,draw:t2-t1,enc:performance.now()-t2,wk:E.wk,w:W,h:H}};
     camShots.push(shot);
     // above CAM_MAX the oldest saved photos leave the list (they are on the phone); an unsaved photo is never dropped
-    while(camShots.length>CAM_MAX){const i=camShots.findIndex(x=>x.saved);if(i<0)break;URL.revokeObjectURL(camShots.splice(i,1)[0].url);if(camIdx>i)camIdx--}
+    while(camShots.length>CAM_MAX){const i=camShots.findIndex(x=>x.saved);if(i<0)break;shotFree(camShots.splice(i,1)[0]);if(camIdx>i)camIdx--}
     camThumbUI();cvUI();
     const many=camShots.length>CAM_MAX;   // only unsaved photos above the limit: they use the phone's memory
-    if(S.phAuto)await shotSave(shot,true);
+    // saving has its own queue: a slow save never keeps the next photo waiting (a photo removed meanwhile is skipped)
+    if(S.phAuto)camSaveQ=camSaveQ.then(()=>camShots.includes(shot)&&!shot.saved?shotSave(shot,true):0).catch(()=>{});
     else camToast(many?TX("photo.many_unsaved",{n:camShots.filter(x=>!x.saved).length}):TX("photo.shot_done")+camTm(shot),many);
   }catch(e){camToast(TX("photo.shot_failed",{err:e&&e.message||e}),true)}
 }
 const camSec=(ms)=>(ms/1000).toFixed(1).replace(".",",")+" s";
+const shotFree=(sh)=>{URL.revokeObjectURL(sh.url);if(sh.purl&&sh.purl!==sh.url)URL.revokeObjectURL(sh.purl)};
+// stage timings after the photo message, on the dev / test builds only (their storage keys are renamed, see UPD_KEY):
+// kép = until the camera gave the picture, rajz = decoding + stamp, kódolás = JPEG (W worker / F fallback), mentés
 function camTm(sh){
-  if(!CAM_TIMING||!sh.tm)return"";
-  const m=sh.tm;return ` · kép ${camSec(m.cap)} · feldolgozás ${camSec(m.proc)}`+(m.save!=null?` · mentés ${camSec(m.save)}`:"")+` · ${m.w}×${m.h}`;
+  if(!(CAM_TIMING||UPD_KEY!=="ksz"+"_")||!sh.tm)return"";
+  const m=sh.tm;return ` · kép ${camSec(m.cap)} · rajz ${camSec(m.draw)} · kódolás ${camSec(m.enc)} ${m.wk?"W":"F"}`+(m.save!=null?` · mentés ${camSec(m.save)}`:"")+` · ${m.w}×${m.h}`;
 }
 async function shotSave(sh,auto){
   if(sh.saved){camToast(NB?TX("photo.already_saved",{folder:phFolderLabel()}):TX("photo.already_downloaded"));return true}
@@ -4776,7 +4828,7 @@ const CV_GAP=16;let cvDrag=null,cvAnim=false;
 // strip redraws had held the screen, and the buttons' reaction, for about a second on the phone)
 const cvEl=[...document.querySelectorAll("#cvTrack img")];
 function cvSet(im,sh,now){
-  const u=sh?sh.url:"";if(im._u===u)return;im._u=u;
+  const u=sh?sh.purl||sh.url:"";if(im._u===u)return;im._u=u;
   if(!sh){im.removeAttribute("src");im.style.visibility="hidden";return}
   if(now){im.src=u;im.style.visibility="";return}
   im.style.visibility="hidden";                                 // until the new picture is ready (not the old one)
@@ -4813,7 +4865,7 @@ $("cvShare").onclick=()=>{const sh=camShots[camIdx];if(sh)shotShare(sh)};
 $("cvDel").onclick=()=>{
   const sh=camShots[camIdx];if(!sh)return;
   if(!sh.saved&&!delAsk(sh,cvUI))return;
-  camShots.splice(camIdx,1);URL.revokeObjectURL(sh.url);camThumbUI();
+  camShots.splice(camIdx,1);shotFree(sh);camThumbUI();
   if(sh.saved)camToast(TX("photo.viewer_removed"));
   cvUI();
 };

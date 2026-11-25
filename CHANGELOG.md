@@ -13,6 +13,8 @@ saját verziószámot kapott, ezért a régebbi bejegyzések aprók; a ténylege
 
 ## [1.2.2] – kiadatlan (a `main` ágon)
 Az 1.2.0 óta a `main` ágra került változások; még nem stabil kiadás.
+- **Fotó, sebesség:** a kép JPEG-kódolása külön háttérszálon (worker) fut. Eddig a böngészőmotor az oldal „üresjáratára” várt vele, ami az Android alkalmazásban kiszámíthatatlanul jön: a fotó hol azonnal, hol csak másodpercek múlva készült el („Gyors” és „Legjobb” minőségnél is). A mentés külön sorban megy, így egy lassabb mentés nem tartja fel a következő fotó feldolgozását. A fejlesztői (DEV / teszt) változat a fotó üzenetében kiírja az egyes lépések idejét.
+- **Fotó, képnézegető:** a nézegető és a bélyegkép a nagy fotók képernyő méretű másolatát mutatja (a mentett kép továbbra is a teljes felbontású). A teljes, 12 megapixeles kép minden lapozáskor újra betöltődött, ezért lapozás után az alsó gombok egy pillanatig nem reagáltak.
 - **Mérés, gombok:** mérés közben a „Pont rögzítése” és a „Leállítás” gomb nem nyel el koppintást. Eddig a kártya másodpercenként újrarajzolódott, és ha ez épp a koppintás közben történt, a koppintás elveszett (hosszabb nyomásnál mindig).
 - **Pozíció, ⇄ útválasztó:** a közeli utak gombjai menet közben is biztosan reagálnak (a szelvény változásakor eddig újrarajzolódtak, és a koppintás elveszhetett).
 - **Fotó:** 40 fotó felett sem vész el mentetlen kép: a listából csak a már mentett, legrégebbi fotók kerülnek ki. Ha a mentetlen fotók száma 40 fölé nő, az üzenet szól, hogy mentsd őket.
