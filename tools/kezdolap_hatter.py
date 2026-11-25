@@ -123,7 +123,7 @@ for r in ROADS.values():
     r["poly"] = catmull(r["pts"])
 
 out = [f'<svg xmlns="http://www.w3.org/2000/svg" width="{W}" height="{H}" viewBox="0 0 {W} {H}">']
-out.append(f'<g fill="none" stroke-linecap="round" stroke-linejoin="round">')
+out.append('<g fill="none" stroke-linecap="round" stroke-linejoin="round">')
 
 def road(r, deck=None):
     """deck = (s0, s1): only that stretch (a bridge deck)."""

@@ -21,6 +21,8 @@ name: Web app (GitHub Pages)
 on:
   push:
     branches: ['**']
+    # pushes that only change docs change nothing on the website
+    paths-ignore: ['**.md', 'screenshots/**']
   release:
     types: [published]
   delete:

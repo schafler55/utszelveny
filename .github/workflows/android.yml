@@ -5,7 +5,15 @@ on:
     branches: ['**']
     # a version tag (v1.0, v1.1 … or V1.0) publishes a stable release
     tags: ['v*', 'V*']
+    # pushes that only change docs build no APK (GitHub never applies path filters to tag pushes: releases always build)
+    paths-ignore: ['**.md', 'screenshots/**']
   workflow_dispatch:
+
+# a newer push of the same branch cancels the run still going: two quick pushes could otherwise finish in the wrong
+# order, and the older run would remove the newer APK from the pre-release
+concurrency:
+  group: apk-${{ github.ref }}
+  cancel-in-progress: true
 
 # Every job gets only the access it needs (see the jobs below).
 permissions:
@@ -59,6 +67,13 @@ jobs:
       # the texts block (id="texts") must be valid JSON and hold every key the app asks for
       - name: Check the texts block
         run: python3 tools/szovegek.py web/index.html
+
+      # every place of the version number agrees, and a stable release's tag is that version (tools/verzio.py)
+      - name: Check the version numbers
+        env:
+          TAG: ${{ github.ref_type == 'tag' && github.ref_name || '' }}
+        run: |
+          if [ -n "$TAG" ]; then python3 tools/verzio.py --tag "$TAG"; else python3 tools/verzio.py; fi
 
       # File name carries the version (stable release, main) or the branch name + build number (test branches),
       # e.g. UtSzelveny-V1.3.0.apk, UtSzelveny-DEV-V1.2.1.apk and UtSzelveny-test-auto-V1.2.1-b123.apk

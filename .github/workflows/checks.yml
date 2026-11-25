@@ -1,0 +1,42 @@
+name: Checks
+
+# Runs on every push: the texts block, the version numbers and a browser smoke test of the web app
+# (tools/smoke_test.py: the app driven in headless Chrome with a fake GNSS position and camera; it fails on any
+# JavaScript error and checks the bugs fixed on 2026-11-25). It does not hold back the APK or the website builds:
+# a red mark here means "look at it before the next stable release".
+
+on:
+  push:
+    branches: ['**']
+    paths-ignore: ['**.md', 'screenshots/**']
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: checks-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  checks:
+    # Dependabot's branches only update the pinned actions
+    if: github.actor != 'dependabot[bot]'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Texts block
+        run: python3 tools/szovegek.py web/index.html
+
+      - name: Version numbers
+        run: python3 tools/verzio.py
+
+      # only the Playwright Python package (no browser download): the runner's own Google Chrome is used
+      - name: Browser smoke test
+        run: |
+          python3 -m pip install --user --break-system-packages --quiet playwright==1.63.0
+          python3 tools/smoke_test.py "$(command -v google-chrome)"

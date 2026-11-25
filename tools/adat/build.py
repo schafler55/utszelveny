@@ -15,7 +15,7 @@ Usage:
 
 The town names on built-up (átkelési) sections come from tools/adat/osm/telepulesek.json (OpenStreetMap, ODbL).
 """
-import argparse, collections, datetime, json, math, os, re, sys
+import argparse, collections, datetime, json, os, re, sys
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
@@ -599,7 +599,10 @@ def main():
     if err and not a.force:
         sys.exit("STOP: " + "; ".join(err) + " (index.html not changed; --force writes it anyway)")
     js = json.dumps(D, ensure_ascii=False, separators=(",", ":"))
-    open(a.html, "w", encoding="utf-8", newline="").write(s[:i] + js + s[j:])
+    # written next to it first and then swapped in: an interrupted write never leaves a broken index.html
+    tmp = a.html + ".tmp"
+    open(tmp, "w", encoding="utf-8", newline="").write(s[:i] + js + s[j:])
+    os.replace(tmp, a.html)
     if a.json:
         open(a.json, "w", encoding="utf-8").write(js)
     print(f"roads {len(D['roads'])} · segments {len(D['segs'])} · bridges {len(D['br'])} · "
