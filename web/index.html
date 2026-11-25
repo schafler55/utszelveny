@@ -2172,7 +2172,7 @@ function pavementAt(r,pk,v){const x=szdHit(BUR,r,pk,v);return x?{width:x.w<0?nul
 function trafficAt(r,pk,v){const x=szdHit(ANF,r,pk,v);if(!x)return null;const k=x.s*4,a=SZD.ksz;
   return {asz:nn(a[k]),anf:nn(a[k+1]),oj:nn(a[k+2]),ongj2:nn(a[k+3]),year:SZD.ev}}
 // everything for one place: road r, carriageway pk, chainage value v
-function sectionData(r,pk,v){return {lanes:lanesAt(r,pk,v),pavement:pavementAt(r,pk,v),traffic:trafficAt(r,pk,v)}}
+function sectionData(r,pk,v){return {lanes:lanesAt(r,pk,v),pavement:pavementAt(r,pk,v),traffic:trafficAt(r,pk,v)}}
 /* ---------- NAP one-way carriageways and bus stops (built by tools/adat/build.py) ----------
    One-way ranges per road and carriageway; a place on an undivided road without a range is two-way.
    Bus stops: chainage on the road, the stop's own EOV position (beside the road), name, side, how it is built. */
@@ -3150,8 +3150,8 @@ function kmPosts(s){let K=KMP.get(s);if(K)return K;K=[];const A=segAnc[s],L=segL
 const BR_X_D=20,BR_X_REACH=48;      // a crossing road within 20 m of the bridge point; its carriageways within ±48 m along the bridge
 const mapZoom=()=>Math.log2(mS*WORLD/256);            // the map's zoom level (inverse of zToS)
 const brZoom=()=>S.brZ>=10&&S.brZ<=19?S.brZ:14;       // bridges are shown from this zoom level (slider in Térkép settings)
-const kmZoom=()=>S.kmZ>=10&&S.kmZ<=19?S.kmZ:15;       // km posts and their km numbers from this zoom level (slider in Térkép settings)
-const busZoom=()=>S.busZ>=10&&S.busZ<=19?S.busZ:16;   // bus stops are shown from this zoom level (slider in Térkép settings)
+const kmZoom=()=>S.kmZ>=10&&S.kmZ<=19?S.kmZ:15;       // km posts and their km numbers from this zoom level (slider in Térkép settings)
+const busZoom=()=>S.busZ>=10&&S.busZ<=19?S.busZ:16;   // bus stops are shown from this zoom level (slider in Térkép settings)
 // bus stops on the map: a small white plate with a blue bus beside the road, on the side the stop is on
 // (jobb / bal oldal as seen in the direction of the chainage, like OpenStreetMap puts the stop beside the street);
 // "útközepén" stops and stops whose road place cannot be found stay at the NAP point. Where two would overlap
@@ -3610,7 +3610,7 @@ function busListHTML(r,pk,v){
     return `<div class="br"><div class="brtx">
       <div class="brname" style="display:flex;align-items:baseline;gap:10px"><span style="flex:1;min-width:0">${g.name?esc(g.name):`<span class="na">${TX("details.bus_noname")}</span>`}</span><span class="brpos${g.d<=25?" here":""}">${pos}</span></div>${rows}</div></div>`}).join("")+`</div>`;
 }
-// full page like Beállítások; Back / Esc / the arrow close it
+// full page like Beállítások; Back / Esc / the arrow close it
 function infoOpen(t){$("ipBody").innerHTML=sectionInfoHTML(t);$("ipBody").scrollTop=0;animOpen($("infoPage"))}
 function infoClose(){if(!$("infoPage").classList.contains("on"))return false;animClose($("infoPage"));return true}
 $("ipPageBack").onclick=infoClose;
@@ -4031,9 +4031,11 @@ function drawMeasTrack(M,col,marks){
   const mark=(p,fill,lbl)=>{if(!p)return;const m=eovToM(p.E,p.N),x=m2sx(m.x,m.y),y=m2sy(m.x,m.y);
     ctx.beginPath();ctx.arc(x,y,lbl.length>1?11:9,0,7);ctx.fillStyle=fill;ctx.fill();ctx.lineWidth=2;ctx.strokeStyle="#fff";ctx.stroke();
     ctx.fillStyle="#fff";ctx.font=`bold 11px ${APPF}`;ctx.textAlign="center";ctx.textBaseline="middle";ctx.fillText(lbl,x,y+0.5)};
-  (M.pts||[]).forEach((p,i)=>mark(p,"#334155","P"+(i+1)));
-  mark(M.start,"#16a34a","K");
-  if(M!==measActive){mark(M.end,"#dc2626","V");
+  // K / P1… / V markers only for the selected measurement (bubble open) and the one being measured;
+  // the other saved measurements show just their line and chip (user, 2026-11-25)
+  const sel=M===mapMeas||M===measActive;
+  if(sel){(M.pts||[]).forEach((p,i)=>mark(p,"#334155","P"+(i+1)));mark(M.start,"#16a34a","K")}
+  if(M!==measActive){if(sel)mark(M.end,"#dc2626","V");
     if(M.start){const m=eovToM(M.start.E,M.start.N);mapChip(m2sx(m.x,m.y),m2sy(m.x,m.y),measChipTxt(M),15,msCol(M),M===mapMeas,{meas:M})}}
 }
 // map label of a saved measurement (Beállítások → Mérés): name + length (default), or road number + km+m of start → end
