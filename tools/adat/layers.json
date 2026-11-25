@@ -1,0 +1,156 @@
+{
+  "_comment": "The NAP WFS layers ÚtSzelvény is built from. key: internal name; name: NAP adatcsomag; layer: WFS layer name – the build recognises each downloaded file by it (every feature id starts with wfs_<number>.<layer>.), so file names do not matter; geom: geometry type; fields: required fields (a missing one stops the build); optional: other known fields (any field not listed is reported as new); codes: values the build knows (an unknown value stops the build); keys: the roaddata keys the layer feeds. url: download address pattern, {n} = the number in wfs_<number>.",
+  "crs": "EPSG:23700",
+  "url": "https://napphub.kozut.hu/geoserver/nhp_{n}/wfs_{n}/ows?service=wfs&version=1.0.0&request=GetFeature&resultType=results&typeNames=nhp_{n}:wfs_{n}&format_options=CHARSET:UTF-8&outputFormat=json",
+  "layers": {
+    "halozat": {
+      "name": "Országos közúthálózat",
+      "layer": "utm2_nap_view",
+      "geom": "MultiLineString",
+      "fields": ["id", "kszam", "kkod", "vkod", "pkod", "kutka", "kszelv", "vszelv", "szak_tipus", "szak_label", "szho"],
+      "codes": {
+        "kutka": ["1", "2", "3", "4", "5", "6", "7", "8", "9", "K", "P"],
+        "pkod": ["0", "1", "2"]
+      },
+      "keys": ["roads", "segs", "lab"],
+      "optional": ["szak_irany", "szak_street"]
+    },
+    "kmjel": {
+      "name": "Szelvényjelek",
+      "layer": "nap_b11_kmjel",
+      "geom": "Point",
+      "fields": ["kszam", "pkod", "kmjel"],
+      "keys": ["segs (km anchors)"]
+    },
+    "kutka": {
+      "name": "Közút neve, kategóriája és kezelője",
+      "layer": "nap_b6_kutka",
+      "geom": "MultiLineString",
+      "fields": ["id", "kszam", "utnev", "kezelo"],
+      "optional": ["pkod", "kszelv", "vszelv", "zkod", "uzemm", "mernokseg", "kutka", "utkategoria"],
+      "keys": ["roads (names)", "kez"]
+    },
+    "szakjel": {
+      "name": "Lakott területi szakaszok",
+      "layer": "nap_szakjel",
+      "geom": "MultiLineString",
+      "fields": ["kszam", "pkod", "kszelv", "vszelv", "szakjel"],
+      "codes": {
+        "szakjel": ["külsőségi", "átkelési"]
+      },
+      "keys": ["szk", "tel"],
+      "optional": ["kutka"]
+    },
+    "sebkorl": {
+      "name": "Sebességkorlátozás",
+      "layer": "nap_b9_sebkorl",
+      "geom": "MultiLineString",
+      "fields": ["kszam", "pkod", "kszelv", "vszelv", "sebkorl", "sebkir", "sebkieg"],
+      "codes": {
+        "sebkir": [
+          "teljes keresztmetszetre",
+          "szelvényezéssel azonos",
+          "szelvényezéssel ellentétes",
+          null
+        ]
+      },
+      "keys": ["spd", "str"]
+    },
+    "hid": {
+      "name": "Hídhasználati feltételek",
+      "layer": "nap_b8_hidhasznflt",
+      "geom": "Point",
+      "fields": ["kszam", "pkod", "kszelv", "hnev", "hnem", "hhely", "huzemtb", "hkorlt1", "hkorle1"],
+      "codes": {
+        "hhely": ["közúti híd", "közút feletti híd"],
+        "hkorlt": {
+          "Összsúly korlátozása (tonna)": 1,
+          "Tengelysúly korlátozás (tonna)": 2,
+          "Magasságkorlátozás (dm)": 3,
+          "Híd alatti magasságkorlátozás (dm)": 4,
+          "Híd alatti merev kapu magassága (dm)": 5,
+          "Lengő kapu magassága (dm)": 6,
+          "Merev kapu magassága (dm)": 7,
+          "Útszűkület jelzőtábla (dm)": 8,
+          "Híd alatti szélességkorlátozás (dm)": 9,
+          "Sebességkorlátozás (km/ó)": 10,
+          "Szembejövő jármű elsőbbségét jelző tábla": 11,
+          "Legkisebb követési távolság (m)": 12,
+          "Egyéb korlátozás (pl.jelzőlámpa, stb.)": 13,
+          "Nincs korlátozás a hídon": 0
+        }
+      },
+      "keys": ["br", "str"],
+      "optional": ["hszam", "vszelv", "hkorlt2", "hkorle2", "hkorlt3", "hkorle3", "hkorlt4", "hkorle4", "hkorlt5", "hkorle5", "hkorlt6", "hkorle6"]
+    },
+    "teher": {
+      "name": "Tehergépjárművekre vonatkozó korlátozások",
+      "layer": "nap_teher",
+      "geom": "MultiLineString",
+      "fields": ["kszam", "pkod", "kszelv", "vszelv", "sulyk_kod", "sulykorl", "sulykieg", "sulyk2_kod", "sulykorl2", "sulykieg2"],
+      "codes": {
+        "sulyk_kod": {
+          "22": 1,
+          "23": 2,
+          "25": 3,
+          "21": 4,
+          "28": 5,
+          "27": 6,
+          "26": 7,
+          "24": 8
+        }
+      },
+      "keys": ["tr", "str"],
+      "optional": ["kezelo", "sulyk", "sulyk_en", "sulyk2", "sulyk2_en"]
+    },
+    "sav": {
+      "name": "Összes gépjármű forgalmi sávok száma",
+      "layer": "nap_b3_savossz",
+      "geom": "MultiLineString",
+      "fields": ["kszam", "pkod", "kszelv", "vszelv", "savossz"],
+      "keys": ["sav"]
+    },
+    "burkolat": {
+      "name": "Burkolat típusa, szélessége",
+      "layer": "nap_b2_utszelesseg",
+      "geom": "MultiLineString",
+      "fields": ["kszam", "pkod", "kszelv", "vszelv", "rbtsz", "rbtip"],
+      "keys": ["bur", "burt"]
+    },
+    "forgalom": {
+      "name": "Éves keresztmetszeti forgalmi adatok",
+      "layer": "nap_b10_forg",
+      "geom": "MultiLineString",
+      "fields": ["kszam", "pkod", "kszelv", "vszelv", "asz", "anf", "oj", "ongj2", "ev"],
+      "keys": ["anf", "ksz", "anfEv"]
+    },
+    "csp": {
+      "name": "Közúti azonosító pontok",
+      "layer": "nap_b5_csp",
+      "geom": "MultiPoint",
+      "fields": ["kod", "kszamok"],
+      "keys": ["csp", "cspk"]
+    },
+    "irany": {
+      "name": "Egyirányú útpályák",
+      "layer": "nap_eu_irany",
+      "geom": "MultiLineString",
+      "fields": ["kszam", "pkod", "kszelv", "vszelv", "irany"],
+      "codes": {
+        "irany": ["egyirányú, szelvényezéssel egyező irányban", "egyirányú, szelvényezéssel ellentétes irányban"]
+      },
+      "keys": ["egy"]
+    },
+    "megallo": {
+      "name": "Autóbusz megállóhelyek",
+      "layer": "nap_b26_megallo",
+      "geom": "Point",
+      "fields": ["kszam", "pkod", "kszelv", "mnev", "mold", "mkiep"],
+      "codes": {
+        "mold": ["jobboldali", "baloldali", "útközepén"]
+      },
+      "keys": ["bm", "bmn", "bmt"],
+      "optional": ["vszelv"]
+    }
+  }
+}
