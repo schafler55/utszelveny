@@ -191,6 +191,24 @@ Ha olyan hibát találsz, ami itt nem szerepel, jelezd [issue-ként](https://git
 - **Lassú fotó az Android alkalmazásban:** „Gyors” minőségnél a kép néha csak 3–5 másodperc múlva jelenik meg (böngészőben gyors).
 - **Letiltott helyadat után kikapcsolva marad a GNSS:** ha egyszer letiltod a helyadatot (vagy a böngésző tiltja le), az alkalmazás a GNSS-t kikapcsoltnak jegyzi meg. A helyadat engedélyezése után a Pozíció oldalon a „GNSS indítása” gombbal kell újra elindítani.
 
+## Tervek és ötletek
+
+Új ötletet issue-ként lehet beküldeni (lásd [Közreműködés](#közreműködés)). Ami elkészül, a [változásnaplóba](CHANGELOG.md) kerül, és lekerül erről a listáról.
+
+### Tervben
+Időpont nélkül:
+- **Mérnökség és megyei igazgatóság:** amint a NAP közzéteszi őket, az alkalmazás is mutatja.
+- **Automatikus adatfrissítés:** a NAP adatainak havi ellenőrzése; ha változtak, az új adat a következő kiadással érkezik.
+
+### Jelenleg nem tervezett
+- **iPhone alkalmazás:** a webalkalmazás iPhone-on is működik, a főképernyőre téve böngészősáv nélkül, teljes képernyőn fut. Egy App Store-os alkalmazáshoz éves díjas Apple fejlesztői tagság és App Store-jóváhagyás kellene, és külön kellene karbantartani.
+- **Videó:** a cél a hellyel és szelvénnyel bélyegzett fotó; a bélyegzett videó sok munka lenne, és nagyon nagy fájlokat adna.
+- **Önkormányzati és egyéb helyi utak:** nincs hozzájuk nyílt, szelvényezett adatforrás, a NAP csak az országos közutakat tartalmazza.
+- **Android Auto:** Google Play kiadás nélkül nem megoldható.
+- **Google Play kiadás:** talán egy későbbi főverzióban.
+- **Településrészek nevei a helységnévtáblák szerint** (pl. Antalszállás).
+- **Az egyirányú szakaszok nyilai a térképen.**
+
 ## Közreműködés
 
 **Hibajelentést és ötletet issue-ként szívesen fogadok,** de a projekt nem fogad el kódhozzájárulást, a pull requesteket a rendszer automatikusan lezárja. Részletek: [CONTRIBUTING.md](CONTRIBUTING.md).
