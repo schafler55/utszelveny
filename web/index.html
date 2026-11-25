@@ -3479,7 +3479,7 @@ function openChip(c,late){
 }
 // open a saved card from the map: switch to its page, expand it, outline it and scroll it into view
 function svOpenCard(st,id,view,render){
-  showView(view);st.open=id;st.del=null;st.nw=null;st.hl=id;render();
+  showView(view);backTo="map";st.open=id;st.del=null;st.nw=null;st.hl=id;render();
   const c=[...$(st.el).querySelectorAll(".mitem")].find(x=>+x.dataset.id===id);if(!c)return;
   // no grow animation here: while the details grow the page is too short to scroll the card to the top
   requestAnimationFrame(()=>c.scrollIntoView({block:"start",behavior:svReduce()?"auto":"smooth"}));
@@ -5335,7 +5335,11 @@ function srchMapInfo(it){mapItemShow({srch:it})}
 document.addEventListener("focusin",(e)=>{if(e.target.matches&&e.target.matches("main input")){$("navBar").classList.add("hide");$("navFade").classList.add("hide")}});
 document.addEventListener("focusout",(e)=>{if(e.target.matches&&e.target.matches("main input"))setTimeout(()=>{if(!(document.activeElement&&document.activeElement.matches("main input"))){$("navBar").classList.remove("hide");$("navFade").classList.remove("hide")}},60)});
 srchModeUI();srchDivCheck(-1);
+// page to return to with Back: set when the map bubble's "Részletek" opens the Mérés / Keresés page
+// (back then goes to the map, not to Pozíció); any other page change clears it
+let backTo=null;
 function showView(v){
+  backTo=null;
   if(v!=="meas")measHl=null;if(v!=="srch"){srchHl=null;$("sRes").classList.remove("hl")}
   $("navBar").classList.remove("hide");$("navFade").classList.remove("hide");
   mapOn=v==="map";
@@ -5610,6 +5614,7 @@ function goBack(){
   if(infoClose())return true;
   if($("mapPanel").classList.contains("on")){closeMapPanel();return true}
   if(mmOn){setMM(false);return true}
+  if(backTo){showView(backTo);return true}                     // details opened from the map: back to the map
   if(!$("posView").classList.contains("on")){showView("pos");return true}
   return false;
 }
