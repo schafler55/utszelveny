@@ -150,6 +150,47 @@ Az ÚtSzelvény ingyenes: nincs benne reklám, előfizetés vagy fizetős funkci
 Ha hasznosnak találod, egy kávé árával támogathatod a munkámat és a további fejlesztést: **[IDE KATTINTVA](https://revolut.me/schafler55)**.
 A támogatás önkéntes, és nem jár érte extra funkció.<br><b>A visszajelzés és az ötletek is sokat segítenek!</b>
 
+## Ismert korlátok és hibák
+
+Az alábbiak többsége az adatforrásból vagy a telefonból adódik, nem az alkalmazás hibája.
+Ha olyan hibát találsz, ami itt nem szerepel, jelezd [issue-ként](https://github.com/schafler55/utszelveny/issues).
+
+### Ismert korlátok
+
+**Útadatok (NAP)**
+- **Hidak:** a NAP egy hidat egyetlen szelvénypontként tárol, hossz nélkül. Ezért a térképi hídjel nem a híd valódi hosszát mutatja, a „rajta / alatta” jelzés pedig ehhez a ponthoz igazodik. Azt is ritkán adja meg, mi halad a híd alatt.
+- **Hiányok, hibák:** a NAP adataiban is lehetnek hiányok (pl. az M0–M7 törökbálinti csomópontjából hiányzik egy híd). Az alkalmazás azt mutatja, ami a NAP-ban szerepel.
+- **Csak az országos közutak:** a helyi (önkormányzati), a fővárosi és kerületi, valamint a magán-, erdei és mezőgazdasági utak nincsenek benne, ezeken „Úthálózaton kívül” jelenik meg. Budapesten csak az országos utak (pl. az M0) szelvényezése látszik.
+- **Statikus adatok:** útlezárás, útépítés, ideiglenes vagy változtatható jelzésképű táblák nincsenek benne. Az adatok a kiadáskori NAP-állapotot mutatják, új adat az alkalmazás frissítésével érkezik.
+- **Sebességkorlát:** a NAP-ban rögzített korlátozás, ennek hiányában a KRESZ személygépkocsira vonatkozó alapértéke (50 / 90 / 110 / 130 km/h). A tehergépkocsikra, autóbuszokra és utánfutós járművekre vonatkozó alacsonyabb általános korlátokat az alkalmazás nem számolja.
+- **Mérnökség, megyei igazgatóság:** a NAP adatcsomagjaiban még nem szerepelnek; ha bekerülnek, az alkalmazásban is megjelennek.
+- **Egyirányú utak:** osztatlan úton, ha a NAP nem jelöl egyirányú szakaszt, az alkalmazás kétirányúnak veszi.
+- **Autóbusz-megállók:** a NAP-ban a megállóhelyek több mint felének nincs neve („Név nélküli megállóhely”).
+- **Forgalmi adatok:** a legutóbbi számlálás éves átlagai (2025), nem élő forgalom.
+
+**Településnevek (OpenStreetMap)**
+- **Csak közigazgatási települések:** az átkelési szakaszon a település (önkormányzat) neve jelenik meg, a saját helységnévtáblával rendelkező településrészeké nem. Például a 67-es úton Antalszállás helyett Boldogasszonyfa látszik.
+- **A névváltás helye:** a településhatárok pontatlanok, és a NAP szakaszhatárai is eltérhetnek a tábláktól, ezért a név akár néhány tíz méterrel a valódi helységnévtábla előtt vagy után vált.
+
+**Pontosság**
+- **GNSS:** a szelvény pontossága a telefon helymeghatározásán múlik: általában néhány méter, fák alatt, bevágásban, magas épületek mellett rosszabb, alagútban nincs jel. A kiírt km+m néhány méterrel eltérhet a helyszíni kilométerkövektől.
+- **Hiányzó kilométerjelek:** ahol a NAP-ban nincs kilométerjel (pl. egyes kerékpárutakon), az alkalmazás becsüli a szelvényt, ott akár több tíz méteres eltérés is lehet.
+- **Közeli utak:** párhuzamos utaknál, csomóponti ágaknál és elágazásokban az alkalmazás rövid ideig a szomszédos utat is választhatja. A közeli út egy koppintással kiválasztható.
+- **Álló helyzetben** az alkalmazás nem ismeri a haladási irányt, ezért az irányfüggő adatok (szelvényirány, irányonként eltérő sebességkorlát) csak elindulás után biztosak.
+- **EOV koordináták:** az átszámítás kb. 1 méter pontos: tájékozódásra jó, geodéziai felmérésre nem.
+
+**Böngészők és eszközök**
+- **Firefox Androidon nem támogatott:** egy-két helyadat után nem frissíti a pozíciót. Chrome ajánlott.
+- **Alkalmazásokba épített böngészők** (Facebook, Messenger stb.): gyakran nem adják át a helyadatot, ezért érdemes az oldalt Chrome-ban megnyitni.
+- **iPhone:** kevésbé tesztelt. A Safari alsó sávja eltakarja a térkép alját; a főképernyőre tett webalkalmazásban nincs böngészősáv.
+- **Csak az Android alkalmazásban:** a műholdak listája, az exponálás a hangerőgombokkal, a maximális fényerő HUD módban és a fotók mappájának választása.
+- **Internet:** csak a térkép alapréteghez kell, az utak és minden adat internet nélkül is működik.
+- **Android Auto:** nem támogatott, mert az ÚtSzelvény nincs a Google Play Áruházban.
+
+### Ismert hibák
+- **Lassú fotó az Android alkalmazásban:** „Gyors” minőségnél a kép néha csak 3–5 másodperc múlva jelenik meg (böngészőben gyors).
+- **Letiltott helyadat után kikapcsolva marad a GNSS:** ha egyszer letiltod a helyadatot (vagy a böngésző tiltja le), az alkalmazás a GNSS-t kikapcsoltnak jegyzi meg. A helyadat engedélyezése után a Pozíció oldalon a „GNSS indítása” gombbal kell újra elindítani.
+
 ## Közreműködés
 
 **Hibajelentést és ötletet issue-ként szívesen fogadok,** de a projekt nem fogad el kódhozzájárulást, a pull requesteket a rendszer automatikusan lezárja. Részletek: [CONTRIBUTING.md](CONTRIBUTING.md).
