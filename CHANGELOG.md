@@ -14,6 +14,7 @@ saját verziószámot kapott, ezért a régebbi bejegyzések aprók; a ténylege
 ## [1.2.2] – kiadatlan (a `main` ágon)
 Az 1.2.0 óta a `main` ágra került változások; még nem stabil kiadás.
 - **Fotó, sebesség:** a kép JPEG-kódolása külön háttérszálon (worker) fut. Eddig a böngészőmotor az oldal „üresjáratára” várt vele, ami az Android alkalmazásban kiszámíthatatlanul jön: a fotó hol azonnal, hol csak másodpercek múlva készült el („Gyors” és „Legjobb” minőségnél is). A mentés külön sorban megy, így egy lassabb mentés nem tartja fel a következő fotó feldolgozását.
+- **Keresés, alapértelmezett név:** osztott pályás úton a mentett keresés neve a pálya betűjelével végződik, zárójel nélkül: „M1 · 12+000 J” vagy „… B” (eddig „(jobb)” / „(bal)”). A korábban mentett, át nem nevezett keresések neve is átáll.
 - **Térkép, koppintott pont mentése:** a koppintott útpont buborékjában a „Mentés” már nem vált át a Keresés oldalra: a pont a térképen marad, kiválasztva, a saját buborékjával (Elrejtés / Törlés / Részletek). A Keresés oldali kártyája a „Részletek” gombbal nyílik meg.
 - **Koppintás gyors húzás után (képnézegető, térkép):** egy gyors lapozás vagy térképhúzás után az első koppintás (pl. a nézegető alsó gombjain vagy a térkép gombjain) akár egy másodpercig sem reagált: a böngésző a lendületes húzás „megállításának” vette, és elnyelte. Most azonnal reagál.
 - **Fotó, képnézegető:** a nézegető és a bélyegkép a nagy fotók képernyő méretű másolatát mutatja (a mentett kép továbbra is a teljes felbontású), így lapozáskor nem a teljes, 12 megapixeles kép töltődik be.

@@ -294,8 +294,8 @@
     "err_no_route": "Hiányzó útvonal.",
     "err_road_unknown": "Ez az útszám nem szerepel az adatokban.",
     "err_no_data": "Ezen a szakaszon nincs útadat.",
-    "name_left": "bal",
-    "name_right": "jobb",
+    "name_left": "B",
+    "name_right": "J",
     "both_cw": "jobb és bal pálya",
     "from_road": "{d} az úttól",
     "multi": "Több úton: {roads}",
@@ -5035,7 +5035,9 @@ function srchEval(it){
     R.cd=it.c.map((c,i)=>{const X=P[i];if(!X)return null;let d=Infinity,h0=null;for(const h of X.hits){const x=Math.hypot(h.E-c.E,h.N-c.N);if(x<d){d=x;h0=h}}return {d,h:h0}})}
   srchCache.set(it,R);return R;
 }
-const srchAutoName=(it)=>it.multi&&it.rt?(f=>(l=>`${f.road} · ${f.ch} → ${l.road} · ${l.ch}`)(it.rt.legs[it.rt.legs.length-1].to))(it.rt.legs[0].from):(it.kind==="sec"?`${it.road} · ${vfmt(it.a)} – ${vfmt(it.b)}`:`${it.road} · ${vfmt(it.a)}`)+(it.pk?` (${TX(it.pk===2?"search.name_left":"search.name_right")})`:"");
+const srchAutoName=(it)=>it.multi&&it.rt?(f=>(l=>`${f.road} · ${f.ch} → ${l.road} · ${l.ch}`)(it.rt.legs[it.rt.legs.length-1].to))(it.rt.legs[0].from):(it.kind==="sec"?`${it.road} · ${vfmt(it.a)} – ${vfmt(it.b)}`:`${it.road} · ${vfmt(it.a)}`)+(it.pk?" "+TX(it.pk===2?"search.name_left":"search.name_right"):"");
+// default names saved before 2026-11-25 ended in "(jobb)" / "(bal)": they follow the new form ("M1 · 12+000 J")
+for(const it of srchList)if(it.pk&&String(it.name).replace(/ \((jobb|bal)\)$/,"")+" "+TX(it.pk===2?"search.name_left":"search.name_right")===srchAutoName(it))it.name=srchAutoName(it);
 // "12+345", "12 345", "12,345" / "12.345" (km) or two fields: km and m
 function parseCh(k,m){
   k=String(k||"").trim();m=String(m||"").trim();if(!k&&!m)return null;
