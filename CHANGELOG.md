@@ -13,7 +13,7 @@ saját verziószámot kapott, ezért a régebbi bejegyzések aprók; a ténylege
 
 ## [1.2.2] – kiadatlan (a `main` ágon)
 Az 1.2.0 óta a `main` ágra került változások; még nem stabil kiadás.
-- **Fotó, sebesség:** a kép JPEG-kódolása külön háttérszálon (worker) fut. Eddig a böngészőmotor az oldal „üresjáratára” várt vele, ami az Android alkalmazásban kiszámíthatatlanul jön: a fotó hol azonnal, hol csak másodpercek múlva készült el („Gyors” és „Legjobb” minőségnél is). A mentés külön sorban megy, így egy lassabb mentés nem tartja fel a következő fotó feldolgozását. A fejlesztői (DEV / teszt) változat a fotó üzenetében kiírja az egyes lépések idejét.
+- **Fotó, sebesség:** a kép JPEG-kódolása külön háttérszálon (worker) fut. Eddig a böngészőmotor az oldal „üresjáratára” várt vele, ami az Android alkalmazásban kiszámíthatatlanul jön: a fotó hol azonnal, hol csak másodpercek múlva készült el („Gyors” és „Legjobb” minőségnél is). A mentés külön sorban megy, így egy lassabb mentés nem tartja fel a következő fotó feldolgozását.
 - **Koppintás gyors húzás után (képnézegető, térkép):** egy gyors lapozás vagy térképhúzás után az első koppintás (pl. a nézegető alsó gombjain vagy a térkép gombjain) akár egy másodpercig sem reagált: a böngésző a lendületes húzás „megállításának” vette, és elnyelte. Most azonnal reagál.
 - **Fotó, képnézegető:** a nézegető és a bélyegkép a nagy fotók képernyő méretű másolatát mutatja (a mentett kép továbbra is a teljes felbontású), így lapozáskor nem a teljes, 12 megapixeles kép töltődik be.
 - **Mérés, gombok:** mérés közben a „Pont rögzítése” és a „Leállítás” gomb nem nyel el koppintást. Eddig a kártya másodpercenként újrarajzolódott, és ha ez épp a koppintás közben történt, a koppintás elveszett (hosszabb nyomásnál mindig).
