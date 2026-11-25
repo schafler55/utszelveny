@@ -7,7 +7,8 @@
 Drives the app the way a user does (taps and typing) in headless Chrome, with a fake GNSS position on road 7 and a
 fake camera, and fails on any JavaScript error or missing text. It also checks things that broke before: taps on
 the running-measurement buttons, the map without CanvasRenderingContext2D.roundRect (older phones), "GNSS off"
-surviving a restart, the Firefox note's "Megértettem" button and a tap right after a flick (real touch events). Requests to other servers (map tiles, GitHub) are
+surviving a restart, the Firefox note's "Megértettem" button, a tap right after a flick (real touch events) and
+the desktop layout (wide window with a mouse: map page, pointer readout, right-click menu). Requests to other servers (map tiles, GitHub) are
 blocked, so the test never loads OpenStreetMap tiles.
 """
 import asyncio
@@ -310,6 +311,36 @@ async def tap_after_flick(b, url):
     await ctx.close()
 
 
+async def desktop(b, url):
+    """Desktop browser (wide window, mouse): the map is the base page, no GNSS; pointer readout, click bubble,
+    right-click menu, Keresés panel."""
+    ctx, pg = await new_page(b, url)
+    await pg.set_viewport_size({"width": 1440, "height": 900})
+
+    async def flow():
+        await boot(pg, url)
+        await expect(await pg.evaluate("DESK&&mapOn&&watchId===null&&document.documentElement.dataset.view==='map'"),
+                     "not the desktop layout with the map (or GNSS was started)")
+        # road 7 at 46+275 in the middle of the map
+        await pg.evaluate("(()=>{const h=srchPoint(roadFind('7'),460275,0).hits[0],m=toM(h.lat,h.lon);mX=m.x;mY=m.y;mS=zToS(15);drawMap()})()")
+        await pg.mouse.move(700, 450)
+        await pg.mouse.move(720, 450)
+        await wait_js(pg, "document.getElementById('deskStat').classList.contains('on')&&/46\\+2/.test(document.getElementById('deskStat').textContent)")
+        await pg.mouse.click(720, 450)
+        await wait_js(pg, "!!document.querySelector('#mapInfo .tapi')&&!document.getElementById('mapInfo').classList.contains('idle')")
+        await pg.mouse.click(720, 450, button="right")
+        await pg.wait_for_selector("#deskMenu.on")
+        await pg.click('#deskMenu button[data-a="info"]')
+        await pg.wait_for_selector("#infoPage.on")
+        await pg.keyboard.press("Escape")
+        await pg.click("#nSrch")
+        await expect(await pg.evaluate("document.documentElement.dataset.view==='srch'&&mapOn"), "Keresés did not open as a panel over the map")
+        await pg.click("#deskBarX")
+        await expect(await pg.evaluate("document.documentElement.dataset.view==='map'"), "the panel did not close")
+    await step("desktop: map page, pointer readout, click, right-click menu, panel", flow())
+    await ctx.close()
+
+
 async def main():
     url = serve()
     async with async_playwright() as p:
@@ -319,6 +350,7 @@ async def main():
         await narrow_menu(b, url)
         await old_browser_map(b, url)
         await tap_after_flick(b, url)
+        await desktop(b, url)
         await b.close()
     for e in ERRORS:
         print("ERROR ", e)

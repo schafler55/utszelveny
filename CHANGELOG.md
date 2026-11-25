@@ -13,6 +13,10 @@ szakaszba olvadnak össze, amely a kiadás összes változását felsorolja. A t
 (pl. 0.16.1–0.16.10) változásai a következő nagyobb verzió (pl. 0.17) szakaszában szerepelnek; a szakasz első sora
 jelzi, mely változatokat tartalmazza.
 
+## [desktop ág] – 2026-11-26 · teszt ág, még nincs a `main` ágon
+A beolvasztáskor a következő szabad verziószámot kapja.
+- **Asztali böngésző (új):** széles ablakban, egérrel az alkalmazás asztali elrendezésben indul. A térkép az alapoldal, kitölti az ablakot; a fejléc bal fent lebeg, a Keresés és a Mérés a térkép fölötti panelben nyílik (× vagy a gomb újbóli megnyomása zárja), a Szakasz adatai ugyanígy, a Beállítások középen, párbeszédablakként. A térképi buborék a kattintott pont vagy a kiválasztott keresés / mérés címkéje mellett jelenik meg (× vagy Esc zárja), a folyamatban lévő térképi mérés kártyája alul középen. Az egérmutató alatti út és km+m bal lent és a mutató mellett látszik; jobb kattintásra menü: Szakasz adatai, Mentés keresésként, Mérés innen, Utcakép, WGS84 / EOV koordináta másolása. Jobb fent mindig látszik a „© 2026 Szászi Dániel” felirat. Asztali gépen nincs GNSS, ezért a Pozíció, a Fotó, a HUD, a GNSS mérés és a csak a GNSS-hez tartozó beállítások kimaradnak; a térkép ott nyílik meg, ahol legutóbb hagytad (először az egész ország látszik). Telefonon és az Android alkalmazásban minden változatlan.
+
 ## [1.3.1.5] – 2026-11-26 · kiadatlan
 - A támogatási felhívás „Most nem” után csak akkor jelenik meg újra, ha eltelt legalább egy hónap **és** az alkalmazást legalább 10-szer megnyitották azóta (eddig: három hónap). A „Támogatás” után továbbra is egy évig nem kérdez.
 
