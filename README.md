@@ -191,7 +191,7 @@ Ha olyan hibát találsz, ami itt nem szerepel, jelezd [issue-ként](https://git
 - **Android Auto:** nem támogatott, mert az ÚtSzelvény nincs a Google Play Áruházban.
 
 ### Ismert hibák
-- **Lassú fotó az Android alkalmazásban:** „Gyors” minőségnél a kép néha csak 3–5 másodperc múlva jelenik meg (böngészőben gyors).
+Jelenleg nincs ismert hiba.
 
 ## Tervek és ötletek
 
