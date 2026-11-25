@@ -3487,6 +3487,12 @@ function smTick(t){
 }
 function setSmooth(v){S.smooth=v!=="off";saveS();document.querySelectorAll("#smSeg button").forEach(b=>b.classList.toggle("on",b.dataset.v===(S.smooth?"on":"off")));if(!S.smooth){SM.on=false;if(follow&&cur){const m=posToM(cur.pos);mX=m.x;mY=m.y}drawMap()}}
 
+// A quick swipe ends as a "fling" for the browser, and for as long as that fling would run (up to a second on a
+// phone) it swallows the next tap anywhere on the page: the tap only "stops the fling", no click. Taking the touch
+// moves ourselves (dragging is followed with pointer events anyway) means there is no fling. Used on the map and
+// in the photo viewer.
+const noFling=(el)=>el.addEventListener("touchmove",(e)=>{if(e.cancelable)e.preventDefault()},{passive:false});
+noFling(cv);
 (function mapInput(){
   const pts=new Map();let moved=0,startD=0,startS=0,pinch0=null;
   // zoom keeps the map point under the fingers / cursor in place (while following your position, it zooms around the position)
@@ -4848,7 +4854,7 @@ function cvGo(d){
   cvAnim=true;cvMove(-d*($("cvBox").clientWidth+CV_GAP),240);
   setTimeout(()=>{cvMove(0,0);cvRot(d);camIdx=to;cvUI();cvAnim=false},250);
 }
-{const box=$("cvBox");
+{const box=$("cvBox");noFling(box);   // a tap on the buttons right after a quick swipe must not be swallowed
   box.addEventListener("pointerdown",(e)=>{if(cvAnim||e.target.closest(".cv-nav")||!camShots.length)return;cvDrag={x:e.clientX,y:e.clientY,t:performance.now(),dx:0,on:false,id:e.pointerId}});
   box.addEventListener("pointermove",(e)=>{const D=cvDrag;if(!D||e.pointerId!==D.id)return;
     const dx=e.clientX-D.x,dy=e.clientY-D.y;

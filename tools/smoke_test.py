@@ -7,7 +7,7 @@
 Drives the app the way a user does (taps and typing) in headless Chrome, with a fake GNSS position on road 7 and a
 fake camera, and fails on any JavaScript error or missing text. It also checks things that broke before: taps on
 the running-measurement buttons, the map without CanvasRenderingContext2D.roundRect (older phones), "GNSS off"
-surviving a restart and the Firefox note's "Megértettem" button. Requests to other servers (map tiles, GitHub) are
+surviving a restart, the Firefox note's "Megértettem" button and a tap right after a flick (real touch events). Requests to other servers (map tiles, GitHub) are
 blocked, so the test never loads OpenStreetMap tiles.
 """
 import asyncio
@@ -255,6 +255,35 @@ async def old_browser_map(b, url):
     await ctx.close()
 
 
+async def tap_after_flick(b, url):
+    """Real touch events: flick the map, tap a button 200 ms later. The browser used to swallow that tap (noFling)."""
+    ctx, pg = await new_page(b, url, has_touch=True, is_mobile=True)
+    cdp = await ctx.new_cdp_session(pg)
+
+    async def touch(kind, *pt):
+        await cdp.send("Input.dispatchTouchEvent", {"type": kind, "touchPoints": [{"x": pt[0], "y": pt[1]}] if pt else []})
+
+    async def flow():
+        await boot(pg, url)
+        await pg.click("#nMap")
+        await pg.wait_for_timeout(400)
+        box = await pg.locator("#zOut").bounding_box()
+        zoom = await pg.evaluate("mS")
+        await touch("touchStart", 90, 400)
+        for x in [130, 180, 230, 280, 330]:
+            await touch("touchMove", x, 400)
+            await pg.wait_for_timeout(12)
+        await touch("touchEnd")
+        await pg.wait_for_timeout(200)
+        await touch("touchStart", box["x"] + box["width"] / 2, box["y"] + box["height"] / 2)
+        await pg.wait_for_timeout(40)
+        await touch("touchEnd")
+        await pg.wait_for_timeout(400)
+        await expect(await pg.evaluate("mS") != zoom, "the tap on the zoom button right after a flick was lost")
+    await step("touch: a tap right after a flick on the map arrives", flow())
+    await ctx.close()
+
+
 async def main():
     url = serve()
     async with async_playwright() as p:
@@ -262,6 +291,7 @@ async def main():
         await main_flow(b, url)
         await firefox_note(b, url)
         await old_browser_map(b, url)
+        await tap_after_flick(b, url)
         await b.close()
     for e in ERRORS:
         print("ERROR ", e)
