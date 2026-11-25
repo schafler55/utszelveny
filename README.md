@@ -153,7 +153,7 @@ A támogatás önkéntes, és nem jár érte extra funkció.<br><b>A visszajelz�
 ## Ismert korlátok és hibák
 
 Az alábbiak többsége az adatforrásból vagy a telefonból adódik, nem az alkalmazás hibája.
-Ha olyan hibát találsz, ami itt nem szerepel, jelezd [issue-ként](https://github.com/schafler55/utszelveny/issues).
+Ha olyan hibát találsz, ami itt nem szerepel, jelezd [issue-ként](https://github.com/schafler55/utszelveny/issues) vagy e-mailben: [visszajelzes@utszelveny.hu](mailto:visszajelzes@utszelveny.hu).
 
 ### Ismert korlátok
 
@@ -193,7 +193,7 @@ Ha olyan hibát találsz, ami itt nem szerepel, jelezd [issue-ként](https://git
 
 ## Tervek és ötletek
 
-Új ötletet issue-ként lehet beküldeni (lásd [Közreműködés](#közreműködés)). Ami elkészül, a [változásnaplóba](CHANGELOG.md) kerül, és lekerül erről a listáról.
+Új ötletet issue-ként vagy e-mailben ([visszajelzes@utszelveny.hu](mailto:visszajelzes@utszelveny.hu)) lehet beküldeni (lásd [Közreműködés](#közreműködés)). Ami elkészül, a [változásnaplóba](CHANGELOG.md) kerül, és lekerül erről a listáról.
 
 ### Tervben
 Időpont nélkül:
@@ -211,4 +211,4 @@ Időpont nélkül:
 
 ## Közreműködés
 
-**Hibajelentést és ötletet issue-ként szívesen fogadok,** de a projekt nem fogad el kódhozzájárulást, a pull requesteket a rendszer automatikusan lezárja. Részletek: [CONTRIBUTING.md](CONTRIBUTING.md).
+**Hibajelentést és ötletet issue-ként vagy e-mailben ([visszajelzes@utszelveny.hu](mailto:visszajelzes@utszelveny.hu)) szívesen fogadok,** de a projekt nem fogad el kódhozzájárulást, a pull requesteket a rendszer automatikusan lezárja. Részletek: [CONTRIBUTING.md](CONTRIBUTING.md).
