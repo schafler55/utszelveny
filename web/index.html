@@ -5204,8 +5204,9 @@ function drawSrch(marks,only){
     const col=srCol(it);
     const lbl=(mx,y,t,dx)=>mapChip(mx,y,t,dx,col,foc,{srch:it});
     const byName=S.srchLbl==="name"&&!!it.name;   // label: Beállítások → Keresés (default road + km+m)
-    // coordinate search: the typed place as a lime target, joined to its road place with a dashed line
-    if(it.src==="c"&&it.c&&R.cd)it.c.forEach((c,i)=>{const X=R.cd[i];if(!X)return;
+    // coordinate search: the typed place as a lime target, joined to its road place with a dashed line –
+    // only for the selected search (chip tapped, bubble open); otherwise just the pin and the chip (user, 2026-11-25)
+    if(it.src==="c"&&it.c&&R.cd&&foc)it.c.forEach((c,i)=>{const X=R.cd[i];if(!X)return;
       const m=cM(c),x=m2sx(m.x,m.y),y=m2sy(m.x,m.y),hm=hitM(X.h),hx=m2sx(hm.x,hm.y),hy=m2sy(hm.x,hm.y);
       if(Math.hypot(x-hx,y-hy)>12){ctx.save();ctx.setLineDash([5,4]);ctx.lineCap="butt";ctx.beginPath();ctx.moveTo(x,y);ctx.lineTo(hx,hy);
         ctx.strokeStyle="#0b1220";ctx.lineWidth=4;ctx.stroke();ctx.strokeStyle=col;ctx.lineWidth=2;ctx.stroke();ctx.restore()}
