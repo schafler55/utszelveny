@@ -121,6 +121,8 @@ jobs:
           git ls-remote --heads origin | sed 's#.*refs/heads/##' | while read -r B; do
             [ "$B" = "main" ] && continue
             case "$B" in dependabot/*) continue;; esac   # Dependabot's update branches get no test page
+            # the name goes into the page title, the label and sed commands: only letters, digits, . _ - (audit L5)
+            case "$B" in *[!A-Za-z0-9._-]*) echo "::warning::no test page for branch '$B': use only letters, digits, . _ -"; continue;; esac
             git fetch -q --depth 1 origin "refs/heads/$B:refs/remotes/origin/$B" || { echo "skip $B"; continue; }
             R="origin/$B"
             if git cat-file -e "$R:web/index.html" 2>/dev/null; then P="web/"
