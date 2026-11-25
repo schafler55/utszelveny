@@ -3599,11 +3599,12 @@ function streetView(t){
   if(window.AndroidBridge)location.href=url;
   else{const a=document.createElement("a");a.href=url;a.target="_blank";a.rel="noopener";document.body.appendChild(a);a.click();a.remove()}   // new tab only; this page stays (window.open with "noopener" returns null, which had sent this tab to Google too)
 }
-// "Mentés keresésként": a saved point search at the tapped place; then the Keresés page opens with its card
+// "Mentés": a saved point search at the tapped place. The map stays: the new point is shown on it, selected, with
+// its own bubble (as after tapping its chip); "Részletek" there opens its card on the Keresés page (user, 2026-11-25)
 function tapSave(t){
   const s=t.s,pk=segPk[s],it={kind:"pt",road:ROADS[segRoad[s]].num,a:cval(t.ch),t:Date.now()};
   if(pk)it.pk=pk;it.name=srchAutoName(it);
-  srchCur=it;srchCurOn=true;srchSaveCur();tapPt=null;tapSel=null;srchOpenCard(it);
+  tapPt=null;tapSel=null;srchCur=it;srchCurOn=true;srchSaveCur();
 }
 // ---- section details: everything the data has for one place of a road ----
 const fmtN=(x)=>x==null?"–":x.toLocaleString("hu-HU");

@@ -171,9 +171,13 @@ async def main_flow(b, url):
         await pg.wait_for_timeout(400)
         await pg.click("#follow")
         box = await pg.locator("#map").bounding_box()
-        cx, cy = box["x"] + box["width"] / 2, box["y"] + box["height"] * 0.4
+        cx, cy = box["x"] + box["width"] / 2, box["y"] + box["height"] / 2   # the map centre = your position, on road 7
         await pg.mouse.click(cx, cy)
         await pg.wait_for_timeout(300)
+        n = await pg.evaluate("srchList.length")
+        await pg.click('#mapInfo button[data-t="save"]')   # Mentés: saved, selected on the map, the map stays
+        await expect(await pg.evaluate("mapOn&&srchList.length") == n + 1 and await pg.locator('#mapInfo button[data-b="det"]').count() == 1,
+                     "Mentés on the tapped road did not leave the saved point selected on the map")
         await pg.click("#mmBtn")
         await pg.mouse.click(cx - 50, cy - 40)
         await pg.mouse.click(cx + 50, cy + 40)
