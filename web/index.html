@@ -1054,6 +1054,13 @@ nav button:not(.on):hover{background:color-mix(in srgb,var(--on) 8%,transparent)
 nav button:active{transform:scale(.93)}
 nav button.rec::after{content:"";position:absolute;top:8px;right:10px;width:9px;height:9px;border-radius:50%;background:var(--rec);box-shadow:0 0 0 2px var(--sc-high)}
 nav button.on.rec::after{box-shadow:0 0 0 2px var(--pri)}
+/* Narrow screen or big text (navFit): "snug" = tighter spacing, "tight" = icons only, no labels; "fit" = no animation while measuring */
+nav.snug{gap:0;padding:0 6px}
+nav.snug button{padding:0 11px}
+nav.snug button.on{padding:0 14px 0 12px}
+nav.tight .nl{display:none}
+nav.tight button,nav.tight button.on{flex-shrink:1;width:52px;min-width:36px;padding:0;justify-content:center}
+nav.fit *{transition:none!important}
 
 /* ---------- map ---------- */
 #mapView{flex:1;position:relative;margin:-4px -12px calc(-12px - var(--navh));min-height:300px;background:var(--map-bg);overflow:hidden;border-radius:28px 28px 0 0}
@@ -5472,6 +5479,15 @@ function showView(v){
   if(v==="srch"){renderSrch();renderSrchRes()}
   camSet(v==="foto");
 }
+/* The bottom menu must always fit: measured with the longest label, so it looks the same on every page (24 = its side margins, see max-width of nav). */
+function navFit(){
+  const n=$("navBar"),c=n.classList,over=()=>n.scrollWidth+extra>document.documentElement.clientWidth-24;
+  c.remove("snug","tight");c.add("fit");
+  const on=n.querySelector(".on .nl>span"),extra=Math.max(...[...n.querySelectorAll(".nl>span")].map((s)=>s.scrollWidth+(s===on?0:8)))-(on?on.scrollWidth:0);
+  if(over())c.add("snug");if(over())c.add("tight");
+  c.remove("fit");
+}
+navFit();addEventListener("resize",navFit);
 $("nPos").onclick=()=>showView("pos");$("nMap").onclick=()=>showView("map");$("nMeas").onclick=()=>showView("meas");$("nFoto").onclick=()=>showView("foto");$("nSrch").onclick=()=>showView("srch");
 $("tEov").onclick=()=>{S.coord="eov";saveS();syncTabs();render()};
 $("tWgs").onclick=()=>{S.coord="wgs";saveS();syncTabs();render()};

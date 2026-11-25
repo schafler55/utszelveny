@@ -244,6 +244,28 @@ async def firefox_note(b, url):
     await ctx.close()
 
 
+async def narrow_menu(b, url):
+    ctx, pg = await new_page(b, url)
+    inside = """(()=>{const n=document.getElementById('navBar'),r=n.getBoundingClientRect();
+      return [...n.querySelectorAll('button')].every(b=>{const q=b.getBoundingClientRect();return q.left>=r.left&&q.right<=r.right&&q.width>=36})})()"""
+
+    async def flow():
+        await boot(pg, url)
+        for w, cls in [(412, ""), (360, "snug"), (320, "snug tight")]:
+            await pg.set_viewport_size({"width": w, "height": 800})
+            await wait_js(pg, f"document.getElementById('navBar').className.trim()==='{cls}'")
+            for v in ["srch", "meas", "pos"]:
+                await pg.evaluate(f"showView('{v}')")
+                await pg.wait_for_timeout(500)
+                await expect(await pg.evaluate(inside), f"{w} px wide screen, page {v}: a menu button is outside the menu")
+        await pg.evaluate("document.documentElement.style.fontSize='200%';dispatchEvent(new Event('resize'))")
+        await pg.set_viewport_size({"width": 412, "height": 800})
+        await wait_js(pg, "document.getElementById('navBar').className.trim()==='snug'")
+        await expect(await pg.evaluate(inside), "412 px wide screen with double text size: a menu button is outside the menu")
+    await step("bottom menu fits narrow screens and big text", flow())
+    await ctx.close()
+
+
 async def old_browser_map(b, url):
     ctx, pg = await new_page(b, url)
     await ctx.add_init_script("delete CanvasRenderingContext2D.prototype.roundRect")
@@ -294,6 +316,7 @@ async def main():
         b = await p.chromium.launch(executable_path=CHROME, args=ARGS)
         await main_flow(b, url)
         await firefox_note(b, url)
+        await narrow_menu(b, url)
         await old_browser_map(b, url)
         await tap_after_flick(b, url)
         await b.close()
