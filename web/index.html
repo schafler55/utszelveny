@@ -558,8 +558,8 @@
     "map_smooth_note": "Sima: a GNSS frissítések között is folyamatosan halad a térkép és a nyíl, frissítésenként: ugrásokkal, de kevesebbet fogyaszt",
     "map_smooth_on": "Sima",
     "map_smooth_off": "Frissítésenként",
-    "map_spd": "Sebességkorlát és helységnévtábla",
-    "map_spd_note": "Csak menet közben, a térkép bal alsó sarkában",
+    "map_spd": "Sebességkorlát, helységnévtábla, sebesség",
+    "map_spd_note": "Csak menet közben, a térkép bal alsó sarkában; a saját sebességed a tábla fölött",
     "grp_tap": "Koppintás",
     "map_snap": "Pont illesztése a legközelebbi útra",
     "map_snap_note": "Koppintáskor és a térképi mérés pontjainál az ujjad melletti legközelebbi útra kerül a pont. Kikapcsolva csak az út vonalára koppintva",
@@ -1077,6 +1077,13 @@ nav button.on.rec::after{box-shadow:0 0 0 2px var(--pri)}
 .mapspd svg{flex:none;display:block}
 .mapspd .tsign{border-radius:8px;padding:2px;box-shadow:none;min-width:0}
 .mapspd .tsign>span{border-width:2.5px;border-radius:6px;padding:4px 10px 3px;font-size:1rem}
+.mapspd.g.on{display:grid;grid-template-columns:auto auto;column-gap:8px;row-gap:0;align-items:center;justify-items:center}
+.mapspd.g>.tsign{justify-self:start}
+.mapspd .msg{display:flex;gap:6px;position:relative;z-index:1}
+.mapspd .msg svg{display:block}
+.msc{position:relative;z-index:0;display:flex;align-items:center;justify-content:center;width:36px;height:36px;margin-bottom:-8px;border-radius:50%;background:var(--sc-high);color:var(--on);font-size:15px;font-weight:700;font-variant-numeric:tabular-nums;letter-spacing:-.2px;transition:background-color .35s,color .35s}
+.msc.over5{color:var(--spd5);background:color-mix(in srgb,var(--spd5) 16%,var(--spd5-c))}
+.msc.over10{color:var(--err);background:color-mix(in srgb,var(--err) 16%,var(--err-c))}
 .scalebar .zl{font-weight:700;margin-right:6px;padding-right:6px;border-right:1px solid var(--outline)}
 .scalebar i{display:block;height:4px;border:2px solid var(--on);border-top:0;margin-top:2px}
 #rotNeedle{transition:transform .15s linear;transform-origin:12px 12px}
@@ -2614,7 +2621,9 @@ function render(){
 }
 // speed limit + town sign over the map, only while driving: shown from ~7 km/h (GNSS speed, fresh fix), hidden after
 // 8 s below that, when the fix is lost or off the network. Same data as the Pozíció speed card; no sign outside
-// built-up areas and no crossed-out town sign (as on the card). Beállítások → Térkép → Nézet
+// built-up areas and no crossed-out town sign (as on the card). Beállítások → Térkép → Nézet.
+// Your GNSS speed: a small circle (number only) above the speed sign(s), on the same centre line, 8 px tucked behind
+// the sign; orange from +5 km/h, red from +10 km/h over the limit, like the Pozíció bubble (Pozíció → Sebességkorlát)
 var MSPD=null;
 function renderMapSpd(){
   const el=$("mapSpd");if(!el)return;
@@ -2623,18 +2632,26 @@ function renderMapSpd(){
   if(!fresh){m.mov=false;m.slow=0}
   else if(v!=null&&v>=2){m.mov=true;m.slow=0}
   else if(m.mov){if(!m.slow)m.slow=now;else if(now-m.slow>8000){m.mov=false;m.slow=0}}
-  let h="";
+  let h="",kmh=null,lvl="";
   if(S.mapSpd!==false&&mapOn&&!hudOn&&m.mov&&cur&&!cur.res.off){
     const r=cur.res,s=r.best.s,road=segRoad[s],pk=segPk[s],kut=segKut[s],vv=cval(r.ch);
     const sp=speedAt(road,pk,kut,vv,travelDir(s,r.best.dirInc));
-    if(sp.lim!=null)h=sp.both?spdSignSVG(String(sp.both.inc),40)+spdSignSVG(String(sp.both.dec),40):spdSignSVG(String(sp.lim),48);
-    const tel=sp.bu===1?telAt(road,pk,vv):null;
-    if(tel)h+=`<span class="tsign"><span>${esc(tel)}</span></span>`;
+    const tel=sp.bu===1?telAt(road,pk,vv):null,tw=tel?`<span class="tsign"><span>${esc(tel)}</span></span>`:"";
+    if(sp.lim!=null){
+      // grid: speed circle over the sign(s) in column 1, town sign beside the sign(s) in column 2
+      h=`<div class="msc"></div><span></span><div class="msg">${sp.both?spdSignSVG(String(sp.both.inc),40)+spdSignSVG(String(sp.both.dec),40):spdSignSVG(String(sp.lim),48)}</div>${tw||"<span></span>"}`;
+      kmh=v!=null?Math.round(v*3.6):null;
+      const lim=sp.both?Math.max(sp.both.inc,sp.both.dec):sp.lim,over=!S.spdWarn||kmh==null?0:kmh-lim;
+      lvl=over>=10?"over10":over>=5?"over5":"";
+    }else h=tw;
   }
-  if(h===m.h)return;
-  m.h=h;el.innerHTML=h;el.classList.toggle("on",!!h);
-  const t=el.querySelector(".tsign>span");   // long names: smaller type until the name fits
-  if(t){let f=parseFloat(getComputedStyle(t).fontSize);while(t.scrollWidth>t.clientWidth+1&&f>10){f-=1;t.style.fontSize=f+"px"}}
+  if(h!==m.h){
+    m.h=h;el.innerHTML=h;el.classList.toggle("on",!!h);el.classList.toggle("g",h.startsWith('<div class="msc"'));
+    const t=el.querySelector(".tsign>span");   // long names: smaller type until the name fits
+    if(t){let f=parseFloat(getComputedStyle(t).fontSize);while(t.scrollWidth>t.clientWidth+1&&f>10){f-=1;t.style.fontSize=f+"px"}}
+  }
+  const c=el.querySelector(".msc");   // the speed changes on every fix: only the circle is updated
+  if(c){const x=kmh==null?"–":String(kmh);if(c.textContent!==x)c.textContent=x;const k="msc"+(lvl?" "+lvl:"");if(c.className!==k)c.className=k}
 }
 function renderSpeed(show){
   const card=$("spdCard");if(!show){card.style.display="none";return}
