@@ -3922,9 +3922,15 @@ function measCSV(){
 // a text cell starting with = + - @ (or a tab / CR) would run as a formula in Excel: an apostrophe in front keeps it
 // text (security audit I1); plain numbers such as "-12" or "-3,5" stay numbers
 const csvSafe=(x)=>typeof x==="string"&&/^[=+\-@\t\r]/.test(x)&&!/^[+-]?\d+([.,]\d+)?$/.test(x)?"'"+x:x;
-const csvRows=(rows)=>{const q=(x)=>{x=x==null?"":String(csvSafe(x));return /[;"\n]/.test(x)?'"'+x.replace(/"/g,'""')+'"':x};return "\ufeff"+rows.map(r=>r.map(q).join(";")).join("\r\n")};
+// start of the file: the UTF-8 marker (BOM, Excel needs it) and an invisible word joiner (U+2060). Google Sheets on
+// Android ignores the BOM and guesses the encoding from the bytes; Hungarian lowercase accents also look like valid
+// Western European (Latin-1) text, so it guessed wrong. The word joiner's UTF-8 bytes (E2 81 A0) cannot occur in
+// Western European text, so the guess becomes UTF-8. Excel shows nothing for it.
+const CSV_HEAD="\ufeff\u2060";
+const csvRows=(rows)=>{const q=(x)=>{x=x==null?"":String(csvSafe(x));return /[;"\n]/.test(x)?'"'+x.replace(/"/g,'""')+'"':x};return CSV_HEAD+rows.map(r=>r.map(q).join(";")).join("\r\n")};
 const csvDc=(x)=>x==null?"":String(x).replace(".",",");
 async function csvCopy(text,msg){
+  if(text.startsWith(CSV_HEAD))text=text.slice(CSV_HEAD.length);   // the clipboard needs no file marker
   let ok=false;
   try{await navigator.clipboard.writeText(text);ok=true}catch(e){
     try{const a=document.createElement("textarea");a.value=text;document.body.appendChild(a);a.select();ok=document.execCommand("copy");a.remove()}catch(e2){}}
