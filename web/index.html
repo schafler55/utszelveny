@@ -560,6 +560,9 @@
     "map_smooth_off": "Frissítésenként",
     "map_spd": "Sebességkorlát és helységnévtábla",
     "map_spd_note": "Csak menet közben, a térkép bal alsó sarkában",
+    "grp_tap": "Koppintás",
+    "map_snap": "Pont illesztése a legközelebbi útra",
+    "map_snap_note": "Koppintáskor és a térképi mérés pontjainál az ujjad melletti legközelebbi útra kerül a pont. Kikapcsolva csak az út vonalára koppintva",
     "grp_roads": "Utak",
     "map_hl": "Aktuális út kiemelése",
     "map_hl_note": "Az út, amelyiken éppen vagy, mindig a saját színében látszik: kiemelve, vagy a többivel egyformán",
@@ -1795,6 +1798,9 @@ html[data-theme=light] .mapinfo .bh{color:color-mix(in srgb,var(--k) 55%,#000)}
         <div class="opt col"><div><span data-tx="settings.map_smooth"></span><small data-tx="settings.map_smooth_note"></small></div><div class="seg wide" id="smSeg"><button data-v="on" data-tx="settings.map_smooth_on"></button><button data-v="off" data-tx="settings.map_smooth_off"></button></div></div>
         <div class="opt"><div><span data-tx="settings.map_spd"></span><small data-tx="settings.map_spd_note"></small></div><button class="sw on" id="swMapSpd"></button></div>
       </div></div>
+      <div class="sgrp"><div class="sgrp-h" data-tx="settings.grp_tap"></div><div class="sgrp-c">
+        <div class="opt"><div><span data-tx="settings.map_snap"></span><small data-tx="settings.map_snap_note"></small></div><button class="sw on" id="swMapSnap"></button></div>
+      </div></div>
       <div class="sgrp"><div class="sgrp-h" data-tx="settings.grp_roads"></div><div class="sgrp-c">
         <div class="opt col"><div><span data-tx="settings.map_hl"></span><small data-tx="settings.map_hl_note"></small></div><div class="seg wide" id="hlSeg"><button data-v="bold" data-tx="settings.map_hl_bold"></button><button data-v="halo" data-tx="settings.map_hl_halo"></button><button data-v="off" data-tx="settings.map_hl_off"></button></div></div>
         <div class="opt col"><div><span data-tx="settings.map_line"></span></div><div style="display:flex;align-items:center;gap:12px"><div class="rngw" id="lineWw"><input type="range" class="rng" id="lineW" min="0.6" max="3" step="0.1" data-tx-aria-label="settings.map_line"><span class="rngb" id="lineWb"></span></div><span class="rngv" id="lineWv"></span></div></div>
@@ -1927,7 +1933,7 @@ const KUT=TXA("road_type",12);
 const PKOD=TXA("carriageway",3);
 
 /* ---------- settings ---------- */
-const S={km0Hide:true,mapBus:false,theme:"auto",wake:true,bike:true,navHide:true,updCheck:true,name:true,coord:"wgs",base:"grey",rot:"north",measCoord:"both",measCsv:true,srchCsv:true,srchLbl:"road",measLbl:"name",mapSpd:true,lineW:1.5,hl:"off",smooth:true,secSpd:true,spdWarn:true,secBr:true,secTr:true,secGps:true,secKez:true,phName:true,phAcc:true,phCoord:"both",phRes:"fast",phAuto:true,phExif:true,phDir:true,phVol:true,phFolder:"pictures",hudFlip:"x",hudOri:"land",hudCol:"white",hudBr:"max",hudDir:true,hudSpd:true,hudLim:true,hudName:false};
+const S={km0Hide:true,mapBus:false,theme:"auto",wake:true,bike:true,navHide:true,updCheck:true,name:true,coord:"wgs",base:"grey",rot:"north",measCoord:"both",measCsv:true,srchCsv:true,srchLbl:"road",measLbl:"name",mapSpd:true,mapSnap:true,lineW:1.5,hl:"off",smooth:true,secSpd:true,spdWarn:true,secBr:true,secTr:true,secGps:true,secKez:true,phName:true,phAcc:true,phCoord:"both",phRes:"fast",phAuto:true,phExif:true,phDir:true,phVol:true,phFolder:"pictures",hudFlip:"x",hudOri:"land",hudCol:"white",hudBr:"max",hudDir:true,hudSpd:true,hudLim:true,hudName:false};
 try{Object.assign(S,JSON.parse(localStorage.getItem("ksz_settings")||"{}"))}catch(e){}
 function saveS(){try{localStorage.setItem("ksz_settings",JSON.stringify(S))}catch(e){}}
 /* ---------- theme: Sötét / Világos / Rendszer (dark / light / system) ---------- */
@@ -2100,7 +2106,7 @@ let forcedRoad=null; // road index chosen by tapping a 'közelben' chip
 function match(E,N,opt){
   opt=opt||{};
   const acc=opt.acc||10,heading=opt.heading;
-  const thr=Math.max(25,Math.min(60,acc*1.5));
+  const thr=opt.thr||Math.max(25,Math.min(60,acc*1.5));   // opt.thr: map tap with snapping (tapMatch)
   let cands=candidates(E,N,Math.max(thr,80));
   if(opt.noBike)cands=cands.filter(c=>segKut[c.s]!==10);   // map tap with bike paths hidden on the map
   if(!cands.length)return {off:true,thr};
@@ -3468,13 +3474,25 @@ function mapIdle(){
   if(h!==miLast){miLast=h;$("mapInfo").innerHTML=h}
 }
 let tapSel=null;   // the road place picked by the last map tap: {s, ch, E, N, lat, lon}
+// the road for a map tap or a map measurement point (gS = screen px per metre, px = old tap tolerance in px).
+// Snapping on (Térkép → Koppintás, default): the nearest road within SNAP_PX of the finger, never less than
+// 25 m, and the caller moves the point onto that road. Off: the old small tolerance (25–60 m)
+const SNAP_PX=40;
+const snapOn=()=>S.mapSnap!==false;
+function tapMatch(E,N,gS,px){
+  const o={acc:Math.max(8,px/gS),noBike:S.mapBike===false};
+  if(snapOn())o.thr=Math.min(2000,Math.max(25,SNAP_PX/gS));
+  return match(E,N,o);
+}
 function identify(m){
-  const ll=fromM(m.x,m.y),p=EOV.fwd(ll.lat,ll.lon),E=p.E,N=p.N;
+  let ll=fromM(m.x,m.y),p=EOV.fwd(ll.lat,ll.lon),E=p.E,N=p.N;
   // tapping elsewhere on the map ends the highlight of the chip / item whose bubble was open
   srchFocus=null;mapMeas=null;
   tapPt={m};miIdle=false;miLast="";miItem=null;tapSel=null;
   const gS=mS/Math.cos(ll.lat*Math.PI/180);
-  const r=match(E,N,{acc:Math.max(8,12/gS),noBike:S.mapBike===false});
+  const r=tapMatch(E,N,gS,12);
+  // snapping: the marker, the coordinates, Utcakép and Szakasz adatai all use the point on the road
+  if(!r.off&&snapOn()){const q=pointAt(r.best.s,r.best.along);E=q.E;N=q.N;ll=EOV.inv(E,N);tapPt.m=toM(ll.lat,ll.lon)}
   // WGS84 and EOV on one line (user, V0.23.4)
   const co=`${cpW(ll.lat,ll.lon)} · ${cpE(E,N)}`;
   if(r.off)$("mapInfo").innerHTML=`<div class="mi-t">${TX("map.tap_offnet")}<br>${co}</div>`;
@@ -4136,8 +4154,8 @@ function mmPair(A,B){
 function mmAdd(m){
   const ll=fromM(m.x,m.y),p=EOV.fwd(ll.lat,ll.lon);
   const gS=mS/Math.cos(ll.lat*Math.PI/180);
-  const res=match(p.E,p.N,{acc:Math.max(8,14/gS)});
-  // snap the point onto the road when it is on one
+  const res=tapMatch(p.E,p.N,gS,14);
+  // snap the point onto the road when it is on one (with snapping on: the road next to the finger)
   let E=p.E,N=p.N;if(!res.off){const q=pointAt(res.best.s,res.best.along);E=q.E;N=q.N}
   const ll2=EOV.inv(E,N);
   const P={E,N,res,snap:measSnap({E,N,lat:ll2.lat,lon:ll2.lon},res)};
@@ -5352,6 +5370,7 @@ for(const [id,key] of [["srchLblSeg","srchLbl"],["measLblSeg","measLbl"]])
   document.querySelectorAll("#"+id+" button").forEach(b=>b.onclick=()=>{S[key]=b.dataset.v;saveS();renderLblSegs();if(mapOn)drawMap()});
 renderLblSegs();
 bindSw("swMapSpd","mapSpd");
+bindSw("swMapSnap","mapSnap");
 // Keresés settings: delete all saved searches
 function renderSrchSet(){
   const n=srchList.length,box=$("srchDelBox");
