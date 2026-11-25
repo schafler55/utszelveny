@@ -14,7 +14,7 @@ Fotóidra ráírja a helyet és az időt, a méréseidet pedig elnevezheted és 
 Böngészőben és Android-alkalmazásként is fut. Az úthálózati adatok a készüléken vannak, így a szelvényezés internet
 nélkül is működik. Csak a térkép alapréteghez kell internetkapcsolat.
 
-**Verzió:** V1.2.1 · [Változásnapló](CHANGELOG.md) · © 2026 Szászi Dániel · Licenc: GPL-3.0
+**Verzió:** V1.2.2 · [Változásnapló](CHANGELOG.md) · © 2026 Szászi Dániel · Licenc: GPL-3.0
 
 ## Funkciók
 
@@ -109,8 +109,7 @@ A térkép északkal felfelé vagy menetirány szerint elforgatva is használhat
 | `SECURITY.md` | Biztonsági hiba zárt bejelentése (GitHub „Report a vulnerability” vagy e-mail), magyarul és angolul |
 | `web/szovegek.html` | Az alkalmazás összes szövege képernyőnként (kereshető, szerkeszthető), a `main` ág szerint: https://utszelveny.hu/dev/szovegek.html |
 | `tools/szovegek.py` | Ellenőrzi a `web/index.html` szövegblokkját (érvényes JSON, minden kulcs megvan); a build is futtatja |
-| `tools/nap_szakaszadatok.py` | A NAP sáv-, burkolat- és forgalmi adatait (WFS GeoJSON) a `web/index.html` beépített adatai közé írja |
-| `tools/nap_egyiranyu_megallok.py` | A NAP egyirányú útpályáit és autóbusz-megállóhelyeit (WFS GeoJSON) a `web/index.html` beépített adatai közé írja |
+| `tools/adat/` | Az úthálózati adatok előállítása: a NAP-ból letöltött 13 WFS GeoJSON fájlból egy lépésben újraépíti a `web/index.html` beépített adatait, ellenőrzésekkel és összehasonlító jelentéssel (leírás: [tools/adat/README.md](tools/adat/README.md)) |
 | `tools/kezdolap_hatter.py` | Megrajzolja a kezdőlap úthálózat-hátterét (`site/hatter.svg`) |
 | `tools/kezdolap_og.py` | Elkészíti a link-előnézet képét (`site/kepek/og.jpg`): logó, név, szlogen, három képernyő |
 | `screenshots/` | A README képei |
@@ -126,7 +125,7 @@ Az alkalmazás minden felirata, magyarázata és gombszövege egy helyen van: a 
 ## Adatforrás és felelősség
 
 - Útadatok: Magyar Közút Nonprofit Zrt. – Nemzeti Adathozzáférési Pont (NAP), statikus adatcsomagok
-  (adatállapot: 2026. november): Országos közúthálózat, Közút neve/kategóriája/kezelője, Szelvényjelek,
+  (az adatállapot dátuma az alkalmazás Névjegy oldalán látszik): Országos közúthálózat, Közút neve/kategóriája/kezelője, Szelvényjelek,
   Sebességkorlátozás, Lakott területi szakaszok, Hídhasználati feltételek, Tehergépjárművekre vonatkozó
   korlátozások, Összes gépjármű forgalmi sávok száma, Burkolat típusa és szélessége, Éves keresztmetszeti
   forgalmi adatok (2025), Közúti azonosítópontok, Egyirányú útpályák, Autóbusz megállóhelyek.<br>**Az adatokra a NAP felhasználási
@@ -199,6 +198,7 @@ Ha olyan hibát találsz, ami itt nem szerepel, jelezd [issue-ként](https://git
 Időpont nélkül:
 - **Mérnökség és megyei igazgatóság:** amint a NAP közzéteszi őket, az alkalmazás is mutatja.
 - **Automatikus adatfrissítés:** a NAP adatainak havi ellenőrzése; ha változtak, az új adat a következő kiadással érkezik.
+- **Mérnökségek és tengelysúlymérő állomások a térképen:** a Magyar Közút és a koncessziós cégek mérnökségeinek telephelyei, valamint a tengelysúlymérő (mérő)állomások ikonnal a térképen (külön kapcsolóval, mint a buszmegállók), koppintásra a nevükkel. Ehhez helyadat kell: a legjobb, ha a Magyar Közút ezeket is közzéteszi a NAP-on.
 
 ### Jelenleg nem tervezett
 - **iPhone alkalmazás:** a webalkalmazás iPhone-on is működik, a főképernyőre téve böngészősáv nélkül, teljes képernyőn fut. Egy App Store-os alkalmazáshoz éves díjas Apple fejlesztői tagság és App Store-jóváhagyás kellene, és külön kellene karbantartani.

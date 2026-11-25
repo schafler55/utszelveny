@@ -1,0 +1,317 @@
+{
+ "_comment": "Fixed places for tools/adat/apptest.py: EOV coordinates on the road, and the road + carriageway + km+m the app must give there (± 5 m). Made from main on 2026-11-24 (apptest.py --make-golden).",
+ "points": [
+  {
+   "name": "M1 Tatabánya, jobb pálya",
+   "eov": [
+    602681.1,
+    248387.6
+   ],
+   "expect": {
+    "road": "M1",
+    "pk": 1,
+    "ch": "57+299"
+   }
+  },
+  {
+   "name": "M1 Tatabánya, bal pálya",
+   "eov": [
+    602675.0,
+    248374.3
+   ],
+   "expect": {
+    "road": "M1",
+    "pk": 2,
+    "ch": "57+300"
+   }
+  },
+  {
+   "name": "M0 / M7 csomópont, Törökbálint",
+   "eov": [
+    640940.9,
+    230523.3
+   ],
+   "expect": {
+    "road": "M0",
+    "pk": 1,
+    "ch": "6+499"
+   }
+  },
+  {
+   "name": "M3 Gyöngyös",
+   "eov": [
+    713530.0,
+    265166.1
+   ],
+   "expect": {
+    "road": "M3",
+    "pk": 1,
+    "ch": "72+1020"
+   }
+  },
+  {
+   "name": "M5 Kecskemét",
+   "eov": [
+    694717.1,
+    170813.2
+   ],
+   "expect": {
+    "road": "M5",
+    "pk": 2,
+    "ch": "86+399"
+   }
+  },
+  {
+   "name": "M6 Dunaújváros",
+   "eov": [
+    637745.9,
+    183814.8
+   ],
+   "expect": {
+    "road": "M6",
+    "pk": 1,
+    "ch": "66+200"
+   }
+  },
+  {
+   "name": "M7 Siófok",
+   "eov": [
+    574892.5,
+    173011.8
+   ],
+   "expect": {
+    "road": "M7",
+    "pk": 2,
+    "ch": "104+650"
+   }
+  },
+  {
+   "name": "M35 Debrecen",
+   "eov": [
+    838520.2,
+    246447.3
+   ],
+   "expect": {
+    "road": "M35",
+    "pk": 1,
+    "ch": "39+700"
+   }
+  },
+  {
+   "name": "1 Győr",
+   "eov": [
+    544725.5,
+    261351.9
+   ],
+   "expect": {
+    "road": "1",
+    "pk": 0,
+    "ch": "125+249"
+   }
+  },
+  {
+   "name": "4 Szolnok",
+   "eov": [
+    736102.6,
+    200626.2
+   ],
+   "expect": {
+    "road": "4",
+    "pk": 0,
+    "ch": "99+987"
+   }
+  },
+  {
+   "name": "6 Paks",
+   "eov": [
+    633041.1,
+    135347.6
+   ],
+   "expect": {
+    "road": "6",
+    "pk": 0,
+    "ch": "116+1000"
+   }
+  },
+  {
+   "name": "7 Velence",
+   "eov": [
+    622923.1,
+    210992.0
+   ],
+   "expect": {
+    "road": "7",
+    "pk": 0,
+    "ch": "43+500"
+   }
+  },
+  {
+   "name": "10 Üröm",
+   "eov": [
+    645881.4,
+    249316.9
+   ],
+   "expect": {
+    "road": "10",
+    "pk": 0,
+    "ch": "11+300"
+   }
+  },
+  {
+   "name": "42 Báránd",
+   "eov": [
+    831002.1,
+    215663.8
+   ],
+   "expect": {
+    "road": "42",
+    "pk": 0,
+    "ch": "30+000"
+   }
+  },
+  {
+   "name": "43 Szeged",
+   "eov": [
+    736162.7,
+    101934.4
+   ],
+   "expect": {
+    "road": "43",
+    "pk": 0,
+    "ch": "2+059"
+   }
+  },
+  {
+   "name": "67 Antalszállás (átkelési)",
+   "eov": [
+    556613.0,
+    96294.4
+   ],
+   "expect": {
+    "road": "67",
+    "pk": 0,
+    "ch": "19+199"
+   }
+  },
+  {
+   "name": "86 Szombathely",
+   "eov": [
+    465609.5,
+    183750.2
+   ],
+   "expect": {
+    "road": "86",
+    "pk": 0,
+    "ch": "49+820"
+   }
+  },
+  {
+   "name": "2514 Emőd, híd",
+   "eov": [
+    781661.0,
+    291133.3
+   ],
+   "expect": {
+    "road": "2514",
+    "pk": 0,
+    "ch": "1+1000"
+   }
+  },
+  {
+   "name": "4136 (km-ugrás)",
+   "eov": [
+    909641.2,
+    292876.1
+   ],
+   "expect": {
+    "road": "4136",
+    "pk": 0,
+    "ch": "4+400"
+   }
+  },
+  {
+   "name": "4625 (km 0 → 4)",
+   "eov": [
+    734352.8,
+    200475.4
+   ],
+   "expect": {
+    "road": "4625",
+    "pk": 0,
+    "ch": "0+149"
+   }
+  },
+  {
+   "name": "8111 M7 alatt",
+   "eov": [
+    627735.5,
+    217325.8
+   ],
+   "expect": {
+    "road": "8111",
+    "pk": 0,
+    "ch": "0+1002"
+   }
+  },
+  {
+   "name": "50517 csomóponti ág",
+   "eov": [
+    727212.0,
+    106696.5
+   ],
+   "expect": {
+    "road": "50517",
+    "pk": 0,
+    "ch": "0+299"
+   }
+  },
+  {
+   "name": "95001 kerékpárút",
+   "eov": [
+    516788.9,
+    158276.1
+   ],
+   "expect": {
+    "road": "95001",
+    "pk": 0,
+    "ch": "103+084"
+   }
+  },
+  {
+   "name": "3 Miskolc",
+   "eov": [
+    780548.9,
+    302439.2
+   ],
+   "expect": {
+    "road": "3",
+    "pk": 0,
+    "ch": "179+411"
+   }
+  },
+  {
+   "name": "21 Mátraszőlős (osztott)",
+   "eov": [
+    699066.9,
+    289355.9
+   ],
+   "expect": {
+    "road": "21",
+    "pk": 1,
+    "ch": "32+360"
+   }
+  },
+  {
+   "name": "5101 Szigetszentmiklós",
+   "eov": [
+    647792.4,
+    226749.5
+   ],
+   "expect": {
+    "road": "5101",
+    "pk": 0,
+    "ch": "8+000"
+   }
+  }
+ ]
+}
