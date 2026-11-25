@@ -11,7 +11,7 @@ már ezt a verziószámot mutatja (pl. V1.2.1), és a következő stabil kiadás
 saját verziószámot kapott, ezért a régebbi bejegyzések aprók; a ténylegesen kiadott változatokat
 „Stabil kiadás” jelöli.
 
-## [1.2.1] – kiadatlan (a `main` ágon)
+## [1.2.2] – kiadatlan (a `main` ágon)
 Az 1.2.0 óta a `main` ágra került változások; még nem stabil kiadás.
 - **Adatfrissítés egy lépésben (`tools/adat/`):** az úthálózati adatokat (út- és szakaszadatok, szelvényezés, sebességkorlátozás, lakott területi szakaszok és településnevek, hidak, tehergépjármű-korlátozások, sávok, burkolat, forgalom, azonosítópontok, egyirányú útpályák, buszmegállók) mostantól egyetlen program állítja elő a NAP-ból letöltött 13 fájlból, ellenőrzésekkel (hiányos letöltés, ismeretlen kód vagy útszám, hirtelen adatvesztés esetén leáll) és összehasonlító jelentéssel; a korábbi három importáló program beleolvadt. Az első futás a jelenlegi adatokat állította elő újra (a NAP adatai november 16. óta nem változtak); 20 000 véletlen helyen próbálva 2 helyen tér el a szelvény (9 m és 3 m), 1 helyen a településnév; egy szelvényjel nélküli kerékpárúton (95001) a km-szelvény legfeljebb 43 m-rel máshová esik. **Névjegy:** az adatállapot napra pontosan, az adatokból („2026. november 24.”).
 - **Térkép, saját sebesség:** menet közben a bal alsó sebességkorlát-tábla fölött egy kis körben a GNSS szerinti sebesség (csak a szám), a táblával egy függőleges vonalban, kissé a tábla mögé csúsztatva; 5 km/h túllépéstől narancssárga, 10 km/h-tól piros, mint a Pozíció oldal sebességkorlát kártyáján (Beállítások → Pozíció → Sebességkorlát kapcsoló). A Térkép → Nézet kapcsoló neve „Sebességkorlát, helységnévtábla, sebesség”.
