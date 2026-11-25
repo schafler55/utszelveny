@@ -5214,15 +5214,16 @@ function drawSrch(marks,only){
       ctx.lineWidth=2;ctx.strokeStyle="#0b1220";ctx.lineCap="round";
       for(const [a,b,c2,d] of [[x,y-13,x,y-9.5],[x,y+9.5,x,y+13],[x-13,y,x-9.5,y],[x+9.5,y,x+13,y]]){ctx.beginPath();ctx.moveTo(a,b);ctx.lineTo(c2,d);ctx.lineWidth=4.5;ctx.strokeStyle="#0b1220";ctx.stroke();ctx.lineWidth=2;ctx.strokeStyle=col;ctx.stroke()}
       ctx.beginPath();ctx.arc(x,y,2.6,0,7);ctx.fillStyle=col;ctx.fill()});
-    if(it.kind!=="sec"){
+    if(it.kind!=="sec"){   // point search: the pin and the chip; the other carriageway's dot only when selected
       R.hits.forEach((h,i)=>{const m=hitM(h),x=m2sx(m.x,m.y),y=m2sy(m.x,m.y);
-        if(i){ctx.beginPath();ctx.arc(x,y,5,0,7);ctx.fillStyle=col;ctx.fill();ctx.lineWidth=2;ctx.strokeStyle="#0b1220";ctx.stroke();return}
+        if(i){if(!foc)return;ctx.beginPath();ctx.arc(x,y,5,0,7);ctx.fillStyle=col;ctx.fill();ctx.lineWidth=2;ctx.strokeStyle="#0b1220";ctx.stroke();return}
         ctx.beginPath();ctx.moveTo(x,y);ctx.bezierCurveTo(x-2,y-6,x-11,y-12,x-11,y-22);ctx.arc(x,y-22,11,Math.PI,0);ctx.bezierCurveTo(x+11,y-12,x+2,y-6,x,y);ctx.closePath();
         ctx.fillStyle=col;ctx.fill();ctx.lineWidth=2;ctx.strokeStyle="#0b1220";ctx.stroke();
         ctx.beginPath();ctx.arc(x,y-22,4.2,0,7);ctx.fillStyle="#0b1220";ctx.fill();
         lbl(x,y-22,byName?it.name:`${R.num} · ${fmtCh(R.ch)}`,14)});
     }else{
-      const mark=(P,fill,t)=>{if(!P)return;const m=hitM(P.hits[0]),x=m2sx(m.x,m.y),y=m2sy(m.x,m.y);
+      // K / V markers only for the selected search (chip tapped, bubble open); otherwise the line and the chip
+      const mark=(P,fill,t)=>{if(!P)return;const m=hitM(P.hits[0]),x=m2sx(m.x,m.y),y=m2sy(m.x,m.y);if(!foc)return {x,y};
         ctx.beginPath();ctx.arc(x,y,10,0,7);ctx.fillStyle=fill;ctx.fill();ctx.lineWidth=2.5;ctx.strokeStyle=col;ctx.stroke();
         ctx.fillStyle="#fff";ctx.font=`bold 11px ${APPF}`;ctx.textAlign="center";ctx.textBaseline="middle";ctx.fillText(t,x,y+0.5);return {x,y}};
       const a=mark(R.A,"#16a34a","K");mark(R.B,"#dc2626","V");
