@@ -562,7 +562,7 @@
     "map_spd_note": "Csak menet közben, a térkép bal alsó sarkában; a saját sebességed a tábla fölött",
     "grp_tap": "Koppintás",
     "map_snap": "Pont illesztése a legközelebbi útra",
-    "map_snap_note": "Koppintáskor és a térképi mérés pontjainál az ujjad melletti legközelebbi útra kerül a pont. Kikapcsolva csak az út vonalára koppintva",
+    "map_snap_note": "Koppintáskor és a térképi mérés pontjainál az ujjad melletti legközelebbi, a térképen látható útra kerül a pont. Kikapcsolva csak az út vonalára koppintva",
     "grp_roads": "Utak",
     "map_hl": "Aktuális út kiemelése",
     "map_hl_note": "Az út, amelyiken éppen vagy, mindig a saját színében látszik: kiemelve, vagy a többivel egyformán",
@@ -2116,6 +2116,7 @@ function match(E,N,opt){
   const thr=opt.thr||Math.max(25,Math.min(60,acc*1.5));   // opt.thr: map tap with snapping (tapMatch)
   let cands=candidates(E,N,Math.max(thr,80));
   if(opt.noBike)cands=cands.filter(c=>segKut[c.s]!==10);   // map tap with bike paths hidden on the map
+  if(opt.maxKut!=null)cands=cands.filter(c=>segKut[c.s]<=opt.maxKut);   // map tap: only road types drawn at this zoom
   if(!cands.length)return {off:true,thr};
   for(const c of cands){
     let sc=c.d;const k=segKut[c.s],pk=segPk[c.s];
@@ -2978,6 +2979,11 @@ function layerBlit(W,H,key){
   return true;
 }
 let mapStamp=new Int32Array(1),mapN=0;
+// road types drawn on the map at a zoom (gS = screen px per ground metre): zoomed out only motorways, expressways
+// and main roads (1–4), in between also the 4–5 digit roads (up to 7), zoomed in everything. mapKutVis is the value
+// of the last drawn frame, so map taps and map measurement points only pick roads you can see (tapMatch)
+const kutVis=(gS)=>gS<0.02?4:gS<0.06?7:99;
+let mapKutVis=99;
 function drawMap(){
   if(!mapOn)return;
   const W=cv.clientWidth,H=cv.clientHeight;
@@ -2996,7 +3002,7 @@ function drawMap(){
   const latC=fromM(mX,mY).lat,gS=mS/Math.cos(latC*Math.PI/180); // px per ground metre
   const sx=(v)=>m2sx(MX[v],MY[v]),sy=(v)=>m2sy(MX[v],MY[v]);
   const mx=(m)=>m2sx(m.x,m.y),my=(m)=>m2sy(m.x,m.y);
-  const minKut=gS<0.02?4:gS<0.06?7:99,noBike=S.mapBike===false;
+  const minKut=kutVis(gS),noBike=S.mapBike===false;mapKutVis=minKut;
   // segments inside a box given in screen coordinates (rotation included), in drawing order
   const segsIn=(x0,y0,x1,y1)=>{
     let e1=1e9,e2=-1e9,n1=1e9,n2=-1e9;
@@ -3493,11 +3499,13 @@ function mapIdle(){
 let tapSel=null;   // the road place picked by the last map tap: {s, ch, E, N, lat, lon}
 // the road for a map tap or a map measurement point (gS = screen px per metre, px = old tap tolerance in px).
 // Snapping on (Térkép → Koppintás, default): the nearest road within SNAP_PX of the finger, never less than
-// 25 m, and the caller moves the point onto that road. Off: the old small tolerance (25–60 m)
+// 25 m, and the caller moves the point onto that road. Off: the old small tolerance (25–60 m).
+// Either way only the roads drawn at the current zoom count (mapKutVis): zoomed out, a point beside a main road
+// is not put on a hidden 4–5 digit road that happens to be nearer
 const SNAP_PX=40;
 const snapOn=()=>S.mapSnap!==false;
 function tapMatch(E,N,gS,px){
-  const o={acc:Math.max(8,px/gS),noBike:S.mapBike===false};
+  const o={acc:Math.max(8,px/gS),noBike:S.mapBike===false,maxKut:mapKutVis};
   if(snapOn())o.thr=Math.min(2000,Math.max(25,SNAP_PX/gS));
   return match(E,N,o);
 }
