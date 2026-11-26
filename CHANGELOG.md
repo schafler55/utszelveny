@@ -13,6 +13,9 @@ szakaszba olvadnak össze, amely a kiadás összes változását felsorolja. A t
 (pl. 0.16.1–0.16.10) változásai a következő nagyobb verzió (pl. 0.17) szakaszában szerepelnek; a szakasz első sora
 jelzi, mely változatokat tartalmazza.
 
+## [1.3.1.0] – 2026-11-26 · kiadatlan
+- **Térkép, átkelési szakaszok:** új kapcsoló a Beállítások → Térkép → Utak csoportban, az „Utak vonalvastagsága” után: „Átkelési szakaszok a térképen”. Bekapcsolva a térkép halvány piros sávval jelöli az utak vonala alatt azokat a szakaszokat, ahol az út lakott területen halad át (NAP adat, ugyanaz, amelyből a sebességkorlát-kártya az átkelési szakaszt és a településtáblát mutatja). Kisebb nagyításnál a sáv fele olyan széles, hogy ne legyen túl feltűnő. A kerékpárutakon nincs jelölés. Alapból kikapcsolva; új adatot nem igényel, az alkalmazás mérete nem nő.
+
 ## [1.3.0.1] – 2026-11-26 · kiadatlan
 - **Frissítés, „Újdonságok”:** az új verzióról szóló ablakban az „Újdonságok” hivatkozás mostantól a változásnaplót nyitja meg (az adott kiadás szerinti állapotában, így az új verzió változásai állnak legfelül), nem a GitHub kiadási oldalát. Azoknál lép életbe, akik már ezt a változatot használják: a V1.3.0 a következő stabil kiadásnál még a kiadási oldalt nyitja meg.
 - **Verziószámok:** minden módosítás saját, négytagú verziószámot kap (részletek a napló elején). Az Android belső verziókódja (versionCode) mostantól verziótagonként két számjegy (V1.3.0.1 → 1030001; eddig tagonként egy, V1.3.0 → 1300), így egy tag 99-ig mehet. Az új kódok mind nagyobbak a korábbiaknál, a frissítés ugyanúgy települ. A `tools/verzio.py` a README verziósorát is ellenőrzi és átírja.
