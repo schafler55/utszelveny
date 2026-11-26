@@ -307,11 +307,13 @@ A 0.5.1 változat változásaival együtt.
 - A verziószámozás újrakezdődött V0.2 Beta-tól (korábban V1.5.9), mert az alkalmazás még nem érte el az 1.0-t.
 
 ## Korábbi számozás (V1.x) – 2026-11-17 / 18
-Az első két nap változatai még V1.4 – V1.5.9 Beta számot viseltek (a V1.5.7-ig KözútSzelvény néven); a számozás
-a V0.2 Beta-val újrakezdődött. Ezek nem azonosak a későbbi 1.x stabil kiadásokkal.
+Az első két nap változatai az alkalmazásban még V1.4 – V1.5.9 Beta számot viseltek (a V1.5.7-ig KözútSzelvény néven);
+a számozás a V0.2 Beta-val újrakezdődött. Hogy illeszkedjenek a mai számozás sorába, és ne lehessen összekeverni őket
+a későbbi 1.x stabil kiadásokkal, ebben a naplóban egy 0-val az elejükön szerepelnek (V1.4 → 0.1.4, V1.5 → 0.1.5);
+az eredeti verziószám a szakaszok első sorában áll.
 
-## [V1.5] – 2026-11-18
-A V1.5 – V1.5.9 változatok változásai együtt (2026. november 17–18.).
+## [0.1.5] – 2026-11-18
+Eredeti verziószám: V1.5 – V1.5.9 Beta; e változatok változásai együtt (2026. november 17–18.).
 - **Új név:** az alkalmazás neve ÚtSzelvény (korábban KözútSzelvény): a fejlécben, a böngésző címsorában, a webalkalmazás és az Android alkalmazás nevében, a README-ben és az APK fájlnevében (`UtSzelveny.apk`). Az Android csomagazonosító nem változott, így a frissítés a meglévő alkalmazásra települ, és a mentett beállítások megmaradnak.
 - **Új alkalmazásikon:** kerek ikon sötét háttéren, zöld gyűrűvel: zöld „KM” útszámtábla, alatta jobbra kanyarodó út, az út szélén régi stílusú, felfelé keskenyedő, csúcsos tetejű kilométerkő „24” felirattal, halvány térképrács. Több lépésben készült el (először útszámtábla egy út fölött, majd a kanyar és a kilométerkő, végül a kő régi formája). Androidon adaptív és kerek ikon, a webalkalmazásnál 192 és 512 képpontos, valamint „maskable” ikon és favicon.
 - **Fő kártya, útnév:** a szelvény alatt nincs „km” felirat. Az autópályák és autóutak nevében a „honnan – hová” rész külön, kisebb sorban, zárójelben áll (pl. „M30 autópálya” és alatta „(M3 - Tornyosnémeti)”); a csomóponti ágak nevében a „/x/” párok helyett „(x)” szerepel.
@@ -323,8 +325,8 @@ A V1.5 – V1.5.9 változatok változásai együtt (2026. november 17–18.).
 - **Tehergépjármű- és súlykorlátozások:** új, kikapcsolható rész a NAP „Tehergépjárművekre vonatkozó korlátozások” adatcsomagjából (2808 rekord, 1881 összefüggő szakaszba vonva): az éppen érvényes korlátozások a hátralévő hosszal, a haladási irányban 3 km-en belül következők, KRESZ-szerű táblákkal és a kivételek szövegével.
 - README: képernyőképek az alkalmazásból (valódi térképpel), az alkalmazásikon a cím fölött.
 
-## [V1.4] – 2026-11-17
-Az első feltöltés a GitHubra, KözútSzelvény néven; a V1.4 és a V1.4.1 változat együtt.
+## [0.1.4] – 2026-11-17
+Eredeti verziószám: V1.4 és V1.4.1 Beta. Az első feltöltés a GitHubra, KözútSzelvény néven.
 - **Pozíció:** a telefon GPS-pozíciójából az aktuális út száma, neve és a szelvény (km+m), a NAP országos közúthálózati adataiból, internet nélkül. Címkék a pályáról, a közös szakaszról (ahol több út fut együtt) és a közeli utakról (útszám, szelvény, távolság). GPS nélkül „GPS kikapcsolva” kártya indítógombbal és az utolsó ismert pozícióval.
 - **Sebességkorlát:** az érvényes sebességkorlát táblával, belterület / külterület jelzéssel (lakott területi átkelési szakasz vagy külsőségi szakasz); ahol nincs egyedi korlátozás, a KRESZ szerinti alapérték.
 - **Hidak:** a közeli hidak és út feletti akadályok, súly- és magasságkorlátozással.
