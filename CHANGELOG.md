@@ -11,8 +11,8 @@ már ezt a verziószámot mutatja (pl. V1.2.1), és a következő stabil kiadás
 saját verziószámot kapott, ezért a régebbi bejegyzések aprók; a ténylegesen kiadott változatokat
 „Stabil kiadás” jelöli.
 
-## [1.2.2] – kiadatlan (a `main` ágon)
-Az 1.2.0 óta a `main` ágra került változások; még nem stabil kiadás.
+## [1.3.0] – 2026-11-26
+Stabil kiadás; az 1.2.0 óta a `main` ágra került változások együtt (a `main` ágon eddig V1.2.1 és V1.2.2 néven).
 - **Alsó menü keskeny kijelzőn / nagy betűmérettel:** a menü eddig rögzített méretű volt (kb. 390 képpont széles kijelző kellett hozzá), ezért keskenyebb telefonon, illetve nagyra állított Android „Megjelenítési méret” vagy betűméret mellett az utolsó gomb (Fotó) részben vagy teljesen kilógott, és a Fotó oldalt nem lehetett megnyitni. Mostantól a menü mindig elfér: ha szűk a hely, először a gombok közti távolság csökken, ha így sem fér ki, a kiválasztott oldal neve nem jelenik meg, csak az ikonok. Széles kijelzőn (pl. Pixel 7 Pro) nincs változás.
 - **Fotó, sebesség:** a kép JPEG-kódolása külön háttérszálon (worker) fut. Eddig a böngészőmotor az oldal „üresjáratára” várt vele, ami az Android alkalmazásban kiszámíthatatlanul jön: a fotó hol azonnal, hol csak másodpercek múlva készült el („Gyors” és „Legjobb” minőségnél is). A mentés külön sorban megy, így egy lassabb mentés nem tartja fel a következő fotó feldolgozását.
 - **Keresés, alapértelmezett név:** osztott pályás úton a mentett keresés neve a pálya betűjelével végződik, zárójel nélkül: „M1 · 12+000 J” vagy „… B” (eddig „(jobb)” / „(bal)”). A korábban mentett, át nem nevezett keresések neve is átáll.
