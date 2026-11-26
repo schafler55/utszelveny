@@ -13,6 +13,10 @@ szakaszba olvadnak össze, amely a kiadás összes változását felsorolja. A t
 (pl. 0.16.1–0.16.10) változásai a következő nagyobb verzió (pl. 0.17) szakaszában szerepelnek; a szakasz első sora
 jelzi, mely változatokat tartalmazza.
 
+## [1.3.1.2] – 2026-11-26 · kiadatlan
+- **Térkép, átkelési szakaszok:** Z8-as és annál kisebb nagyításnál (ahogy a méretarány-sáv mutatja) a piros sáv nem jelenik meg, akkor sem, ha a kapcsoló be van kapcsolva; Z9-től látszik.
+- **Névjegy → Frissítések:** az „Ellenőrizve:” és a dátum külön sorba került a „Naprakész” alá.
+
 ## [1.3.1.1] – 2026-11-26 · kiadatlan
 - **Frissítéskeresés a fejlesztői változatban:** a https://utszelveny.hu/dev/ oldal és az „ÚtSzelvény DEV” APK mostantól ugyanúgy szól, ha új verzió érhető el, mint a stabil kiadás, csak a `main` ág új verzióit figyeli: a dev oldal a „Frissítés” gombra azonnal betölti az új változatot, a DEV alkalmazás megnyitja az új DEV APK letöltését (`apk-latest`), amely a meglévő DEV alkalmazásra települ. Az „Újdonságok” a `main` változásnaplóját nyitja meg. A DEV alkalmazás legfeljebb óránként kérdezi a GitHubot (a stabil naponta egyszer), a dev oldal minden indításkor a saját szerverét. Kapcsoló és kézi ellenőrzés ugyanott: Beállítások → Általános → Frissítések, Névjegy → Frissítések. A teszt ágak oldalain és teszt APK-iban továbbra sincs frissítéskeresés.
 - A DEV alkalmazás csak ettől a változattól kezdve keres frissítést: a V1.3.1.1 DEV APK-t egyszer még kézzel kell telepíteni.
