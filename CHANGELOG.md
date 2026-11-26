@@ -307,13 +307,30 @@ A 0.5.1 változat változásaival együtt.
 - A verziószámozás újrakezdődött V0.2 Beta-tól (korábban V1.5.9), mert az alkalmazás még nem érte el az 1.0-t.
 
 ## Korábbi számozás (V1.x) – 2026-11-17 / 18
-- **V1.5.9:** az alkalmazásikonban régi stílusú, csúcsos tetejű kilométerkő.
-- **V1.5.8:** új név: ÚtSzelvény (korábban KözútSzelvény), végleges ikon.
-- **V1.5.6 – V1.5.7:** új alkalmazásikon.
-- **V1.5.5:** tisztább útnév a fő kártyán.
-- **V1.5.4:** útszám a magyar útjelző tábla alakjában.
-- **V1.5.3:** felüljárók mindkét pályán.
-- **V1.5.2:** egyszerű hídikonok.
-- **V1.5.1:** hidak az út alatt és felett, koppintható közeli utak.
-- **V1.5:** tehergépjármű- és súlykorlátozások.
-- **V1.4:** első feltöltés: útszám és km+m a NAP adataiból, sebességkorlát, hidak, kezelő; Android alkalmazás és APK-build.
+Az első két nap változatai még V1.4 – V1.5.9 Beta számot viseltek (a V1.5.7-ig KözútSzelvény néven); a számozás
+a V0.2 Beta-val újrakezdődött. Ezek nem azonosak a későbbi 1.x stabil kiadásokkal.
+
+## [V1.5] – 2026-11-18
+A V1.5 – V1.5.9 változatok változásai együtt (2026. november 17–18.).
+- **Új név:** az alkalmazás neve ÚtSzelvény (korábban KözútSzelvény): a fejlécben, a böngésző címsorában, a webalkalmazás és az Android alkalmazás nevében, a README-ben és az APK fájlnevében (`UtSzelveny.apk`). Az Android csomagazonosító nem változott, így a frissítés a meglévő alkalmazásra települ, és a mentett beállítások megmaradnak.
+- **Új alkalmazásikon:** kerek ikon sötét háttéren, zöld gyűrűvel: zöld „KM” útszámtábla, alatta jobbra kanyarodó út, az út szélén régi stílusú, felfelé keskenyedő, csúcsos tetejű kilométerkő „24” felirattal, halvány térképrács. Több lépésben készült el (először útszámtábla egy út fölött, majd a kanyar és a kilométerkő, végül a kő régi formája). Androidon adaptív és kerek ikon, a webalkalmazásnál 192 és 512 képpontos, valamint „maskable” ikon és favicon.
+- **Fő kártya, útnév:** a szelvény alatt nincs „km” felirat. Az autópályák és autóutak nevében a „honnan – hová” rész külön, kisebb sorban, zárójelben áll (pl. „M30 autópálya” és alatta „(M3 - Tornyosnémeti)”); a csomóponti ágak nevében a „/x/” párok helyett „(x)” szerepel.
+- **Útszámtábla:** az útszám a magyar útszámjelző tábla alakjában jelenik meg: egyenes oldalak, lapos V alakú alj, enyhén lekerekített sarkok, keskenyebb számok; az alsóbbrendű utak táblája ugyanilyen magas.
+- **Hidak, osztott pályás utak:** a NAP hídadataiban az osztott pályás út feletti hidak csak az egyik pályán szerepelnek (513 a jobb, 5 a bal pályán). Mostantól a másik pályán is megjelennek, annál a szelvénynél, ahol az a híd alatt áthalad (a híd helyéből vetítve, 11–24 m-re), így mindkét irányban látszanak.
+- **Hidak, ikonok:** három egyszerű, körvonalas ikon (áthaladsz rajta / áthaladsz alatta / az út mellett) a korábbi hat részletes piktogram helyett. A kerékpárutakon nyilvántartott gyaloghidak a kerékpárút saját hídjai, ezért az ott haladónak „Áthaladsz rajta” jelzéssel látszanak.
+- **Hidak, rajta vagy alatta:** a hídlista megkülönbözteti azokat a hidakat, amelyeken áthaladsz, és azokat, amelyek alatt áthaladsz; korlátozás nélküli hídnál a híd típusát ikon jelzi (közúti híd, felüljáró, gyaloghíd, vadátjáró, közös vasúti híd). A „híd alatti” magasság- és szélességkorlátozás már nem jelenik meg a hídon haladónak; ahol a híd neve alapján országos közút halad alatta (5 eset), ott annál az útnál látszik.
+- **Közeli utak:** a „közelben” címkék koppinthatók: a fő kijelzés átvált arra az útra, és egy címkével lehet visszatérni az automatikus útválasztáshoz.
+- **Tehergépjármű- és súlykorlátozások:** új, kikapcsolható rész a NAP „Tehergépjárművekre vonatkozó korlátozások” adatcsomagjából (2808 rekord, 1881 összefüggő szakaszba vonva): az éppen érvényes korlátozások a hátralévő hosszal, a haladási irányban 3 km-en belül következők, KRESZ-szerű táblákkal és a kivételek szövegével.
+- README: képernyőképek az alkalmazásból (valódi térképpel), az alkalmazásikon a cím fölött.
+
+## [V1.4] – 2026-11-17
+Az első feltöltés a GitHubra, KözútSzelvény néven; a V1.4 és a V1.4.1 változat együtt.
+- **Pozíció:** a telefon GPS-pozíciójából az aktuális út száma, neve és a szelvény (km+m), a NAP országos közúthálózati adataiból, internet nélkül. Címkék a pályáról, a közös szakaszról (ahol több út fut együtt) és a közeli utakról (útszám, szelvény, távolság). GPS nélkül „GPS kikapcsolva” kártya indítógombbal és az utolsó ismert pozícióval.
+- **Sebességkorlát:** az érvényes sebességkorlát táblával, belterület / külterület jelzéssel (lakott területi átkelési szakasz vagy külsőségi szakasz); ahol nincs egyedi korlátozás, a KRESZ szerinti alapérték.
+- **Hidak:** a közeli hidak és út feletti akadályok, súly- és magasságkorlátozással.
+- **GPS és koordináták:** WGS84 és EOV koordináta (váltható), GPS-pontosság.
+- **Kezelő:** az út kezelője és a megye.
+- **Térkép:** az országos közúthálózat térképe internet nélkül, a saját pozícióval és követéssel; OpenStreetMap háttértérkép internetkapcsolattal (szürke, sötét vagy kikapcsolva); a térképre koppintva az adott pont útja és szelvénye.
+- **Beállítások:** GPS indítása, képernyő ébren tartása, kerékpárutak kihagyása, háttértérkép, az utak vonalvastagsága, útnév mutatása; a sebességkorlát, a hidak, a GPS és koordináták, valamint a kezelő része külön ki- és bekapcsolható; kézi pozíció megadása WGS84 vagy EOV koordinátával (teszteléshez).
+- **Telepíthető webalkalmazás** (PWA), amely az első betöltés után internet nélkül is működik; **Android alkalmazás** ugyanazzal az `index.html`-lel, az APK-t a GitHub minden `main` ágra kerülő feltöltéskor megépíti.
+- Névjegy: hivatkozás a GitHub-forráskódra; licenc: GPL-3.0.
