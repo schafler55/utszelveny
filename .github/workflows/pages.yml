@@ -16,7 +16,9 @@ name: Web app (GitHub Pages)
 # workflow asks for one more rebuild once it has attached the APK to a new stable release.
 # The dev and test pages are kept out of search results (noindex, and robots.txt of the landing page).
 # The dev and test pages have their own saved data (kszd_* / kszt_* keys), no service worker (it would clear the
-# real app's offline cache) and a small label; the app sees the renamed keys and does no update check there.
+# real app's offline cache) and a small label. The dev page gets the update channel "dev" (UPD_CH) and a copy of
+# sw.js, never registered, only read for the version: it tells its users about a newer main. The test pages
+# see the renamed keys and do no update check.
 
 on:
   push:
@@ -108,13 +110,15 @@ jobs:
           mkdir -p "$OUT/dev"
           sed \
             -e 's/"ksz_/"kszd_/g' \
+            -e 's/const UPD_CH="stable"/const UPD_CH="dev"/' \
             -e 's|navigator.serviceWorker.register("sw.js")|Promise.reject()|' \
             -e "s#<title>\(.*\)</title>#<title>\1 – DEV</title>#" \
             -e 's|</head>|<meta name="robots" content="noindex"></head>|' \
             -e "s|</body>|<div style=\"position:fixed;top:4px;left:50%;transform:translateX(-50%);z-index:50;background:#7c3aed;color:#fff;font:700 11px/1 Arial,sans-serif;padding:3px 8px;border-radius:6px;pointer-events:none\">DEV · $VER</div></body>|" \
             web/index.html > "$OUT/dev/index.html"
           grep -q 'DEV · ' "$OUT/dev/index.html"
-          cp web/icon-192.png web/icon-512.png web/szovegek.html "$OUT/dev/"
+          grep -q 'const UPD_CH="dev"' "$OUT/dev/index.html"
+          cp web/icon-192.png web/icon-512.png web/szovegek.html web/sw.js "$OUT/dev/"
           echo "dev page: dev/ ($VER)"
 
           # test pages: one per branch except main.

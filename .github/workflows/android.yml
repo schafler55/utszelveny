@@ -103,8 +103,9 @@ jobs:
           echo "APK: $name"
 
       # Stable releases get web/index.html unchanged. The DEV app gets the same changes as the /dev/ web page:
-      # renamed saved-data keys (kszd_), which also switches the update check off (the DEV app must not offer
-      # the real app as its update), and a small DEV / TESZT label.
+      # renamed saved-data keys (kszd_), so it never offers the real app as its update, and a small DEV / TESZT
+      # label. The DEV build of main also gets the update channel "dev" (UPD_CH): it looks for a newer APK in
+      # the "apk-latest" release. Test builds keep "stable" and, with the renamed keys, do no update check.
       - name: Copy the web app (web/index.html) into the APK
         env:
           D: ${{ steps.proj.outputs.dir }}
@@ -116,12 +117,15 @@ jobs:
           if [ -z "$LABEL" ]; then
             cp web/index.html "$out"
           else
+            ch=stable; case "$LABEL" in DEV*) ch=dev;; esac
             sed \
               -e 's/"ksz_/"kszd_/g' \
+              -e "s/const UPD_CH=\"stable\"/const UPD_CH=\"$ch\"/" \
               -e "s|</body>|<div style=\"position:fixed;top:4px;left:50%;transform:translateX(-50%);z-index:50;background:$BG;color:#fff;font:700 11px/1 Arial,sans-serif;padding:3px 8px;border-radius:6px;pointer-events:none\">$LABEL</div></body>|" \
               web/index.html > "$out"
             grep -q "$LABEL" "$out"
             grep -q 'UPD_KEY="kszd_"' "$out"
+            grep -q "const UPD_CH=\"$ch\"" "$out"
           fi
 
       - name: Build the unsigned APK

@@ -13,6 +13,10 @@ szakaszba olvadnak össze, amely a kiadás összes változását felsorolja. A t
 (pl. 0.16.1–0.16.10) változásai a következő nagyobb verzió (pl. 0.17) szakaszában szerepelnek; a szakasz első sora
 jelzi, mely változatokat tartalmazza.
 
+## [1.3.1.1] – 2026-11-26 · kiadatlan
+- **Frissítéskeresés a fejlesztői változatban:** a https://utszelveny.hu/dev/ oldal és az „ÚtSzelvény DEV” APK mostantól ugyanúgy szól, ha új verzió érhető el, mint a stabil kiadás, csak a `main` ág új verzióit figyeli: a dev oldal a „Frissítés” gombra azonnal betölti az új változatot, a DEV alkalmazás megnyitja az új DEV APK letöltését (`apk-latest`), amely a meglévő DEV alkalmazásra települ. Az „Újdonságok” a `main` változásnaplóját nyitja meg. A DEV alkalmazás legfeljebb óránként kérdezi a GitHubot (a stabil naponta egyszer), a dev oldal minden indításkor a saját szerverét. Kapcsoló és kézi ellenőrzés ugyanott: Beállítások → Általános → Frissítések, Névjegy → Frissítések. A teszt ágak oldalain és teszt APK-iban továbbra sincs frissítéskeresés.
+- A DEV alkalmazás csak ettől a változattól kezdve keres frissítést: a V1.3.1.1 DEV APK-t egyszer még kézzel kell telepíteni.
+
 ## [1.3.1.0] – 2026-11-26 · kiadatlan
 - **Térkép, átkelési szakaszok:** új kapcsoló a Beállítások → Térkép → Utak csoportban, az „Utak vonalvastagsága” után: „Átkelési szakaszok a térképen”. Bekapcsolva a térkép halvány piros sávval jelöli az utak vonala alatt azokat a szakaszokat, ahol az út lakott területen halad át (NAP adat, ugyanaz, amelyből a sebességkorlát-kártya az átkelési szakaszt és a településtáblát mutatja). Kisebb nagyításnál a sáv fele olyan széles, hogy ne legyen túl feltűnő. A kerékpárutakon nincs jelölés. Alapból kikapcsolva; új adatot nem igényel, az alkalmazás mérete nem nő.
 

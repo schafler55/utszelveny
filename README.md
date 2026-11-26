@@ -14,7 +14,7 @@ Fotóidra ráírja a helyet és az időt, a méréseidet pedig elnevezheted és 
 Böngészőben és Android-alkalmazásként is fut. Az úthálózati adatok a készüléken vannak, így a szelvényezés internet
 nélkül is működik. Csak a térkép alapréteghez kell internetkapcsolat.
 
-**Verzió:** V1.3.1.0 · [Változásnapló](CHANGELOG.md) · © 2026 Szászi Dániel · Licenc: GPL-3.0
+**Verzió:** V1.3.1.1 · [Változásnapló](CHANGELOG.md) · © 2026 Szászi Dániel · Licenc: GPL-3.0
 
 ## Funkciók
 
@@ -88,6 +88,7 @@ Koordináták: WGS84 (alapértelmezett) vagy EOV.
   A webalkalmazás a „Frissítés” gombra azonnal, a „Később” után a következő indításkor tölti be az új verziót.
   Az Android alkalmazás a „Frissítés” gombra megnyitja az új APK letöltését; a letöltött fájlt megnyitva az Android a meglévő alkalmazásra telepíti. Egy verzió ki is hagyható.
   A mentett mérések, keresések és beállítások frissítéskor megmaradnak.
+  A fejlesztői változat (https://utszelveny.hu/dev/ és az „ÚtSzelvény DEV” APK) ugyanígy a `main` ág új verzióira figyel; a tesztváltozatokban nincs frissítéskeresés.
 
 A térkép alapréteg (OpenStreetMap vagy Esri műholdkép) internetkapcsolatot igényel; minden más adat az alkalmazásba van építve.
 A térkép északkal felfelé vagy menetirány szerint elforgatva is használható.
