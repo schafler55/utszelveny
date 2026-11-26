@@ -13,6 +13,9 @@ szakaszba olvadnak össze, amely a kiadás összes változását felsorolja. A t
 (pl. 0.16.1–0.16.10) változásai a következő nagyobb verzió (pl. 0.17) szakaszában szerepelnek; a szakasz első sora
 jelzi, mely változatokat tartalmazza.
 
+## [1.3.1.4] – 2026-11-26 · kiadatlan
+- A támogatási felhívás szövege: „…hogy továbbra is működjön és fejlődjön.”
+
 ## [1.3.1.3] – 2026-11-26 · kiadatlan
 - **Támogatási felhívás:** 2026. december 15-től az alkalmazás időnként, indítás után egy ablakban megkéri a rendszeres felhasználókat, hogy támogassák a fejlesztést („Tartsd életben az ÚtSzelvényt!”). Csak annak jelenik meg, aki legalább 5 különböző napon használta az alkalmazást, legfeljebb háromhavonta egyszer, és soha nem menet közben (5 km/h felett), HUD módban, más ablak fölött, vagy ha ugyanabban az indításban már megjelent a frissítési ablak. A „Támogatás” megnyitja a Revolut oldalt (ugyanaz, mint a Névjegyben), és egy évig nem kérdez újra; a „Most nem” három hónapig. Semmi nem lesz zárolva, és a támogatás továbbra is önkéntes. A fejlesztői (DEV) és teszt változatokban a dátum és a napok száma nem számít, hogy ki lehessen próbálni.
 - **Frissítési ablak:** megszűnt a „Kihagyom ezt a verziót” gomb, így minden új verziót felajánl, amíg nincs telepítve; a „Később” után nagyjából egy nap múlva kérdez újra.
