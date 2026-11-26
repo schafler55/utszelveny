@@ -4,12 +4,17 @@ Az ÚtSzelvény változásai, a legújabb elöl. A dátumok UTC szerint értend�
 A nagyobb funkciók saját ágon (branch) készülnek teszt oldallal és teszt APK-val, és pull requestként (#) kerülnek a `main` ágba;
 a kisebb javítások közvetlenül a `main`-re kerülnek.
 
-**Verziószámok:** a V1.1.7-től nem kap minden módosítás saját verziószámot. A legutóbbi stabil kiadás óta
-a `main` ágra került változások a következő verzió „kiadatlan” szakaszába kerülnek; a `main` ágon az alkalmazás
-már ezt a verziószámot mutatja (pl. V1.2.1), és a következő stabil kiadás ezeket együtt tartalmazza
-(apró javítás: harmadik szám, pl. 1.2.1; új funkció: második szám, pl. 1.3.0). Korábban szinte minden módosítás
-saját verziószámot kapott, ezért a régebbi bejegyzések aprók; a ténylegesen kiadott változatokat
-„Stabil kiadás” jelöli.
+**Verziószámok:** a V1.3.0 óta minden módosítás saját, négytagú verziószámot kap (V1.3.0.1, V1.3.0.2 …), így minden
+letöltött alkalmazásról megállapítható, pontosan melyik változat. A harmadik szám csak külön döntésre változik
+(pl. V1.3.1.0). A stabil kiadás a második számot növeli, és a neve háromtagú (pl. V1.4.0).
+A még ki nem adott kis verziók ebben a naplóban külön szakaszokban állnak („kiadatlan”); a stabil kiadáskor egyetlen
+szakaszba olvadnak össze, amely a kiadás összes változását felsorolja. A ténylegesen kiadott változatokat
+„Stabil kiadás” jelöli. Korábban: a V1.1.7 előtt szinte minden módosítás saját verziószámot kapott (ezért aprók
+a régebbi bejegyzések), a V1.1.7 és a V1.3.0 között pedig a változások a következő stabil kiadás szakaszába gyűltek.
+
+## [1.3.0.1] – 2026-11-26 · kiadatlan
+- **Frissítés, „Újdonságok”:** az új verzióról szóló ablakban az „Újdonságok” hivatkozás mostantól a változásnaplót nyitja meg (az adott kiadás szerinti állapotában, így az új verzió változásai állnak legfelül), nem a GitHub kiadási oldalát. Azoknál lép életbe, akik már ezt a változatot használják: a V1.3.0 a következő stabil kiadásnál még a kiadási oldalt nyitja meg.
+- **Verziószámok:** minden módosítás saját, négytagú verziószámot kap (részletek a napló elején). Az Android belső verziókódja (versionCode) mostantól verziótagonként két számjegy (V1.3.0.1 → 1030001; eddig tagonként egy, V1.3.0 → 1300), így egy tag 99-ig mehet. Az új kódok mind nagyobbak a korábbiaknál, a frissítés ugyanúgy települ. A `tools/verzio.py` a README verziósorát is ellenőrzi és átírja.
 
 ## [1.3.0] – 2026-11-26
 Stabil kiadás; az 1.2.0 óta a `main` ágra került változások együtt (a `main` ágon eddig V1.2.1 és V1.2.2 néven).

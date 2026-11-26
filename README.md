@@ -14,7 +14,7 @@ Fotóidra ráírja a helyet és az időt, a méréseidet pedig elnevezheted és 
 Böngészőben és Android-alkalmazásként is fut. Az úthálózati adatok a készüléken vannak, így a szelvényezés internet
 nélkül is működik. Csak a térkép alapréteghez kell internetkapcsolat.
 
-**Verzió:** V1.3.0 · [Változásnapló](CHANGELOG.md) · © 2026 Szászi Dániel · Licenc: GPL-3.0
+**Verzió:** V1.3.0.1 · [Változásnapló](CHANGELOG.md) · © 2026 Szászi Dániel · Licenc: GPL-3.0
 
 ## Funkciók
 
@@ -109,7 +109,7 @@ A térkép északkal felfelé vagy menetirány szerint elforgatva is használhat
 | `SECURITY.md` | Biztonsági hiba zárt bejelentése (GitHub „Report a vulnerability” vagy e-mail), magyarul és angolul |
 | `web/szovegek.html` | Az alkalmazás összes szövege képernyőnként (kereshető, szerkeszthető), a `main` ág szerint: https://utszelveny.hu/dev/szovegek.html |
 | `tools/szovegek.py` | Ellenőrzi a `web/index.html` szövegblokkját (érvényes JSON, minden kulcs megvan); a build is futtatja |
-| `tools/verzio.py` | A verziószám: ellenőrzi, hogy minden helyen ugyanaz (oldal, Névjegy, `sw.js`, `build.gradle`), és egy paranccsal mindenhol átírja (`python3 tools/verzio.py 1.3.0`); a build és a stabil kiadás címkéje is ezzel ellenőrződik |
+| `tools/verzio.py` | A verziószám: ellenőrzi, hogy minden helyen ugyanaz (oldal, Névjegy, `sw.js`, `build.gradle`, README), és egy paranccsal mindenhol átírja (`python3 tools/verzio.py 1.3.0.1`); a build és a stabil kiadás címkéje is ezzel ellenőrződik |
 | `tools/smoke_test.py`, `.github/workflows/checks.yml` | Minden feltöltéskor: szövegek, verziószámok és böngészős füstteszt (az alkalmazás végigkattintása fej nélküli Chrome-ban, ál-GNSS-szel és ál-kamerával; JavaScript-hibánál piros) |
 | `tools/adat/` | Az úthálózati adatok előállítása: a NAP-ból letöltött 13 WFS GeoJSON fájlból egy lépésben újraépíti a `web/index.html` beépített adatait, ellenőrzésekkel és összehasonlító jelentéssel (leírás: [tools/adat/README.md](tools/adat/README.md)) |
 | `tools/kezdolap_hatter.py` | Megrajzolja a kezdőlap úthálózat-hátterét (`site/hatter.svg`) |

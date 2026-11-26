@@ -2,14 +2,21 @@
 """Version number of ÚtSzelvény: check that every place agrees, or set a new version everywhere at once.
 
     python3 tools/verzio.py              # check (CI runs this on every push)
-    python3 tools/verzio.py --tag V1.3.0 # check, and that the release tag is the same version (CI, stable releases)
-    python3 tools/verzio.py 1.3.0        # set 1.3.0 everywhere (versionCode 1300), then check
+    python3 tools/verzio.py --tag V1.4.0 # check, and that the release tag is the same version (CI, stable releases)
+    python3 tools/verzio.py 1.3.0.1      # set 1.3.0.1 everywhere (versionCode 1030001), then check
 
 Places: web/index.html (page title, header label, Névjegy line with the versionCode, APP_VER used by the update
-check and the photo EXIF), web/sw.js (cache name, read by the web app's update check) and
-android/app/build.gradle (versionName, versionCode). The Android user agent takes the app's own versionName.
-versionCode: one digit per version part (1.2.2 → 1220, text-only 1.2.2.1 → 1221), so every part must stay below 10.
-Change the number only for a stable release (see CHANGELOG.md), and only when the owner says so.
+check and the photo EXIF), web/sw.js (cache name, read by the web app's update check),
+android/app/build.gradle (versionName, versionCode) and the version line of README.md. The Android user agent
+takes the app's own versionName.
+versionCode: two digits per version part, four parts (1.3.0.1 → 1030001, 1.4.0 → 1040000), so every part must
+stay below 100. Up to V1.3.0 it was one digit per part (1.3.0 → 1300); the new codes are all higher.
+
+The owner's rule (2026-11-26), see also CHANGELOG.md:
+  - every change gets its own version, so every downloaded app can be identified: the fourth part goes up
+    (1.3.0.1, 1.3.0.2 …);
+  - the third part goes up only when the owner says so (1.3.1.0, then 1.3.1.1 …);
+  - a stable release raises the second part and has three parts (1.4.0, then 1.4.0.1 …).
 """
 import os
 import re
@@ -27,6 +34,7 @@ PLACES = [
     ("web/sw.js", "service worker cache", r'const C="utszelveny-v' + VER + r'";'),
     ("android/app/build.gradle", "versionName", r'versionName "' + VER + r'"'),
     ("android/app/build.gradle", "versionCode", r"versionCode (\d+)"),
+    ("README.md", "README version line", r"\*\*Verzió:\*\* V" + VER + r" "),
 ]
 GH = os.environ.get("GITHUB_ACTIONS") == "true"
 
@@ -36,9 +44,9 @@ def read(path):
 
 
 def code_of(v):
-    """1.2.2 → 1220: one digit per part, four parts."""
+    """1.3.0.1 → 1030001: two digits per part, four parts."""
     parts = [int(x) for x in v.split(".")]
-    return int("".join(str(x) for x in (parts + [0, 0, 0])[:4]))
+    return int("".join(f"{x:02d}" for x in (parts + [0, 0, 0])[:4]))
 
 
 def find_all():
@@ -63,10 +71,10 @@ def check(tag=None):
     v = sorted(vers)[0] if vers else None
     if v:
         parts = [int(x) for x in v.split(".")]
-        if any(x > 9 for x in parts):
-            errors.append(f"version {v}: every part must stay below 10 (versionCode is one digit per part)")
-        elif any(x >= 8 for x in parts):
-            warnings.append(f"version {v}: a part is approaching 10, where the one-digit-per-part versionCode breaks")
+        if any(x > 99 for x in parts):
+            errors.append(f"version {v}: every part must stay below 100 (versionCode is two digits per part)")
+        elif any(x >= 90 for x in parts):
+            warnings.append(f"version {v}: a part is approaching 100, where the two-digits-per-part versionCode breaks")
         want = str(code_of(v))
         for c in codes:
             if c != want:
@@ -82,8 +90,8 @@ def check(tag=None):
 
 
 def set_version(v):
-    if not re.fullmatch(r"\d(\.\d){2,3}", v):
-        sys.exit(f"{v}: use three parts (1.3.0), or four for a text-only fix (1.3.0.1); every part 0–9")
+    if not re.fullmatch(r"\d{1,2}(\.\d{1,2}){2,3}", v):
+        sys.exit(f"{v}: use four parts (1.3.0.1), or three for a stable release (1.4.0); every part 0–99")
     code = str(code_of(v))
     files = {}
     for path, label, pat in PLACES:
