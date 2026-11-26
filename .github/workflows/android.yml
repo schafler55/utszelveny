@@ -26,6 +26,8 @@ permissions:
 #                   (package hu.szaszi.kozutszelveny.dev, installs next to the real app, own saved data)
 #   sign-release  – only version tags: signs with the release key from the protected "release" environment
 #                   (Settings → Environments; only V*/v* tags, waits for the owner's approval)
+#   both sign jobs fail, and nothing is published, when the APK is not signed with the expected certificate
+#   (EXPECT_CERT below, checked in .github/scripts/sign-apk.sh)
 #   publish       – puts the signed APK into the GitHub release; no signing key here either
 # All actions are pinned to a full commit SHA (the comment shows the version); Dependabot proposes updates.
 
@@ -161,6 +163,9 @@ jobs:
           KS_PASS: ${{ secrets.DEV_KEYSTORE_PASSWORD }}
           KS_ALIAS: ${{ secrets.DEV_KEY_ALIAS }}
           KEY_HINT: add DEV_KEYSTORE_B64, DEV_KEYSTORE_PASSWORD and DEV_KEY_ALIAS under Settings → Secrets and variables → Actions
+          # certificate of the "ÚtSzelvény DEV" builds (public value); the same check as for stable releases, so
+          # every build of main proves that the check itself works
+          EXPECT_CERT: abd3fd7f83e9f2726afa4cc644a515997c3f35311222c42a1290519c9c4c4a88
           APK: ${{ needs.build.outputs.name }}
         run: bash .github/scripts/sign-apk.sh unsigned/unsigned.apk "$APK"
 
@@ -193,6 +198,11 @@ jobs:
           KS_PASS: ${{ secrets.RELEASE_KEYSTORE_PASSWORD }}
           KS_ALIAS: ${{ secrets.RELEASE_KEY_ALIAS }}
           KEY_HINT: add RELEASE_KEYSTORE_B64, RELEASE_KEYSTORE_PASSWORD and RELEASE_KEY_ALIAS under Settings → Environments → release → Environment secrets
+          # SHA-256 of the certificate of the published stable releases (V1.0 – V1.2.0; public value, anyone can read it
+          # from the APK: C=HU, O=UtSzelveny, CN=Szaszi Daniel). A release signed with any other key could not be
+          # installed over the app people have, so sign-apk.sh fails and nothing is published. Change it only if the
+          # release key itself is ever replaced on purpose (every user would then have to reinstall).
+          EXPECT_CERT: 26063c1d3c66598dea90e4853756e4ad7ef6514dd6ebdbd6f03e34413d0b76e0
           APK: ${{ needs.build.outputs.name }}
         run: bash .github/scripts/sign-apk.sh unsigned/unsigned.apk "$APK"
 

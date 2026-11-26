@@ -2,6 +2,7 @@
 # Signs the unsigned APK built by the "build" job (android.yml) and writes the signed APK.
 #   usage: sign-apk.sh <unsigned.apk> <signed output name>
 #   key:   KS_B64 (the .p12 file in base64), KS_PASS (its password, also the key password), KS_ALIAS
+#   check: EXPECT_CERT = SHA-256 of the certificate that must have signed the APK (set in android.yml)
 # The key file exists only while this script runs and is deleted at the end, even after an error.
 set -euo pipefail
 
@@ -31,4 +32,17 @@ echo "build-tools: $bt"
 # The line format differs between build-tools versions ("Signer #1 …" / "Signer (minSdkVersion=…) …").
 certs=$("$bt/apksigner" verify --print-certs "$out" 2>/dev/null)
 echo "$certs" | grep -E 'certificate (DN|SHA-256 digest):' || echo "$certs"
+
+# The key must be the one the installed apps were signed with: an APK signed with any other key cannot be installed
+# over them. On a different (or unreadable) certificate the signed APK is deleted and the job fails, so the publish
+# job never runs and nobody is offered that APK.
+if [ -n "${EXPECT_CERT:-}" ]; then
+  got=$(echo "$certs" | grep -oE 'certificate SHA-256 digest: [0-9a-fA-F]{64}' | awk '{print tolower($NF)}' | sort -u | xargs || true)
+  if [ "$got" != "$EXPECT_CERT" ]; then
+    rm -f "$out"
+    echo "::error::Wrong signing key – nothing is published. Certificate of this APK: ${got:-not found}; expected: $EXPECT_CERT. Put the right key file into the secret (${KEY_HINT:-key secrets}) and run the job again."
+    exit 1
+  fi
+  echo "signing certificate: the expected one ($EXPECT_CERT)"
+fi
 echo "signed: $out"
