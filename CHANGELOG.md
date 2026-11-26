@@ -13,6 +13,9 @@ szakaszba olvadnak össze, amely a kiadás összes változását felsorolja. A t
 (pl. 0.16.1–0.16.10) változásai a következő nagyobb verzió (pl. 0.17) szakaszában szerepelnek; a szakasz első sora
 jelzi, mely változatokat tartalmazza.
 
+## [1.3.1.5] – 2026-11-26 · kiadatlan
+- A támogatási felhívás „Most nem” után csak akkor jelenik meg újra, ha eltelt legalább egy hónap **és** az alkalmazást legalább 10-szer megnyitották azóta (eddig: három hónap). A „Támogatás” után továbbra is egy évig nem kérdez.
+
 ## [1.3.1.4] – 2026-11-26 · kiadatlan
 - A támogatási felhívás szövege: „…hogy továbbra is működjön és fejlődjön.”
 
