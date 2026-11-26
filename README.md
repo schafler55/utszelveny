@@ -14,7 +14,7 @@ Fotóidra ráírja a helyet és az időt, a méréseidet pedig elnevezheted és 
 Böngészőben és Android-alkalmazásként is fut. Az úthálózati adatok a készüléken vannak, így a szelvényezés internet
 nélkül is működik. Csak a térkép alapréteghez kell internetkapcsolat.
 
-**Verzió:** V1.3.1.2 · [Változásnapló](CHANGELOG.md) · © 2026 Szászi Dániel · Licenc: GPL-3.0
+**Verzió:** V1.3.1.3 · [Változásnapló](CHANGELOG.md) · © 2026 Szászi Dániel · Licenc: GPL-3.0
 
 ## Funkciók
 
@@ -151,6 +151,8 @@ A frissítések keresése (Beállítások → Általános, kikapcsolható) a Git
 Az ÚtSzelvény ingyenes: nincs benne reklám, előfizetés vagy fizetős funkció. A fejlesztést a szabadidőmben végzem.
 Ha hasznosnak találod, egy kávé árával támogathatod a munkámat és a további fejlesztést: **[IDE KATTINTVA](https://revolut.me/schafler55)**.
 A támogatás önkéntes, és nem jár érte extra funkció.<br><b>A visszajelzés és az ötletek is sokat segítenek!</b>
+
+2026. december 15-től az alkalmazás legfeljebb háromhavonta egyszer, indítás után egy rövid ablakban is megkéri a rendszeres felhasználókat a támogatásra („Most nem” / „Támogatás”); a „Támogatás” után egy évig nem kérdez újra.
 
 ## Ismert korlátok és hibák
 
