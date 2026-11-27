@@ -29,6 +29,9 @@ permissions:
 #   both sign jobs fail, and nothing is published, when the APK is not signed with the expected certificate
 #   (EXPECT_CERT below, checked in .github/scripts/sign-apk.sh)
 #   publish       – puts the signed APK into the GitHub release; no signing key here either
+# Google Play: every run also builds an app bundle (.aab) and signs it in the same job as the APK, with the same key
+# and the same certificate check (.github/scripts/sign-aab.sh). It is not published: it is kept as a workflow
+# artifact (Actions → the run → Artifacts) to upload in Play Console; a stable release's bundle is the one for Play.
 # All actions are pinned to a full commit SHA (the comment shows the version); Dependabot proposes updates.
 
 jobs:
@@ -37,6 +40,7 @@ jobs:
     outputs:
       name: ${{ steps.apk.outputs.name }}
       ver: ${{ steps.apk.outputs.ver }}
+      aab: ${{ steps.apk.outputs.aab }}
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
@@ -49,7 +53,7 @@ jobs:
 
       - uses: gradle/actions/setup-gradle@8da46b539cd8fe6ab27ca75128919a18d757604c # v6.4.1
         with:
-          gradle-version: '8.9'
+          gradle-version: '8.13'   # Android Gradle plugin 8.13 needs Gradle 8.13
           # the open-source (MIT) cache; the default "enhanced" cache is closed-source and under Gradle's own terms
           cache-provider: basic
 
@@ -97,6 +101,7 @@ jobs:
             name="UtSzelveny-test-$br-$ver-b$RUN.apk"; label="TESZT · $br"; bg="#dc2626"
           fi
           echo "name=$name" >> "$GITHUB_OUTPUT"
+          echo "aab=${name%.apk}.aab" >> "$GITHUB_OUTPUT"
           echo "ver=$ver" >> "$GITHUB_OUTPUT"
           echo "label=$label" >> "$GITHUB_OUTPUT"
           echo "bg=${bg:-}" >> "$GITHUB_OUTPUT"
@@ -128,21 +133,25 @@ jobs:
             grep -q "const UPD_CH=\"$ch\"" "$out"
           fi
 
-      - name: Build the unsigned APK
+      - name: Build the unsigned APK and app bundle
         working-directory: ${{ steps.proj.outputs.dir }}
         env:
           UTSZ_BUILD: ${{ github.ref_type == 'tag' && 'release' || 'dev' }}
-        run: gradle assembleRelease --no-daemon --stacktrace
+        run: gradle assembleRelease bundleRelease --no-daemon --stacktrace
 
-      - name: Keep the unsigned APK for the signing job
+      - name: Keep the unsigned APK and app bundle for the signing job
         env:
           D: ${{ steps.proj.outputs.dir }}
-        run: cp "$D/app/build/outputs/apk/release/app-release-unsigned.apk" unsigned.apk
+        run: |
+          cp "$D/app/build/outputs/apk/release/app-release-unsigned.apk" unsigned.apk
+          cp "$D/app/build/outputs/bundle/release/app-release.aab" unsigned.aab
 
       - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: unsigned-apk
-          path: unsigned.apk
+          path: |
+            unsigned.apk
+            unsigned.aab
           retention-days: 1
 
   # Dev key: repository secrets DEV_KEYSTORE_B64 / DEV_KEYSTORE_PASSWORD / DEV_KEY_ALIAS.
@@ -173,10 +182,27 @@ jobs:
           APK: ${{ needs.build.outputs.name }}
         run: bash .github/scripts/sign-apk.sh unsigned/unsigned.apk "$APK"
 
+      # the DEV bundle is never uploaded to Play; signing it proves on every push that the bundle build and its key check work
+      - name: Sign the app bundle with the dev key
+        env:
+          KS_B64: ${{ secrets.DEV_KEYSTORE_B64 }}
+          KS_PASS: ${{ secrets.DEV_KEYSTORE_PASSWORD }}
+          KS_ALIAS: ${{ secrets.DEV_KEY_ALIAS }}
+          KEY_HINT: add DEV_KEYSTORE_B64, DEV_KEYSTORE_PASSWORD and DEV_KEY_ALIAS under Settings → Secrets and variables → Actions
+          EXPECT_CERT: abd3fd7f83e9f2726afa4cc644a515997c3f35311222c42a1290519c9c4c4a88
+          AAB: ${{ needs.build.outputs.aab }}
+        run: bash .github/scripts/sign-aab.sh unsigned/unsigned.aab "$AAB"
+
       - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: ${{ needs.build.outputs.name }}
           path: ${{ needs.build.outputs.name }}
+
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: ${{ needs.build.outputs.aab }}
+          path: ${{ needs.build.outputs.aab }}
+          retention-days: 7
 
   # Release key: only in the "release" environment (Settings → Environments → release), which only V*/v* tags
   # may use and which waits for the owner's approval (Actions tab → the run → Review deployments).
@@ -210,10 +236,29 @@ jobs:
           APK: ${{ needs.build.outputs.name }}
         run: bash .github/scripts/sign-apk.sh unsigned/unsigned.apk "$APK"
 
+      # the bundle for Google Play: same key as the APK (Play App Signing holds this key as the app signing key and
+      # also accepts it as the upload key), so Play and GitHub APKs update each other
+      - name: Sign the app bundle with the release key
+        env:
+          KS_B64: ${{ secrets.RELEASE_KEYSTORE_B64 }}
+          KS_PASS: ${{ secrets.RELEASE_KEYSTORE_PASSWORD }}
+          KS_ALIAS: ${{ secrets.RELEASE_KEY_ALIAS }}
+          KEY_HINT: add RELEASE_KEYSTORE_B64, RELEASE_KEYSTORE_PASSWORD and RELEASE_KEY_ALIAS under Settings → Environments → release → Environment secrets
+          EXPECT_CERT: 26063c1d3c66598dea90e4853756e4ad7ef6514dd6ebdbd6f03e34413d0b76e0
+          AAB: ${{ needs.build.outputs.aab }}
+        run: bash .github/scripts/sign-aab.sh unsigned/unsigned.aab "$AAB"
+
       - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: ${{ needs.build.outputs.name }}
           path: ${{ needs.build.outputs.name }}
+
+      # for Google Play (Play Console → Test and release → create a release → upload this file); not on the release page
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: ${{ needs.build.outputs.aab }}
+          path: ${{ needs.build.outputs.aab }}
+          retention-days: 90
 
   publish:
     needs: [build, sign-dev, sign-release]
