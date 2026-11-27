@@ -13,6 +13,9 @@ szakaszba olvadnak össze, amely a kiadás összes változását felsorolja. A t
 (pl. 0.16.1–0.16.10) változásai a következő nagyobb verzió (pl. 0.17) szakaszában szerepelnek; a szakasz első sora
 jelzi, mely változatokat tartalmazza.
 
+## [1.3.2.7] – 2026-11-27 · kiadatlan (`googleplay` ág)
+- **Támogatás:** a V1.3.2.6 változtatás visszavonva: a Google Playről telepített alkalmazásban is megmarad a „Támogatás” gomb és a támogatási felhívás, ugyanúgy, mint a GitHubról telepített alkalmazásban és a webes változatban (a tulajdonos döntése).
+
 ## [1.3.2.6] – 2026-11-27 · kiadatlan (`googleplay` ág)
 - **Google Playről telepített alkalmazás, támogatás:** a Google Play fizetési szabályai nem engedik, hogy az alkalmazás más fizetési módra (pl. Revolut) mutasson, ezért a Google Playről telepített alkalmazásban nincs „Támogatás” gomb és támogatási felhívás. A Névjegy kártyája ott „Visszajelzés” címmel csak a Kapcsolat sort mutatja. A GitHubról telepített alkalmazásban és a webes változatban minden marad.
 - **Adatvédelmi tájékoztató:** új oldal a weboldalon, magyarul és angolul: https://utszelveny.hu/adatvedelem.html (ez lesz a Google Play adatlap adatvédelmi hivatkozása is). Link a Névjegy → Adatvédelem részben, a kezdőlap láblécében és a README-ben.
