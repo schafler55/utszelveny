@@ -313,14 +313,14 @@ async def tap_after_flick(b, url):
 
 async def desktop(b, url):
     """Desktop browser (wide window, mouse): the map is the base page, no GNSS; pointer readout, click bubble,
-    right-click menu, Keresés panel."""
+    right-click menu, the Keresés / Mérés panel that is always open."""
     ctx, pg = await new_page(b, url)
     await pg.set_viewport_size({"width": 1440, "height": 900})
 
     async def flow():
         await boot(pg, url)
-        await expect(await pg.evaluate("DESK&&mapOn&&watchId===null&&document.documentElement.dataset.view==='map'"),
-                     "not the desktop layout with the map (or GNSS was started)")
+        await expect(await pg.evaluate("DESK&&mapOn&&watchId===null&&document.documentElement.dataset.view==='srch'"),
+                     "not the desktop layout with the map and the Keresés panel (or GNSS was started)")
         # road 7 at 46+275 in the middle of the map
         await pg.evaluate("(()=>{const h=srchPoint(roadFind('7'),460275,0).hits[0],m=toM(h.lat,h.lon);mX=m.x;mY=m.y;mS=zToS(15);drawMap()})()")
         await pg.mouse.move(700, 450)
@@ -333,10 +333,12 @@ async def desktop(b, url):
         await pg.click('#deskMenu button[data-a="info"]')
         await pg.wait_for_selector("#infoPage.on")
         await pg.keyboard.press("Escape")
+        await pg.click("#nMeas")
+        await expect(await pg.evaluate("document.documentElement.dataset.view==='meas'&&mapOn"), "Mérés did not open in the panel")
+        await pg.evaluate("showView('map')")
+        await expect(await pg.evaluate("document.documentElement.dataset.view==='meas'"), "the panel did not stay open")
         await pg.click("#nSrch")
-        await expect(await pg.evaluate("document.documentElement.dataset.view==='srch'&&mapOn"), "Keresés did not open as a panel over the map")
-        await pg.click("#deskBarX")
-        await expect(await pg.evaluate("document.documentElement.dataset.view==='map'"), "the panel did not close")
+        await expect(await pg.evaluate("document.documentElement.dataset.view==='srch'"), "Keresés did not open in the panel")
     await step("desktop: map page, pointer readout, click, right-click menu, panel", flow())
     await ctx.close()
 

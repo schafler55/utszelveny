@@ -887,7 +887,7 @@ function TXA(k,n){var o=TX(k),a=[];for(var i=0;i<n;i++)a.push(o&&typeof o==="obj
 // floats over it (html.desk in the CSS, DESK in the code). No GNSS on a desktop, so Pozíció, Fotó, HUD and the GNSS
 // measurement are left out. Decided once at start; the touch texts that say "koppints" get their desktop wording
 var DESK=!window.AndroidBridge&&matchMedia("(min-width:900px) and (hover:hover) and (pointer:fine)").matches;
-if(DESK){document.documentElement.classList.add("desk");document.documentElement.dataset.view="map";
+if(DESK){document.documentElement.classList.add("desk");document.documentElement.dataset.view="srch";
   var DTX={"measure.mm_hint":"desktop.mm_hint","settings.grp_tap":"desktop.grp_tap","settings.map_snap_note":"desktop.snap_note","settings.map_bike_note":"desktop.bike_note"};
   for(var dk in DTX){var dg=TEXTS[dk.split(".")[0]];if(dg)dg[dk.split(".")[1]]=TX(DTX[dk])}}
 // markup texts: a data-tx attribute (the key) fills the element (or puts the text before its child elements),
@@ -1635,36 +1635,37 @@ html[data-theme=light] .mapinfo .bh{color:color-mix(in srgb,var(--k) 55%,#000)}
   #mapView .mapinfo,#mapView .basenote{left:max(12px,calc(50% - 268px));right:max(12px,calc(50% - 268px))} }
 
 /* ---------- desktop browser (html.desk, see DESK): the map fills the window, the rest floats over it ----------
-   header card top left, Keresés / Mérés / Szakasz adatai in a panel below it, the toolbar at the bottom, the map
-   bubble next to the point or item it belongs to (placed by deskPlace), Beállítások as a dialog */
-.deskbar,.deskstat,.desktip,.deskmenu,.deskcopy{display:none}
+   left column: header card, the page selector (Keresés / Mérés; the toolbar of the phone), and the selected page in a
+   panel that is always open; Szakasz adatai over it. The map bubble stands next to the point or item it belongs to
+   (placed by deskPlace), Beállítások is a dialog */
+.deskstat,.desktip,.deskmenu,.deskcopy{display:none}
 html.desk body{display:block}
 html.desk #mapView{position:fixed;inset:0;margin:0;border-radius:0;display:block;min-height:0;z-index:0}
 html.desk .top{position:fixed;left:16px;top:16px;width:400px;z-index:5;min-height:0;padding:10px 4px 10px 14px;border-radius:24px;background:var(--sc);box-shadow:0 2px 10px rgba(0,0,0,.3)}
-html.desk main{position:fixed;left:16px;top:100px;bottom:92px;width:400px;max-width:none;margin:0;z-index:5;padding:0 12px 12px;border-radius:28px;background:var(--bg);box-shadow:0 8px 28px rgba(0,0,0,.4)}
-html.desk[data-view=map] main{display:none}
-html.desk .deskbar{display:flex;align-items:center;gap:8px;position:sticky;top:0;z-index:2;margin:0 -12px;padding:10px 4px 6px 20px;background:var(--bg)}
-.deskbar b{flex:1;font-size:1.25rem;font-weight:500}
-html.desk #nPos,html.desk #nFoto,html.desk #navFade,html.desk #follow,html.desk #rotBtn,html.desk #mapSpd,html.desk .sgps,
+html.desk nav,html.desk nav.hide{left:16px;top:96px;bottom:auto;transform:none;opacity:1;pointer-events:auto;width:400px;max-width:none;height:56px;padding:0 6px;box-shadow:0 2px 10px rgba(0,0,0,.3)}
+html.desk nav button,html.desk nav button.on{flex:1;justify-content:center;height:44px;padding:0 16px}
+html.desk nav .nl{grid-template-columns:1fr}
+html.desk nav .nl>span{padding-left:8px;opacity:1}
+html.desk main{position:fixed;left:16px;top:164px;bottom:16px;width:400px;max-width:none;margin:0;z-index:5;padding:12px;border-radius:28px;background:var(--bg);box-shadow:0 8px 28px rgba(0,0,0,.4)}
+html.desk #nPos,html.desk #nFoto,html.desk #nMap,html.desk #navFade,html.desk #follow,html.desk #rotBtn,html.desk #mapSpd,html.desk .sgps,
 html.desk .sctl>.mtitle,html.desk #measCtl>.mtitle,html.desk #measCtl>.note,html.desk #mStart{display:none!important}
 html.desk .mapbtns{right:16px;bottom:16px!important}
 html.desk .scalebar{left:432px;top:16px}
 html.desk .attrib{right:16px;top:52px}
 html.desk #mapView .basenote{left:432px;right:240px;top:56px}
 html.desk #mapView .mapinfo{right:auto;bottom:auto;width:380px;padding-right:44px;z-index:3;box-shadow:0 8px 24px rgba(0,0,0,.4)}
-html.desk #mapView .mapinfo.dock{left:50%;top:auto;bottom:96px;width:540px;padding-right:16px;transform:translateX(-50%)}
+html.desk #mapView .mapinfo.dock{left:calc(50% + 208px);top:auto;bottom:72px;width:540px;padding-right:16px;transform:translateX(-50%)}
 html.desk #mapView .mapinfo.idle{display:none}
 html.desk .mapinfo .mi-x{position:absolute;right:4px;top:4px;width:36px;height:36px}
-html.desk .cptoast{bottom:100px}
+html.desk .cptoast{bottom:72px;left:calc(50% + 208px)}
 html.desk #sheet{background:var(--scrim);align-items:center;justify-content:center}
 html.desk #sheet .in{width:min(760px,calc(100% - 48px));height:min(860px,calc(100% - 48px));border-radius:28px;box-shadow:0 20px 60px rgba(0,0,0,.5)}
 html.desk .stabs{grid-template-columns:repeat(5,minmax(0,1fr))}
 html.desk .stabs button[data-t=pos],html.desk .stabs button[data-t=foto],html.desk .stabs button[data-t=hud],
 html.desk .opt:has(#swNavHide),html.desk .sgrp:has(#gpsToggle),html.desk .sgrp:has(#rotSeg),html.desk .opt:has(#hlSeg),html.desk .sgrp:has(#manualIn){display:none}
-html.desk .mitem,html.desk .mitem.hl{scroll-margin-top:64px}
-html.desk #infoPage{left:16px;top:100px;bottom:92px;right:auto;width:440px;z-index:6;border-radius:28px;overflow:hidden;box-shadow:0 8px 28px rgba(0,0,0,.4)}
+html.desk #infoPage{left:16px;top:96px;bottom:16px;right:auto;width:440px;z-index:6;border-radius:28px;overflow:hidden;box-shadow:0 8px 28px rgba(0,0,0,.4)}
 /* what is under the mouse pointer: status line bottom left and a small tag beside the pointer */
-html.desk .deskstat.on{display:flex;position:absolute;left:16px;bottom:28px;z-index:2;max-width:calc(50% - 170px);height:40px;align-items:center;gap:10px;padding:0 16px 0 12px;border-radius:20px;background:var(--sc-high);box-shadow:var(--shadow);font-size:.8125rem;color:var(--onv);white-space:nowrap;pointer-events:none}
+html.desk .deskstat.on{display:flex;position:absolute;left:432px;bottom:16px;z-index:2;max-width:calc(100% - 528px);height:40px;align-items:center;gap:10px;padding:0 16px 0 12px;border-radius:20px;background:var(--sc-high);box-shadow:var(--shadow);font-size:.8125rem;color:var(--onv);white-space:nowrap;pointer-events:none}
 .deskstat .shield,.desktip .shield,.deskmenu .shield{width:auto;height:20px;margin:0;flex:none}
 .deskstat b,.desktip b{color:var(--on);font-size:.875rem;font-variant-numeric:tabular-nums}
 .deskstat .nm{min-width:0;overflow:hidden;text-overflow:ellipsis}
@@ -1694,7 +1695,6 @@ html.desk .deskcopy{display:block;position:fixed;right:16px;top:16px;z-index:21;
 </header>
 
 <main id="main">
-  <div class="deskbar" id="deskBar"><b id="deskBarT"></b><button class="iconbtn" id="deskBarX" data-tx-aria-label="common.close_aria"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
   <section class="view on" id="posView">
     <div class="alert" id="protoAlert"></div>
 
@@ -5585,12 +5585,11 @@ srchModeUI();srchDivCheck(-1);
 // (back then goes to the map, not to Pozíció); any other page change clears it
 let backTo=null;
 function showView(v){
-  if(DESK&&(v==="pos"||v==="foto"))v="map";
+  if(DESK&&v!=="srch"&&v!=="meas")v=document.documentElement.dataset.view==="meas"?"meas":"srch";   // desktop: Keresés or Mérés is always open
   backTo=null;
   if(v!=="meas")measHl=null;if(v!=="srch"){srchHl=null;$("sRes").classList.remove("hl")}
   $("navBar").classList.remove("hide");$("navFade").classList.remove("hide");
   mapOn=v==="map"||DESK;document.documentElement.dataset.view=v;
-  if(DESK)$("deskBarT").textContent=v==="srch"?TX("nav.search"):v==="meas"?TX("nav.measure"):"";
   for(const [id,nid,k] of [["posView","nPos","pos"],["mapView","nMap","map"],["measView","nMeas","meas"],["srchView","nSrch","srch"],["fotoView","nFoto","foto"]]){$(id).classList.toggle("on",v===k);$(nid).classList.toggle("on",v===k)}
   renderMapSpd();
   if(mapOn){resizeMap();miRefresh();if(follow&&cur){const m=posToM(cur.pos);mX=m.x;mY=m.y}drawMap()}
@@ -5607,11 +5606,7 @@ function navFit(){
   c.remove("fit");
 }
 navFit();addEventListener("resize",navFit);
-// the page you start on and go back to: Pozíció; on the desktop the map. There a second click on Keresés / Mérés
-// closes its panel
-const HOME=DESK?"map":"pos",viewNow=()=>document.documentElement.dataset.view||"pos";
-const navTo=(v)=>showView(DESK&&viewNow()===v?"map":v);
-$("nPos").onclick=()=>showView("pos");$("nMap").onclick=()=>showView("map");$("nMeas").onclick=()=>navTo("meas");$("nFoto").onclick=()=>showView("foto");$("nSrch").onclick=()=>navTo("srch");
+$("nPos").onclick=()=>showView("pos");$("nMap").onclick=()=>showView("map");$("nMeas").onclick=()=>showView("meas");$("nFoto").onclick=()=>showView("foto");$("nSrch").onclick=()=>showView("srch");
 $("tEov").onclick=()=>{S.coord="eov";saveS();syncTabs();render()};
 $("tWgs").onclick=()=>{S.coord="wgs";saveS();syncTabs();render()};
 function syncTabs(){$("tEov").classList.toggle("on",S.coord==="eov");$("tWgs").classList.toggle("on",S.coord!=="eov");
@@ -5889,7 +5884,7 @@ function goBack(){
   if(mmOn){setMM(false);return true}
   if(DESK&&!mmOn&&(miItem||tapPt&&!miIdle)){deskClose();return true}
   if(backTo){showView(backTo);return true}                     // details opened from the map: back to the map
-  if(viewNow()!==HOME){showView(HOME);return true}
+  if(!DESK&&!$("posView").classList.contains("on")){showView("pos");return true}   // desktop: no home page to go back to
   return false;
 }
 window.__back=()=>goBack();          // called by the Android app on the back button
@@ -5899,7 +5894,7 @@ document.addEventListener("keydown",(e)=>{
   if(goBack())e.preventDefault();
 });
 // web / PWA: one history entry while something is open, so the browser back closes it instead of leaving
-const navOpen=()=>$("updDlg").classList.contains("on")||$("donDlg").classList.contains("on")||hudOn||$("camViewer").classList.contains("on")||$("sheet").classList.contains("on")||mmOn||viewNow()!==HOME;
+const navOpen=()=>$("updDlg").classList.contains("on")||$("donDlg").classList.contains("on")||hudOn||$("camViewer").classList.contains("on")||$("sheet").classList.contains("on")||mmOn||!DESK&&!$("posView").classList.contains("on");
 let navGuard=false;
 function navSync(){if(NB)return;if(navOpen()&&!navGuard){try{history.pushState({ksz:1},"");navGuard=true}catch(e){}}}
 if(!NB){
@@ -6080,15 +6075,15 @@ $("donLater").onclick=()=>donClose(DON_LATER,DON_LATER_OPENS);
 document.addEventListener("visibilitychange",()=>{if(!document.hidden)donDay()});
 
 /* ---------- desktop browser (DESK): the map is the base page ----------
-   The map leaves the page flow and fills the window; Keresés / Mérés open as a panel over it (× or a second click
-   on the toolbar closes it). The mouse pointer shows the road and km+m under it (status line + a small tag), the
+   The map leaves the page flow and fills the window; Keresés or Mérés is always open in a panel on the left, chosen
+   with the toolbar moved above it (Térkép, Pozíció and Fotó are hidden). The mouse pointer shows the road and km+m under it (status line + a small tag), the
    right button opens a menu for that place, and the map bubble stands beside the point or item it belongs to */
 const IC_X='<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>';
 const IC_RULER='<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><g transform="rotate(-45 12 12)"><rect x="2" y="8.25" width="20" height="7.5" rx="2"/><path d="M6.5 8.25v3M10 8.25v2M13.5 8.25v3M17 8.25v2"/></g></svg>';
 const IC_COPY='<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="8.5" y="8.5" width="12" height="12" rx="2.5"/><path d="M15.5 8.5V6A2.5 2.5 0 0 0 13 3.5H6A2.5 2.5 0 0 0 3.5 6v7A2.5 2.5 0 0 0 6 15.5h2.5"/></svg>';
 // the map bubble (called after every map drawing): below the tapped point or the selected item's chip (above it
 // when there is no room), never under the panel; the running map measurement, and an item whose chip is off the
-// screen, at the bottom in the middle as on the phone; nothing selected: no bubble (the status line shows the road)
+// screen, at the bottom in the middle of the map; nothing selected: no bubble (the status line shows the road)
 let deskCtyT=0;
 function deskPlace(){
   const el=$("mapInfo"),W=cv.clientWidth,H=cv.clientHeight;let a=null,mode="idle";
@@ -6099,7 +6094,7 @@ function deskPlace(){
   el.classList.toggle("dock",mode==="dock");el.classList.toggle("idle",mode==="idle");
   if(mode==="at"){
     if(!el.querySelector(".mi-x"))el.insertAdjacentHTML("afterbegin",`<button class="iconbtn mi-x" aria-label="${TX("common.close_aria")}">${IC_X}</button>`);
-    const w=el.offsetWidth,h=el.offsetHeight,x0=$("infoPage").classList.contains("on")?472:viewNow()!=="map"?432:16;
+    const w=el.offsetWidth,h=el.offsetHeight,x0=$("infoPage").classList.contains("on")?472:432;
     let top=a.y1+10;if(top+h>H-96)top=Math.max(16,a.y0-10-h);
     el.style.left=Math.round(Math.max(x0,Math.min(a.x-w/2,W-w-16)))+"px";el.style.top=Math.round(top)+"px";
   }else{el.style.left="";el.style.top=""}
@@ -6136,7 +6131,6 @@ function deskMenuOpen(px,py,cx,cy){
 function deskMenuClose(){const M=$("deskMenu");if(!M.classList.contains("on"))return false;M.classList.remove("on");return true}
 if(DESK){
   document.body.insertBefore($("mapView"),$("main"));
-  $("deskBarX").onclick=()=>showView("map");
   $("mapInfo").addEventListener("click",(e)=>{if(e.target.closest(".mi-x"))deskClose()});
   let hq=null,hf=0;
   const hide=()=>{hq=null;$("deskStat").classList.remove("on");$("deskTip").classList.remove("on")};
