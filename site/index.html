@@ -290,8 +290,8 @@
   </footer>
 </div>
 <script>
-  // footer: the current year (the 2026 in the markup stays for search engines and without JavaScript)
-  document.getElementById("cpYear").textContent = new Date().getFullYear();
+  // footer: 2026 (first publication) to the current year, e.g. 2026–2027 (the markup keeps 2026 for search engines and without JavaScript)
+  { const y = new Date().getFullYear(); document.getElementById("cpYear").textContent = y > 2026 ? "2026–" + y : "2026"; }
   // parallax: the road network moves at 60 % of the scroll speed (it lags behind the page)
   (() => {
     const bg = document.getElementById("bg");

@@ -13,6 +13,9 @@ szakaszba olvadnak össze, amely a kiadás összes változását felsorolja. A t
 (pl. 0.16.1–0.16.10) változásai a következő nagyobb verzió (pl. 0.17) szakaszában szerepelnek; a szakasz első sora
 jelzi, mely változatokat tartalmazza.
 
+## [1.3.2.4] – 2026-11-27 · kiadatlan
+- **Szerzői jogi sor:** évtartomány az első megjelenés évétől (2026) az aktuális évig: idén „© 2026 Szászi Dániel”, 2027. január 1-jétől „© 2026–2027 Szászi Dániel” (a nyitóképernyőn, a Névjegyben és a kezdőlap láblécében). A szövegblokkban a `{years}` helyőrző adja a tartományt, a `{year}` az aktuális évet.
+
 ## [1.3.2.3] – 2026-11-27 · kiadatlan
 - **Szerzői jogi sor:** a „© 2026 Szászi Dániel” évszáma mostantól az aktuális év (a telefon órája szerint), így 2027. január 1-jétől „© 2027 Szászi Dániel” látszik: a nyitóképernyőn, a Névjegyben és a kezdőlap (utszelveny.hu) láblécében. A szövegblokkban a `{year}` helyőrző bármelyik szövegben az aktuális évet adja.
 
