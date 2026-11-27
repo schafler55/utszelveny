@@ -13,6 +13,9 @@ szakaszba olvadnak össze, amely a kiadás összes változását felsorolja. A t
 (pl. 0.16.1–0.16.10) változásai a következő nagyobb verzió (pl. 0.17) szakaszában szerepelnek; a szakasz első sora
 jelzi, mely változatokat tartalmazza.
 
+## [1.3.2.3] – 2026-11-27 · kiadatlan
+- **Szerzői jogi sor:** a „© 2026 Szászi Dániel” évszáma mostantól az aktuális év (a telefon órája szerint), így 2027. január 1-jétől „© 2027 Szászi Dániel” látszik: a nyitóképernyőn, a Névjegyben és a kezdőlap (utszelveny.hu) láblécében. A szövegblokkban a `{year}` helyőrző bármelyik szövegben az aktuális évet adja.
+
 ## [1.3.2.2] – 2026-11-27 · kiadatlan
 - **Névjegy → Frissítések:** a rövid állapot a „Frissítések” cím mellett áll: „Naprakész”, „Ellenőrzés…”, piros „Sikertelen” (eddig: „Nem sikerült ellenőrizni. Van internetkapcsolat?”), tesztváltozatban „Tesztváltozat” (eddig: „Tesztváltozat: itt nincs frissítéskeresés.”). Alatta, külön sorokban: „Ellenőrizve:” és a dátum; új verziónál „Új verzió érhető el:” és a verziószám az Android buildszámmal, pl. „V1.3.2.3 (1030203)”. Az „Ellenőrzés” gomb függőlegesen középen marad.
 

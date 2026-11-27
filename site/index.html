@@ -286,10 +286,12 @@
   <footer class="wrap">
     <span>Úthálózati adatok: NAP · Térkép: © OpenStreetMap közreműködők · Műholdkép: Powered by Esri</span>
     <span>Az adatok tájékoztató jellegűek, csak saját felelősségre használható.</span>
-    <span>© 2026 Szászi Dániel · GPL-3.0</span>
+    <span>© <span id="cpYear">2026</span> Szászi Dániel · GPL-3.0</span>
   </footer>
 </div>
 <script>
+  // footer: the current year (the 2026 in the markup stays for search engines and without JavaScript)
+  document.getElementById("cpYear").textContent = new Date().getFullYear();
   // parallax: the road network moves at 60 % of the scroll speed (it lags behind the page)
   (() => {
     const bg = document.getElementById("bg");
