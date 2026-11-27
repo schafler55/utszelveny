@@ -14,7 +14,7 @@ Fotóidra ráírja a helyet és az időt, a méréseidet pedig elnevezheted és 
 Böngészőben és Android-alkalmazásként is fut. Az úthálózati adatok a készüléken vannak, így a szelvényezés internet
 nélkül is működik. Csak a térkép alapréteghez kell internetkapcsolat.
 
-**Verzió:** V1.3.2.5 · [Változásnapló](CHANGELOG.md) · © 2026 Szászi Dániel · Licenc: GPL-3.0
+**Verzió:** V1.3.2.6 · [Változásnapló](CHANGELOG.md) · © 2026 Szászi Dániel · Licenc: GPL-3.0
 
 ## Funkciók
 
@@ -144,7 +144,8 @@ Az alkalmazás Claude Opus 5.5 segítségével készült.
 
 <b>Az alkalmazás nem gyűjt és nem továbbít személyes adatokat:</b> nincs fiók, reklám vagy analitika. A helyadataid, méréseid, kereséseid és beállításaid csak helyben tárolódnak, a fotók pedig közvetlenül a készülékedre mentődnek.
 Az alaptérkép az OpenStreetMap és az Esri szervereiről töltődik le, így ezek a szolgáltatók – mint bármely weboldal esetében – látják az IP-címedet és a betöltött térképrészletet. Az Utcakép gomb a Google Térképet, a Névjegy Támogatás gombja a Revolut fizetési oldalát nyitja meg.
-A frissítések keresése (Beállítások → Általános, kikapcsolható) a GitHub szerveréről kérdezi le a legújabb verzió számát, így a GitHub látja az IP-címedet.
+A frissítések keresése (Beállítások → Általános, kikapcsolható) a GitHub szerveréről kérdezi le a legújabb verzió számát, így a GitHub látja az IP-címedet. A Google Playről telepített alkalmazás nem keres frissítést, azt a Google Play frissíti.
+A teljes tájékoztató: [Adatvédelmi tájékoztató](https://utszelveny.hu/adatvedelem.html).
 
 ## Támogatás
 
@@ -153,6 +154,7 @@ Ha hasznosnak találod, egy kávé árával támogathatod a munkámat és a tov�
 A támogatás önkéntes, és nem jár érte extra funkció.<br><b>A visszajelzés és az ötletek is sokat segítenek!</b>
 
 2026. december 15-től az alkalmazás időnként, indítás után egy rövid ablakban is megkéri a rendszeres felhasználókat a támogatásra („Most nem” / „Támogatás”): a „Most nem” után legalább egy hónap és 10 megnyitás múlva kérdez újra, a „Támogatás” után egy évig nem.
+A Google Playről telepített alkalmazásban nincs támogatási gomb és felhívás, mert a Google Play szabályai nem engedik a külső fizetési hivatkozást.
 
 ## Ismert korlátok és hibák
 
@@ -191,7 +193,7 @@ Ha olyan hibát találsz, ami itt nem szerepel, jelezd [issue-ként](https://git
 - **iPhone:** kevésbé tesztelt. A Safari alsó sávja eltakarja a térkép alját; a főképernyőre tett webalkalmazásban nincs böngészősáv.
 - **Csak az Android alkalmazásban:** a műholdak listája, az exponálás a hangerőgombokkal, a maximális fényerő HUD módban és a fotók mappájának választása.
 - **Internet:** csak a térkép alapréteghez kell, az utak és minden adat internet nélkül is működik.
-- **Android Auto:** nem támogatott, mert az ÚtSzelvény nincs a Google Play Áruházban.
+- **Android Auto:** nem támogatott, mert az ÚtSzelvény (még) nincs a Google Play Áruházban.
 
 ### Ismert hibák
 Jelenleg nincs ismert hiba.
@@ -203,14 +205,14 @@ Jelenleg nincs ismert hiba.
 ### Tervben
 Időpont nélkül:
 - **Automatikus adatfrissítés:** a NAP adatainak havi ellenőrzése; ha változtak, az új adat a következő kiadással érkezik.
+- **Google Play kiadás:** előkészítés alatt. Az alkalmazás a Google Playen is ingyenes lesz; a GitHubról letölthető APK és a webes változat továbbra is megmarad, a GitHubról telepített alkalmazás a Google Playről is frissíthető lesz.
 - **Mérnökségek és tengelysúlymérő állomások a térképen:** a Magyar Közút és a koncessziós cégek mérnökségeinek telephelyei, valamint a tengelysúlymérő (mérő)állomások ikonnal a térképen (külön kapcsolóval, mint a buszmegállók), koppintásra a nevükkel. Ehhez helyadat kell: a legjobb, ha a Magyar Közút ezeket is közzéteszi a NAP-on.
 
 ### Jelenleg nem tervezett
 - **iPhone alkalmazás:** a webalkalmazás iPhone-on is működik, a főképernyőre téve böngészősáv nélkül, teljes képernyőn fut. Egy App Store-os alkalmazáshoz éves díjas Apple fejlesztői tagság és App Store-jóváhagyás kellene, és külön kellene karbantartani.
 - **Videó:** a cél a hellyel és szelvénnyel bélyegzett fotó; a bélyegzett videó sok munka lenne, és nagyon nagy fájlokat adna.
 - **Önkormányzati és egyéb helyi utak:** nincs hozzájuk nyílt, szelvényezett adatforrás, a NAP csak az országos közutakat tartalmazza.
-- **Android Auto:** Google Play kiadás nélkül nem megoldható.
-- **Google Play kiadás:** talán egy későbbi főverzióban.
+- **Android Auto:** Google Play kiadás nélkül nem megoldható; a Google Play kiadás után újra megvizsgálható.
 - **Településrészek nevei a helységnévtáblák szerint** (pl. Antalszállás).
 - **Az egyirányú szakaszok nyilai a térképen.**
 

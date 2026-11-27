@@ -1,0 +1,1 @@
+Az első kiadás a Google Playen. Ugyanaz az alkalmazás, mint a GitHubról letölthető ÚtSzelvény: a GitHubról telepített alkalmazás a Google Playről frissíthető, a mentett adatok megmaradnak.

@@ -13,6 +13,12 @@ szakaszba olvadnak össze, amely a kiadás összes változását felsorolja. A t
 (pl. 0.16.1–0.16.10) változásai a következő nagyobb verzió (pl. 0.17) szakaszában szerepelnek; a szakasz első sora
 jelzi, mely változatokat tartalmazza.
 
+## [1.3.2.6] – 2026-11-27 · kiadatlan (`googleplay` ág)
+- **Google Playről telepített alkalmazás, támogatás:** a Google Play fizetési szabályai nem engedik, hogy az alkalmazás más fizetési módra (pl. Revolut) mutasson, ezért a Google Playről telepített alkalmazásban nincs „Támogatás” gomb és támogatási felhívás. A Névjegy kártyája ott „Visszajelzés” címmel csak a Kapcsolat sort mutatja. A GitHubról telepített alkalmazásban és a webes változatban minden marad.
+- **Adatvédelmi tájékoztató:** új oldal a weboldalon, magyarul és angolul: https://utszelveny.hu/adatvedelem.html (ez lesz a Google Play adatlap adatvédelmi hivatkozása is). Link a Névjegy → Adatvédelem részben, a kezdőlap láblécében és a README-ben.
+- **Google Play adatlap szövegei** a `fastlane/metadata/android/` mappában (magyar és angol cím, rövid és teljes leírás, a V1.4.0 újdonságai).
+- **README:** a „Tervek és ötletek” közé került a Google Play kiadás (előkészítés alatt); az Adatvédelem és a Támogatás rész a Google Play változatot is említi.
+
 ## [1.3.2.5] – 2026-11-27 · kiadatlan (`googleplay` ág)
 - **Felkészülés a Google Play kiadásra (Android alkalmazás):**
   - Cél-API: Android 16 (API 36), ahogy a Google Play 2026. augusztus 31. óta minden új alkalmazástól és frissítéstől megköveteli (Android Gradle plugin 8.13.2, Gradle 8.13). A legalacsonyabb támogatott változat továbbra is az Android 8.0.
