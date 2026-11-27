@@ -13,6 +13,11 @@ szakaszba olvadnak össze, amely a kiadás összes változását felsorolja. A t
 (pl. 0.16.1–0.16.10) változásai a következő nagyobb verzió (pl. 0.17) szakaszában szerepelnek; a szakasz első sora
 jelzi, mely változatokat tartalmazza.
 
+## [1.3.2.1] – 2026-11-27 · kiadatlan
+- **Szakasz adatai, „Kezelő” kártya:** a kezelő adatai külön kártyára kerültek az „Út” kártya alá: Vállalat (pl. Magyar Közút Nonprofit Zrt.), Igazgatóság, Mérnökség. Az „Út” kártyán a kategória, a pálya, a forgalmi irány és a szelvények maradtak.
+- **A „Megye” sor megszűnt** a Szakasz adatai oldalon és a Pozíció oldal kezelő-kártyáján: a megyei igazgatóság áll helyette. A Pozíció oldali kártya címe „Kezelő” (eddig „Kezelő és illetékesség”), a sorai ugyanazok, mint a Szakasz adatai kártyáján (Vállalat, Igazgatóság, Mérnökség); a kapcsolója a beállításokban: „Kezelő: vállalat, igazgatóság, mérnökség”. A koncessziós társaságoknál továbbra sincs Igazgatóság sor.
+- **CSV:** a mentett keresések CSV-jében a „Kezelő” oszlop helyén három oszlop áll: Vállalat, Megyei igazgatóság, Mérnökség; a „Megye” oszlop megmaradt. Szakasznál és több úton átmenő keresésnél az érintett összes vállalat, igazgatóság és mérnökség szerepel, vesszővel elválasztva. A mérések CSV-je a végén ugyanezt a három oszlopot kapta, a mérés útszakaszai alapján (úton kívüli mérésnél üresek).
+
 ## [1.3.2.0] – 2026-11-27 · kiadatlan
 - **Megyei igazgatóság és mérnökség (új NAP adat):** a Magyar Közút kibővítette a NAP „Közút neve, kategóriája és kezelője” adatcsomagját, így az alkalmazás a kezelő mellett mostantól minden útszakaszon megmutatja a **megyei igazgatóságot** (pl. Pest Megyei Igazgatóság) és a **mérnökséget** (pl. Kiskőrösi mérnökség) is. Két helyen látszik: a Szakasz adatai oldal „Út” részében (térképi koppintás → Adatok) és a Pozíció oldal „Kezelő és illetékesség” kártyáján, ebben a sorrendben: Kezelő, Igazgatóság, Mérnökség, Megye. A Mérnökség sor eddig is megvolt, de adat híján „nincs adat” állt benne.
 - A koncessziós társaságok (MKIF, AKA / A-WAY, M6 Duna, M6 Tolna, Mecsek) szakaszain nincs megyei igazgatóság, ott az Igazgatóság sor nem jelenik meg, csak a mérnökség (autópálya-mérnökség). A „Megye” továbbra is az a megye, ahol az út fekszik; az igazgatóság ettől eltérhet (pl. az M0 budapesti szakaszain a Pest Megyei Igazgatóság).
