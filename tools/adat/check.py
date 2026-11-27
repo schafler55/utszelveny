@@ -18,7 +18,9 @@ def net_length(D):
 
 def counts(D):
     n = lambda k, w: len(D.get(k, [])) // w
-    return {"roads": len(D["roads"]), "segments": len(D["segs"]), "speed limits": n("spd", 7),
+    return {"roads": len(D["roads"]), "segments": len(D["segs"]),
+            "segments with a mérnökség": sum(1 for s in D["segs"] if len(s) > 10 and len(D["mrn"][s[10]]) > 1),
+            "speed limits": n("spd", 7),
             "built-up sections": n("szk", 5), "bridges": len(D["br"]), "truck restrictions": len(D["tr"]),
             "lanes": n("sav", 5), "pavement": n("bur", 6), "traffic": n("anf", 5), "one-way": n("egy", 5),
             "identification points": len(D.get("cspk", [])), "bus stops": n("bm", 8), "town names": n("tel", 5)}

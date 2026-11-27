@@ -38,7 +38,7 @@ python3 tools/adat/apptest.py <old index.html> <new index.html>                 
 |---|---|
 | Országos közúthálózat (`halozat`) | `roads` (numbers), `segs`, `lab` |
 | Szelvényjelek (`kmjel`) | km anchors in `segs` |
-| Közút neve, kategóriája és kezelője (`kutka`) | road names in `roads`, `kez` |
+| Közút neve, kategóriája és kezelője (`kutka`) | road names in `roads`, `kez`, `mrn` |
 | Lakott területi szakaszok (`szakjel`) | `szk`; with `osm/telepulesek.json` → `tel`, `tnev` |
 | Sebességkorlátozás (`sebkorl`) | `spd`, `str` |
 | Hídhasználati feltételek (`hid`) | `br`, `str` |
@@ -54,7 +54,7 @@ python3 tools/adat/apptest.py <old index.html> <new index.html>                 
 
 * **roads:** every road number of the network, sorted (M roads first, then by number); the name from `kutka`.
 * **segs** – one per network feature, sorted by road, carriageway, chainage:
-  `[road, pk, kut, county, kezelő, label, scale, anchors, points, polyline]`.
+  `[road, pk, kut, county, kezelő, label, scale, anchors, points, polyline, mrn]`.
   Geometry: Douglas–Peucker 1 m (distance to the segment, as GEOS), rounded to EOV metres, polyline-encoded.
   County: digits 2–3 of `kkod` (of `vkod` when `kkod` has 00). Label: `szak_label` where `szak_tipus` = 2.
   Scale: NAP length (`szho`) / drawn length (1 when the ratio is outside 0.25–4: placeholder lengths).
@@ -63,6 +63,16 @@ python3 tools/adat/apptest.py <old index.html> <new index.html>                 
   segment (its posts and the segment start's km, measured back with the scale) when they are ≥ 800 m apart per
   km – closer than that the chainage skips km numbers there and no anchor is made; with no known point after
   it, measured from the start with the scale.
+* **kez, mrn** – the operator and its units, from `kutka` (since 2026-11 with `pkod`, `kszelv`, `vszelv`, `zkod`,
+  `uzemm`, `mernokseg`). The layer lists the network's segments again: joined by `id`; the build stops when the
+  ids, or a row's road / carriageway / chainage, differ from the network (a join by chainage would be needed then).
+  `mrn` rows are `[county code of the county directorate, mérnökség name, …]`, row 0 = nothing known; a segment
+  points to its row. `zkod` 020–200 are Magyar Közút's county directorates (megyei igazgatóság) – the value in
+  `layers.json` is the KSH county code, the app writes the name from it (`common.directorate_name`); the
+  concession companies' codes (010, 220, 240, 250, 260) give 0 = no directorate. An unknown `zkod` stops the
+  build. A segment shared by two mérnökségek is listed twice in the layer, once with each (9 segments in
+  2026-11; the data does not say where the line between them is): its row has both names. A segment listed with
+  two operators or two directorates stops the build.
 * **spd, szk, sav, bur, anf, egy:** ranges per road and carriageway; touching pieces with the same value merged.
 * **br:** one record per NAP bridge; limits for the road *under* the bridge (height, rigid gate, width – codes
   4, 5, 9) are taken off the bridge; when the bridge name names that road and it passes within 50 m, a record

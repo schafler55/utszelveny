@@ -26,9 +26,38 @@
       "name": "Közút neve, kategóriája és kezelője",
       "layer": "nap_b6_kutka",
       "geom": "MultiLineString",
-      "fields": ["id", "kszam", "utnev", "kezelo"],
-      "optional": ["pkod", "kszelv", "vszelv", "zkod", "uzemm", "mernokseg", "kutka", "utkategoria"],
-      "keys": ["roads (names)", "kez"]
+      "fields": ["id", "kszam", "pkod", "kszelv", "vszelv", "utnev", "kezelo", "zkod", "uzemm", "mernokseg"],
+      "note": "zkod = the operator's unit above the mérnökség. 020–200: the county directorates (megyei igazgatóság) of Magyar Közút, value = KSH county code (2 Baranya … 20 Zala, as in the app's COUNTIES list); 0 = a concession company, which has no county directorates (010 MKIF, 220 AKA / A-WAY, 240 M6 Duna, 250 M6 Tolna, 260 Mecsek). uzemm = code of the mérnökség named in mernokseg.",
+      "codes": {
+        "zkod": {
+          "010": 0,
+          "020": 2,
+          "030": 3,
+          "040": 4,
+          "050": 5,
+          "060": 6,
+          "070": 7,
+          "080": 8,
+          "090": 9,
+          "100": 10,
+          "110": 11,
+          "120": 12,
+          "130": 13,
+          "140": 14,
+          "150": 15,
+          "160": 16,
+          "170": 17,
+          "180": 18,
+          "190": 19,
+          "200": 20,
+          "220": 0,
+          "240": 0,
+          "250": 0,
+          "260": 0
+        }
+      },
+      "keys": ["roads (names)", "kez", "mrn"],
+      "optional": ["kutka", "utkategoria"]
     },
     "szakjel": {
       "name": "Lakott területi szakaszok",

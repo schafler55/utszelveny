@@ -4,7 +4,8 @@
 Opens two index.html files (old = main, new = the build), and asks the real app code the same questions:
   * golden points (tools/adat/golden.json): fixed places with the road + km+m they must give (± 5 m);
   * a regression sample: N random places along the old network (fixed seed) – road, carriageway, km+m (± 2 m),
-    speed limit, built-up / town name, lanes, pavement, traffic, one-way, bridges and truck limits nearby.
+    speed limit, built-up / town name, operator, county directorate + mérnökség, lanes, pavement, traffic, one-way,
+    bridges and truck limits nearby.
 Prints a Markdown report; exit code 1 when the new page does not load or a golden point fails.
 
 Usage:  python3 tools/adat/apptest.py <old index.html> <new index.html> [--n 5000] [--seed 1] [--chrome PATH]
@@ -32,6 +33,7 @@ PROBE = r"""
       o.spd = [sp.lim, sp.own, sp.bu, (sp.cond || []).map(x => x.lim + " " + x.kieg).join(";")];
       o.tel = telAt(r, pk, v);
       o.kez = KEZ[segKez[s]];
+      o.mrn = typeof mernoksegOf === "function" ? [igazgatosagOf(s), ...mernoksegOf(s)] : null;   // null: a page from before V1.3.2.0
       o.cty = segCty[s];
       o.sav = lanesAt(r, pk, v);
       o.bur = pavementAt(r, pk, v);
@@ -71,7 +73,7 @@ SAMPLE = r"""
 
 
 def open_page(browser, path):
-    pg = browser.new_page()
+    pg = browser.new_page(bypass_csp=True)      # the page's CSP has no 'unsafe-eval', which wait_for_function needs
     errors = []
     pg.on("pageerror", lambda e: errors.append(str(e)))
     pg.goto(pathlib.Path(path).resolve().as_uri())
@@ -129,7 +131,8 @@ def main():
         pts = old.evaluate(SAMPLE, [a.n, a.seed])
         ro = old.evaluate(PROBE, [pts, True])
         rn = new.evaluate(PROBE, [pts, True])
-        cnt = {k: 0 for k in ("place", "spd", "tel", "kez", "cty", "sav", "bur", "anf", "egy", "br", "tr")}
+        cnt = {k: 0 for k in ("place", "spd", "tel", "kez", "mrn", "cty", "sav", "bur", "anf", "egy", "br", "tr")}
+        no_mrn = 0
         ex = {k: [] for k in cnt}
         for P, x, y in zip(pts, ro, rn):
             if not same_ch(x, y, 2):
@@ -140,6 +143,9 @@ def main():
             if x is None:
                 continue
             for k in cnt:
+                if k == "mrn" and (x[k] is None or y[k] is None):      # one of the pages has no such data: nothing to compare
+                    no_mrn += 1
+                    continue
                 if k != "place" and json.dumps(x[k], sort_keys=True, ensure_ascii=False) != json.dumps(y[k], sort_keys=True, ensure_ascii=False):
                     cnt[k] += 1
                     if len(ex[k]) < 5:
@@ -147,10 +153,10 @@ def main():
         rep += ["", f"### Regression sample: {len(pts):,} places along the network (seed {a.seed})".replace(",", "."),
                 "| Check | Different |", "|---|---:|"]
         names = {"place": "road / carriageway / km+m (± 2 m)", "spd": "speed limit", "tel": "town name", "kez": "operator",
-                 "cty": "county", "sav": "lanes", "bur": "pavement", "anf": "traffic", "egy": "one-way",
-                 "br": "bridges within 50 m", "tr": "truck limits in force"}
+                 "mrn": "county directorate / mérnökség", "cty": "county", "sav": "lanes", "bur": "pavement",
+                 "anf": "traffic", "egy": "one-way", "br": "bridges within 50 m", "tr": "truck limits in force"}
         for k, n in cnt.items():
-            rep.append(f"| {names[k]} | {n} |")
+            rep.append(f"| {names[k]} | {'not in the old page' if k == 'mrn' and no_mrn else n} |")
         for k, L in ex.items():
             if L:
                 rep.append(f"- {names[k]}: " + "; ".join(L))

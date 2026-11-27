@@ -33,11 +33,14 @@ def tables(D):
     T = {}
     T["roads"] = {tuple(r.split("|", 1)) for r in D["roads"]}
     seg = {}
+    mrn = D.get("mrn")          # [directorate's county code, mérnökség name(s)…] rows; not in data built before V1.3.2.0
     for s in D["segs"]:
         pts = decode(s[9])
         k = (R[s[0]], s[1], pts[0], pts[-1])
-        seg[k] = dict(kut=s[2], cty=s[3], kez=D["kez"][s[4]], lab=D["lab"][s[5]], scale=s[6], an=s[7], pts=pts)
+        seg[k] = dict(kut=s[2], cty=s[3], kez=D["kez"][s[4]], lab=D["lab"][s[5]], scale=s[6], an=s[7], pts=pts,
+                      mrn=tuple(mrn[s[10]]) if mrn and len(s) > 10 else None)
     T["segs"] = seg
+    T["mrn"] = {n for x in mrn or [] for n in x[1:]}
 
     def flat(key, n, f):
         a = D.get(key, [])
@@ -99,11 +102,15 @@ def compare(A, B, mx=30):
     only_b = set(sb) - set(sa)
     diffs = collections.Counter()
     anc = []
+    mrn_ch = collections.Counter()
     for k in set(sa) & set(sb):
         x, y = sa[k], sb[k]
         for f in ("kut", "cty", "kez", "lab"):
             if x[f] != y[f]:
                 diffs[f] += 1
+        if x["mrn"] != y["mrn"] and x["mrn"] is not None and y["mrn"] is not None:
+            diffs["igazgatóság / mérnökség"] += 1
+            mrn_ch[(x["mrn"], y["mrn"])] += 1
         if abs(x["scale"] - y["scale"]) > 0.00011:
             diffs["scale"] += 1
         if x["pts"] != y["pts"]:
@@ -131,6 +138,19 @@ def compare(A, B, mx=30):
             anc.sort(reverse=True)
             out.append("- largest km anchor changes: " + ", ".join(
                 f"{k[0]}/{k[1]} " + ("other km set" if d >= 1e9 else f"{d:.1f} m") for d, k in anc[:mx]))
+        show = lambda m: (" + ".join(m[1:]) or "–") + (f" (igazgatóság {m[0]})" if m[0] else "")
+        for (x, y), n in mrn_ch.most_common(mx):
+            out.append(f"- mérnökség: {show(x)} → {show(y)} ({n} segments)")
+    # igazgatóság + mérnökség (per segment; the data built before V1.3.2.0 has none)
+    ma, mb = TA["mrn"], TB["mrn"]
+    have = lambda S: sum(1 for x in S.values() if x["mrn"] and len(x["mrn"]) > 1)
+    summary["mrn (segments)"] = (have(sa), have(sb), diffs["igazgatóság / mérnökség"] if ma else have(sb))
+    if ma != mb:
+        out.append(f"### Mérnökség names: −{len(ma - mb)} / +{len(mb - ma)}")
+        if ma - mb:
+            out.append("- − " + ", ".join(sorted(ma - mb)[:mx * 4]))
+        if mb - ma:
+            out.append("- + " + ", ".join(sorted(mb - ma)[:mx * 4]))
     # record tables
     names = {"spd": "Speed limits", "szk": "Built-up sections", "tel": "Town names (OSM)", "sav": "Lanes",
              "bur": "Pavement", "anf": "Traffic", "egy": "One-way", "br": "Bridges", "tr": "Truck restrictions",

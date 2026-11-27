@@ -209,14 +209,47 @@ def build(folder, osm_path, date=None):
             raise DataError(f"{M[k]['name']}: unknown road number {p['kszam']!r}")
         return r
 
-    # ---------------- operators (kezelő) per network segment ----------------
-    net_ids = [p["id"] for p in P["halozat"]]
-    kut_by_id = {p["id"]: p for p in P["kutka"]}
-    if set(kut_by_id) == set(net_ids):
-        kez_of = {i: (kut_by_id[i]["kezelo"] or "") for i in net_ids}
-    else:
-        raise DataError(f"{M['kutka']['name']}: its ids no longer match the network – the range join for the "
-                        f"extended package (Mérnökség) has to be added to build.py")
+    # ---------------- operator (kezelő), county directorate (igazgatóság), depot (mérnökség) per network segment ----------------
+    # "Közút neve, kategóriája és kezelője" lists the network's segments again (same id, road, carriageway and
+    # chainage). A segment shared by two mérnökségek is listed twice, once with each – the data does not say where
+    # the line between them is, so the segment gets both names.
+    KN = M["kutka"]["name"]
+    ZK = M["kutka"]["codes"]["zkod"]
+    net_by_id = {p["id"]: p for p in P["halozat"]}
+    kut_by_id = collections.defaultdict(list)
+    for p in P["kutka"]:
+        kut_by_id[p["id"]].append(p)
+    if set(kut_by_id) != set(net_by_id):
+        raise DataError(f"{KN}: its ids no longer match the network – a join by road and chainage has to be "
+                        f"added to build.py")
+    place = lambda p: (str(p["kszam"]).strip(), str(p["pkod"]), p["kszelv"], p["vszelv"])
+    kez_of, mrn_of = {}, {}
+    for i, rows in kut_by_id.items():
+        if any(place(p) != place(net_by_id[i]) for p in rows):
+            raise DataError(f"{KN}: segment {i} ({rows[0]['kszam']}) has another road / carriageway / chainage "
+                            f"than in the network – a join by road and chainage has to be added to build.py")
+        kz = {(p["kezelo"] or "").strip() for p in rows}
+        ig = {ZK[p["zkod"]] for p in rows}
+        if len(kz) > 1 or len(ig) > 1:
+            raise DataError(f"{KN}: segment {i} ({rows[0]['kszam']} {rows[0]['kszelv']}) is listed with two "
+                            f"operators or two county directorates – not handled yet")
+        kez_of[i] = kz.pop()
+        mrn_of[i] = (ig.pop(), *sorted({(p["mernokseg"] or "").strip() for p in rows} - {""}))
+    # mrn: [directorate's county code (0 = none), mérnökség name(s)…]; row 0 = nothing known
+    mrn = sorted({(0,)} | set(mrn_of.values()))
+    mrni = {x: n for n, x in enumerate(mrn)}
+    by_code = collections.defaultdict(set)
+    for p in P["kutka"]:
+        by_code[p["uzemm"]].add((p["mernokseg"] or "").strip())
+    odd = sorted(str(c) for c, n in by_code.items() if len(n) > 1)
+    if odd:
+        warn.append(f"{KN}: mérnökség code(s) with more than one name: {', '.join(odd[:10])}")
+    none = sum(1 for x in mrn_of.values() if len(x) < 2)
+    if none:
+        warn.append(f"{KN}: {none} segments have no mérnökség")
+    shared = sum(1 for x in mrn_of.values() if len(x) > 2)
+    if shared:
+        warn.append(f"{KN}: {shared} segments are shared by two mérnökségek (both names are shown)")
 
     # ---------------- segments ----------------
     raw = []
@@ -260,8 +293,8 @@ def build(folder, osm_path, date=None):
         s["an"] = build_anchors(s, posts.get((s["road"], s["pk"]), {}))
         s["scale4"] = round(s["scale"], 4)
         segs.append([s["r"], s["pk"], KUT[p["kutka"]], cty, kezi[kz], labi[lb], s["scale4"], s["an"],
-                     len(s["pts"]), encode(s["pts"])])
-    D["kez"], D["lab"], D["segs"] = kez, lab, segs
+                     len(s["pts"]), encode(s["pts"]), mrni[mrn_of[s["id"]]]])
+    D["kez"], D["lab"], D["mrn"], D["segs"] = kez, lab, [list(x) for x in mrn], segs
     for s in raw:            # look-ups use the stored (rounded) scale, like the app
         s["scale"] = s["scale4"]
     NET = Net(raw)

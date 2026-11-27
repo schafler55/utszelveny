@@ -14,14 +14,14 @@ Fotóidra ráírja a helyet és az időt, a méréseidet pedig elnevezheted és 
 Böngészőben és Android-alkalmazásként is fut. Az úthálózati adatok a készüléken vannak, így a szelvényezés internet
 nélkül is működik. Csak a térkép alapréteghez kell internetkapcsolat.
 
-**Verzió:** V1.3.1.5 · [Változásnapló](CHANGELOG.md) · © 2026 Szászi Dániel · Licenc: GPL-3.0
+**Verzió:** V1.3.2.0 · [Változásnapló](CHANGELOG.md) · © 2026 Szászi Dániel · Licenc: GPL-3.0
 
 ## Funkciók
 
 ### Pozíció
 Útszám az útjelző tábla formájában, kilométerszelvény (km+m), szelvényirány, az út neve és kategóriája.
 Alatta az érvényes sebességkorlát (belterület / külterület), átkelési szakaszon a település nevével, a következő 3 km hídjai és út feletti akadályai,
-a tehergépjármű- és súlykorlátozások, a GNSS adatok és a kezelő. Párhuzamos utaknál a közeli út egy koppintással választható.
+a tehergépjármű- és súlykorlátozások, a GNSS adatok, valamint a kezelő, a megyei igazgatóság és a mérnökség. Párhuzamos utaknál a közeli út egy koppintással választható.
 Az Android alkalmazás a használt és látható műholdakat is mutatja rendszerenként (GPS, Galileo, GLONASS, BeiDou…).
 Budapest belterületén jelzi, hogy a fővárosi és kerületi utak nem részei az országos közúthálózatnak.
 
@@ -29,7 +29,7 @@ Budapest belterületén jelzi, hogy a fővárosi és kerületi utak nem részei 
 
 ### Térkép
 Országos közúthálózat útszám-táblákkal (autópálya, autóút kék, főút zöld), alaprétegként OpenStreetMap (világos vagy sötét)
-vagy műholdkép. Északkal felfelé vagy menetirány szerint forgatva. Koppintásra megmutatja a pont útját és szelvényét; onnan a pont elmenthető keresésként, az Utcakép gomb megnyitja a Google Utcaképet (Google Térkép alkalmazásban vagy új böngészőlapon) a menetirány felé nézve, az Adatok pedig a szakasz minden adatát mutatja (kezelő, sávok, burkolat, forgalom, sebességkorlát, terület, híd, tehergépjármű-korlátozás). A kilométerszelvények pontként és az út mellé mutató vonalkával látszanak (osztott pályán kifelé), a hidak nagyobb nagyításnál (mindkettő kikapcsolható, a nagyítási szint állítható); az átkelési szakaszok (ahol az út lakott területen halad át) bekapcsolható halvány piros sávval jelölhetők; ahol egy országos út egy másik felett halad át, a magasságkorlát az alatta haladó úton jelenik meg.
+vagy műholdkép. Északkal felfelé vagy menetirány szerint forgatva. Koppintásra megmutatja a pont útját és szelvényét; onnan a pont elmenthető keresésként, az Utcakép gomb megnyitja a Google Utcaképet (Google Térkép alkalmazásban vagy új böngészőlapon) a menetirány felé nézve, az Adatok pedig a szakasz minden adatát mutatja (kezelő, megyei igazgatóság, mérnökség, sávok, burkolat, forgalom, sebességkorlát, terület, híd, tehergépjármű-korlátozás). A kilométerszelvények pontként és az út mellé mutató vonalkával látszanak (osztott pályán kifelé), a hidak nagyobb nagyításnál (mindkettő kikapcsolható, a nagyítási szint állítható); az átkelési szakaszok (ahol az út lakott területen halad át) bekapcsolható halvány piros sávval jelölhetők; ahol egy országos út egy másik felett halad át, a magasságkorlát az alatta haladó úton jelenik meg.
 
 ![Térkép oldal](screenshots/terkep.png)
 
@@ -167,7 +167,7 @@ Ha olyan hibát találsz, ami itt nem szerepel, jelezd [issue-ként](https://git
 - **Csak az országos közutak:** a helyi (önkormányzati), a fővárosi és kerületi, valamint a magán-, erdei és mezőgazdasági utak nincsenek benne, ezeken „Úthálózaton kívül” jelenik meg. Budapesten csak az országos utak (pl. az M0) szelvényezése látszik.
 - **Statikus adatok:** útlezárás, útépítés, ideiglenes vagy változtatható jelzésképű táblák nincsenek benne. Az adatok a kiadáskori NAP-állapotot mutatják, új adat az alkalmazás frissítésével érkezik.
 - **Sebességkorlát:** a NAP-ban rögzített korlátozás, ennek hiányában a KRESZ személygépkocsira vonatkozó alapértéke (50 / 90 / 110 / 130 km/h). A tehergépkocsikra, autóbuszokra és utánfutós járművekre vonatkozó alacsonyabb általános korlátokat az alkalmazás nem számolja.
-- **Mérnökség, megyei igazgatóság:** a NAP adatcsomagjaiban még nem szerepelnek; ha bekerülnek, az alkalmazásban is megjelennek.
+- **Mérnökség, megyei igazgatóság:** a NAP útszakaszonként adja meg őket. Néhány szakaszon (jelenleg 9) két mérnökség osztozik, és az adat nem tartalmazza, hol a határ: ott mindkettő neve megjelenik. A koncessziós társaságoknál nincs megyei igazgatóság. A nevek a NAP írásmódját követik (pl. „Apm.” = autópálya-mérnökség).
 - **Egyirányú utak:** osztatlan úton, ha a NAP nem jelöl egyirányú szakaszt, az alkalmazás kétirányúnak veszi.
 - **Autóbusz-megállók:** a NAP-ban a megállóhelyek több mint felének nincs neve („Név nélküli megállóhely”).
 - **Forgalmi adatok:** a legutóbbi számlálás éves átlagai (2025), nem élő forgalom.
@@ -202,7 +202,6 @@ Jelenleg nincs ismert hiba.
 
 ### Tervben
 Időpont nélkül:
-- **Mérnökség és megyei igazgatóság:** amint a NAP közzéteszi őket, az alkalmazás is mutatja.
 - **Automatikus adatfrissítés:** a NAP adatainak havi ellenőrzése; ha változtak, az új adat a következő kiadással érkezik.
 - **Mérnökségek és tengelysúlymérő állomások a térképen:** a Magyar Közút és a koncessziós cégek mérnökségeinek telephelyei, valamint a tengelysúlymérő (mérő)állomások ikonnal a térképen (külön kapcsolóval, mint a buszmegállók), koppintásra a nevükkel. Ehhez helyadat kell: a legjobb, ha a Magyar Közút ezeket is közzéteszi a NAP-on.
 

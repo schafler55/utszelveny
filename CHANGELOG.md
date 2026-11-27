@@ -13,6 +13,14 @@ szakaszba olvadnak össze, amely a kiadás összes változását felsorolja. A t
 (pl. 0.16.1–0.16.10) változásai a következő nagyobb verzió (pl. 0.17) szakaszában szerepelnek; a szakasz első sora
 jelzi, mely változatokat tartalmazza.
 
+## [1.3.2.0] – 2026-11-27 · kiadatlan
+- **Megyei igazgatóság és mérnökség (új NAP adat):** a Magyar Közút kibővítette a NAP „Közút neve, kategóriája és kezelője” adatcsomagját, így az alkalmazás a kezelő mellett mostantól minden útszakaszon megmutatja a **megyei igazgatóságot** (pl. Pest Megyei Igazgatóság) és a **mérnökséget** (pl. Kiskőrösi mérnökség) is. Két helyen látszik: a Szakasz adatai oldal „Út” részében (térképi koppintás → Adatok) és a Pozíció oldal „Kezelő és illetékesség” kártyáján, ebben a sorrendben: Kezelő, Igazgatóság, Mérnökség, Megye. A Mérnökség sor eddig is megvolt, de adat híján „nincs adat” állt benne.
+- A koncessziós társaságok (MKIF, AKA / A-WAY, M6 Duna, M6 Tolna, Mecsek) szakaszain nincs megyei igazgatóság, ott az Igazgatóság sor nem jelenik meg, csak a mérnökség (autópálya-mérnökség). A „Megye” továbbra is az a megye, ahol az út fekszik; az igazgatóság ettől eltérhet (pl. az M0 budapesti szakaszain a Pest Megyei Igazgatóság).
+- 9 szakaszon két mérnökség osztozik, és az adat nem tartalmazza, hol a határ közöttük: ott mindkettő neve megjelenik, egymás alatt.
+- **Adatok:** adatállapot 2026. november 27. Csak a „Közút neve, kategóriája és kezelője” csomag változott; az úthálózat, a szelvények, a korlátozások, a hidak és a többi adat ugyanaz, mint eddig. Az alkalmazás mérete kb. 0,07 MB-tal nőtt.
+- **Beállítások → Pozíció → Megjelenített részek:** a kártya kapcsolójának neve „Kezelő, igazgatóság, mérnökség, megye”.
+- **Fejlesztés (`tools/adat/`):** az adatcsomag új mezői (`pkod`, `kszelv`, `vszelv`, `zkod`, `uzemm`, `mernokseg`) kötelezők. Az építés megáll, ha ismeretlen igazgatóságkód (`zkod`) érkezik, ha egy szakasz útja, pályája vagy szelvénye eltér az úthálózatétól, vagy ha egy szakaszhoz két kezelő vagy két igazgatóság tartozik. A változásjelentés (`compare.py`) és az alkalmazásszintű teszt (`apptest.py`) az igazgatóságot és a mérnökséget is összeveti; az `apptest.py` újra fut az oldal tartalombiztonsági szabálya (CSP) mellett. A kódból kikerült a kézzel tölthető, üres `MERNOKSEG` szabálylista.
+
 ## [1.3.1.5] – 2026-11-26 · kiadatlan
 - A támogatási felhívás „Most nem” után csak akkor jelenik meg újra, ha eltelt legalább egy hónap **és** az alkalmazást legalább 10-szer megnyitották azóta (eddig: három hónap). A „Támogatás” után továbbra is egy évig nem kérdez.
 
