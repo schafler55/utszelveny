@@ -13,6 +13,9 @@ szakaszba olvadnak össze, amely a kiadás összes változását felsorolja. A t
 (pl. 0.16.1–0.16.10) változásai a következő nagyobb verzió (pl. 0.17) szakaszában szerepelnek; a szakasz első sora
 jelzi, mely változatokat tartalmazza.
 
+## [1.3.2.9] – 2026-11-28 · kiadatlan (a `main` ágon)
+- **Android fejlesztői regisztráció:** az Android alkalmazásba (APK) bekerül a Google Android Developer Console fiókjához tartozó azonosító (`assets/adi-registration.properties`, forrása `android/adi-registration.properties`). A Google ezzel és az APK aláírásával ellenőrzi, hogy a `hu.szaszi.kozutszelveny` (stabil kulcs) és a `hu.szaszi.kozutszelveny.dev` (DEV kulcs) csomag a fejlesztőé, így az APK a Google 2027-es ellenőrzése után is ugyanúgy telepíthető marad. Az alkalmazás működése nem változik.
+
 ## [1.3.2.8] – 2026-11-28 · kiadatlan (a `main` ágon)
 A `googleplay` ág beolvasztva (az ágon V1.3.2.5–V1.3.2.7 tesztváltozatok voltak, ezért a `main` V1.3.2.8-cal folytatódik). A Google Play kiadás egyelőre nincs eldöntve; ezek a változások nélküle is hasznosak.
 - **Android 16 (API 36) cél:** az Android alkalmazás a legújabb Android API-t célozza (Android Gradle plugin 8.13.2, Gradle 8.13). A legalacsonyabb támogatott változat továbbra is az Android 8.0.

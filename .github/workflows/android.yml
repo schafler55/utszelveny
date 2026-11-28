@@ -133,6 +133,15 @@ jobs:
             grep -q "const UPD_CH=\"$ch\"" "$out"
           fi
 
+      # Android developer verification: the account's registration token (android/adi-registration.properties,
+      # from the Android Developer Console) goes into every APK's assets as adi-registration.properties. An APK
+      # signed with the release key (stable release) or the DEV key (main) then proves to Google that this account
+      # owns that key; the token alone proves nothing and is not a secret.
+      - name: Add the developer verification token to the APK
+        env:
+          D: ${{ steps.proj.outputs.dir }}
+        run: cp android/adi-registration.properties "$D/app/src/main/assets/adi-registration.properties"
+
       - name: Build the unsigned APK and app bundle
         working-directory: ${{ steps.proj.outputs.dir }}
         env:
