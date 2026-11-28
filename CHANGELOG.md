@@ -13,6 +13,10 @@ szakaszba olvadnak össze, amely a kiadás összes változását felsorolja. A t
 (pl. 0.16.1–0.16.10) változásai a következő nagyobb verzió (pl. 0.17) szakaszában szerepelnek; a szakasz első sora
 jelzi, mely változatokat tartalmazza.
 
+## [1.4.0.3] – 2026-11-28
+Kiadatlan.
+- **Beállítások széles kijelzőn (pl. számítógépes böngésző):** a fülválasztó és a beállításkártyák nem nyúlnak ki a teljes ablakszélességre, hanem a Pozíció, Keresés és Mérés oldal kártyáival egy oszlopban, középen állnak. A fejléc sora és a háttér továbbra is a teljes szélességet kitölti. Telefonon nincs változás.
+
 ## [1.4.0.2] – 2026-11-28
 Kiadatlan.
 - **Kezdőlap (utszelveny.hu):** az „Android alkalmazás letöltése” gomb a sorával együtt az „ÚtSzelvény indítása” gomb fölé került. A nyílt forráskódú kártya alján lévő APK letöltési link megszűnt, az Android alkalmazás a felső gombbal tölthető le. Az alkalmazás nem változott.

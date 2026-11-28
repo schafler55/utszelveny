@@ -14,8 +14,8 @@ android {
         targetSdk 36
         // two digits per version part: V1.3.0.1 → 1030001, V1.3.1.0 → 1030100, V1.4.0 → 1040000
         // (each part must stay below 100; up to V1.3.0 it was one digit per part, V1.3.0 = 1300); set by tools/verzio.py
-        versionCode 1040002
-        versionName "1.4.0.2"
+        versionCode 1040003
+        versionName "1.4.0.3"
         resValue 'string', 'app_name', 'ÚtSzelvény'
     }
 
