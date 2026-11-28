@@ -1,0 +1,40 @@
+Melyik országos közúton, melyik kilométerszelvényben állsz? Az ÚtSzelvény a telefon helymeghatározása alapján méterre pontosan megmutatja az útszámot és a km+m szelvényt – internet nélkül is.
+
+<b>Pozíció</b>
+• Útszám és útnév, km+m szelvény, szelvényirány, GNSS-pontosság
+• Sebességkorlát helységnévtáblával az átkelési szakaszokon
+• Hidak súly- és magasságkorláttal, tehergépjármű-korlátozások
+• Kezelő, megyei igazgatóság és mérnökség
+• Párhuzamos utaknál és csomópontokban a közeli út egy koppintással kiválasztható
+
+<b>Térkép</b>
+• Az országos közúthálózat útszámtáblákkal, kilométerjelekkel, hidakkal és buszmegállókkal
+• Koppintásra a szakasz adatai: sávok, burkolat, forgalmi adatok, közúti azonosítópontok
+• OpenStreetMap vagy műholdkép alapréteg (ehhez kell internet)
+
+<b>Keresés</b>
+• Pont vagy szakasz útszám és km+m alapján, jobb és bal pályával
+• Keresés koordinátára (WGS84 vagy EOV)
+• Mentett keresések a térképen, CSV export
+
+<b>Mérés</b>
+• Távolság és szelvényhossz GNSS-szel menet közben vagy a térképen
+• Mentett mérések, CSV export
+
+<b>Fotó</b>
+• A képre kerül az út, a szelvény, a dátum, az idő és a koordináta
+• Exponálás a hangerőgombokkal is
+
+<b>HUD mód</b>
+• Tükrözött, nagy kontrasztú kijelzés a szélvédőn való tükröződéshez
+
+<b>Adatok</b>
+Az úthálózati adatok a Magyar Közút Nonprofit Zrt. Nemzeti Adathozzáférési Pontjának (NAP) statikus adatcsomagjaiból, a településnevek az OpenStreetMapből származnak. Az adatok tájékoztató jellegűek, és nem tartalmaznak útlezárást vagy ideiglenes korlátozást.
+
+Nem hivatalos alkalmazás, nem áll kapcsolatban a Magyar Közút Nonprofit Zrt.-vel.
+
+<b>Ingyenes és nyílt forráskódú</b>
+Nincs fiók, reklám, előfizetés vagy analitika; az alkalmazás nem gyűjt személyes adatot. Forráskód (GPL-3.0): https://github.com/schafler55/utszelveny
+Webes változat böngészőben: https://utszelveny.hu
+
+Vezetés közben ne kezeld az alkalmazást. Csak saját felelősségre használható.

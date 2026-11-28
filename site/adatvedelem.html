@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Adatvédelmi tájékoztató – ÚtSzelvény</title>
+<meta name="description" content="Az ÚtSzelvény webes és Android alkalmazás adatvédelmi tájékoztatója: nem gyűjt személyes adatot, nincs fiók, reklám vagy analitika.">
+<link rel="canonical" href="https://utszelveny.hu/adatvedelem.html">
+<meta name="author" content="Szászi Dániel">
+<meta name="theme-color" content="#E5EBE4">
+<link rel="icon" href="icon-192.png">
+<!-- Privacy policy of the web app and the Android app (also the "Privacy policy" URL of the Google Play listing).
+     Keep it in step with the app's Névjegy → Adatvédelem texts (web/index.html, texts block "about.privacy*")
+     and the README "Adatvédelem" section. -->
+<style>
+  :root { --bg: #E5EBE4; --card: #FFFFFF; --on: #0F140F; --onv: #2E352F; --dim: #4A524B; --pri: #2B6A46;
+    --font: Roboto, system-ui, -apple-system, "Segoe UI", sans-serif; }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--on); font-family: var(--font); line-height: 1.55; }
+  a { color: var(--pri); }
+  .wrap { max-width: 760px; margin: 0 auto; padding: 0 16px; }
+  header { display: flex; align-items: center; justify-content: space-between; padding: 16px 0; }
+  .brand { display: flex; align-items: center; gap: 10px; color: var(--on); text-decoration: none; font-size: 20px; font-weight: 700; }
+  .lang { font-size: 15px; }
+  .card { background: var(--card); border-radius: 24px; padding: 28px 24px; margin-bottom: 20px; box-shadow: 0 1px 3px rgba(15,20,15,.08), 0 8px 24px rgba(15,20,15,.06); }
+  h1 { margin: 0 0 4px; font-size: clamp(24px, 5vw, 32px); line-height: 1.2; }
+  h2 { margin: 26px 0 6px; font-size: 19px; }
+  p, li { color: var(--onv); }
+  ul { padding-left: 22px; }
+  .meta { margin: 0 0 18px; font-size: 14px; color: var(--dim); }
+  .lead { font-size: 17px; color: var(--on); }
+  footer { padding: 12px 0 40px; text-align: center; font-size: 14px; color: var(--dim); }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <a class="brand" href="./"><img src="icon-192.png" alt="" width="34" height="34">ÚtSzelvény</a>
+    <a class="lang" href="#english">English</a>
+  </header>
+
+  <main>
+    <article class="card" lang="hu">
+      <h1>Adatvédelmi tájékoztató</h1>
+      <p class="meta">Hatályos: 2026. november 27. · Az ÚtSzelvény webes alkalmazására (utszelveny.hu/app) és Android alkalmazására vonatkozik.</p>
+      <p class="lead"><b>Az ÚtSzelvény nem gyűjt és nem küld el személyes adatot.</b> Nincs fiók vagy regisztráció, nincs reklám, nincs analitika vagy követés. A fejlesztő semmilyen adatot nem kap az alkalmazásból.</p>
+
+      <h2>Helyadat</h2>
+      <p>Az alkalmazás a telefon helymeghatározását (GNSS) arra használja, hogy kiszámítsa, melyik úton és melyik kilométerszelvényben vagy. A helyadat csak a készüléken kerül feldolgozásra, nem kerül elküldésre senkinek. Az Android alkalmazás a műholdak állapotát (hány műholdat lát és használ) is csak a kijelzéshez olvassa. A helymeghatározás csak akkor fut, amikor az alkalmazás nyitva van; a háttérben nem.</p>
+
+      <h2>Kamera és fotók</h2>
+      <p>A kamerát csak a Fotó oldal használja. Az elkészült fotók a készülékre mentődnek (alapból a DCIM/ÚtSzelvény mappába); a fotóra és a fájl adataiba (EXIF) kerülhet a hely, a szelvény, a koordináta és az idő. A fotókat az alkalmazás sehová nem tölti fel; csak akkor kerülnek máshová, ha te megosztod őket.</p>
+
+      <h2>A készüléken tárolt adatok</h2>
+      <p>A beállítások, a mentett keresések és mérések csak a készüléken (az alkalmazás vagy a böngésző saját tárhelyén) tárolódnak. A CSV exportok a Letöltések mappába kerülnek. Ezek az adatok az alkalmazás eltávolításával, illetve a webes változatnál a böngésző adatainak törlésével törlődnek.</p>
+
+      <h2>Internetkapcsolat</h2>
+      <p>Az alkalmazás internet nélkül is működik. Ha van kapcsolat, az alábbi szolgáltatások szervereihez fordulhat; ezek a szolgáltatók láthatják az IP-címedet, és a saját adatkezelési szabályaik szerint járnak el:</p>
+      <ul>
+        <li><b>Térkép alapréteg:</b> OpenStreetMap és Esri (műholdkép) – a megnézett térképrészlet csempéi töltődnek le.</li>
+        <li><b>Frissítések keresése</b> (kikapcsolható): a GitHub szerveréről kérdezi le a legújabb verzió számát.</li>
+        <li><b>Utcakép</b> gomb: a Google Térképet nyitja meg; <b>Kapcsolat</b>: a levelezőalkalmazást nyitja meg; <b>Támogatás</b> gomb: a Revolut fizetési oldalát nyitja meg. Ezek csak a gomb megnyomására történnek.</li>
+        <li><b>Weboldal:</b> az utszelveny.hu a GitHub Pages tárhelyén fut; a GitHub a weboldal kiszolgálásához naplózhatja az IP-címet.</li>
+      </ul>
+
+      <h2>Az Android alkalmazás engedélyei</h2>
+      <ul>
+        <li><b>Pontos és hozzávetőleges helymeghatározás:</b> az út és a szelvény meghatározásához, csak az alkalmazás használata közben.</li>
+        <li><b>Kamera:</b> a Fotó oldalhoz.</li>
+        <li><b>Internet:</b> a térkép alapréteghez és a frissítések kereséséhez.</li>
+        <li><b>Tárhely írása</b> (csak Android 8–9): a fotók és a CSV fájlok mentéséhez.</li>
+      </ul>
+
+      <h2>Gyermekek</h2>
+      <p>Az alkalmazás nem gyermekeknek szól, és senkitől nem gyűjt adatot.</p>
+
+      <h2>Változások és kapcsolat</h2>
+      <p>Ha ez a tájékoztató változik, az új változat ezen az oldalon jelenik meg, a hatály dátumával. Kérdés esetén: <a href="mailto:visszajelzes@utszelveny.hu">visszajelzes@utszelveny.hu</a>. Fejlesztő: Szászi Dániel. Az alkalmazás forráskódja nyilvános: <a href="https://github.com/schafler55/utszelveny">github.com/schafler55/utszelveny</a>.</p>
+    </article>
+
+    <article class="card" lang="en" id="english">
+      <h1>Privacy policy</h1>
+      <p class="meta">Effective: 27 November 2026 · Applies to the ÚtSzelvény web app (utszelveny.hu/app) and Android app. The Hungarian text above prevails.</p>
+      <p class="lead"><b>ÚtSzelvény does not collect or send any personal data.</b> There is no account, no ads, no analytics and no tracking. The developer receives no data from the app.</p>
+
+      <h2>Location</h2>
+      <p>The app uses the phone's location (GNSS) to work out which road and which kilometre position you are at. Location is processed on the device only and is never sent anywhere. The Android app also reads the satellite status (how many satellites are visible and used), only to display it. Location runs only while the app is open, never in the background.</p>
+
+      <h2>Camera and photos</h2>
+      <p>Only the Fotó page uses the camera. Photos are saved on the device (by default in DCIM/ÚtSzelvény); the location, road position, coordinates and time may be stamped on the picture and written into its file data (EXIF). The app never uploads photos; they leave the device only if you share them.</p>
+
+      <h2>Data stored on the device</h2>
+      <p>Settings, saved searches and measurements are stored only on the device (in the app's or the browser's own storage). CSV exports go to the Downloads folder. This data is removed when you uninstall the app or, for the web app, clear the browser's data.</p>
+
+      <h2>Internet connection</h2>
+      <p>The app works offline. When online, it may contact the following services, which can see your IP address and handle it under their own policies:</p>
+      <ul>
+        <li><b>Base map:</b> OpenStreetMap and Esri (satellite imagery) – the tiles of the map area you look at.</li>
+        <li><b>Update check</b> (can be switched off): asks GitHub for the latest version number.</li>
+        <li><b>Street View</b> button opens Google Maps; <b>Kapcsolat</b> opens your e-mail app; the <b>Támogatás</b> (support) button opens Revolut's payment page. These happen only when you tap them.</li>
+        <li><b>Website:</b> utszelveny.hu is hosted on GitHub Pages; GitHub may log IP addresses to serve the site.</li>
+      </ul>
+
+      <h2>Android permissions</h2>
+      <ul>
+        <li><b>Precise and approximate location:</b> to find the road and position, only while the app is in use.</li>
+        <li><b>Camera:</b> for the Fotó page.</li>
+        <li><b>Internet:</b> for the base map and the update check.</li>
+        <li><b>Write storage</b> (Android 8–9 only): to save photos and CSV files.</li>
+      </ul>
+
+      <h2>Children</h2>
+      <p>The app is not directed at children and collects no data from anyone.</p>
+
+      <h2>Changes and contact</h2>
+      <p>Any change to this policy is published on this page with a new effective date. Questions: <a href="mailto:visszajelzes@utszelveny.hu">visszajelzes@utszelveny.hu</a>. Developer: Szászi Dániel. Source code: <a href="https://github.com/schafler55/utszelveny">github.com/schafler55/utszelveny</a>.</p>
+    </article>
+  </main>
+
+  <footer><a href="./">ÚtSzelvény kezdőlap</a> · <a href="app/">Alkalmazás indítása</a></footer>
+</div>
+</body>
+</html>

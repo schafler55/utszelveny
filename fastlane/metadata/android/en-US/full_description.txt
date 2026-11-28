@@ -1,0 +1,40 @@
+Which national road are you on, and at which kilometre position? ÚtSzelvény shows the road number and the km+m chainage on Hungary's national road network, to the metre, from the phone's location – even offline.
+
+<b>Position</b>
+• Road number and name, km+m chainage, direction, GNSS accuracy
+• Speed limit with the town sign on sections through built-up areas
+• Bridges with weight and height limits, truck restrictions
+• Road operator, county directorate and maintenance district
+• On parallel roads and at junctions the nearby road can be picked with one tap
+
+<b>Map</b>
+• The national road network with road number signs, kilometre markers, bridges and bus stops
+• Tap for the section's data: lanes, pavement, traffic counts, road reference points
+• OpenStreetMap or satellite base map (needs internet)
+
+<b>Search</b>
+• A point or a section by road number and km+m, per carriageway
+• Search by coordinates (WGS84 or EOV)
+• Saved searches on the map, CSV export
+
+<b>Measure</b>
+• Distance and chainage length with GNSS while driving, or on the map
+• Saved measurements, CSV export
+
+<b>Photo</b>
+• Road, chainage, date, time and coordinates stamped on the picture
+• Shutter on the volume keys
+
+<b>HUD mode</b>
+• Mirrored, high-contrast view for reflecting in the windshield
+
+<b>Data</b>
+Road data comes from the static data packages of Magyar Közút's National Access Point (NAP), settlement names from OpenStreetMap. The data is for information only and does not include road closures or temporary restrictions. The app is in Hungarian.
+
+Not an official app; not affiliated with Magyar Közút Nonprofit Zrt.
+
+<b>Free and open source</b>
+No account, ads, subscription or analytics; the app collects no personal data. Source code (GPL-3.0): https://github.com/schafler55/utszelveny
+Web version: https://utszelveny.hu
+
+Do not operate the app while driving. Use at your own risk.

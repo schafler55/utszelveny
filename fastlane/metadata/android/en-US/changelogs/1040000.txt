@@ -1,0 +1,1 @@
+First release on Google Play. The same app as ÚtSzelvény from GitHub: an app installed from GitHub can be updated from Google Play and keeps its saved data.

@@ -25,7 +25,11 @@ import android.os.Looper;
 import android.provider.DocumentsContract;
 import android.provider.MediaStore;
 import android.util.Base64;
+import android.graphics.Insets;
 import android.view.KeyEvent;
+import android.view.ViewGroup;
+import android.view.WindowInsets;
+import android.view.WindowInsetsController;
 import android.view.WindowManager;
 import android.webkit.GeolocationPermissions;
 import android.webkit.JavascriptInterface;
@@ -36,6 +40,9 @@ import android.webkit.WebResourceResponse;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.FrameLayout;
+import android.window.OnBackInvokedCallback;
+import android.window.OnBackInvokedDispatcher;
 
 import androidx.webkit.WebViewAssetLoader;
 
@@ -57,6 +64,9 @@ import java.util.concurrent.TimeUnit;
  * Texts: this class shows no Hungarian text of its own. Failures go to the page as codes ("write", "scan:<path>"),
  * whose texts are in the "native" group of the page's texts block; the share sheet title comes from the page.
  * HUD mode: full screen, maximum brightness and a locked orientation (setHud).
+ * Edge to edge (Android 11+; Android 15+ forces it for apps targeting API 35+): the page runs behind the status and
+ * navigation bars; their sizes go to the page as the CSS variables --sat / --sab (sendInsets), the keyboard shrinks
+ * the WebView. Back button: Android 13+ OnBackInvokedCallback (apps targeting API 36 no longer get onBackPressed).
  * The page is loaded from https://appassets.androidplatform.net (a secure context), so geolocation and the camera
  * work, and OpenStreetMap gets a Referer header.
  */
@@ -72,6 +82,8 @@ public class MainActivity extends Activity {
     private static final int REQ_PRECISE = 5;
 
     private WebView web;
+    private FrameLayout root;             // holds the WebView; its padding keeps the page clear of the keyboard / side bars
+    private int insTop = 0, insBottom = 0; // status bar / navigation bar height for the page (px)
     private GeolocationPermissions.Callback pendingCallback;
     private String pendingOrigin;
     private PermissionRequest pendingCamera;
@@ -183,7 +195,16 @@ public class MainActivity extends Activity {
 
         web = new WebView(this);
         web.setBackgroundColor(0xFF0F1511);
-        setContentView(web);
+        root = new FrameLayout(this);
+        root.setBackgroundColor(0xFF0F1511);
+        root.addView(web, new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+        setContentView(root);
+        edgeToEdge();
+        if (Build.VERSION.SDK_INT >= 33) {
+            // Android 13+: the page's back handling (Android 16 no longer calls onBackPressed for apps targeting API 36)
+            OnBackInvokedCallback cb = this::pageBack;
+            getOnBackInvokedDispatcher().registerOnBackInvokedCallback(OnBackInvokedDispatcher.PRIORITY_DEFAULT, cb);
+        }
 
         final WebViewAssetLoader loader = new WebViewAssetLoader.Builder()
                 .setDomain(HOST)
@@ -212,6 +233,11 @@ public class MainActivity extends Activity {
             @Override
             public WebResourceResponse shouldInterceptRequest(WebView view, WebResourceRequest request) {
                 return loader.shouldInterceptRequest(request.getUrl());
+            }
+
+            @Override
+            public void onPageFinished(WebView view, String url) {
+                sendInsets();   // the bar sizes arrive before the page has loaded
             }
 
             @Override
@@ -335,6 +361,16 @@ public class MainActivity extends Activity {
         barsLight = light;
         if (hudOn) return;   // HUD mode: bars stay hidden and black; restored on exit
         android.view.Window w = getWindow();
+        int bg = light ? 0xFFE5EBE4 : 0xFF0F1511;
+        if (root != null) root.setBackgroundColor(bg);
+        if (Build.VERSION.SDK_INT >= 30) {
+            // edge to edge: the bars are transparent over the page, only their icons follow the theme
+            if (web != null) web.setBackgroundColor(bg);
+            int lightBars = WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS | WindowInsetsController.APPEARANCE_LIGHT_NAVIGATION_BARS;
+            WindowInsetsController c = w.getInsetsController();
+            if (c != null) c.setSystemBarsAppearance(light ? lightBars : 0, lightBars);
+            return;
+        }
         w.setStatusBarColor(light ? 0xFFE5EBE4 : 0xFF0F1511);
         w.setNavigationBarColor(light ? 0xFFE5EBE4 : 0xFF1B211D);
         if (web != null) web.setBackgroundColor(light ? 0xFFE5EBE4 : 0xFF0F1511);
@@ -355,6 +391,23 @@ public class MainActivity extends Activity {
         WindowManager.LayoutParams lp = w.getAttributes();
         lp.screenBrightness = hudOn && hudMax ? 1f : WindowManager.LayoutParams.BRIGHTNESS_OVERRIDE_NONE;
         w.setAttributes(lp);
+        if (Build.VERSION.SDK_INT >= 30) {
+            WindowInsetsController c = w.getInsetsController();
+            if (hudOn) {
+                if (web != null) web.setBackgroundColor(0xFF000000);
+                if (root != null) root.setBackgroundColor(0xFF000000);
+                if (c != null) {
+                    c.setSystemBarsBehavior(WindowInsetsController.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE);
+                    c.hide(WindowInsets.Type.systemBars());
+                }
+                setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LOCKED);
+            } else {
+                if (c != null) c.show(WindowInsets.Type.systemBars());
+                setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
+                applyBars(barsLight);
+            }
+            return;
+        }
         android.view.View d = w.getDecorView();
         int imm = android.view.View.SYSTEM_UI_FLAG_FULLSCREEN
                 | android.view.View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
@@ -399,6 +452,12 @@ public class MainActivity extends Activity {
     }
 
     private class Bridge {
+        /** True when the app was installed (or last updated) by Google Play: then Play updates it, not the page. */
+        @JavascriptInterface
+        public boolean fromPlay() {
+            return "com.android.vending".equals(installer());
+        }
+
         /** First-start notice → Kilépés: closes the app (and removes it from the recent apps list). */
         @JavascriptInterface
         public void exitApp() {
@@ -725,17 +784,72 @@ public class MainActivity extends Activity {
     }
 
     /** Back button: the page closes its topmost layer first (photo viewer, settings, map panel, other tab); the app closes only on the Pozíció page. */
-    @Override
-    public void onBackPressed() {
+    private void pageBack() {
         if (web == null) {
-            super.onBackPressed();
+            leave();
             return;
         }
         web.evaluateJavascript("(window.__back&&window.__back())?1:0", v -> {
             if ("1".equals(v)) return;
             if (web != null && web.canGoBack()) web.goBack();
-            else super.onBackPressed();
+            else leave();
         });
+    }
+
+    /** Nothing left to close: Android 13+ sends the app to the background (as Android 12+ does for a back press on
+     *  the home screen app's last page); older Android closes it as before. */
+    @SuppressWarnings("deprecation")
+    private void leave() {
+        if (Build.VERSION.SDK_INT >= 33) moveTaskToBack(true);
+        else super.onBackPressed();
+    }
+
+    /** Android 8–12 (Android 13+ uses the OnBackInvokedCallback registered in onCreate). */
+    @Override
+    @SuppressWarnings("deprecation")
+    public void onBackPressed() {
+        pageBack();
+    }
+
+    /** Edge to edge on Android 11+: draw behind the status and navigation bars and tell the page their sizes. */
+    @SuppressWarnings("deprecation")
+    private void edgeToEdge() {
+        if (Build.VERSION.SDK_INT < 30) return;   // Android 8–10: the bars stay solid, coloured by applyBars
+        android.view.Window w = getWindow();
+        w.setDecorFitsSystemWindows(false);
+        w.setStatusBarColor(0x00000000);          // Android 11–14 (Android 15+ ignores the colours, bars are always transparent)
+        w.setNavigationBarColor(0x00000000);      // 3-button navigation still gets the system's see-through backdrop
+        root.setOnApplyWindowInsetsListener((v, ins) -> {
+            Insets bars = ins.getInsets(WindowInsets.Type.systemBars() | WindowInsets.Type.displayCutout());
+            Insets ime = ins.getInsets(WindowInsets.Type.ime());
+            boolean kb = ime.bottom > bars.bottom;   // keyboard open: the WebView ends above it (no adjustResize when edge to edge)
+            v.setPadding(bars.left, 0, bars.right, kb ? ime.bottom : 0);
+            insTop = bars.top;
+            insBottom = kb ? 0 : bars.bottom;
+            sendInsets();
+            return WindowInsets.CONSUMED;
+        });
+    }
+
+    /** Status / navigation bar heights → CSS variables --sat / --sab of the page (CSS px). */
+    private void sendInsets() {
+        if (web == null || Build.VERSION.SDK_INT < 30) return;
+        float d = getResources().getDisplayMetrics().density;
+        String js = "(function(s){s.setProperty('--sat','" + Math.round(insTop / d) + "px');s.setProperty('--sab','"
+                + Math.round(insBottom / d) + "px')})(document.documentElement.style)";
+        web.evaluateJavascript(js, null);
+    }
+
+    /** Package that installed (or last updated) this app, e.g. com.android.vending for Google Play; null if unknown. */
+    @SuppressWarnings("deprecation")
+    private String installer() {
+        try {
+            if (Build.VERSION.SDK_INT >= 30)
+                return getPackageManager().getInstallSourceInfo(getPackageName()).getInstallingPackageName();
+            return getPackageManager().getInstallerPackageName(getPackageName());
+        } catch (Exception e) {
+            return null;
+        }
     }
 
     @Override
