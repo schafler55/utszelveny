@@ -14,8 +14,8 @@ android {
         targetSdk 36
         // two digits per version part: V1.3.0.1 → 1030001, V1.3.1.0 → 1030100, V1.4.0 → 1040000
         // (each part must stay below 100; up to V1.3.0 it was one digit per part, V1.3.0 = 1300); set by tools/verzio.py
-        versionCode 1040100
-        versionName "1.4.1.0"
+        versionCode 1040101
+        versionName "1.4.1.1"
         resValue 'string', 'app_name', 'ÚtSzelvény'
     }
 
@@ -54,8 +54,6 @@ android {
     }
 }
 
-dependencies {
-    // the only library: WebViewAssetLoader (the page is loaded from https://appassets.androidplatform.net).
-    // Dependabot proposes its updates (.github/dependabot.yml, gradle block)
-    implementation 'androidx.webkit:webkit:1.18.0'
-}
+// No dependencies: the app uses only the Android platform itself, no library (until V1.4.1.0 it had one,
+// androidx.webkit, for a single class; MainActivity.assetResponse does that job now). Nothing to keep up to date,
+// and the APK holds no third-party code.

@@ -44,14 +44,15 @@ import android.widget.FrameLayout;
 import android.window.OnBackInvokedCallback;
 import android.window.OnBackInvokedDispatcher;
 
-import androidx.webkit.WebViewAssetLoader;
-
 import org.json.JSONObject;
 
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.net.URLConnection;
+import java.util.Collections;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
@@ -68,7 +69,8 @@ import java.util.concurrent.TimeUnit;
  * navigation bars; their sizes go to the page as the CSS variables --sat / --sab (sendInsets), the keyboard shrinks
  * the WebView. Back button: Android 13+ OnBackInvokedCallback (apps targeting API 36 no longer get onBackPressed).
  * The page is loaded from https://appassets.androidplatform.net (a secure context), so geolocation and the camera
- * work, and OpenStreetMap gets a Referer header.
+ * work, and OpenStreetMap gets a Referer header. That address is served from the APK's assets folder by
+ * assetResponse below; the app uses no library, only the Android platform.
  */
 public class MainActivity extends Activity {
 
@@ -206,11 +208,6 @@ public class MainActivity extends Activity {
             getOnBackInvokedDispatcher().registerOnBackInvokedCallback(OnBackInvokedDispatcher.PRIORITY_DEFAULT, cb);
         }
 
-        final WebViewAssetLoader loader = new WebViewAssetLoader.Builder()
-                .setDomain(HOST)
-                .addPathHandler("/assets/", new WebViewAssetLoader.AssetsPathHandler(this))
-                .build();
-
         WebSettings s = web.getSettings();
         s.setJavaScriptEnabled(true);
         s.setDomStorageEnabled(true);
@@ -232,7 +229,7 @@ public class MainActivity extends Activity {
         web.setWebViewClient(new WebViewClient() {
             @Override
             public WebResourceResponse shouldInterceptRequest(WebView view, WebResourceRequest request) {
-                return loader.shouldInterceptRequest(request.getUrl());
+                return assetResponse(request.getUrl());
             }
 
             @Override
@@ -291,6 +288,30 @@ public class MainActivity extends Activity {
         } else {
             web.loadUrl(START_URL);
         }
+    }
+
+    /**
+     * The app's own address: https://appassets.androidplatform.net/assets/<file> is the file of that name in the
+     * APK's assets folder (index.html). This is what androidx.webkit's WebViewAssetLoader did; done here so the app
+     * needs no library. Nothing of that address ever goes to the internet: a file that is not in the APK
+     * (sw.js, the web app's icons) gets "404 Not Found". Every other address returns null, so the WebView loads it
+     * from the network as usual (map tiles, GitHub).
+     */
+    private WebResourceResponse assetResponse(Uri uri) {
+        if (uri == null || !"https".equals(uri.getScheme()) || !HOST.equals(uri.getHost())) return null;
+        String path = uri.getPath();
+        if (path != null && path.startsWith("/assets/") && !path.contains("..")) {
+            String name = path.substring("/assets/".length());
+            try {
+                String mime = URLConnection.guessContentTypeFromName(name);
+                if (mime == null) mime = name.endsWith(".html") ? "text/html" : "text/plain";
+                return new WebResourceResponse(mime, null, getAssets().open(name));
+            } catch (IOException ignored) {
+                // no such file in the APK: answered below
+            }
+        }
+        return new WebResourceResponse("text/plain", null, 404, "Not Found",
+                Collections.<String, String>emptyMap(), new ByteArrayInputStream(new byte[0]));
     }
 
     private void handleCameraRequest(PermissionRequest request) {

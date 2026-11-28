@@ -1,8 +1,8 @@
 # Dependabot keeps the GitHub Actions in .github/workflows and the Android build's dependencies up to date.
 # The actions are pinned to a full commit SHA (security audit, finding M1); once a month Dependabot opens
 # one pull request with the new minor / patch versions (the "# vX.Y.Z" comments are updated too).
-# The Android build (security re-audit, R1): the Android Gradle plugin (android/build.gradle) and the app's one
-# library, androidx.webkit (android/app/build.gradle), get their own monthly pull request.
+# The Android build (security re-audit, R1): the Android Gradle plugin (android/build.gradle) gets its own monthly
+# pull request. The app itself has no library since V1.4.1.1; one added later would be followed here as well.
 # Major versions (v6 → v7 …) can change how an action or the build behaves, and Dependabot's own runs only test
 # the build step, so they are left out here and done by hand on a test branch when needed.
 # Its pull requests come from a branch inside this repository, so the close-pull-requests workflow leaves them open.

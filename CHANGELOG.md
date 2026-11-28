@@ -13,6 +13,10 @@ szakaszba olvadnak össze, amely a kiadás összes változását felsorolja. A t
 (pl. 0.16.1–0.16.10) változásai a következő nagyobb verzió (pl. 0.17) szakaszában szerepelnek; a szakasz első sora
 jelzi, mely változatokat tartalmazza.
 
+## [1.4.1.1] – 2026-11-28
+Kiadatlan.
+- **Android alkalmazás külső könyvtár nélkül, kisebb APK:** az alkalmazás eddig egyetlen könyvtárat használt (`androidx.webkit`), abból is csak egy osztályt, amely az alkalmazás saját oldalát adja át a megjelenítőnek. Ezt mostantól néhány sornyi saját kód végzi (`MainActivity.assetResponse`), a könyvtár kikerült. Az APK-ban így nincs külső kód, nincs mit frissíteni, és a fájl kisebb, mint az 1.4.0-ban volt (az 1.4.1.0 könyvtárfrissítése kb. 0,6 MB-tal megnövelte volna). A működés változatlan.
+
 ## [1.4.1.0] – 2026-11-28
 Kiadatlan.
 - **Biztonsági felülvizsgálat (2026-11-28):** a teljes projekt újbóli átvizsgálása (a V1.3.0 és a V1.4.0 kiadás, az Android alkalmazás, a webalkalmazás, a build és a weboldal) nem talált sebezhetőséget, és a korábbi javítások mind érvényben vannak. Az alábbi kisebb megerősítések ebből születtek; az alkalmazás működése nem változott.
