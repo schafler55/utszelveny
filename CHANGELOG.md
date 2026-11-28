@@ -13,6 +13,10 @@ szakaszba olvadnak össze, amely a kiadás összes változását felsorolja. A t
 (pl. 0.16.1–0.16.10) változásai a következő nagyobb verzió (pl. 0.17) szakaszában szerepelnek; a szakasz első sora
 jelzi, mely változatokat tartalmazza.
 
+## [1.4.0.2] – 2026-11-28
+Kiadatlan.
+- **Kezdőlap (utszelveny.hu):** az „Android alkalmazás letöltése” gomb a sorával együtt az „ÚtSzelvény indítása” gomb fölé került. A nyílt forráskódú kártya alján lévő APK letöltési link megszűnt, az Android alkalmazás a felső gombbal tölthető le. Az alkalmazás nem változott.
+
 ## [1.4.0.1] – 2026-11-28
 Kiadatlan.
 - **Kezdőlap (utszelveny.hu), Android alkalmazás gomb:** az „ÚtSzelvény indítása” gomb alatt új „Android alkalmazás letöltése” gomb (APK), alatta „Android alkalmazás: Android 8.0-tól”. A böngészőkről szóló sor az „ÚtSzelvény indítása” gomb alá került, „Támogatott böngészők” helyett „Ajánlott böngészők”. Az új gomb, mint a nyílt forráskódú kártya APK linkje, közvetlenül a legutóbbi stabil kiadás APK fájlját tölti le. Az alkalmazás nem változott.

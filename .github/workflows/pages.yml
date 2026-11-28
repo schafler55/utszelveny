@@ -91,9 +91,8 @@ jobs:
             cp -r site/. "$OUT/"
             cp web/icon-192.png web/icon-512.png "$OUT/"
             test -s "$OUT/index.html"
-            # the APK links (data-apk: the hero button and the line in the open-source card) download the latest
-            # stable release's APK file directly; without one (e.g. the APK build is still running) they keep
-            # pointing to the releases page
+            # the APK links (data-apk: the Android button at the top) download the latest stable release's APK
+            # file directly; without one (e.g. the APK build is still running) they keep pointing to the releases page
             APK=$(gh api "repos/$GITHUB_REPOSITORY/releases/latest" --jq '[.assets[] | select(.name | endswith(".apk")) | .browser_download_url][0] // empty' 2>/dev/null || true)
             if [ -n "$APK" ]; then
               sed -i "s#data-apk href=\"[^\"]*\"#data-apk href=\"$APK\"#g" "$OUT/index.html"

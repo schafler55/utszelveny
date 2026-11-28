@@ -109,7 +109,7 @@
   .lead { margin: 0; font-size: 18px; color: var(--onv); max-width: 36em; }
   .cta { margin-top: 8px; width: 100%; display: flex; flex-direction: column; align-items: center; gap: 22px; }
   .cta-g { width: 100%; display: flex; flex-direction: column; align-items: center; gap: 12px; }
-  .cta-g + .cta-g { gap: 8px; }
+  .cta-g.and { gap: 8px; }
   .start {
     display: inline-flex; align-items: center; justify-content: center; gap: 14px;
     background: var(--pri); color: #FFFFFF; text-decoration: none; font-size: 24px; font-weight: 700;
@@ -161,8 +161,6 @@
   .oss { background: var(--card); box-shadow: var(--tile-shadow); border-radius: 28px; padding: 44px 36px; display: flex; flex-direction: column; align-items: center; text-align: center; gap: 16px; }
   .oss h2 { font-size: 30px; }
   .oss p { margin: 0; font-size: 17px; color: var(--onv); max-width: 40em; }
-  .oss .apk { margin-top: 6px; font-size: 15px; color: var(--dim); }
-  .oss .apk a { font-weight: 500; }
   .btns { display: flex; flex-wrap: wrap; gap: 12px; justify-content: center; }
   .btn { display: inline-flex; align-items: center; gap: 10px; text-decoration: none; font-size: 16px; font-weight: 500; padding: 14px 22px; border-radius: 999px; }
   .btn svg { width: 20px; height: 20px; }
@@ -210,20 +208,20 @@
       <p class="tagline">Kilométerkő minden méteren – a zsebedben.</p>
       <p class="lead">Melyik országos közúton, melyik kilométerszelvényben állsz?<br>Az <b>ÚtSzelvény</b> megmutatja internet nélkül is, ingyen, reklám nélkül.</p>
       <div class="cta">
-        <div class="cta-g">
-          <a class="start" href="app/">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
-            ÚtSzelvény indítása
-          </a>
-          <p class="sub">Böngészőben fut, telepítés nélkül!<br>Ajánlott böngészők: Androidon <b>Chrome</b> vagy iOS-en <b>Safari</b></p>
-        </div>
-        <div class="cta-g">
+        <div class="cta-g and">
           <a class="apkbtn" data-apk href="https://github.com/schafler55/utszelveny/releases/latest">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="6" y="2.5" width="12" height="19" rx="2.5"/><path d="M12 7v7M9 11l3 3 3-3M10.5 18h3"/></svg>
             Android alkalmazás letöltése
             <span class="tag">APK</span>
           </a>
           <p class="sub">Android alkalmazás: Android 8.0-tól</p>
+        </div>
+        <div class="cta-g">
+          <a class="start" href="app/">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+            ÚtSzelvény indítása
+          </a>
+          <p class="sub">Böngészőben fut, telepítés nélkül!<br>Ajánlott böngészők: Androidon <b>Chrome</b> vagy iOS-en <b>Safari</b></p>
         </div>
       </div>
     </section>
@@ -306,7 +304,6 @@
             Támogatás
           </a>
         </div>
-        <p class="apk">Androidra alkalmazásként is telepíthető: <a data-apk href="https://github.com/schafler55/utszelveny/releases/latest">Android alkalmazás (APK) letöltése</a></p>
       </div>
     </section>
   </main>
