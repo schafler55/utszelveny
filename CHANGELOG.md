@@ -13,22 +13,14 @@ szakaszba olvadnak össze, amely a kiadás összes változását felsorolja. A t
 (pl. 0.16.1–0.16.10) változásai a következő nagyobb verzió (pl. 0.17) szakaszában szerepelnek; a szakasz első sora
 jelzi, mely változatokat tartalmazza.
 
-## [1.3.2.7] – 2026-11-27 · kiadatlan (`googleplay` ág)
-- **Támogatás:** a V1.3.2.6 változtatás visszavonva: a Google Playről telepített alkalmazásban is megmarad a „Támogatás” gomb és a támogatási felhívás, ugyanúgy, mint a GitHubról telepített alkalmazásban és a webes változatban (a tulajdonos döntése).
-
-## [1.3.2.6] – 2026-11-27 · kiadatlan (`googleplay` ág)
-- **Google Playről telepített alkalmazás, támogatás:** a Google Play fizetési szabályai nem engedik, hogy az alkalmazás más fizetési módra (pl. Revolut) mutasson, ezért a Google Playről telepített alkalmazásban nincs „Támogatás” gomb és támogatási felhívás. A Névjegy kártyája ott „Visszajelzés” címmel csak a Kapcsolat sort mutatja. A GitHubról telepített alkalmazásban és a webes változatban minden marad.
-- **Adatvédelmi tájékoztató:** új oldal a weboldalon, magyarul és angolul: https://utszelveny.hu/adatvedelem.html (ez lesz a Google Play adatlap adatvédelmi hivatkozása is). Link a Névjegy → Adatvédelem részben, a kezdőlap láblécében és a README-ben.
-- **Google Play adatlap szövegei** a `fastlane/metadata/android/` mappában (magyar és angol cím, rövid és teljes leírás, a V1.4.0 újdonságai).
-- **README:** a „Tervek és ötletek” közé került a Google Play kiadás (előkészítés alatt); az Adatvédelem és a Támogatás rész a Google Play változatot is említi.
-
-## [1.3.2.5] – 2026-11-27 · kiadatlan (`googleplay` ág)
-- **Felkészülés a Google Play kiadásra (Android alkalmazás):**
-  - Cél-API: Android 16 (API 36), ahogy a Google Play 2026. augusztus 31. óta minden új alkalmazástól és frissítéstől megköveteli (Android Gradle plugin 8.13.2, Gradle 8.13). A legalacsonyabb támogatott változat továbbra is az Android 8.0.
-  - **Vissza gomb:** Android 13-tól az új rendszer-visszahívással működik, mert az Android 16 a 36-os API-t célzó alkalmazásoknak már nem küldi a régi vissza-eseményt (enélkül a vissza gomb bezárta volna az alkalmazást). A viselkedés ugyanaz: előbb a legfelső réteg zárul be (fotónéző, beállítások, térképpanel, másik oldal), a Pozíció oldalon pedig az alkalmazás a háttérbe kerül.
-  - **Teljes képernyős megjelenítés (edge to edge), Android 11-től:** az oldal az állapotsor és a navigációs sáv mögé is kiér (a 36-os API-n ez kötelező). A sávok magasságát az alkalmazás átadja az oldalnak (`--sat` / `--sab` CSS-változók), így a fejléc, az alsó menü és a gombok nem csúsznak a sávok alá; a billentyűzet megnyitásakor az oldal a billentyűzet fölött ér véget. A sávok ikonjai a témát követik (sötét / világos). HUD módban a sávok továbbra is rejtve vannak. Android 8–10-en minden a régi.
-  - **Frissítés Google Playről telepített alkalmazásnál:** ha az alkalmazást a Google Play telepítette vagy frissítette, nincs GitHub-frissítéskeresés és frissítési ablak (a Play maga frissíti az alkalmazást, más frissítési módot nem enged). A Névjegy → Frissítések sorában „Google Play” áll, az „Ellenőrzés” gomb megnyitja az alkalmazás Google Play oldalát, a Beállítások → Általános → Frissítések kapcsoló pedig eltűnik. A GitHubról telepített alkalmazás és a webes változat ugyanúgy működik, mint eddig.
-- **Fejlesztés:** minden build az APK mellett Android App Bundle-t (`.aab`, a Google Play formátuma) is készít, ugyanazzal a kulccsal és tanúsítvány-ellenőrzéssel írja alá (`.github/scripts/sign-aab.sh`). A bundle nem kerül a kiadási oldalra: a GitHub Actions futás „Artifacts” részéből tölthető le (stabil kiadásnál 90 napig).
+## [1.3.2.8] – 2026-11-28 · kiadatlan (a `main` ágon)
+A `googleplay` ág beolvasztva (az ágon V1.3.2.5–V1.3.2.7 tesztváltozatok voltak, ezért a `main` V1.3.2.8-cal folytatódik). A Google Play kiadás egyelőre nincs eldöntve; ezek a változások nélküle is hasznosak.
+- **Android 16 (API 36) cél:** az Android alkalmazás a legújabb Android API-t célozza (Android Gradle plugin 8.13.2, Gradle 8.13). A legalacsonyabb támogatott változat továbbra is az Android 8.0.
+- **Vissza gomb:** Android 13-tól az új rendszer-visszahívással működik, mert az Android 16 a 36-os API-t célzó alkalmazásoknak már nem küldi a régi vissza-eseményt. A viselkedés ugyanaz: előbb a legfelső réteg zárul be (fotónéző, beállítások, térképpanel, másik oldal), a Pozíció oldalon pedig az alkalmazás a háttérbe kerül.
+- **Teljes képernyős megjelenítés (edge to edge), Android 11-től:** az oldal az állapotsor és a navigációs sáv mögé is kiér. A sávok magasságát az alkalmazás átadja az oldalnak (`--sat` / `--sab` CSS-változók), így a fejléc, az alsó menü és a gombok nem csúsznak a sávok alá; a billentyűzet megnyitásakor az oldal a billentyűzet fölött ér véget. A sávok ikonjai a témát követik. HUD módban a sávok rejtve vannak. Android 8–10-en minden a régi.
+- **Adatvédelmi tájékoztató:** új oldal magyarul és angolul: https://utszelveny.hu/adatvedelem.html. Link a Névjegy → Adatvédelem részben, a kezdőlap láblécében és a README-ben.
+- **Ha egyszer Google Playről települ az alkalmazás** (előkészítve, jelenleg nem használt): nincs GitHub-frissítéskeresés, a Névjegy → Frissítések sorában „Google Play” áll, és az „Ellenőrzés” gomb a Google Play oldalt nyitja meg. A Támogatás gomb és a támogatási felhívás minden változatban megmarad.
+- **Fejlesztés:** minden build az APK mellett aláírt Android App Bundle-t (`.aab`) is készít, ugyanazzal a kulccsal és tanúsítvány-ellenőrzéssel (`.github/scripts/sign-aab.sh`); a GitHub Actions futás „Artifacts” részéből tölthető le, a kiadási oldalra nem kerül. A Google Play adatlap előkészített szövegei a `fastlane/metadata/android/` mappában vannak.
 
 ## [1.3.2.4] – 2026-11-27 · kiadatlan
 - **Szerzői jogi sor:** évtartomány az első megjelenés évétől (2026) az aktuális évig: idén „© 2026 Szászi Dániel”, 2027. január 1-jétől „© 2026–2027 Szászi Dániel” (a nyitóképernyőn, a Névjegyben és a kezdőlap láblécében). A szövegblokkban a `{years}` helyőrző adja a tartományt, a `{year}` az aktuális évet.
