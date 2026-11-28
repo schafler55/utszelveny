@@ -1,4 +1,4 @@
-const C="utszelveny-v1.4.0.4";
+const C="utszelveny-v1.4.1.0";
 const FILES=["./","./index.html","./manifest.webmanifest","./icon-192.png","./icon-512.png","./icon-maskable-512.png"];
 // A new version installs in the background (cache:"reload" = from the server, not the browser's HTTP cache) and then
 // waits: the app asks the user, and "Frissítés" sends "skip". Otherwise it takes over once every ÚtSzelvény tab is closed.

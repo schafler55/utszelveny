@@ -14,7 +14,7 @@ Fotóidra ráírja a helyet és az időt, a méréseidet pedig elnevezheted és 
 Böngészőben és Android-alkalmazásként is fut. Az úthálózati adatok a készüléken vannak, így a szelvényezés internet
 nélkül is működik. Csak a térkép alapréteghez kell internetkapcsolat.
 
-**Verzió:** V1.4.0.4 · [Változásnapló](CHANGELOG.md) · © 2026 Szászi Dániel · Licenc: GPL-3.0
+**Verzió:** V1.4.1.0 · [Változásnapló](CHANGELOG.md) · © 2026 Szászi Dániel · Licenc: GPL-3.0
 
 ## Funkciók
 
@@ -80,6 +80,7 @@ Koordináták: WGS84 (alapértelmezett) vagy EOV.
   A `main` ág legfrissebb, még nem kiadott állapota (fejlesztői oldal, saját mentett adatokkal): https://utszelveny.hu/dev/
 - **Android APK (telepítve):** https://github.com/schafler55/utszelveny/releases/latest – a legutóbbi stabil kiadás (pl. `UtSzelveny-V1.0.apk`).
   Letöltés után engedélyezni kell az ismeretlen forrásból történő telepítést.
+  Az APK aláírása ellenőrizhető: a tanúsítvány ujjlenyomata a [SECURITY.md](SECURITY.md) fájlban áll.
   A `main` ág legfrissebb, még nem kiadott állapota: [apk-latest](https://github.com/schafler55/utszelveny/releases/tag/apk-latest) –
   külön „ÚtSzelvény DEV” alkalmazásként települ a rendes mellé, saját mentett adatokkal és saját ikonnal (piros keret, „DEV” felirat).
 - **Frissítés a béta változatokról (V0.x) a V1.0-ra:** a V1.0-tól az APK új aláírókulccsal készül, ezért a béta APK-t előbb el kell távolítani.
@@ -102,12 +103,12 @@ A térkép északkal felfelé vagy menetirány szerint elforgatva is használhat
 | `web/index.html` | A teljes alkalmazás (kód + beépített úthálózati adatok), egyetlen fájl; a fejlécben lévő Content Security Policy sorolja fel, mely szerverekhez fordulhat (új térképréteg vagy szolgáltatás esetén bővíteni kell) |
 | `web/sw.js`, `web/manifest.webmanifest`, `web/icon-*.png` | Telepíthető webalkalmazás (PWA) offline gyorsítótárral |
 | `android/` | Android keret (WebView), amely a `web/index.html`-t futtatja; a mentett adatok nem kerülnek a telefon Google biztonsági mentésébe (`allowBackup="false"`, `res/xml/data_extraction_rules.xml`) |
-| `.github/workflows/android.yml` | Megépíti az APK-t aláírás nélkül, majd külön lépésben aláírja: a stabil kiadást (`V*` címke) a kiadási kulccsal a védett `release` környezetből, a `main` ágat (`apk-latest`) és a teszt ágakat a fejlesztői kulccsal „ÚtSzelvény DEV” néven |
+| `.github/workflows/android.yml` | Megépíti az APK-t aláírás nélkül, majd külön lépésben aláírja: a stabil kiadást (`V*` címke) a kiadási kulccsal a védett `release` környezetből, a `main` ágat (`apk-latest`) és a teszt ágakat a fejlesztői kulccsal „ÚtSzelvény DEV” néven; a kész APK-t a GitHub saját `gh` eszköze teszi ki a kiadás oldalára |
 | `.github/scripts/sign-apk.sh` | Az APK aláírása (zipalign + apksigner); a kulcsfájl csak az aláírás idejére jön létre |
-| `.github/dependabot.yml` | A GitHub Actions lépések commit SHA-ra rögzítettek; a Dependabot havonta javasolja a frissítésüket |
+| `.github/dependabot.yml` | A GitHub Actions lépések commit SHA-ra rögzítettek; a Dependabot havonta javasolja a frissítésüket, és az Android build függőségeiét is (Android Gradle plugin, `androidx.webkit`) |
 | `.github/workflows/pages.yml` | Kiteszi a weboldalt a GitHub Pagesre: a kezdőlapot (`site/`), a legutóbbi stabil kiadás `web/` mappáját az `app/` alá, a `main` ágat a `dev/` alá, és minden másik ágból egy teszt oldalt (`test/<ág>/`); a törölt ág teszt oldala eltűnik. Új stabil kiadás közzétételekor magától frissül |
 | `CHANGELOG.md` | Változásnapló: mi változott az egyes verziókban |
-| `SECURITY.md` | Biztonsági hiba zárt bejelentése (GitHub „Report a vulnerability” vagy e-mail), magyarul és angolul |
+| `SECURITY.md` | Biztonsági hiba zárt bejelentése (GitHub „Report a vulnerability” vagy e-mail) és a kiadott APK aláíró tanúsítványának ujjlenyomata, magyarul és angolul |
 | `web/szovegek.html` | Az alkalmazás összes szövege képernyőnként (kereshető, szerkeszthető), a `main` ág szerint: https://utszelveny.hu/dev/szovegek.html |
 | `tools/szovegek.py` | Ellenőrzi a `web/index.html` szövegblokkját (érvényes JSON, minden kulcs megvan); a build is futtatja |
 | `tools/verzio.py` | A verziószám: ellenőrzi, hogy minden helyen ugyanaz (oldal, Névjegy, `sw.js`, `build.gradle`, README), és egy paranccsal mindenhol átírja (`python3 tools/verzio.py 1.3.0.1`); a build és a stabil kiadás címkéje is ezzel ellenőrződik |

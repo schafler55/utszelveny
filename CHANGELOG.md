@@ -13,6 +13,14 @@ szakaszba olvadnak össze, amely a kiadás összes változását felsorolja. A t
 (pl. 0.16.1–0.16.10) változásai a következő nagyobb verzió (pl. 0.17) szakaszában szerepelnek; a szakasz első sora
 jelzi, mely változatokat tartalmazza.
 
+## [1.4.1.0] – 2026-11-28
+Kiadatlan.
+- **Biztonsági felülvizsgálat (2026-11-28):** a teljes projekt újbóli átvizsgálása (a V1.3.0 és a V1.4.0 kiadás, az Android alkalmazás, a webalkalmazás, a build és a weboldal) nem talált sebezhetőséget, és a korábbi javítások mind érvényben vannak. Az alábbi kisebb megerősítések ebből születtek; az alkalmazás működése nem változott.
+- **Android könyvtár frissítése:** az `androidx.webkit` 1.11.0 helyett 1.18.0. A Dependabot mostantól az Android build függőségeit (Android Gradle plugin, `androidx.webkit`) is figyeli, havonta egy közös frissítési javaslattal (`.github/dependabot.yml`).
+- **Build, közzététel:** az APK-t a kiadás oldalára a GitHub saját `gh` eszköze teszi ki, külső GitHub Action helyett; így abban a lépésben, amely írhat a tárolóba, nem fut külső kód. A kiadások címe és szövege változatlan.
+- **Kulcsfájlok:** a `.gitignore` név szerint kizárja a kulcsfájlokat (`*.p12`, `*.pfx`, `*.jks`, `*.keystore`), hogy véletlenül se kerülhessenek a tárolóba.
+- **Az APK ellenőrizhetősége:** a `SECURITY.md` tartalmazza a stabil kiadások aláíró tanúsítványának SHA-256 ujjlenyomatát és az ellenőrzés módját.
+
 ## [1.4.0.4] – 2026-11-28
 Kiadatlan.
 - **Fejléc, a név alatti sor:** a „Státusz” felirat és a megye helyett ugyanaz áll benne, mint a Pozíció oldal fő kártyáján, így bármelyik oldalon látszik: úton az út és a szelvény egyszerű szövegként, tábla nélkül (pl. „M3 · 32+245 J”, osztatlan úton „7 · 98+120”), egyébként „GNSS kikapcsolva”, „Műholdak keresése…”, „Jelvesztés”, „Budapest” (fővárosi helyi úton) vagy „Úthálózaton kívül”. Kézi pozíciónál „Kézi pozíció”.

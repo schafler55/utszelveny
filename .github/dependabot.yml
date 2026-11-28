@@ -1,9 +1,12 @@
-# Dependabot keeps the GitHub Actions in .github/workflows up to date.
+# Dependabot keeps the GitHub Actions in .github/workflows and the Android build's dependencies up to date.
 # The actions are pinned to a full commit SHA (security audit, finding M1); once a month Dependabot opens
 # one pull request with the new minor / patch versions (the "# vX.Y.Z" comments are updated too).
-# Major versions (v6 → v7 …) can change how an action behaves, and Dependabot's own runs only test the
-# build step, so they are left out here and done by hand on a test branch when needed.
+# The Android build (security re-audit, R1): the Android Gradle plugin (android/build.gradle) and the app's one
+# library, androidx.webkit (android/app/build.gradle), get their own monthly pull request.
+# Major versions (v6 → v7 …) can change how an action or the build behaves, and Dependabot's own runs only test
+# the build step, so they are left out here and done by hand on a test branch when needed.
 # Its pull requests come from a branch inside this repository, so the close-pull-requests workflow leaves them open.
+# A merged update is a change like any other: it gets the next version number (tools/verzio.py) and a CHANGELOG line.
 version: 2
 updates:
   - package-ecosystem: github-actions
@@ -15,4 +18,15 @@ updates:
         update-types: ['version-update:semver-major']
     groups:
       github-actions:
+        patterns: ['*']
+
+  - package-ecosystem: gradle
+    directory: /android
+    schedule:
+      interval: monthly
+    ignore:
+      - dependency-name: '*'
+        update-types: ['version-update:semver-major']
+    groups:
+      android-build:
         patterns: ['*']

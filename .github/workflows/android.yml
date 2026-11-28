@@ -28,11 +28,14 @@ permissions:
 #                   (Settings → Environments; only V*/v* tags, waits for the owner's approval)
 #   both sign jobs fail, and nothing is published, when the APK is not signed with the expected certificate
 #   (EXPECT_CERT below, checked in .github/scripts/sign-apk.sh)
-#   publish       – puts the signed APK into the GitHub release; no signing key here either
+#   publish       – puts the signed APK into the GitHub release with GitHub's own gh tool; no signing key and
+#                   no third-party action here (security re-audit, R2): this is the one job that may write to
+#                   the repository
 # Google Play: every run also builds an app bundle (.aab) and signs it in the same job as the APK, with the same key
 # and the same certificate check (.github/scripts/sign-aab.sh). It is not published: it is kept as a workflow
 # artifact (Actions → the run → Artifacts) to upload in Play Console; a stable release's bundle is the one for Play.
 # All actions are pinned to a full commit SHA (the comment shows the version); Dependabot proposes updates.
+# The only third-party action left is gradle/actions/setup-gradle, in the build job (no key, read-only access).
 
 jobs:
   build:
@@ -281,49 +284,53 @@ jobs:
         with:
           name: ${{ needs.build.outputs.name }}
 
-      # Test builds from other branches: own pre-release "apk-test-<branch>",
-      # the public "apk-latest" stays untouched until the branch is merged into main.
-      - name: Publish to the "apk-test-<branch>" release
-        if: github.ref_type == 'branch' && github.ref != 'refs/heads/main'
-        uses: softprops/action-gh-release@8a0cd651e5b2365bd640854a3fa5dfc70e4875f3 # v3.0.4
-        with:
-          tag_name: apk-test-${{ github.ref_name }}
-          target_commitish: ${{ github.sha }}
-          name: ÚtSzelvény – TESZT APK (${{ github.ref_name }} ág)
-          prerelease: true
-          files: ${{ needs.build.outputs.name }}
-          body: |
-            TESZT változat a(z) ${{ github.ref_name }} ágból – nem a hivatalos kiadás.
-            „ÚtSzelvény DEV” néven, a rendes alkalmazás mellé települ, saját mentett adatokkal; a korábbi DEV / TESZT telepítést felülírja.
-
-      - name: Publish to the "apk-latest" release
-        if: github.ref == 'refs/heads/main'
-        uses: softprops/action-gh-release@8a0cd651e5b2365bd640854a3fa5dfc70e4875f3 # v3.0.4
-        with:
-          tag_name: apk-latest
-          name: ÚtSzelvény – legfrissebb APK (DEV)
-          prerelease: true
-          files: ${{ needs.build.outputs.name }}
-          body: |
-            Automatikusan épített APK a main ág legutóbbi állapotából: ${{ needs.build.outputs.name }}
-            „ÚtSzelvény DEV” néven, a rendes alkalmazás mellé települ, saját mentett adatokkal. A stabil kiadás: https://github.com/${{ github.repository }}/releases/latest
-            Telepítés: töltsd le az APK fájlt a telefonon, és engedélyezd az ismeretlen forrásból történő telepítést.
-
-      # Version tag (v1.0 …): a stable, non-pre-release GitHub Release; /releases/latest points to it.
-      - name: Publish the stable release
-        if: github.ref_type == 'tag'
-        uses: softprops/action-gh-release@8a0cd651e5b2365bd640854a3fa5dfc70e4875f3 # v3.0.4
-        with:
-          tag_name: ${{ github.ref_name }}
-          name: ÚtSzelvény ${{ needs.build.outputs.ver }}
-          prerelease: false
-          make_latest: true
-          # keep release notes written by hand on GitHub; the lines below are added after them
-          append_body: true
-          files: ${{ needs.build.outputs.name }}
-          body: |
-            ÚtSzelvény ${{ needs.build.outputs.ver }} – stabil kiadás. Változások: [CHANGELOG.md](https://github.com/${{ github.repository }}/blob/${{ github.ref_name }}/CHANGELOG.md)
-            Telepítés: töltsd le az APK fájlt a telefonon, és engedélyezd az ismeretlen forrásból történő telepítést.
+      # Where the APK goes:
+      #   test branch → pre-release "apk-test-<branch>" (the public "apk-latest" stays untouched until the branch
+      #                 is merged into main)
+      #   main        → pre-release "apk-latest"
+      #   version tag → the stable, non-pre-release GitHub Release, marked Latest (/releases/latest points to it);
+      #                 release notes written by hand on GitHub are kept, the two lines below are added after them
+      # The release is created when it does not exist yet; an APK with the same name is replaced.
+      - name: Publish the APK to its release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          FILE: ${{ needs.build.outputs.name }}
+          VER: ${{ needs.build.outputs.ver }}
+        run: |
+          set -euo pipefail
+          R="$GITHUB_REPOSITORY"; B="$GITHUB_REF_NAME"
+          INSTALL="Telepítés: töltsd le az APK fájlt a telefonon, és engedélyezd az ismeretlen forrásból történő telepítést."
+          if [ "$GITHUB_REF_TYPE" = "tag" ]; then
+            TAG="$B"; TITLE="ÚtSzelvény $VER"
+            printf '%s\n' "ÚtSzelvény $VER – stabil kiadás. Változások: [CHANGELOG.md](https://github.com/$R/blob/$B/CHANGELOG.md)" \
+              "$INSTALL" > notes.md
+          elif [ "$GITHUB_REF" = "refs/heads/main" ]; then
+            TAG="apk-latest"; TITLE="ÚtSzelvény – legfrissebb APK (DEV)"
+            printf '%s\n' "Automatikusan épített APK a main ág legutóbbi állapotából: $FILE" \
+              "„ÚtSzelvény DEV” néven, a rendes alkalmazás mellé települ, saját mentett adatokkal. A stabil kiadás: https://github.com/$R/releases/latest" \
+              "$INSTALL" > notes.md
+          else
+            TAG="apk-test-$B"; TITLE="ÚtSzelvény – TESZT APK ($B ág)"
+            printf '%s\n' "TESZT változat a(z) $B ágból – nem a hivatalos kiadás." \
+              "„ÚtSzelvény DEV” néven, a rendes alkalmazás mellé települ, saját mentett adatokkal; a korábbi DEV / TESZT telepítést felülírja." > notes.md
+          fi
+          if gh release view "$TAG" -R "$R" --json body -q .body > old.md 2>/dev/null; then
+            if [ "$GITHUB_REF_TYPE" = "tag" ]; then
+              if grep -qF "stabil kiadás. Változások:" old.md; then
+                cp old.md notes.md                                  # a second run adds the lines only once
+              elif grep -q '[^[:space:]]' old.md; then
+                { cat old.md; echo; cat notes.md; } > both.md; mv both.md notes.md
+              fi
+              gh release edit "$TAG" -R "$R" --title "$TITLE" --notes-file notes.md --prerelease=false --latest
+            else
+              gh release edit "$TAG" -R "$R" --title "$TITLE" --notes-file notes.md --prerelease
+            fi
+          elif [ "$GITHUB_REF_TYPE" = "tag" ]; then
+            gh release create "$TAG" -R "$R" --verify-tag --title "$TITLE" --notes-file notes.md --latest
+          else
+            gh release create "$TAG" -R "$R" --target "$GITHUB_SHA" --title "$TITLE" --notes-file notes.md --prerelease
+          fi
+          gh release upload "$TAG" "$FILE" -R "$R" --clobber
 
       # The landing page links the stable release's APK file directly: rebuild the site now that it is attached.
       - name: Update the landing page APK link
