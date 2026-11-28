@@ -13,6 +13,13 @@ szakaszba olvadnak össze, amely a kiadás összes változását felsorolja. A t
 (pl. 0.16.1–0.16.10) változásai a következő nagyobb verzió (pl. 0.17) szakaszában szerepelnek; a szakasz első sora
 jelzi, mely változatokat tartalmazza.
 
+## [1.4.0.4] – 2026-11-28
+Kiadatlan.
+- **Fejléc, a név alatti sor:** a „Státusz” felirat és a megye helyett ugyanaz áll benne, mint a Pozíció oldal fő kártyáján, így bármelyik oldalon látszik: úton az út és a szelvény egyszerű szövegként, tábla nélkül (pl. „M3 · 32+245 J”, osztatlan úton „7 · 98+120”), egyébként „GNSS kikapcsolva”, „Műholdak keresése…”, „Jelvesztés”, „Budapest” (fővárosi helyi úton) vagy „Úthálózaton kívül”. Kézi pozíciónál „Kézi pozíció”.
+- **Szakasz adatai → Helyzet:** a koordináták alatt új „Megye” sor (a megye eddig a fejlécben állt).
+- **Szakasz adatai széles kijelzőn:** a kártyák a beállításokhoz és az oldalakhoz hasonlóan egy középső oszlopban állnak, nem nyúlnak ki a teljes ablakszélességre.
+- **Névjegy → Haladó: teszt / kézi pozíció:** a „Lekérdezés” kikapcsolja a GNSS követést (mint a saját kapcsolója, így a következő indításkor is kikapcsolva marad), hogy az új GNSS jel ne írja felül a kézi pozíciót. Újraindítás: Általános → GNSS követés.
+
 ## [1.4.0.3] – 2026-11-28
 Kiadatlan.
 - **Beállítások széles kijelzőn (pl. számítógépes böngésző):** a fülválasztó és a beállításkártyák nem nyúlnak ki a teljes ablakszélességre, hanem a Pozíció, Keresés és Mérés oldal kártyáival egy oszlopban, középen állnak. A fejléc sora és a háttér továbbra is a teljes szélességet kitölti. Telefonon nincs változás.
