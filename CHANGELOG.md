@@ -13,62 +13,36 @@ szakaszba olvadnak össze, amely a kiadás összes változását felsorolja. A t
 (pl. 0.16.1–0.16.10) változásai a következő nagyobb verzió (pl. 0.17) szakaszában szerepelnek; a szakasz első sora
 jelzi, mely változatokat tartalmazza.
 
-## [1.3.2.9] – 2026-11-28 · kiadatlan (a `main` ágon)
+## [1.3.3.0] – 2026-11-28
+Stabil kiadás; az 1.3.0 óta a `main` ágra került változások együtt (a `main` ágon V1.3.0.1–V1.3.2.9 néven).
 - **Android fejlesztői regisztráció:** az Android alkalmazásba (APK) bekerül a Google Android Developer Console fiókjához tartozó azonosító (`assets/adi-registration.properties`, forrása `android/adi-registration.properties`). A Google ezzel és az APK aláírásával ellenőrzi, hogy a `hu.szaszi.kozutszelveny` (stabil kulcs) és a `hu.szaszi.kozutszelveny.dev` (DEV kulcs) csomag a fejlesztőé, így az APK a Google 2027-es ellenőrzése után is ugyanúgy telepíthető marad. Az alkalmazás működése nem változik.
-
-## [1.3.2.8] – 2026-11-28 · kiadatlan (a `main` ágon)
-A `googleplay` ág beolvasztva (az ágon V1.3.2.5–V1.3.2.7 tesztváltozatok voltak, ezért a `main` V1.3.2.8-cal folytatódik). A Google Play kiadás egyelőre nincs eldöntve; ezek a változások nélküle is hasznosak.
 - **Android 16 (API 36) cél:** az Android alkalmazás a legújabb Android API-t célozza (Android Gradle plugin 8.13.2, Gradle 8.13). A legalacsonyabb támogatott változat továbbra is az Android 8.0.
 - **Vissza gomb:** Android 13-tól az új rendszer-visszahívással működik, mert az Android 16 a 36-os API-t célzó alkalmazásoknak már nem küldi a régi vissza-eseményt. A viselkedés ugyanaz: előbb a legfelső réteg zárul be (fotónéző, beállítások, térképpanel, másik oldal), a Pozíció oldalon pedig az alkalmazás a háttérbe kerül.
 - **Teljes képernyős megjelenítés (edge to edge), Android 11-től:** az oldal az állapotsor és a navigációs sáv mögé is kiér. A sávok magasságát az alkalmazás átadja az oldalnak (`--sat` / `--sab` CSS-változók), így a fejléc, az alsó menü és a gombok nem csúsznak a sávok alá; a billentyűzet megnyitásakor az oldal a billentyűzet fölött ér véget. A sávok ikonjai a témát követik. HUD módban a sávok rejtve vannak. Android 8–10-en minden a régi.
 - **Adatvédelmi tájékoztató:** új oldal magyarul és angolul: https://utszelveny.hu/adatvedelem.html. Link a Névjegy → Adatvédelem részben, a kezdőlap láblécében és a README-ben.
 - **Ha egyszer Google Playről települ az alkalmazás** (előkészítve, jelenleg nem használt): nincs GitHub-frissítéskeresés, a Névjegy → Frissítések sorában „Google Play” áll, és az „Ellenőrzés” gomb a Google Play oldalt nyitja meg. A Támogatás gomb és a támogatási felhívás minden változatban megmarad.
 - **Fejlesztés:** minden build az APK mellett aláírt Android App Bundle-t (`.aab`) is készít, ugyanazzal a kulccsal és tanúsítvány-ellenőrzéssel (`.github/scripts/sign-aab.sh`); a GitHub Actions futás „Artifacts” részéből tölthető le, a kiadási oldalra nem kerül. A Google Play adatlap előkészített szövegei a `fastlane/metadata/android/` mappában vannak.
-
-## [1.3.2.4] – 2026-11-27 · kiadatlan
 - **Szerzői jogi sor:** évtartomány az első megjelenés évétől (2026) az aktuális évig: idén „© 2026 Szászi Dániel”, 2027. január 1-jétől „© 2026–2027 Szászi Dániel” (a nyitóképernyőn, a Névjegyben és a kezdőlap láblécében). A szövegblokkban a `{years}` helyőrző adja a tartományt, a `{year}` az aktuális évet.
-
-## [1.3.2.3] – 2026-11-27 · kiadatlan
 - **Szerzői jogi sor:** a „© 2026 Szászi Dániel” évszáma mostantól az aktuális év (a telefon órája szerint), így 2027. január 1-jétől „© 2027 Szászi Dániel” látszik: a nyitóképernyőn, a Névjegyben és a kezdőlap (utszelveny.hu) láblécében. A szövegblokkban a `{year}` helyőrző bármelyik szövegben az aktuális évet adja.
-
-## [1.3.2.2] – 2026-11-27 · kiadatlan
 - **Névjegy → Frissítések:** a rövid állapot a „Frissítések” cím mellett áll: „Naprakész”, „Ellenőrzés…”, piros „Sikertelen” (eddig: „Nem sikerült ellenőrizni. Van internetkapcsolat?”), tesztváltozatban „Tesztváltozat” (eddig: „Tesztváltozat: itt nincs frissítéskeresés.”). Alatta, külön sorokban: „Ellenőrizve:” és a dátum; új verziónál „Új verzió érhető el:” és a verziószám az Android buildszámmal, pl. „V1.3.2.3 (1030203)”. Az „Ellenőrzés” gomb függőlegesen középen marad.
-
-## [1.3.2.1] – 2026-11-27 · kiadatlan
 - **Szakasz adatai, „Kezelő” kártya:** a kezelő adatai külön kártyára kerültek az „Út” kártya alá: Vállalat (pl. Magyar Közút Nonprofit Zrt.), Igazgatóság, Mérnökség. Az „Út” kártyán a kategória, a pálya, a forgalmi irány és a szelvények maradtak.
 - **A „Megye” sor megszűnt** a Szakasz adatai oldalon és a Pozíció oldal kezelő-kártyáján: a megyei igazgatóság áll helyette. A Pozíció oldali kártya címe „Kezelő” (eddig „Kezelő és illetékesség”), a sorai ugyanazok, mint a Szakasz adatai kártyáján (Vállalat, Igazgatóság, Mérnökség); a kapcsolója a beállításokban: „Kezelő: vállalat, igazgatóság, mérnökség”. A koncessziós társaságoknál továbbra sincs Igazgatóság sor.
 - **CSV:** a mentett keresések CSV-jében a „Kezelő” oszlop helyén három oszlop áll: Vállalat, Megyei igazgatóság, Mérnökség; a „Megye” oszlop megmaradt. Szakasznál és több úton átmenő keresésnél az érintett összes vállalat, igazgatóság és mérnökség szerepel, vesszővel elválasztva. A mérések CSV-je a végén ugyanezt a három oszlopot kapta, a mérés útszakaszai alapján (úton kívüli mérésnél üresek).
-
-## [1.3.2.0] – 2026-11-27 · kiadatlan
 - **Megyei igazgatóság és mérnökség (új NAP adat):** a Magyar Közút kibővítette a NAP „Közút neve, kategóriája és kezelője” adatcsomagját, így az alkalmazás a kezelő mellett mostantól minden útszakaszon megmutatja a **megyei igazgatóságot** (pl. Pest Megyei Igazgatóság) és a **mérnökséget** (pl. Kiskőrösi mérnökség) is. Két helyen látszik: a Szakasz adatai oldal „Út” részében (térképi koppintás → Adatok) és a Pozíció oldal „Kezelő és illetékesség” kártyáján, ebben a sorrendben: Kezelő, Igazgatóság, Mérnökség, Megye. A Mérnökség sor eddig is megvolt, de adat híján „nincs adat” állt benne.
 - A koncessziós társaságok (MKIF, AKA / A-WAY, M6 Duna, M6 Tolna, Mecsek) szakaszain nincs megyei igazgatóság, ott az Igazgatóság sor nem jelenik meg, csak a mérnökség (autópálya-mérnökség). A „Megye” továbbra is az a megye, ahol az út fekszik; az igazgatóság ettől eltérhet (pl. az M0 budapesti szakaszain a Pest Megyei Igazgatóság).
 - 9 szakaszon két mérnökség osztozik, és az adat nem tartalmazza, hol a határ közöttük: ott mindkettő neve megjelenik, egymás alatt.
 - **Adatok:** adatállapot 2026. november 27. Csak a „Közút neve, kategóriája és kezelője” csomag változott; az úthálózat, a szelvények, a korlátozások, a hidak és a többi adat ugyanaz, mint eddig. Az alkalmazás mérete kb. 0,07 MB-tal nőtt.
 - **Beállítások → Pozíció → Megjelenített részek:** a kártya kapcsolójának neve „Kezelő, igazgatóság, mérnökség, megye”.
 - **Fejlesztés (`tools/adat/`):** az adatcsomag új mezői (`pkod`, `kszelv`, `vszelv`, `zkod`, `uzemm`, `mernokseg`) kötelezők. Az építés megáll, ha ismeretlen igazgatóságkód (`zkod`) érkezik, ha egy szakasz útja, pályája vagy szelvénye eltér az úthálózatétól, vagy ha egy szakaszhoz két kezelő vagy két igazgatóság tartozik. A változásjelentés (`compare.py`) és az alkalmazásszintű teszt (`apptest.py`) az igazgatóságot és a mérnökséget is összeveti; az `apptest.py` újra fut az oldal tartalombiztonsági szabálya (CSP) mellett. A kódból kikerült a kézzel tölthető, üres `MERNOKSEG` szabálylista.
-
-## [1.3.1.5] – 2026-11-26 · kiadatlan
 - A támogatási felhívás „Most nem” után csak akkor jelenik meg újra, ha eltelt legalább egy hónap **és** az alkalmazást legalább 10-szer megnyitották azóta (eddig: három hónap). A „Támogatás” után továbbra is egy évig nem kérdez.
-
-## [1.3.1.4] – 2026-11-26 · kiadatlan
 - A támogatási felhívás szövege: „…hogy továbbra is működjön és fejlődjön.”
-
-## [1.3.1.3] – 2026-11-26 · kiadatlan
 - **Támogatási felhívás:** 2026. december 15-től az alkalmazás időnként, indítás után egy ablakban megkéri a rendszeres felhasználókat, hogy támogassák a fejlesztést („Tartsd életben az ÚtSzelvényt!”). Csak annak jelenik meg, aki legalább 5 különböző napon használta az alkalmazást, legfeljebb háromhavonta egyszer, és soha nem menet közben (5 km/h felett), HUD módban, más ablak fölött, vagy ha ugyanabban az indításban már megjelent a frissítési ablak. A „Támogatás” megnyitja a Revolut oldalt (ugyanaz, mint a Névjegyben), és egy évig nem kérdez újra; a „Most nem” három hónapig. Semmi nem lesz zárolva, és a támogatás továbbra is önkéntes. A fejlesztői (DEV) és teszt változatokban a dátum és a napok száma nem számít, hogy ki lehessen próbálni.
 - **Frissítési ablak:** megszűnt a „Kihagyom ezt a verziót” gomb, így minden új verziót felajánl, amíg nincs telepítve; a „Később” után nagyjából egy nap múlva kérdez újra.
-
-## [1.3.1.2] – 2026-11-26 · kiadatlan
 - **Térkép, átkelési szakaszok:** Z8-as és annál kisebb nagyításnál (ahogy a méretarány-sáv mutatja) a piros sáv nem jelenik meg, akkor sem, ha a kapcsoló be van kapcsolva; Z9-től látszik.
 - **Névjegy → Frissítések:** az „Ellenőrizve:” és a dátum külön sorba került a „Naprakész” alá.
-
-## [1.3.1.1] – 2026-11-26 · kiadatlan
 - **Frissítéskeresés a fejlesztői változatban:** a https://utszelveny.hu/dev/ oldal és az „ÚtSzelvény DEV” APK mostantól ugyanúgy szól, ha új verzió érhető el, mint a stabil kiadás, csak a `main` ág új verzióit figyeli: a dev oldal a „Frissítés” gombra azonnal betölti az új változatot, a DEV alkalmazás megnyitja az új DEV APK letöltését (`apk-latest`), amely a meglévő DEV alkalmazásra települ. Az „Újdonságok” a `main` változásnaplóját nyitja meg. A DEV alkalmazás legfeljebb óránként kérdezi a GitHubot (a stabil naponta egyszer), a dev oldal minden indításkor a saját szerverét. Kapcsoló és kézi ellenőrzés ugyanott: Beállítások → Általános → Frissítések, Névjegy → Frissítések. A teszt ágak oldalain és teszt APK-iban továbbra sincs frissítéskeresés.
 - A DEV alkalmazás csak ettől a változattól kezdve keres frissítést: a V1.3.1.1 DEV APK-t egyszer még kézzel kell telepíteni.
-
-## [1.3.1.0] – 2026-11-26 · kiadatlan
 - **Térkép, átkelési szakaszok:** új kapcsoló a Beállítások → Térkép → Utak csoportban, az „Utak vonalvastagsága” után: „Átkelési szakaszok a térképen”. Bekapcsolva a térkép halvány piros sávval jelöli az utak vonala alatt azokat a szakaszokat, ahol az út lakott területen halad át (NAP adat, ugyanaz, amelyből a sebességkorlát-kártya az átkelési szakaszt és a településtáblát mutatja). Kisebb nagyításnál a sáv fele olyan széles, hogy ne legyen túl feltűnő. A kerékpárutakon nincs jelölés. Alapból kikapcsolva; új adatot nem igényel, az alkalmazás mérete nem nő.
-
-## [1.3.0.1] – 2026-11-26 · kiadatlan
 - **Frissítés, „Újdonságok”:** az új verzióról szóló ablakban az „Újdonságok” hivatkozás mostantól a változásnaplót nyitja meg (az adott kiadás szerinti állapotában, így az új verzió változásai állnak legfelül), nem a GitHub kiadási oldalát. Azoknál lép életbe, akik már ezt a változatot használják: a V1.3.0 a következő stabil kiadásnál még a kiadási oldalt nyitja meg.
 - **Verziószámok:** minden módosítás saját, négytagú verziószámot kap (részletek a napló elején). Az Android belső verziókódja (versionCode) mostantól verziótagonként két számjegy (V1.3.0.1 → 1030001; eddig tagonként egy, V1.3.0 → 1300), így egy tag 99-ig mehet. Az új kódok mind nagyobbak a korábbiaknál, a frissítés ugyanúgy települ. A `tools/verzio.py` a README verziósorát is ellenőrzi és átírja.
 
