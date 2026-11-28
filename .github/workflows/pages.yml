@@ -91,13 +91,16 @@ jobs:
             cp -r site/. "$OUT/"
             cp web/icon-192.png web/icon-512.png "$OUT/"
             test -s "$OUT/index.html"
-            # the APK link (id="apkLink") downloads the latest stable release's APK file directly;
-            # without one (e.g. the APK build is still running) it keeps pointing to the releases page
+            # the APK links (data-apk: the hero button and the line in the open-source card) download the latest
+            # stable release's APK file directly; without one (e.g. the APK build is still running) they keep
+            # pointing to the releases page
             APK=$(gh api "repos/$GITHUB_REPOSITORY/releases/latest" --jq '[.assets[] | select(.name | endswith(".apk")) | .browser_download_url][0] // empty' 2>/dev/null || true)
             if [ -n "$APK" ]; then
-              sed -i "s#<a id=\"apkLink\" href=\"[^\"]*\"#<a id=\"apkLink\" href=\"$APK\"#" "$OUT/index.html"
-              grep -q "href=\"$APK\"" "$OUT/index.html"
-              echo "landing page APK link: $APK"
+              sed -i "s#data-apk href=\"[^\"]*\"#data-apk href=\"$APK\"#g" "$OUT/index.html"
+              n=$(grep -o 'data-apk href="[^"]*"' "$OUT/index.html" | wc -l)
+              test "$n" -ge 1
+              test "$(grep -oF "data-apk href=\"$APK\"" "$OUT/index.html" | wc -l)" -eq "$n"
+              echo "landing page APK links ($n): $APK"
             else
               echo "::warning::no APK in the latest stable release yet, the landing page links the releases page"
             fi

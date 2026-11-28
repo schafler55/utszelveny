@@ -13,6 +13,10 @@ szakaszba olvadnak össze, amely a kiadás összes változását felsorolja. A t
 (pl. 0.16.1–0.16.10) változásai a következő nagyobb verzió (pl. 0.17) szakaszában szerepelnek; a szakasz első sora
 jelzi, mely változatokat tartalmazza.
 
+## [1.4.0.1] – 2026-11-28
+Kiadatlan.
+- **Kezdőlap (utszelveny.hu), Android alkalmazás gomb:** az „ÚtSzelvény indítása” gomb alatt új „Android alkalmazás letöltése” gomb (APK), alatta „Android alkalmazás: Android 8.0-tól”. A böngészőkről szóló sor az „ÚtSzelvény indítása” gomb alá került, „Támogatott böngészők” helyett „Ajánlott böngészők”. Az új gomb, mint a nyílt forráskódú kártya APK linkje, közvetlenül a legutóbbi stabil kiadás APK fájlját tölti le. Az alkalmazás nem változott.
+
 ## [1.4.0] – 2026-11-28
 Stabil kiadás; az 1.3.0 óta a `main` ágra került változások együtt (a `main` ágon V1.3.0.1–V1.3.3.0 néven).
 - **Android fejlesztői regisztráció:** az Android alkalmazásba (APK) bekerül a Google Android Developer Console fiókjához tartozó azonosító (`assets/adi-registration.properties`, forrása `android/adi-registration.properties`). A Google ezzel és az APK aláírásával ellenőrzi, hogy a `hu.szaszi.kozutszelveny` (stabil kulcs) és a `hu.szaszi.kozutszelveny.dev` (DEV kulcs) csomag a fejlesztőé, így az APK a Google 2027-es ellenőrzése után is ugyanúgy telepíthető marad. Az alkalmazás működése nem változik.

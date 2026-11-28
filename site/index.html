@@ -107,8 +107,11 @@
   h1 { margin: 0; font-size: clamp(38px, 9vw, 72px); line-height: 1; font-weight: 700; letter-spacing: -0.015em; }
   .tagline { margin: 0; font-size: clamp(20px, 4.4vw, 26px); font-weight: 500; color: var(--pri); }
   .lead { margin: 0; font-size: 18px; color: var(--onv); max-width: 36em; }
+  .cta { margin-top: 8px; width: 100%; display: flex; flex-direction: column; align-items: center; gap: 22px; }
+  .cta-g { width: 100%; display: flex; flex-direction: column; align-items: center; gap: 12px; }
+  .cta-g + .cta-g { gap: 8px; }
   .start {
-    margin-top: 8px; display: inline-flex; align-items: center; justify-content: center; gap: 14px;
+    display: inline-flex; align-items: center; justify-content: center; gap: 14px;
     background: var(--pri); color: #FFFFFF; text-decoration: none; font-size: 24px; font-weight: 700;
     padding: 22px 48px; border-radius: 999px; box-shadow: 0 10px 30px rgba(43,106,70,.3);
     min-width: min(100%, 360px); transition: transform .15s, box-shadow .15s;
@@ -117,6 +120,15 @@
   .start:focus-visible { outline: 3px solid #12452B; outline-offset: 4px; }
   .start svg { width: 28px; height: 28px; }
   .sub { margin: 0; font-size: 15px; color: var(--dim); }
+  .apkbtn {
+    display: inline-flex; align-items: center; justify-content: center; gap: 10px;
+    background: var(--card); color: var(--pri); text-decoration: none; font-size: 17px; font-weight: 500;
+    padding: 13px 24px; border-radius: 999px; box-shadow: var(--tile-shadow); transition: transform .15s, box-shadow .15s;
+  }
+  .apkbtn:hover { color: #12452B; transform: translateY(-1px); }
+  .apkbtn:focus-visible { outline: 3px solid #12452B; outline-offset: 3px; }
+  .apkbtn svg { width: 22px; height: 22px; flex: none; }
+  .apkbtn .tag { font-size: 13px; color: var(--onv); background: var(--bg); padding: 2px 8px; border-radius: 999px; }
   .sub a { font-weight: 500; }
 
   .phones { display: flex; justify-content: center; align-items: flex-end; gap: 2%; padding-top: 56px; padding-bottom: 24px; }
@@ -164,10 +176,14 @@
   @media (max-width: 900px) {
     .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   }
+  @media (max-width: 420px) {
+    .apkbtn .tag { display: none; }
+  }
   @media (max-width: 620px) {
     .bg { background-size: 1000px auto; }
     .grid { grid-template-columns: minmax(0, 1fr); }
     .start { font-size: 21px; padding: 20px 28px; width: 100%; }
+    .apkbtn { font-size: 16px; padding: 13px 20px; }
     .phones { padding-top: 40px; }
     .phones .side { margin-bottom: 24px; }
     section.block { padding-top: 64px; }
@@ -193,11 +209,23 @@
       </div>
       <p class="tagline">Kilométerkő minden méteren – a zsebedben.</p>
       <p class="lead">Melyik országos közúton, melyik kilométerszelvényben állsz?<br>Az <b>ÚtSzelvény</b> megmutatja internet nélkül is, ingyen, reklám nélkül.</p>
-      <a class="start" href="app/">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
-        ÚtSzelvény indítása
-      </a>
-      <p class="sub">Böngészőben fut, telepítés nélkül!<br>Támogatott böngészők: Androidon <b>Chrome</b> vagy iOS-en <b>Safari</b></p>
+      <div class="cta">
+        <div class="cta-g">
+          <a class="start" href="app/">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+            ÚtSzelvény indítása
+          </a>
+          <p class="sub">Böngészőben fut, telepítés nélkül!<br>Ajánlott böngészők: Androidon <b>Chrome</b> vagy iOS-en <b>Safari</b></p>
+        </div>
+        <div class="cta-g">
+          <a class="apkbtn" data-apk href="https://github.com/schafler55/utszelveny/releases/latest">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="6" y="2.5" width="12" height="19" rx="2.5"/><path d="M12 7v7M9 11l3 3 3-3M10.5 18h3"/></svg>
+            Android alkalmazás letöltése
+            <span class="tag">APK</span>
+          </a>
+          <p class="sub">Android alkalmazás: Android 8.0-tól</p>
+        </div>
+      </div>
     </section>
 
     <div class="phones wrap">
@@ -278,7 +306,7 @@
             Támogatás
           </a>
         </div>
-        <p class="apk">Androidra alkalmazásként is telepíthető: <a id="apkLink" href="https://github.com/schafler55/utszelveny/releases/latest">Android alkalmazás (APK) letöltése</a></p>
+        <p class="apk">Androidra alkalmazásként is telepíthető: <a data-apk href="https://github.com/schafler55/utszelveny/releases/latest">Android alkalmazás (APK) letöltése</a></p>
       </div>
     </section>
   </main>
